@@ -6,7 +6,7 @@ namespace swift
 	const std::string errorLog = "./data/log.txt";
 
 	Game::Game() :	logger("Alpha", errorLog),
-					console(500, 200, defaultFont, "[swift2]:")
+		console(500, 200, defaultFont, "[swift2]:")
 	{
 		// currentState = new Loading();
 
@@ -22,9 +22,8 @@ namespace swift
 		running = false;
 
 		// engine integral settings
-		ticksPerSecond = 20;
-		maxFrameSkip = 5;
-		
+		ticksPerSecond = 30;
+
 		defaultFont.loadFromFile(defaultFontFile);
 	}
 
@@ -45,41 +44,41 @@ namespace swift
 	void Game::Start(int c, char** args)
 	{
 		//newLuaScript("./data/scripts/test.lua");
-		
+
 		// c is the total arguments
 		// args is the arguments
 
 		// loads settings from the settings file
 		loadSettings("./data/settings/settings.dat");
-		
+
 		handleLaunchOps(c, args);
-		
+
 		// Window set up.
 		if(fullScreen)
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Fullscreen, contextSettings);
 		else
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
-		
+
 		sf::ContextSettings cs = window.getSettings();
 		logger << "OpenGL version: " + std::to_string(cs.majorVersion) + '.' + std::to_string(cs.minorVersion);
-		
+
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
 
 		//assetManager.setAntiAliasing(antiAliasing);
-		
+
 		// add some default keybindings
 		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
 		{
 			console.activate(!console.isActivated());
 		});
-		
+
 		keyboard.newBinding("exit", sf::Keyboard::Escape, [&]()
 		{
 			running = false;
 		});
-		
+
 		// add some console commands
 		console.addCommand("hello", [](ArgVec args)
 		{
@@ -99,61 +98,56 @@ namespace swift
 
 	void Game::GameLoop()
 	{
-		NextGameTime = GameTime.getElapsedTime();
+		const sf::Time dt = sf::seconds(1 / ticksPerSecond);
 
-		float TimeSkip = 1000 / ticksPerSecond;	// convert to millseconds from seconds
-
-		float lastTime = 0;
-
-		float interpolation;
+		sf::Time currentTime = GameTime.getElapsedTime();
+		sf::Time accumulator = sf::seconds(0);
 
 		while(running)
 		{
-			int loopCount = 0;
+			sf::Time newTime = GameTime.getElapsedTime();
+			sf::Time frameTime = newTime - currentTime;
 
-			// Time to Update if the current time is past the projected time, and we haven't skipped drawing too much
-			while(GameTime.getElapsedTime() > NextGameTime && loopCount < maxFrameSkip)
+			if(frameTime > sf::seconds(0.25))
+				frameTime = sf::seconds(0.25);
+
+			currentTime = newTime;
+
+			accumulator += frameTime;
+
+			while(accumulator >= dt)
 			{
-				Update();
-
-				NextGameTime += sf::milliseconds(TimeSkip);
-				loopCount++;
+				Update(dt);
+				accumulator -= dt;
 			}
 
-			interpolation = float(GameTime.getElapsedTime().asMilliseconds() + TimeSkip - NextGameTime.asMilliseconds()) / TimeSkip;
+			//const double alpha = accumulator.asSeconds() / dt.asSeconds();
 
-			Draw(interpolation);
-
-			float currentTime = GameTime.getElapsedTime().asSeconds();
-
-			if(debug)
-				fps = 1 / (currentTime - lastTime);
-
-			lastTime = currentTime;
+			Draw();
 		}
 	}
 
-	void Game::Update()
+	void Game::Update(sf::Time dt)
 	{
 		if(debug)
 			FPS.setString(sf::String(std::to_string(fps).substr(0, 6)));
-			
+
 		sf::Event event;
 		while(window.pollEvent(event))
 		{
 			keyboard(event);
 			mouse(event);
-			
+
 			// avoid having the console type the key that toggles it
 			if(event.type == sf::Event::TextEntered && event.text.unicode != '\\')
 				console.update(event);
-			
+
 			if(event.type == sf::Event::Closed)
 				running = false;
 		}
 	}
 
-	void Game::Draw(float i)
+	void Game::Draw()
 	{
 		// with interpolation, make sure to have something like this:
 		// viewPosition = position + (speed * interpolation)
@@ -171,10 +165,10 @@ namespace swift
 
 		/* clear display */
 		window.clear();
-		
+
 		/* state drawing */
 		window.draw(console);
-		
+
 		/* other drawing */
 		if(debug)
 			window.draw(FPS);
@@ -252,7 +246,7 @@ namespace swift
 		// settings file settings
 		if(!settings.loadFile(file))
 			logger << Logger::LogType::WARNING << "Could not open settings file, default settings will be used";
-		
+
 		settings.get("quality", graphics);
 		settings.get("aa", antiAliasing);
 		contextSettings.antialiasingLevel = antiAliasing;

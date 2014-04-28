@@ -49,7 +49,7 @@
 #include "StateSystem/State.hpp"
 
 /* Lua headers */
-#include "ScriptingEngine/Script.hpp"
+#include "Scripting/Script.hpp"
 
 /* Input headers */
 #include "KeyBindings/KeyboardManager.hpp"
@@ -113,11 +113,11 @@ namespace swift
 			// Updating game logic, handling input, memory management, etc.
 			// In a separate function to keep GameLoop looking clean and easier
 			// to comprehend
-			void Update();
+			void Update(sf::Time dt);
 			
 			// Drawing all drawable game objects, backgrounds, etc
 			// Same reason as why it has it's own function as Update
-			void Draw(float i);
+			void Draw();
 			
 			// handles any launch options and sets the respective variables
 			void handleLaunchOps(int c, char** args);
@@ -168,10 +168,8 @@ namespace swift
 
 			/* timing */
 			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
-			sf::Time NextGameTime;	// Keeps the next time Update() needs to be run
 			int framesPerSecond;	// Iterations of the GameLoop.
 			int ticksPerSecond;		// Iterations of Update
-			int maxFrameSkip;		// Maximum frames that the call to Update is skipped
 
 			/* Launch Arguments */
 			bool editor;	// for running the "map" editor - not in use
