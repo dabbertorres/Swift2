@@ -17,6 +17,7 @@ namespace swift
 		background.setOutlineColor(sf::Color(60, 60, 60));
 		
 		prompts.emplace_front(promptStr, font, FONT_SIZE);
+		prompts[0].setPosition(0, 0);
 		
 		command.setString(commandStr);
 		command.setFont(font);

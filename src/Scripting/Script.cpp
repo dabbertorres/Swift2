@@ -6,7 +6,7 @@ namespace swift
 	{
 		deleteMe = false;
 		
-		// We don't want to give the scripts access to os commands or file writing
+		// We don't want to give the scripts access to os commands or file writing abilities
 		luaState.OpenLib("base", luaopen_base);
 		luaState.OpenLib("math", luaopen_math);
 		luaState.OpenLib("string", luaopen_string);

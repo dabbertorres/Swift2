@@ -200,19 +200,22 @@ namespace swift
 
 				while(line[j] != ' ')
 					j++;
+					
 				// start of 'setting' to (one before) first space is the 'setting' value
 				setting = line.substr(0, j);
 
 				while(line[j] == ' ' || line[j] == '=')
 					j++;
+					
 				// start of 'value' is after the equal sign and any extra spaces
 				int a = j;
-
+				
 				while(j < length && (line[j] != ' ' || line[j] != '\n' || line[j] != '#'))
 					j++;
+					
 				// end of value is the last alphanumerisymbolic* char (except for '#')
 				int b = j;
-
+				
 				value = line.substr(a, b);
 			}
 			else

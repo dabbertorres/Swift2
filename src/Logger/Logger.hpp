@@ -74,6 +74,12 @@ namespace swift
 
 				return *this;
 			}
+			
+			Logger& operator <<(char c)
+			{
+				fout << c;
+				return *this;
+			}
 
 			Logger& operator <<(const std::string& text)
 			{
