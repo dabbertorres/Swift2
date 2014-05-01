@@ -47,6 +47,7 @@
 
 /* State System */
 #include "StateSystem/State.hpp"
+#include "StateSystem/States/Play.hpp"
 
 /* Lua headers */
 #include "Scripting/Script.hpp"
@@ -69,9 +70,7 @@
 #include "ResourceManager/ModManager.hpp"
 
 namespace swift
-{
-	const std::string defaultFontFile = "../test/data/DejaVuSansMono.ttf";
-	
+{	
 	namespace Quality
 	{
 		const unsigned Low = 0;
@@ -117,7 +116,7 @@ namespace swift
 			
 			// Drawing all drawable game objects, backgrounds, etc
 			// Same reason as why it has it's own function as Update
-			void Draw();
+			void Draw(float e);
 			
 			// handles any launch options and sets the respective variables
 			void handleLaunchOps(int c, char** args);
@@ -134,6 +133,10 @@ namespace swift
 			AssetManager assets;
 			ModManager mods;
 			
+			/* States */
+			State* currentState;
+			Play play;
+			
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
@@ -142,7 +145,7 @@ namespace swift
 			Logger logger;
 			Console console;
 
-			// FPS tracking
+			/* FPS tracking */
 			float fps;
 			sf::Text FPS;
 			
@@ -159,9 +162,7 @@ namespace swift
 			unsigned musicLevel;
 			
 			/* Scripting */
-			// lua libraries: luaopen_<library name>(lua_State *L);
-			//LuaScript* newLuaScript(const std::string& file);
-			//std::map<std::string, LuaScript*> luaScripts;
+			std::vector<Script*> activeScripts;
 
 			// random number generator
 			std::mt19937 randomNumberGenerator;	// Whenever something random is needed, this is all ready!
@@ -169,7 +170,7 @@ namespace swift
 			/* timing */
 			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
 			int framesPerSecond;	// Iterations of the GameLoop.
-			int ticksPerSecond;		// Iterations of Update
+			float ticksPerSecond;		// Iterations of Update
 
 			/* Launch Arguments */
 			bool editor;	// for running the "map" editor - not in use

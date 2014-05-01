@@ -77,7 +77,7 @@ namespace swift
 		soundBuffers.clear();
 		music.clear();
 		fonts.clear();
-		//scripts.clear();
+		scripts.clear();
 	}
 
 	void AssetManager::setSmooth(bool s)
@@ -89,35 +89,35 @@ namespace swift
 		}
 	}
 
-	std::map<std::string, sf::Texture>::iterator AssetManager::getTexture(const std::string& n)
+	sf::Texture& AssetManager::getTexture(const std::string& n)
 	{
-		return textures.find(n);
+		return textures.find(n)->second;
 	}
 	
-	/*std::map<std::string, swift::Skeleton>::iterator AssetManager::getSkeleton(const std::string& n)
+	/*Skeleton& AssetManager::getSkeleton(const std::string& n)
 	{
 		
 	}*/
 	
-	std::map<std::string, sf::SoundBuffer>::iterator AssetManager::getSoundBuffer(const std::string& n)
+	sf::SoundBuffer& AssetManager::getSoundBuffer(const std::string& n)
 	{
-		return soundBuffers.find(n);
+		return soundBuffers.find(n)->second;
 	}
 	
-	std::map<std::string, sf::Music>::iterator AssetManager::getSong(const std::string& n)
+	sf::Music& AssetManager::getSong(const std::string& n)
 	{
-		return music.find(n);
+		return music.find(n)->second;
 	}
 	
-	std::map<std::string, sf::Font>::iterator AssetManager::getFont(const std::string& n)
+	sf::Font& AssetManager::getFont(const std::string& n)
 	{
-		return fonts.find(n);
+		return fonts.find(n)->second;
 	}
 	
-	/*std::map<std::string, swift::LuaScript>::iterator AssetManager::getScript(const std::string& n)
+	Script& AssetManager::getScript(const std::string& n)
 	{
-		
-	}*/
+		return scripts.find(n)->second;
+	}
 
 	bool AssetManager::loadResource(const std::string& file)
 	{
@@ -190,7 +190,16 @@ namespace swift
 		}
 		else if(file.find("/scripts/") != std::string::npos)
 		{
-			// create a script
+			scripts.emplace(std::piecewise_construct,
+							std::forward_as_tuple(file),
+							std::forward_as_tuple());
+			
+			if(!scripts[file].loadFromFile(file))
+			{
+				std::clog << "Unable to load " << file << " as a script.\n";
+				scripts.erase(file);
+				return false;
+			}
 		}
 		else if(file.find(".txt") != std::string::npos)
 		{

@@ -4,10 +4,14 @@
 namespace swift
 {
 	const std::string errorLog = "./data/log.txt";
+	const std::string defaultFontFile = "./data/fonts/DejaVuSansMono.ttf";
 
-	Game::Game() :	logger("Alpha", errorLog),
+	Game::Game() :	
+		play(window),
+		logger("Alpha", errorLog),
 		console(500, 200, defaultFont, "[swift2]:")
 	{
+		logger << "Constructing Game object\n";
 		// currentState = new Loading();
 
 		// Set a bunch of defaults, just in case loadSettings() fails.
@@ -25,6 +29,7 @@ namespace swift
 		ticksPerSecond = 30;
 
 		defaultFont.loadFromFile(defaultFontFile);
+		logger << "Loaded default font\n";
 	}
 
 	Game::~Game()
@@ -60,13 +65,24 @@ namespace swift
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
 
 		sf::ContextSettings cs = window.getSettings();
-		logger << "OpenGL version: " + std::to_string(cs.majorVersion) + '.' + std::to_string(cs.minorVersion);
+		logger << "OpenGL version: " << std::to_string(cs.majorVersion) << '.' << std::to_string(cs.minorVersion) << '\n';
 
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
-
-		//assetManager.setAntiAliasing(antiAliasing);
+		
+		assets.setSmooth(antiAliasing);
+		assets.loadResourceFolder("./data/fonts");
+		assets.loadResourceFolder("./data/scripts");
+		
+		mods.loadMods("./data/mods");
+		
+		for(auto &m : mods.getMods())
+		{
+			assets.loadMod(m.second.mod);
+		}
+		
+		activeScripts.push_back(&assets.getScript("./data/scripts/start.lua"));
 
 		// add some default keybindings
 		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
@@ -83,6 +99,12 @@ namespace swift
 		console.addCommand("hello", [](ArgVec args)
 		{
 			return "Hello to you too!";
+		});
+		
+		console.addCommand("exit", [&](ArgVec args)
+		{
+			running = false;
+			return "Exiting";
 		});
 
 		running = true;
@@ -101,7 +123,7 @@ namespace swift
 		const sf::Time dt = sf::seconds(1 / ticksPerSecond);
 
 		sf::Time currentTime = GameTime.getElapsedTime();
-		sf::Time accumulator = sf::seconds(0);
+		sf::Time lag = sf::seconds(0);
 
 		while(running)
 		{
@@ -113,17 +135,17 @@ namespace swift
 
 			currentTime = newTime;
 
-			accumulator += frameTime;
+			lag += frameTime;
 
-			while(accumulator >= dt)
+			while(lag >= dt)
 			{
 				Update(dt);
-				accumulator -= dt;
+				lag -= dt;
 			}
+			
+			FPS.setString(std::to_string(1 / frameTime.asSeconds()));
 
-			//const double alpha = accumulator.asSeconds() / dt.asSeconds();
-
-			Draw();
+			Draw(lag.asSeconds() / dt.asSeconds());
 		}
 	}
 
@@ -145,9 +167,15 @@ namespace swift
 			if(event.type == sf::Event::Closed)
 				running = false;
 		}
+		
+		// run scripts
+		for(auto &s : activeScripts)
+		{
+			s->run();
+		}
 	}
 
-	void Game::Draw()
+	void Game::Draw(float e)
 	{
 		// with interpolation, make sure to have something like this:
 		// viewPosition = position + (speed * interpolation)
