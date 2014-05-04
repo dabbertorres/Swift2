@@ -12,20 +12,41 @@
 #include "../GUI/Window.hpp"
 #include "../GUI/Widgets.hpp"
 
+/* Resource headers */
+#include "../ResourceManager/AssetManager.hpp"
+
+/* Scripting headers */
+#include "../Scripting/Script.hpp"
+
 namespace swift
-{
+{	
 	class State
 	{
 		public:
-			State(sf::RenderWindow& win);
+			State(sf::RenderWindow& win, AssetManager& am);
 			~State();
 			
-			virtual void handleEvents() = 0;
-			virtual void update() = 0;
-			virtual void draw(float i) = 0;
+			virtual void setup() = 0;
+			virtual void switchTo() = 0;
+			virtual void handleEvent(sf::Event &event) = 0;
+			virtual void update(sf::Time dt) = 0;
+			virtual void draw(float e) = 0;
+			virtual void switchFrom() = 0;
+			virtual void finish() = 0;
 
-		private:
+		protected:
+			void updateScripts();
+			
+			/* Environment */
 			sf::RenderWindow& window;
+			AssetManager& assets;
+			
+			/* Input */
+			KeyboardManager keyboard;
+			MouseManager mouse;
+		
+			/* Scripting */
+			std::vector<Script*> activeScripts;
 	};
 }
 

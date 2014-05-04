@@ -2,12 +2,36 @@
 
 namespace swift
 {
-	State::State(sf::RenderWindow& win)
-		: window(win)
+	State::State(sf::RenderWindow& win, AssetManager& am)
+		: 	window(win),
+			assets(am)
 	{
 	}
 
 	State::~State()
 	{
+	}
+	
+	void State::updateScripts()
+	{
+		// run scripts
+		for(auto &s : activeScripts)
+		{
+			s->run();
+		}
+		
+		// check for scripts that are finished
+		std::vector<std::vector<Script*>::iterator> deleteScripts;
+		for(std::vector<Script*>::iterator it = activeScripts.begin(); it != activeScripts.end(); ++it)
+		{
+			if((*it)->toDelete())
+				deleteScripts.push_back(it);
+		}
+		
+		// remove scripts that are finished
+		for(auto &it : deleteScripts)
+		{
+			activeScripts.erase(it);
+		}
 	}
 }

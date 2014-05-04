@@ -8,12 +8,16 @@ namespace swift
 	class Play : public State
 	{
 		public:
-			Play(sf::RenderWindow& win);
+			Play(sf::RenderWindow& win, AssetManager& am);
 			~Play();
 			
-			virtual void handleEvents();
-			virtual void update();
-			virtual void draw(float i);
+			virtual void setup();
+			virtual void switchTo();
+			virtual void handleEvent(sf::Event &event);
+			virtual void update(sf::Time dt);
+			virtual void draw(float e);
+			virtual void switchFrom();
+			virtual void finish();
 	};
 }
 
