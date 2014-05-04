@@ -48,6 +48,7 @@
 /* State System */
 #include "StateSystem/State.hpp"
 #include "StateSystem/States/Play.hpp"
+#include "StateSystem/States/MainMenu.hpp"
 
 /* Lua headers */
 #include "Scripting/Script.hpp"
@@ -103,8 +104,8 @@ namespace swift
 			// May want to add arguments of some sort to make that actually correct...
 			void GameLoop();
 
-			// Clean up, save, close data, etc. Anything that we want to be safer about
-			// that we don't trust the destructor handling.
+			// Clean up, save, close data, etc. Anything that you want deleted before Game
+			// gets destroyed
 			void Finish();
 
 		private:
@@ -136,6 +137,7 @@ namespace swift
 			/* States */
 			State* currentState;
 			Play play;
+			MainMenu mainMenu;
 			
 			/* Input */
 			KeyboardManager keyboard;
@@ -160,9 +162,6 @@ namespace swift
 			Resolution resolution;
 			unsigned soundLevel;
 			unsigned musicLevel;
-			
-			/* Scripting */
-			std::vector<Script*> activeScripts;
 
 			// random number generator
 			std::mt19937 randomNumberGenerator;	// Whenever something random is needed, this is all ready!

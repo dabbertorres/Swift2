@@ -1,13 +1,19 @@
 #include "Game.hpp"
-#include <cstring>
 
 namespace swift
 {
 	const std::string errorLog = "./data/log.txt";
 	const std::string defaultFontFile = "./data/fonts/DejaVuSansMono.ttf";
-
+	
+	enum class GameState
+	{
+		Play,
+		MainMenu
+	};
+	
 	Game::Game() :	
-		play(window),
+		play(window, assets),
+		mainMenu(window, assets, defaultFont),
 		logger("Alpha", errorLog),
 		console(500, 200, defaultFont, "[swift2]:")
 	{
@@ -26,7 +32,7 @@ namespace swift
 		running = false;
 
 		// engine integral settings
-		ticksPerSecond = 30;
+		ticksPerSecond = 60;
 
 		defaultFont.loadFromFile(defaultFontFile);
 		logger << "Loaded default font\n";
@@ -48,8 +54,6 @@ namespace swift
 	// That's about it
 	void Game::Start(int c, char** args)
 	{
-		//newLuaScript("./data/scripts/test.lua");
-
 		// c is the total arguments
 		// args is the arguments
 
@@ -81,11 +85,9 @@ namespace swift
 		{
 			assets.loadMod(m.second.mod);
 		}
-		
-		activeScripts.push_back(&assets.getScript("./data/scripts/start.lua"));
 
 		// add some default keybindings
-		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
+		keyboard.newBinding("toggleTerminal", sf::Keyboard::Tilde, [&]()
 		{
 			console.activate(!console.isActivated());
 		});
@@ -114,8 +116,15 @@ namespace swift
 		{
 			FPS.setFont(defaultFont);
 			FPS.setScale(0.7, 0.7);
-			FPS.setPosition(window.getSize().x - 80, 0);
+			FPS.setString("00");
+			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 0);
 		}
+		
+		// state setup
+		play.setup();
+		mainMenu.setup();
+		
+		currentState = &mainMenu;
 	}
 
 	void Game::GameLoop()
@@ -152,7 +161,7 @@ namespace swift
 	void Game::Update(sf::Time dt)
 	{
 		if(debug)
-			FPS.setString(sf::String(std::to_string(fps).substr(0, 6)));
+			FPS.setString(std::to_string(fps).substr(0, 2));
 
 		sf::Event event;
 		while(window.pollEvent(event))
@@ -161,18 +170,16 @@ namespace swift
 			mouse(event);
 
 			// avoid having the console type the key that toggles it
-			if(event.type == sf::Event::TextEntered && event.text.unicode != '\\')
+			if(event.type == sf::Event::TextEntered && event.text.unicode != '`')
 				console.update(event);
 
 			if(event.type == sf::Event::Closed)
 				running = false;
+				
+			currentState->handleEvent(event);
 		}
 		
-		// run scripts
-		for(auto &s : activeScripts)
-		{
-			s->run();
-		}
+		currentState->update(dt);
 	}
 
 	void Game::Draw(float e)
@@ -195,9 +202,10 @@ namespace swift
 		window.clear();
 
 		/* state drawing */
-		window.draw(console);
+		currentState->draw(e);
 
 		/* other drawing */
+		window.draw(console);
 		if(debug)
 			window.draw(FPS);
 
@@ -210,12 +218,6 @@ namespace swift
 	{
 		window.close();
 	}
-
-	/*LuaScript* Game::newLuaScript(const std::string& file)
-	{
-		luaScripts.insert(std::make_pair(file, new LuaScript(file)));
-		return luaScripts.find(file)->second;
-	}*/
 
 	void Game::handleLaunchOps(int c, char** args)
 	{
