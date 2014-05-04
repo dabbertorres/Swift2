@@ -21,8 +21,12 @@ namespace swift
 	{
 		bool r = luaState.Load(file);	// r will be false if errors, true otherwise
 
-		luaState["Start"]();
 		return r;
+	}
+	
+	void Script::start()
+	{
+		luaState["Start"]();
 	}
 
 	void Script::run()

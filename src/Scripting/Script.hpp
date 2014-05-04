@@ -36,6 +36,8 @@ namespace swift
 			
 			bool loadFromFile(const std::string& file);
 			
+			void start();
+			
 			void run();
 			
 			bool toDelete();
