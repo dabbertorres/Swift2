@@ -14,12 +14,6 @@ namespace swift
 	
 	void State::updateScripts()
 	{
-		// run scripts
-		for(auto &s : activeScripts)
-		{
-			s->run();
-		}
-		
 		// check for scripts that are finished
 		std::vector<std::vector<Script*>::iterator> deleteScripts;
 		for(std::vector<Script*>::iterator it = activeScripts.begin(); it != activeScripts.end(); ++it)
@@ -32,6 +26,12 @@ namespace swift
 		for(auto &it : deleteScripts)
 		{
 			activeScripts.erase(it);
+		}
+		
+		// run scripts
+		for(auto &s : activeScripts)
+		{
+			s->run();
 		}
 	}
 }

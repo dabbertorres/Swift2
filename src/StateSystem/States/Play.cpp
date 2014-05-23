@@ -51,7 +51,6 @@ namespace swift
 	
 	void Play::update(sf::Time dt)
 	{
-		
 		updateScripts();
 	}
 	
@@ -60,9 +59,9 @@ namespace swift
 		
 	}
 	
-	void Play::switchFrom()
+	State::Type Play::switchFrom()
 	{
-		
+		return State::Type::Play;
 	}
 	
 	void Play::finish()

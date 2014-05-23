@@ -16,7 +16,7 @@ namespace swift
 			virtual void handleEvent(sf::Event &event);
 			virtual void update(sf::Time dt);
 			virtual void draw(float e);
-			virtual void switchFrom();
+			virtual Type switchFrom();
 			virtual void finish();
 	};
 }

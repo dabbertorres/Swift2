@@ -8,10 +8,6 @@
 #include "../KeyBindings/KeyboardManager.hpp"
 #include "../KeyBindings/MouseManager.hpp"
 
-/* GUI headers */
-#include "../GUI/Window.hpp"
-#include "../GUI/Widgets.hpp"
-
 /* Resource headers */
 #include "../ResourceManager/AssetManager.hpp"
 
@@ -24,14 +20,20 @@ namespace swift
 	{
 		public:
 			State(sf::RenderWindow& win, AssetManager& am);
-			~State();
+			virtual ~State();
+			
+			enum Type
+			{
+				MainMenu,
+				Play
+			};
 			
 			virtual void setup() = 0;
 			virtual void switchTo() = 0;
 			virtual void handleEvent(sf::Event &event) = 0;
 			virtual void update(sf::Time dt) = 0;
 			virtual void draw(float e) = 0;
-			virtual void switchFrom() = 0;
+			virtual Type switchFrom() = 0;
 			virtual void finish() = 0;
 
 		protected:

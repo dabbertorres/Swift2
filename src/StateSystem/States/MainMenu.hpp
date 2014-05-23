@@ -3,6 +3,9 @@
 
 #include "../State.hpp"
 
+/* GUI headers */
+#include "../../GUI/Window.hpp"
+
 namespace swift
 {
 	class MainMenu : public State
@@ -16,11 +19,11 @@ namespace swift
 			virtual void handleEvent(sf::Event &event);
 			virtual void update(sf::Time dt);
 			virtual void draw(float e);
-			virtual void switchFrom();
+			virtual Type switchFrom();
 			virtual void finish();
 
 		private:
-			sgui::Window gui;
+			cstr::Window gui;
 	};
 }
 
