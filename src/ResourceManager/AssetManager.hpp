@@ -51,7 +51,7 @@ namespace swift
 			const std::map<std::string, sf::SoundBuffer>::iterator 	SOUNDBUFFER_NOT_FOUND = soundBuffers.end();
 			const std::map<std::string, sf::Music>::iterator 		MUSIC_NOT_FOUND = music.end();
 			const std::map<std::string, sf::Font>::iterator 		FONT_NOT_FOUND = fonts.end();
-			const std::map<std::string, Script>::iterator SCRIPT_NOT_FOUND = scripts.end();
+			const std::map<std::string, Script>::iterator 			SCRIPT_NOT_FOUND = scripts.end();
 
 		private:
 			bool loadResource(const std::string& file);

@@ -23,7 +23,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			std::clog << "Unable to open resource folder!\n";
+			std::clog << "Unable to open resource folder: " << folder << "\n";
 			return false;
 		}
 
@@ -31,7 +31,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				std::clog << "Unable to read resource folder!\n";
+				std::clog << "Unable to read resource folder: " << folder << "\n";
 				return false;
 			}
 

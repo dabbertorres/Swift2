@@ -59,7 +59,6 @@
 
 /* GUI headers */
 #include "GUI/Window.hpp"
-#include "GUI/Widgets.hpp"
 
 /* Utility headers */
 #include "Console/Console.hpp"
@@ -115,6 +114,9 @@ namespace swift
 			// to comprehend
 			void Update(sf::Time dt);
 			
+			// Handle state changes, etc
+			void manageStates();
+			
 			// Drawing all drawable game objects, backgrounds, etc
 			// Same reason as why it has it's own function as Update
 			void Draw(float e);
@@ -136,8 +138,6 @@ namespace swift
 			
 			/* States */
 			State* currentState;
-			Play play;
-			MainMenu mainMenu;
 			
 			/* Input */
 			KeyboardManager keyboard;
@@ -156,7 +156,7 @@ namespace swift
 			Settings settings;
 			
 			unsigned graphics;		// 0 = Low, 1 = Medium, 2 = High
-			unsigned antiAliasing;	// 
+			bool smoothing;			// texture smoothing
 			bool fullScreen;
 			bool verticalSync;		// Sir, would you like some Vertical Synchronization with those frames?
 			Resolution resolution;

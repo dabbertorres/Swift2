@@ -11,20 +11,12 @@ namespace swift
 		MainMenu
 	};
 	
-	Game::Game() :	
-		play(window, assets),
-		mainMenu(window, assets, defaultFont),
-		logger("Alpha", errorLog),
-		console(500, 200, defaultFont, "[swift2]:")
+	Game::Game()
+		:	logger("Alpha", errorLog),
+			console(500, 200, defaultFont, "[swift2]:")
 	{
-		logger << "Constructing Game object\n";
-		// currentState = new Loading();
-
-		// Set a bunch of defaults, just in case loadSettings() fails.
-		// And a few other engine specific settings
-
 		graphics = Quality::Medium;
-		antiAliasing = 0;
+		smoothing = false;
 		verticalSync = true;
 		fullScreen = false;
 		resolution.x = 800;
@@ -35,17 +27,12 @@ namespace swift
 		ticksPerSecond = 60;
 
 		defaultFont.loadFromFile(defaultFontFile);
-		logger << "Loaded default font\n";
 	}
 
 	Game::~Game()
 	{
-		//currentState = nullptr;
-		/*std::map<std::string, LuaScript*>::iterator iter;
-		for(iter = luaScripts.begin(); iter != luaScripts.end(); ++iter)
-		{
-			delete iter->second;
-		}*/
+		delete currentState;
+		currentState = nullptr;
 	}
 
 	// Do any pre-game data loading
@@ -58,7 +45,7 @@ namespace swift
 		// args is the arguments
 
 		// loads settings from the settings file
-		loadSettings("./data/settings/settings.dat");
+		loadSettings("./data/settings/settings.ini");
 
 		handleLaunchOps(c, args);
 
@@ -68,16 +55,17 @@ namespace swift
 		else
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
 
-		sf::ContextSettings cs = window.getSettings();
-		logger << "OpenGL version: " << std::to_string(cs.majorVersion) << '.' << std::to_string(cs.minorVersion) << '\n';
-
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
 		
-		assets.setSmooth(antiAliasing);
+		assets.setSmooth(smoothing);
 		assets.loadResourceFolder("./data/fonts");
+		assets.loadResourceFolder("./data/textures");
+		assets.loadResourceFolder("./data/music");
 		assets.loadResourceFolder("./data/scripts");
+		assets.loadResourceFolder("./data/skeletons");
+		assets.loadResourceFolder("./data/sounds");
 		
 		mods.loadMods("./data/mods");
 		
@@ -87,7 +75,7 @@ namespace swift
 		}
 
 		// add some default keybindings
-		keyboard.newBinding("toggleTerminal", sf::Keyboard::Tilde, [&]()
+		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
 		{
 			console.activate(!console.isActivated());
 		});
@@ -120,11 +108,13 @@ namespace swift
 			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 0);
 		}
 		
-		// state setup
-		play.setup();
-		mainMenu.setup();
+		// setup Script static variables
+		Script::setWindow(window);
 		
-		currentState = &mainMenu;
+		// state setup		
+		currentState = new MainMenu(window, assets, defaultFont);
+		currentState->setup();
+		currentState->switchTo();
 	}
 
 	void Game::GameLoop()
@@ -151,8 +141,6 @@ namespace swift
 				Update(dt);
 				lag -= dt;
 			}
-			
-			FPS.setString(std::to_string(1 / frameTime.asSeconds()));
 
 			Draw(lag.asSeconds() / dt.asSeconds());
 		}
@@ -160,9 +148,6 @@ namespace swift
 
 	void Game::Update(sf::Time dt)
 	{
-		if(debug)
-			FPS.setString(std::to_string(fps).substr(0, 2));
-
 		sf::Event event;
 		while(window.pollEvent(event))
 		{
@@ -170,7 +155,7 @@ namespace swift
 			mouse(event);
 
 			// avoid having the console type the key that toggles it
-			if(event.type == sf::Event::TextEntered && event.text.unicode != '`')
+			if(event.type == sf::Event::TextEntered && event.text.unicode != '\\')
 				console.update(event);
 
 			if(event.type == sf::Event::Closed)
@@ -178,26 +163,20 @@ namespace swift
 				
 			currentState->handleEvent(event);
 		}
+			
+		if(debug)
+			FPS.setString(std::to_string(1 / dt.asSeconds()).substr(0, 2));
 		
 		currentState->update(dt);
+	}
+	
+	void Game::manageStates()
+	{
+		
 	}
 
 	void Game::Draw(float e)
 	{
-		// with interpolation, make sure to have something like this:
-		// viewPosition = position + (speed * interpolation)
-		// objects will thus be rendered a little off of where they actually are
-		// but the speed is so fast, it should be fine.
-		// if I want to get fancy, I can predict even more to avoid render collision
-		//
-		// for(unsigned i = 0; i < currentState->objects.size(); i++)
-		// 		window.draw(currentState->objects.at(i)->sprite);
-		//
-		// for animation, an array (or vector) holding all animation frames is all that
-		// is needed. Changing the frame to be drawn every game tick is that is needed.
-
-		// testing
-
 		/* clear display */
 		window.clear();
 
@@ -275,11 +254,9 @@ namespace swift
 	{
 		// settings file settings
 		if(!settings.loadFile(file))
-			logger << Logger::LogType::WARNING << "Could not open settings file, default settings will be used";
+			logger << Logger::LogType::WARNING << "Could not open settings file, default settings will be used\n";
 
 		settings.get("quality", graphics);
-		settings.get("aa", antiAliasing);
-		contextSettings.antialiasingLevel = antiAliasing;
 		settings.get("fullScreen", fullScreen);
 		settings.get("vertSync", verticalSync);
 		settings.get("res.x", resolution.x);

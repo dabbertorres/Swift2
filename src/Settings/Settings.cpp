@@ -182,10 +182,7 @@ namespace swift
 		std::ifstream in(file);
 
 		if(!in.is_open())
-		{
-			std::cerr << "ERROR: Unable to open settings file: \"" << file << "\" for reading." << std::endl;
 			return false;
-		}
 
 		std::string line, setting, value;
 
