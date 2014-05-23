@@ -2,62 +2,38 @@
 #define WINDOW_HPP
 
 #include <vector>
-#include <memory>
 
-/* SFML headers */
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
+#include <SFML/Window/Window.hpp>
+#include <SFML/Window/Event.hpp>
+#include <SFML/Window/Mouse.hpp>
 
-/* sgui headers */
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Font.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+
 #include "Widget.hpp"
-#include "Widgets.hpp"
+#include "Widgets/Button.hpp"
+#include "Widgets/Label.hpp"
 
-namespace sgui
+namespace cstr
 {
-	// automated widget organization
-	enum Organization
-	{
-		Horizontal,		// automated
-		Vertical,		// automated
-		Custom			// if full control of widget placement is desired
-	};
-	
 	class Window : public sf::Drawable
 	{
 		public:
-			Window(const sf::Window& w, const sf::Font& f, unsigned ts, bool a = true);
+			Window();
 			~Window();
 			
-			void update(sf::Event event);
+			void update(sf::Event& event);
 			
-			void addChild(Widget* c);
-			
-			Widget& getChild(unsigned c) const;
-			
-			bool toggle();
-			
-			bool isActive() const;
-			
+			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
+			Label& addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font);
+
 		private:
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
-			void organize();
-			
-			std::vector< std::unique_ptr<Widget> > children;
-			
-			TextBox* activeTextBox;
-			
-			Organization org;
-			int rows_cols;
-			
-			const sf::Window& window;
-			
-			const sf::Font& font;
-			unsigned textSize;
-			
-			bool active;	// controls whether the Window is updated and drawn or not
+			std::vector<Widget*> widgets;
+			Widget* activeWidget;
 	};
 }
 

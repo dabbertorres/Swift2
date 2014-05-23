@@ -1,140 +1,72 @@
 #include "Window.hpp"
-
-namespace sgui
+#include <iostream>
+namespace cstr
 {
-	Window::Window(const sf::Window& w, const sf::Font& f, unsigned ts, bool a)
-			:	window(w),
-				font(f)
+	Window::Window()
+		:	activeWidget(nullptr)
 	{
-		active = a;
-		//org = o;
-		//rows_cols = d;
-		//organize();
-		activeTextBox = nullptr;
-		textSize = ts;
 	}
 
 	Window::~Window()
 	{
+		for(auto w : widgets)
+			delete w;
 	}
-
-	void Window::update(sf::Event event)
+	
+	void Window::update(sf::Event& event)
 	{
-		if(active)
+		switch(event.type)
 		{
-			if(event.type == sf::Event::MouseMoved)
-			{
-				for(unsigned i = 0; i < children.size(); i++)
+			case sf::Event::MouseMoved:
+				activeWidget = nullptr;
+				for(auto w : widgets)
 				{
-					if(children[i]->isActive())
+					w->mouseMovedOff();
+					if(w->contains({event.mouseMove.x, event.mouseMove.y}))
 					{
-						sf::FloatRect boundingBox = children[i]->getGlobalBounds();
-						if(boundingBox.contains(sf::Vector2f(sf::Mouse::getPosition(window))))
-						{
-							children[i]->mousedOver(true);
-						}
-						else
-						{
-							children[i]->mousedOver(false);
-						}
+						activeWidget = w;
 					}
 				}
-			}
-
-			if(event.type == sf::Event::MouseButtonPressed && event.mouseButton.button == sf::Mouse::Left)
-			{
-				for(unsigned i = 0; i < children.size(); i++)
-				{
-					if(children[i]->isActive())
-					{
-						if(children[i]->isMouseOn())
-						{
-							children[i]->clickedOn(true);
-							break;	// If we found the widget the mouse was on, it can't be elsewhere, so stop checking!
-						}
-					}
-				}
-			}
-
-			if(event.type == sf::Event::MouseButtonReleased && event.mouseButton.button == sf::Mouse::Left)
-			{
-				for(unsigned i = 0; i < children.size(); i++)
-				{
-					if(children[i]->isActive())
-					{
-						children[i]->clickedOn(false);
-						if(children[i]->isMouseOn())
-						{
-							children[i]->run();
-							break;	// If we found the widget the mouse was on, it can't be elsewhere, so stop checking!
-						}
-					}
-				}
-			}
-			
-			if(event.type == sf::Event::TextEntered)
-			{
-				if(activeTextBox != nullptr)
-				{
-					activeTextBox->run(event.text.unicode);
-				}
-			}
+				if(activeWidget)
+					activeWidget->mouseMovedOn();
+				break;
+			case sf::Event::MouseButtonPressed:
+				if(activeWidget)
+					activeWidget->mousePressed();
+				break;
+			case sf::Event::MouseButtonReleased:
+				if(activeWidget)
+					activeWidget->mouseReleased();
+				break;
+			case sf::Event::TextEntered:
+				if(activeWidget)
+					if(event.text.unicode < 128)
+						activeWidget->textEntered(static_cast<char>(event.text.unicode));
+				break;
+			default:
+				break;
 		}
 	}
 	
-	void Window::addChild(Widget* c)
+	Button& Window::addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f)
 	{
-		children.push_back(std::unique_ptr<Widget>(c));
-		auto it = children.end();
-		it--;
-		it->get()->setFont(font);
-		it->get()->setTextSize(textSize);
-		//organize();
+		Button* button = new Button(rect, tex, f);
+		widgets.push_back(std::move(button));
+		return *button;
 	}
 	
-	Widget& Window::getChild(unsigned c) const
+	Label& Window::addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font)
 	{
-		return *children[c].get();
+		Label* label = new Label(pos, str, font);
+		widgets.push_back(std::move(label));
+		return *label;
 	}
-
-	bool Window::toggle()
-	{
-		return active = !active;
-	}
-
-	bool Window::isActive() const
-	{
-		return active;
-	}
-
+	
 	void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		if(active)
+		for(auto w : widgets)
 		{
-			for(unsigned i = 0; i < children.size(); i++)
-			{
-				if(children[i]->isActive())
-					target.draw(*children[i], states);
-			}
+			target.draw(*w, states);
 		}
 	}
-
-	// to be added in the future
-	/*void Window::organize()
-	{
-		if(org == Custom)
-			return;
-
-		if(org == Horizontal)
-		{
-			for(unsigned i = 0; i < children.size(); i++)
-			{
-				children[i]->getGlobalBounds().width
-			}
-		}
-		else
-		{
-
-		}
-	}*/
 }
