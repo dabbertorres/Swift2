@@ -3,8 +3,7 @@
 namespace swift
 {
 	Collidable::Collidable(const sf::Sprite& sprite, unsigned t)
-		:	Component(), 
-			bounds(sprite.getGlobalBounds())
+		:	bounds(sprite.getGlobalBounds())
 	{
 		sf::Vector2f center = {bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f};
 		radius = std::sqrt((bounds.left + center.x) * (bounds.left + center.x) +

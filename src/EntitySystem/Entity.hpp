@@ -1,8 +1,6 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-#include "Component.hpp"
-
 namespace swift
 {
 	class Entity
@@ -10,9 +8,6 @@ namespace swift
 		public:
 			Entity();
 			~Entity();
-			
-			void add(Component& c);
-
 	};
 }
 

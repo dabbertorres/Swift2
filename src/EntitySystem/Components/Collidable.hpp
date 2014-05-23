@@ -1,8 +1,6 @@
 #ifndef COLLIDABLE_HPP
 #define COLLIDABLE_HPP
 
-#include "../Component.hpp"
-
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
@@ -13,7 +11,7 @@ typedef std::vector<bool> Bitmask;
 
 namespace swift
 {
-	class Collidable : public Component
+	class Collidable
 	{
 		public:
 			Collidable(const sf::Sprite& sprite, unsigned t = 128);

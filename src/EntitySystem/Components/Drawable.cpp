@@ -3,7 +3,6 @@
 namespace swift
 {
 	Drawable::Drawable(const sf::Texture& texture)
-		: Component()
 	{
 		sprite.setTexture(texture);
 	}
