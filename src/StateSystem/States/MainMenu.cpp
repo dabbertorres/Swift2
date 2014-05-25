@@ -2,7 +2,7 @@
 
 namespace swift
 {
-	MainMenu::MainMenu(sf::RenderWindow& win, AssetManager& am, sf::Font& font)
+	MainMenu::MainMenu(sf::RenderWindow& win, AssetManager& am)
 		:	State(win, am)
 	{
 		keyboard.newBinding("up", sf::Keyboard::W, []()
@@ -24,6 +24,8 @@ namespace swift
 		{
 			std::clog << "\'Down\' was pressed!\n";
 		});
+		
+		returnType = State::Type::MainMenu;
 	}
 
 	MainMenu::~MainMenu()
@@ -39,32 +41,58 @@ namespace swift
 			s->start();
 		}
 		
-		int startButtonX = 0;
-		int startButtonY = 0;
-		int startButtonW = 0;
-		int startButtonH = 0;
-		std::string startButtonStr = "";
-		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonX", startButtonX);
-		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonY", startButtonY);
-		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonW", startButtonW);
-		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonH", startButtonH);
-		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonStr", startButtonStr);
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			std::string str = "";
+		} startButtonData;
 		
-		cstr::Button& startButton = gui.addButton({startButtonX, startButtonY, startButtonW, startButtonH}, assets.getTexture("./data/textures/button.png"), [](){});
-		startButton.setText(startButtonStr);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonX", startButtonData.x);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonY", startButtonData.y);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonW", startButtonData.w);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonH", startButtonData.h);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("startButtonStr", startButtonData.str);
+		
+		cstr::Button& startButton = gui.addButton({startButtonData.x, startButtonData.y, startButtonData.w, startButtonData.h}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			returnType = State::Type::Play;
+		});
+		
+		startButton.setText(startButtonData.str);
 		startButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
-	}
-	
-	void MainMenu::switchTo()
-	{
 		
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			std::string str = "";
+		} exitButtonData;
+		
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("exitButtonX", exitButtonData.x);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("exitButtonY", exitButtonData.y);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("exitButtonW", exitButtonData.w);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("exitButtonH", exitButtonData.h);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("exitButtonStr", exitButtonData.str);
+		
+		cstr::Button& exitButton = gui.addButton({exitButtonData.x, exitButtonData.y, exitButtonData.w, exitButtonData.h}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			returnType = State::Type::Exit;
+		});
+		
+		exitButton.setText(exitButtonData.str);
+		exitButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
 	}
 	
 	void MainMenu::handleEvent(sf::Event &event)
 	{
+		gui.update(event);
 		keyboard(event);
 		mouse(event);
-		gui.update(event);
 	}
 	
 	void MainMenu::update(sf::Time dt)
@@ -77,13 +105,13 @@ namespace swift
 		window.draw(gui);
 	}
 	
-	State::Type MainMenu::switchFrom()
+	bool MainMenu::switchFrom()
 	{
-		return State::Type::MainMenu;
+		return returnType != State::Type::MainMenu;
 	}
 	
-	void MainMenu::finish()
+	State::Type MainMenu::finish()
 	{
-		
+		return returnType;
 	}
 }

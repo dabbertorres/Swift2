@@ -24,6 +24,8 @@ namespace swift
 		{
 			std::clog << "\'Down\' was pressed!\n";
 		});
+		
+		returnType = State::Type::Play;
 	}
 
 	Play::~Play()
@@ -32,19 +34,40 @@ namespace swift
 	
 	void Play::setup()
 	{
+		activeScripts.push_back(&assets.getScript("./data/scripts/play.lua"));
+		
 		for(auto &s : activeScripts)
 		{
 			s->start();
 		}
-	}
-	
-	void Play::switchTo()
-	{
 		
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			std::string str = "";
+		} mainMenuReturnData;
+		
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnX", mainMenuReturnData.x);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnY", mainMenuReturnData.y);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnW", mainMenuReturnData.w);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnH", mainMenuReturnData.h);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnStr", mainMenuReturnData.str);
+		
+		cstr::Button& mainMenuReturn = gui.addButton({mainMenuReturnData.x, mainMenuReturnData.y, mainMenuReturnData.w, mainMenuReturnData.h}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			returnType = State::Type::MainMenu;
+		});
+		
+		mainMenuReturn.setText(mainMenuReturnData.str);
+		mainMenuReturn.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
 	}
 			
 	void Play::handleEvent(sf::Event &event)
 	{
+		gui.update(event);
 		keyboard(event);
 		mouse(event);
 	}
@@ -56,16 +79,19 @@ namespace swift
 	
 	void Play::draw(float e)
 	{
-		
+		sf::Sprite wtf;
+		wtf.setTexture(assets.getTexture("./data/textures/wtf.gif"));
+		window.draw(wtf);
+		window.draw(gui);
 	}
 	
-	State::Type Play::switchFrom()
+	bool Play::switchFrom()
 	{
-		return State::Type::Play;
+		return returnType != State::Type::Play;
 	}
 	
-	void Play::finish()
+	State::Type Play::finish()
 	{
-		
+		return returnType;
 	}
 }

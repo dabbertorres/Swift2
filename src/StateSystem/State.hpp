@@ -25,16 +25,16 @@ namespace swift
 			enum Type
 			{
 				MainMenu,
-				Play
+				Play,
+				Exit
 			};
 			
 			virtual void setup() = 0;
-			virtual void switchTo() = 0;
 			virtual void handleEvent(sf::Event &event) = 0;
 			virtual void update(sf::Time dt) = 0;
 			virtual void draw(float e) = 0;
-			virtual Type switchFrom() = 0;
-			virtual void finish() = 0;
+			virtual bool switchFrom() = 0;
+			virtual Type finish() = 0;
 
 		protected:
 			void updateScripts();
@@ -49,6 +49,8 @@ namespace swift
 		
 			/* Scripting */
 			std::vector<Script*> activeScripts;
+			
+			Type returnType;
 	};
 }
 
