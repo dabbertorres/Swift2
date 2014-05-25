@@ -45,7 +45,7 @@ namespace swift
 							sf::Mouse::setPosition(sf::Vector2i(window.getSize().x - 1, sf::Mouse::getPosition(window).y), window);
 
 						if(mousePos.y < 0)
-							sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition(window).x, 0), window);
+							sf::Mouse::setPosition(static_cast<sf::Vector2i>(sf::Mouse::getPosition(window).x, 0), window);
 						else if(static_cast<unsigned>(mousePos.y) > window.getSize().y - 1)
 							sf::Mouse::setPosition(sf::Vector2i(sf::Mouse::getPosition(window).x, window.getSize().y - 1), window);
 
@@ -65,16 +65,16 @@ namespace swift
 			// Returns:
 			// 		true if image was loaded
 			// 		false if otherwise
-			bool loadCursor(const std::string& file, float scale)
+			bool loadCursor(const std::string& file, sf::Vector2f scale)
 			{
 				if(!cursorTexture.loadFromFile(file))
 					return false;
 
 				cursorTexture.setSmooth(true);
 				cursorSprite.setTexture(cursorTexture);
-				cursorSprite.setScale(scale, scale);
-				sf::Mouse::setPosition(sf::Vector2i(0, 0), window);
-				cursorSprite.setPosition(sf::Vector2f(sf::Mouse::getPosition(window)));
+				cursorSprite.setScale(scale);
+				sf::Mouse::setPosition({0, 0}, window);
+				cursorSprite.setPosition(static_cast<sf::Vector2f>(sf::Mouse::getPosition(window)));
 
 				drawCursor = true;
 
