@@ -93,8 +93,6 @@ namespace swift
 			unsigned warnings;
 			unsigned errors;
 	};
-	
-	//Logger log("Swift Alpha");
 }
 
 #endif // LOGGER_HPP
