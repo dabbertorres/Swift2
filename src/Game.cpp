@@ -110,6 +110,8 @@ namespace swift
 
 		// setup Script static variables
 		Script::setWindow(window);
+		Script::setAssetManager(assets);
+		Script::setClock(GameTime);
 
 		// state setup
 		currentState = new MainMenu(window, assets);

@@ -9,6 +9,7 @@ namespace swift
 	sf::RenderWindow* Script::window = nullptr;
 	AssetManager* Script::assets = nullptr;
 	cstr::Window* Script::gui = nullptr;
+	sf::Clock* Script::clock = nullptr;
 	
 	Script::Script()
 	{
@@ -27,6 +28,14 @@ namespace swift
 				return std::make_tuple(window->getSize().x, window->getSize().y);
 			else
 				return std::make_tuple(0u, 0u);
+		};
+		
+		luaState["getTime"] = [&]()
+		{
+			if(clock)
+				return clock->getElapsedTime().asSeconds();
+			else
+				return 0.f;
 		};
 	}
 
@@ -79,5 +88,10 @@ namespace swift
 	void Script::setGUI(cstr::Window& ui)
 	{
 		gui = &ui;
+	}
+	
+	void Script::setClock(sf::Clock& c)
+	{
+		clock = &c;
 	}
 }

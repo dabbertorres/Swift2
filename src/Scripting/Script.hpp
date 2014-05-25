@@ -49,20 +49,22 @@ namespace swift
 
 			template<typename T>
 			void getVariable(const std::string& name, T& value);
-
+			
+			// setters for variables that Lua has access to
 			static void setWindow(sf::RenderWindow& win);
 			static void setAssetManager(AssetManager& am);
 			static void setGUI(cstr::Window& ui);
+			static void setClock(sf::Clock& c);
 
 		private:
 			sel::State luaState;
 			bool deleteMe;
-
+			
+			// Variables that need to be accessed by Lua
 			static sf::RenderWindow* window;
 			static AssetManager* assets;
 			static cstr::Window* gui;
-			// should have a static variable for GUIs as well. Then the GUI affected can change based on state too.
-			// This will need more wrapper functions
+			static sf::Clock* clock;
 	};
 
 	template<typename T>
