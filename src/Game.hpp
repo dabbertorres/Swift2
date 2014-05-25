@@ -169,7 +169,7 @@ namespace swift
 			/* timing */
 			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
 			int framesPerSecond;	// Iterations of the GameLoop.
-			float ticksPerSecond;		// Iterations of Update
+			float ticksPerSecond;	// Iterations of Update
 
 			/* Launch Arguments */
 			bool editor;	// for running the "map" editor - not in use
