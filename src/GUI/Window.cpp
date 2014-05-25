@@ -23,9 +23,7 @@ namespace cstr
 				{
 					w->mouseMovedOff();
 					if(w->contains({event.mouseMove.x, event.mouseMove.y}))
-					{
 						activeWidget = w;
-					}
 				}
 				if(activeWidget)
 					activeWidget->mouseMovedOn();

@@ -22,6 +22,8 @@ namespace cstr
 			void setTextColor(const sf::Color& tc);
 			
 			void setColor(const sf::Color& c);
+			
+			sf::Vector2f getPosition() const;
 		
 		protected:
 			virtual bool contains(sf::Vector2i point);
@@ -33,6 +35,8 @@ namespace cstr
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+			
+			void shrinkTextToFit();
 			
 			sf::Sprite sprite;
 			sf::Color color;

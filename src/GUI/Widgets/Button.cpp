@@ -9,7 +9,7 @@ namespace cstr
 	{
 		sprite.setTexture(tex);
 		sprite.setPosition(rect.left, rect.top);
-		sprite.setScale(rect.width / tex.getSize().x, rect.height / tex.getSize().y);
+		sprite.setScale(rect.width / static_cast<float>(tex.getSize().x), rect.height / static_cast<float>(tex.getSize().y));
 		color = sf::Color(128, 128, 128);
 		sprite.setColor(color);
 		
@@ -25,6 +25,9 @@ namespace cstr
 	void Button::setFont(const sf::Font& font)
 	{
 		text.setFont(font);
+		
+		shrinkTextToFit();
+			
 		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
 		text.setPosition(	sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2,
 							sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2);
@@ -33,6 +36,9 @@ namespace cstr
 	void Button::setText(const std::string& str)
 	{
 		text.setString(str);
+		
+		shrinkTextToFit();
+			
 		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
 		text.setPosition(	sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2,
 							sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2);
@@ -47,6 +53,11 @@ namespace cstr
 	{
 		color = c;
 		sprite.setColor(color);
+	}
+	
+	sf::Vector2f Button::getPosition() const
+	{
+		return sprite.getPosition();
 	}
 	
 	bool Button::contains(sf::Vector2i point)
@@ -84,5 +95,11 @@ namespace cstr
 	{
 		target.draw(sprite, states);
 		target.draw(text, states);
+	}
+	
+	void Button::shrinkTextToFit()
+	{
+		while(text.getGlobalBounds().width >= sprite.getGlobalBounds().width)
+			text.setCharacterSize(text.getCharacterSize() - 1);
 	}
 }
