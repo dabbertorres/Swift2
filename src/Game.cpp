@@ -4,16 +4,16 @@ namespace swift
 {
 	const std::string errorLog = "./data/log.txt";
 	const std::string defaultFontFile = "./data/fonts/DejaVuSansMono.ttf";
-	
+
 	enum class GameState
 	{
-		Play,
-		MainMenu
+	    Play,
+	    MainMenu
 	};
-	
+
 	Game::Game()
 		:	logger("Alpha", errorLog),
-			console(500, 200, defaultFont, "[swift2]:")
+		    console(500, 200, defaultFont, "[swift2]:")
 	{
 		graphics = Quality::Medium;
 		smoothing = false;
@@ -31,8 +31,8 @@ namespace swift
 
 	Game::~Game()
 	{
-		delete currentState;
-		currentState = nullptr;
+		if(currentState)
+			delete currentState;
 	}
 
 	// Do any pre-game data loading
@@ -58,7 +58,7 @@ namespace swift
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
-		
+
 		assets.setSmooth(smoothing);
 		assets.loadResourceFolder("./data/fonts");
 		assets.loadResourceFolder("./data/textures");
@@ -66,9 +66,9 @@ namespace swift
 		assets.loadResourceFolder("./data/scripts");
 		assets.loadResourceFolder("./data/skeletons");
 		assets.loadResourceFolder("./data/sounds");
-		
+
 		mods.loadMods("./data/mods");
-		
+
 		for(auto &m : mods.getMods())
 		{
 			assets.loadMod(m.second.mod);
@@ -90,7 +90,7 @@ namespace swift
 		{
 			return "Hello to you too!";
 		});
-		
+
 		console.addCommand("exit", [&](ArgVec args)
 		{
 			running = false;
@@ -107,14 +107,13 @@ namespace swift
 			FPS.setString("00");
 			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 0);
 		}
-		
+
 		// setup Script static variables
 		Script::setWindow(window);
-		
-		// state setup		
-		currentState = new MainMenu(window, assets, defaultFont);
+
+		// state setup
+		currentState = new MainMenu(window, assets);
 		currentState->setup();
-		currentState->switchTo();
 	}
 
 	void Game::GameLoop()
@@ -160,36 +159,60 @@ namespace swift
 
 			if(event.type == sf::Event::Closed)
 				running = false;
-				
+
 			currentState->handleEvent(event);
 		}
-			
+
 		if(debug)
 			FPS.setString(std::to_string(1 / dt.asSeconds()).substr(0, 2));
-		
+
 		currentState->update(dt);
+		manageStates();
 	}
-	
+
 	void Game::manageStates()
 	{
-		
+		if(currentState->switchFrom())
+		{
+			State::Type nextState = currentState->finish();
+			delete currentState;
+			currentState = nullptr;
+
+			switch(nextState)
+			{
+				case State::Type::MainMenu:
+					currentState = new MainMenu(window, assets);
+					currentState->setup();
+					break;
+				case State::Type::Play:
+					currentState = new Play(window, assets);
+					currentState->setup();
+					break;
+				case State::Type::Exit:
+					running = false;
+					break;
+			}
+		}
 	}
 
 	void Game::Draw(float e)
 	{
-		/* clear display */
-		window.clear();
+		if(running)
+		{
+			/* clear display */
+			window.clear();
 
-		/* state drawing */
-		currentState->draw(e);
+			/* state drawing */
+			currentState->draw(e);
 
-		/* other drawing */
-		window.draw(console);
-		if(debug)
-			window.draw(FPS);
+			/* other drawing */
+			window.draw(console);
+			if(debug)
+				window.draw(FPS);
 
-		/* display drawing */
-		window.display();
+			/* display drawing */
+			window.display();
+		}
 	}
 
 	// Finish cleaning up memory, close cleanly, etc
