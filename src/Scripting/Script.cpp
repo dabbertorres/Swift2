@@ -1,11 +1,14 @@
 #include "Script.hpp"
 
+#include "../ResourceManager/AssetManager.hpp"
 #include "../GUI/Widgets/Button.hpp"
 #include "../GUI/Widgets/Label.hpp"
 
 namespace swift
 {
 	sf::RenderWindow* Script::window = nullptr;
+	AssetManager* Script::assets = nullptr;
+	cstr::Window* Script::gui = nullptr;
 	
 	Script::Script()
 	{
@@ -66,5 +69,15 @@ namespace swift
 	void Script::setWindow(sf::RenderWindow& win)
 	{
 		window = &win;
+	}
+	
+	void Script::setAssetManager(AssetManager& am)
+	{
+		assets = &am;
+	}
+	
+	void Script::setGUI(cstr::Window& ui)
+	{
+		gui = &ui;
 	}
 }
