@@ -5,12 +5,6 @@ namespace swift
 	const std::string errorLog = "./data/log.txt";
 	const std::string defaultFontFile = "./data/fonts/DejaVuSansMono.ttf";
 
-	enum class GameState
-	{
-	    Play,
-	    MainMenu
-	};
-
 	Game::Game()
 		:	logger("Alpha", errorLog),
 		    console(500, 200, defaultFont, "[swift2]:")
@@ -202,7 +196,7 @@ namespace swift
 		if(running)
 		{
 			/* clear display */
-			window.clear();
+			window.clear(sf::Color::White);
 
 			/* state drawing */
 			currentState->draw(e);
