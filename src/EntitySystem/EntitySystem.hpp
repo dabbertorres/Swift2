@@ -3,7 +3,7 @@
 
 #include "Entity.hpp"
 
-#include <map>
+#include <vector>
 #include <string>
 
 namespace swift
@@ -15,13 +15,12 @@ namespace swift
 			~EntitySystem();
 
 			Entity& create();
-			bool has(unsigned id);
+			unsigned getSize() const;
 			
-			Entity& get(unsigned id);
-			std::map<unsigned, Entity>& getEntities();
+			std::vector<Entity*>& getEntities();
 			
 		private:
-			std::map<unsigned, Entity> entities;
+			std::vector<Entity*> entities;
 	};
 }
 

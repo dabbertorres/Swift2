@@ -1,10 +1,11 @@
 #include "Physical.hpp"
 
 namespace swift
-{
+{	
 	float Physical::gravity = -10;
 	
 	Physical::Physical()
+		: Component(9123)
 	{
 	}
 

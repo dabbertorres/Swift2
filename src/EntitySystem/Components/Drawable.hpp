@@ -1,6 +1,8 @@
 #ifndef DRAWABLE_HPP
 #define DRAWABLE_HPP
 
+#include "../Component.hpp"
+
 #include <SFML/Graphics/Drawable.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
@@ -9,14 +11,16 @@
 
 namespace swift
 {
-	class Drawable : public sf::Drawable
+	class Drawable : public Component, public sf::Drawable
 	{
 		public:
 			Drawable(const sf::Texture& texture);
 			~Drawable();
+			
+			const sf::Sprite& getSprite() const;
 
 		private:
-			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
 			sf::Sprite sprite;
 	};

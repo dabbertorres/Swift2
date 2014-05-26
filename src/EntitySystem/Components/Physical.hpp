@@ -1,11 +1,13 @@
 #ifndef PHYSICAL_HPP
 #define PHYSICAL_HPP
 
+#include "../Component.hpp"
+
 #include <SFML/System/Vector2.hpp>
 
 namespace swift
 {
-	class Physical
+	class Physical : public Component
 	{
 		public:
 			Physical();

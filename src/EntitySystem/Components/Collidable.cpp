@@ -2,14 +2,14 @@
 
 namespace swift
 {
-	Collidable::Collidable(const sf::Sprite& sprite, unsigned t)
-		:	bounds(sprite.getGlobalBounds())
+	Collidable::Collidable(const sf::Sprite& sprite/*, const Bitmask& btm*/)
+		:	Component(8472),
+			bounds(sprite.getGlobalBounds())
+			//bitmask(btm)
 	{
 		sf::Vector2f center = {bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f};
 		radius = std::sqrt((bounds.left + center.x) * (bounds.left + center.x) +
 		                   (bounds.top + center.y) * (bounds.top + center.y));
-
-		makeBitmask(*sprite.getTexture(), t);
 	}
 
 	Collidable::~Collidable()
@@ -27,7 +27,7 @@ namespace swift
 			if(one.getBounds().intersects(two.getBounds(), intersection))
 			{				
 				// pixel perfect test
-				for(int i = intersection.top; i < intersection.top + intersection.height; i++)
+				/*for(int i = intersection.top; i < intersection.top + intersection.height; i++)
 				{
 					for(int j = intersection.left; j < intersection.left + intersection.width; j++)
 					{
@@ -36,7 +36,8 @@ namespace swift
 							two.getBitmask()[(i - two.getPosition().x) * two.getBounds().width + (j - two.getPosition().y)])
 							return true;
 					}
-				}
+				}*/
+				return true;
 			}
 		}
 
@@ -58,15 +59,17 @@ namespace swift
 		return radius;
 	}
 
-	const Bitmask& Collidable::getBitmask() const
+	/*const Bitmask& Collidable::getBitmask() const
 	{
 		return bitmask;
-	}
+	}*/
 
-	void Collidable::makeBitmask(const sf::Texture& texture, unsigned threshold = 128)
+	/*Bitmask Collidable::makeBitmask(const sf::Texture& texture, unsigned threshold)
 	{
 		sf::Image image = texture.copyToImage();
-
+		
+		Bitmask bitmask;
+		
 		// reserve memory for the bitmask
 		bitmask.resize(image.getSize().x * image.getSize().y);
 
@@ -78,5 +81,7 @@ namespace swift
 				bitmask[i * image.getSize().x + j] = image.getPixel(j, i).a >= threshold;
 			}
 		}
-	}
+		
+		return bitmask;
+	}*/
 }

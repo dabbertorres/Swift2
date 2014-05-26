@@ -1,20 +1,22 @@
 #ifndef COLLIDABLE_HPP
 #define COLLIDABLE_HPP
 
+#include "../Component.hpp"
+
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Image.hpp>
 
 #include <vector>
 
-typedef std::vector<bool> Bitmask;
+//typedef std::vector<bool> Bitmask;
 
 namespace swift
 {
-	class Collidable
+	class Collidable : public Component
 	{
 		public:
-			Collidable(const sf::Sprite& sprite, unsigned t = 128);
+			Collidable(const sf::Sprite& sprite/*, const Bitmask& btm*/);
 			~Collidable();
 			
 			static bool collision(const Collidable& one, const Collidable& two);
@@ -25,17 +27,17 @@ namespace swift
 			
 			float getRadius() const;
 			
-			const Bitmask& getBitmask() const;
-
-		private:
+			//const Bitmask& getBitmask() const;
+			
 			// the texture to create a bitmask from, and the alpha threshold, below which is considered transparent
 			// "SLOW"!!! As in, do this during a loading state, not during game play
-			void makeBitmask(const sf::Texture& texture, unsigned threshold);
+			//static Bitmask makeBitmask(const sf::Texture& texture, unsigned threshold = 128);
 			
+		private:
 			// reference, so the position updates as the sprite's position updates
 			const sf::FloatRect& bounds;
 			float radius;	// length from center to top left corner
-			Bitmask bitmask;
+			//const Bitmask& bitmask;
 	};
 }
 
