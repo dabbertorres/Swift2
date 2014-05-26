@@ -6,6 +6,9 @@
 /* GUI headers */
 #include "../../GUI/Window.hpp"
 
+/* Entities */
+#include "../../EntitySystem/Entities/Player.hpp"
+
 namespace swift
 {
 	class Play : public State

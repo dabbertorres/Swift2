@@ -79,9 +79,9 @@ namespace swift
 	
 	void Play::draw(float e)
 	{
-		sf::Sprite wtf;
-		wtf.setTexture(assets.getTexture("./data/textures/wtf.gif"));
-		window.draw(wtf);
+		Player player(assets.getTexture("./data/textures/wtf.png"));
+		
+		window.draw(player);
 		window.draw(gui);
 	}
 	
