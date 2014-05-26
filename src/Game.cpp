@@ -3,7 +3,6 @@
 namespace swift
 {
 	const std::string errorLog = "./data/log.txt";
-	const std::string defaultFontFile = "./data/fonts/DejaVuSansMono.ttf";
 
 	Game::Game()
 		:	logger("Alpha", errorLog),
@@ -19,8 +18,6 @@ namespace swift
 
 		// engine integral settings
 		ticksPerSecond = 60;
-
-		defaultFont.loadFromFile(defaultFontFile);
 	}
 
 	Game::~Game()
