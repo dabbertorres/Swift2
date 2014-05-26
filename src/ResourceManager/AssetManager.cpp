@@ -111,6 +111,11 @@ namespace swift
 		return *textures.find(n)->second;
 	}
 	
+	/*Bitmask& AssetManager::getBitmask(const std::string& n)
+	{
+		return *bitmasks.find(n)->second;
+	}*/
+	
 	/*Skeleton& AssetManager::getSkeleton(const std::string& n)
 	{
 		return *skeletons.find(n)->second;
