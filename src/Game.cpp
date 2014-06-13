@@ -176,6 +176,10 @@ namespace swift
 					currentState = new MainMenu(window, assets);
 					currentState->setup();
 					break;
+				case State::Type::SettingsMenu:
+					currentState = new SettingsMenu(window, assets);
+					currentState->setup();
+					break;
 				case State::Type::Play:
 					currentState = new Play(window, assets);
 					currentState->setup();

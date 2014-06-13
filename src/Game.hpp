@@ -49,6 +49,7 @@
 #include "StateSystem/State.hpp"
 #include "StateSystem/States/Play.hpp"
 #include "StateSystem/States/MainMenu.hpp"
+#include "StateSystem/States/SettingsMenu.hpp"
 
 /* Lua headers */
 #include "Scripting/Script.hpp"

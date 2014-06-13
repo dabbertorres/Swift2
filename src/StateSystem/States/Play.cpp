@@ -16,6 +16,7 @@ namespace swift
 		});
 		
 		Player& player = playerFactory.create();
+		player.setPosition({window.getSize().x / 2.f, window.getSize().y / 2.f});
 		
 		keyboard.newBinding("UpStart", sf::Keyboard::Up, [&]()
 		{
@@ -67,28 +68,7 @@ namespace swift
 			s->start();
 		}
 		
-		struct
-		{
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			std::string str = "";
-		} mainMenuReturnData;
-		
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnX", mainMenuReturnData.x);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnY", mainMenuReturnData.y);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnW", mainMenuReturnData.w);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnH", mainMenuReturnData.h);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnStr", mainMenuReturnData.str);
-		
-		cstr::Button& mainMenuReturn = gui.addButton({mainMenuReturnData.x, mainMenuReturnData.y, mainMenuReturnData.w, mainMenuReturnData.h}, assets.getTexture("./data/textures/button.png"), [&]()
-		{
-			returnType = State::Type::MainMenu;
-		});
-		
-		mainMenuReturn.setText(mainMenuReturnData.str);
-		mainMenuReturn.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
+		setupButtons();
 	}
 	
 	void Play::handleEvent(sf::Event &event)
@@ -126,5 +106,36 @@ namespace swift
 	State::Type Play::finish()
 	{
 		return returnType;
+	}
+	
+	void Play::setupButtons()
+	{
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			std::string str = "";
+		} mainMenuReturnData;
+		
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnX", mainMenuReturnData.x);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnY", mainMenuReturnData.y);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnW", mainMenuReturnData.w);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnH", mainMenuReturnData.h);
+		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnStr", mainMenuReturnData.str);
+		
+		cstr::Button& mainMenuReturn = gui.addButton({mainMenuReturnData.x, mainMenuReturnData.y, mainMenuReturnData.w, mainMenuReturnData.h}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			returnType = State::Type::MainMenu;
+		});
+		
+		mainMenuReturn.setText(mainMenuReturnData.str);
+		mainMenuReturn.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
+	}
+	
+	void Play::setupKeyBindings()
+	{
+		
 	}
 }

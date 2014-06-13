@@ -27,8 +27,11 @@ namespace swift
 			virtual Type finish();
 
 		private:
+			void setupButtons();
+			void setupKeyBindings();
+
 			cstr::Window gui;
-			
+
 			Factory<Player> playerFactory;
 	};
 }

@@ -4,27 +4,7 @@ namespace swift
 {
 	MainMenu::MainMenu(sf::RenderWindow& win, AssetManager& am)
 		:	State(win, am)
-	{
-		keyboard.newBinding("up", sf::Keyboard::W, []()
-		{
-			std::clog << "\'Up\' was pressed!\n";
-		});
-		
-		keyboard.newBinding("left", sf::Keyboard::A, []()
-		{
-			std::clog << "\'Left\' was pressed!\n";
-		});
-		
-		keyboard.newBinding("right", sf::Keyboard::D, []()
-		{
-			std::clog << "\'Right\' was pressed!\n";
-		});
-		
-		keyboard.newBinding("down", sf::Keyboard::S, []()
-		{
-			std::clog << "\'Down\' was pressed!\n";
-		});
-		
+	{		
 		returnType = State::Type::MainMenu;
 	}
 
@@ -41,6 +21,38 @@ namespace swift
 			s->start();
 		}
 		
+		setupButtons();
+	}
+	
+	void MainMenu::handleEvent(sf::Event &event)
+	{
+		gui.update(event);
+		keyboard(event);
+		mouse(event);
+	}
+	
+	void MainMenu::update(sf::Time /*dt*/)
+	{
+		updateScripts();
+	}
+	
+	void MainMenu::draw(float /*e*/)
+	{
+		window.draw(gui);
+	}
+	
+	bool MainMenu::switchFrom()
+	{
+		return returnType != State::Type::MainMenu;
+	}
+	
+	State::Type MainMenu::finish()
+	{
+		return returnType;
+	}
+	
+	void MainMenu::setupButtons()
+	{
 		struct
 		{
 			int x = 0;
@@ -71,6 +83,29 @@ namespace swift
 			int w = 0;
 			int h = 0;
 			std::string str = "";
+		} settingsButtonData;
+		
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("settingsButtonX", settingsButtonData.x);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("settingsButtonY", settingsButtonData.y);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("settingsButtonW", settingsButtonData.w);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("settingsButtonH", settingsButtonData.h);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("settingsButtonStr", settingsButtonData.str);
+		
+		cstr::Button& settingsButton = gui.addButton({settingsButtonData.x, settingsButtonData.y, settingsButtonData.w, settingsButtonData.h}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			returnType = State::Type::SettingsMenu;
+		});
+		
+		settingsButton.setText(settingsButtonData.str);
+		settingsButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
+		
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			std::string str = "";
 		} exitButtonData;
 		
 		assets.getScript("./data/scripts/mainMenu.lua").getVariable("exitButtonX", exitButtonData.x);
@@ -86,32 +121,5 @@ namespace swift
 		
 		exitButton.setText(exitButtonData.str);
 		exitButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
-	}
-	
-	void MainMenu::handleEvent(sf::Event &event)
-	{
-		gui.update(event);
-		keyboard(event);
-		mouse(event);
-	}
-	
-	void MainMenu::update(sf::Time dt)
-	{
-		updateScripts();
-	}
-	
-	void MainMenu::draw(float e)
-	{
-		window.draw(gui);
-	}
-	
-	bool MainMenu::switchFrom()
-	{
-		return returnType != State::Type::MainMenu;
-	}
-	
-	State::Type MainMenu::finish()
-	{
-		return returnType;
 	}
 }

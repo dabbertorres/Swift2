@@ -10,7 +10,7 @@ namespace cstr
 		sprite.setTexture(tex);
 		sprite.setPosition(rect.left, rect.top);
 		sprite.setScale(rect.width / static_cast<float>(tex.getSize().x), rect.height / static_cast<float>(tex.getSize().y));
-		color = sf::Color(128, 128, 128);
+		color = {128, 128, 128};
 		sprite.setColor(color);
 		
 		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
