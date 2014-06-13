@@ -25,6 +25,7 @@ namespace swift
 			enum Type
 			{
 				MainMenu,
+				SettingsMenu,
 				Play,
 				Exit
 			};
