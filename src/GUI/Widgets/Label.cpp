@@ -35,7 +35,7 @@ namespace cstr
 		text.setColor(tc);
 	}
 	
-	bool Label::contains(sf::Vector2i point)
+	bool Label::contains(sf::Vector2i /*point*/)
 	{
 		return false;
 	}
@@ -60,7 +60,7 @@ namespace cstr
 		
 	}
 	
-	void Label::textEntered(char c)
+	void Label::textEntered(char /*c*/)
 	{
 		
 	}

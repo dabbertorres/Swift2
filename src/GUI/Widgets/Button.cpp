@@ -86,7 +86,7 @@ namespace cstr
 		sprite.setColor(color);
 	}
 	
-	void Button::textEntered(char c)
+	void Button::textEntered(char /*c*/)
 	{
 		// do nothing
 	}
@@ -99,7 +99,8 @@ namespace cstr
 	
 	void Button::shrinkTextToFit()
 	{
-		while(text.getGlobalBounds().width >= sprite.getGlobalBounds().width)
+		// the 2 here is a border
+		while(text.getGlobalBounds().width >= sprite.getGlobalBounds().width - 2)
 			text.setCharacterSize(text.getCharacterSize() - 1);
 	}
 }
