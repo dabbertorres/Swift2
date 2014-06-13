@@ -64,6 +64,8 @@ namespace swift
 		{
 			assets.loadMod(m.second.mod);
 		}
+		
+		defaultFont = assets.getFont("./data/fonts/DroidSansMono.ttf");
 
 		// add some default keybindings
 		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
@@ -71,18 +73,13 @@ namespace swift
 			console.activate(!console.isActivated());
 		});
 
-		keyboard.newBinding("exit", sf::Keyboard::Escape, [&]()
-		{
-			running = false;
-		});
-
 		// add some console commands
-		console.addCommand("hello", [](ArgVec args)
+		console.addCommand("hello", [](ArgVec /*args*/)
 		{
 			return "Hello to you too!";
 		});
 
-		console.addCommand("exit", [&](ArgVec args)
+		console.addCommand("exit", [&](ArgVec /*args*/)
 		{
 			running = false;
 			return "Exiting";
@@ -95,8 +92,10 @@ namespace swift
 		{
 			FPS.setFont(defaultFont);
 			FPS.setScale(0.7, 0.7);
-			FPS.setString("00");
-			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 0);
+			FPS.setString("000.000");
+			FPS.setColor(sf::Color::White);
+			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 10);
+			std::cerr << FPS.getPosition().x << ' ' << FPS.getPosition().y << '\n';
 		}
 
 		// setup Script static variables
@@ -157,7 +156,7 @@ namespace swift
 		}
 
 		if(debug)
-			FPS.setString(std::to_string(1 / dt.asSeconds()).substr(0, 2));
+			FPS.setString(std::to_string(1 / dt.asSeconds()).substr(0, 7));
 
 		currentState->update(dt);
 		manageStates();
@@ -193,7 +192,7 @@ namespace swift
 		if(running)
 		{
 			/* clear display */
-			window.clear(sf::Color::White);
+			window.clear();
 
 			/* state drawing */
 			currentState->draw(e);
@@ -245,7 +244,7 @@ namespace swift
 			}
 			else if(args[arg] == std::string("videoModes"))
 			{
-				logger << Logger::LogType::INFO << "Supported Fullscreen Video Modes:";
+				logger << Logger::LogType::INFO << "Supported Fullscreen Video Modes:\n";
 
 				std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
 				for(std::size_t i = 0; i < modes.size(); ++i)
@@ -253,7 +252,7 @@ namespace swift
 					sf::VideoMode mode = modes[i];
 					logger 	<< Logger::LogType::INFO
 					        << "Mode #" + std::to_string(i) + ": " + std::to_string(mode.width) + "x" + std::to_string(mode.height)
-					        + " - " + std::to_string(mode.bitsPerPixel) + " bpp";
+					        + " - " + std::to_string(mode.bitsPerPixel) + " bpp\n";
 					// ex: "Mode #0: 1920x1080 - 32 bbp"
 				}
 			}
