@@ -6,7 +6,9 @@
 /* GUI headers */
 #include "../../GUI/Window.hpp"
 
-/* Entities */
+/* Entity System */
+#include "../../EntitySystem/Factory.hpp"
+#include "../../EntitySystem/Entity.hpp"
 #include "../../EntitySystem/Entities/Player.hpp"
 
 namespace swift
@@ -26,6 +28,8 @@ namespace swift
 
 		private:
 			cstr::Window gui;
+			
+			Factory<Player> playerFactory;
 	};
 }
 

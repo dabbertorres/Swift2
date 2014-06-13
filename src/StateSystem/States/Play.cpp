@@ -2,30 +2,56 @@
 
 namespace swift
 {
+	const float PLAYER_MOVE_FORCE = 2000;
+	
 	Play::Play(sf::RenderWindow& win, AssetManager& am)
-		: State(win, am)
-	{
-		keyboard.newBinding("up", sf::Keyboard::W, []()
-		{
-			std::clog << "\'Up\' was pressed!\n";
-		});
-		
-		keyboard.newBinding("left", sf::Keyboard::A, []()
-		{
-			std::clog << "\'Left\' was pressed!\n";
-		});
-		
-		keyboard.newBinding("right", sf::Keyboard::D, []()
-		{
-			std::clog << "\'Right\' was pressed!\n";
-		});
-		
-		keyboard.newBinding("down", sf::Keyboard::S, []()
-		{
-			std::clog << "\'Down\' was pressed!\n";
-		});
-		
+		:	State(win, am)
+	{		
 		returnType = State::Type::Play;
+		
+		playerFactory.setConstruction([&](Player& p)
+		{
+			p.setTexture(assets.getTexture("./data/textures/ship.png"));
+			p.setMass(1);
+		});
+		
+		Player& player = playerFactory.create();
+		
+		keyboard.newBinding("UpStart", sf::Keyboard::Up, [&]()
+		{
+			player.addForce({0, -PLAYER_MOVE_FORCE});
+		}, true);
+		keyboard.newBinding("UpStop", sf::Keyboard::Up, [&]()
+		{
+			player.addForce({0, PLAYER_MOVE_FORCE});
+		}, false);
+		
+		keyboard.newBinding("LeftStart", sf::Keyboard::Left, [&]()
+		{
+			player.addForce({-PLAYER_MOVE_FORCE, 0});
+		}, true);
+		keyboard.newBinding("LeftStop", sf::Keyboard::Left, [&]()
+		{
+			player.addForce({PLAYER_MOVE_FORCE, 0});
+		}, false);
+		
+		keyboard.newBinding("DownStart", sf::Keyboard::Down, [&]()
+		{
+			player.addForce({0, PLAYER_MOVE_FORCE});
+		}, true);
+		keyboard.newBinding("DownStop", sf::Keyboard::Down, [&]()
+		{
+			player.addForce({0, -PLAYER_MOVE_FORCE});
+		}, false);
+		
+		keyboard.newBinding("RightStart", sf::Keyboard::Right, [&]()
+		{
+			player.addForce({PLAYER_MOVE_FORCE, 0});
+		}, true);
+		keyboard.newBinding("RightStop", sf::Keyboard::Right, [&]()
+		{
+			player.addForce({-PLAYER_MOVE_FORCE, 0});
+		}, false);
 	}
 
 	Play::~Play()
@@ -64,7 +90,7 @@ namespace swift
 		mainMenuReturn.setText(mainMenuReturnData.str);
 		mainMenuReturn.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
 	}
-			
+	
 	void Play::handleEvent(sf::Event &event)
 	{
 		gui.update(event);
@@ -75,13 +101,20 @@ namespace swift
 	void Play::update(sf::Time dt)
 	{
 		updateScripts();
+		
+		for(auto p : playerFactory.getEntities())
+		{
+			p->update(dt.asSeconds());
+		}
 	}
 	
-	void Play::draw(float e)
+	void Play::draw(float /*e*/)
 	{
-		Player player(assets.getTexture("./data/textures/wtf.png"));
+		for(auto p : playerFactory.getEntities())
+		{
+			window.draw(*p);
+		}
 		
-		window.draw(player);
 		window.draw(gui);
 	}
 	
