@@ -2,29 +2,29 @@
 
 namespace swift
 {
-	Collidable::Collidable(const sf::Sprite& sprite/*, const Bitmask& btm*/)
-		:	Component(8472),
-			bounds(sprite.getGlobalBounds())
-			//bitmask(btm)
+	Collidable::Collidable(/*const Bitmask& btm*/)
+				:	Component(Component::Type::Collidable)
+//				bounds(sprite.getGlobalBounds())//,
+				//bitmask(btm)
 	{
-		sf::Vector2f center = {bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f};
-		radius = std::sqrt((bounds.left + center.x) * (bounds.left + center.x) +
-		                   (bounds.top + center.y) * (bounds.top + center.y));
+		//sf::Vector2f center = {bounds.left + bounds.width / 2.f, bounds.top + bounds.height / 2.f};
+		//radius = std::sqrt((bounds.left + center.x) * (bounds.left + center.x) +
+		//                   (bounds.top + center.y) * (bounds.top + center.y));
 	}
 
 	Collidable::~Collidable()
 	{
 	}
 
-	bool Collidable::collision(const Collidable& one, const Collidable& two)
+	bool Collidable::collision(const Collidable& /*one*/, const Collidable& /*two*/)
 	{
 		// circle collision test
-		sf::Vector2f distance = one.getPosition() - two.getPosition();
-		if((distance.x * distance.x) + (distance.y * distance.y) <= (one.getRadius() + one.getRadius()) * (two.getRadius() * two.getRadius()))
+		//sf::Vector2f distance = sf::Vector2f(one.getBounds().left, one.getBounds().top) - sf::Vector2f(two.getBounds().left, two.getBounds().top);
+		//if((distance.x * distance.x) + (distance.y * distance.y) <= (one.getRadius() + one.getRadius()) * (two.getRadius() * two.getRadius()))
 		{
 			// rectangle test
-			sf::FloatRect intersection;
-			if(one.getBounds().intersects(two.getBounds(), intersection))
+			//sf::FloatRect intersection;
+			//if(one.getBounds().intersects(two.getBounds(), intersection))
 			{				
 				// pixel perfect test
 				/*for(int i = intersection.top; i < intersection.top + intersection.height; i++)
@@ -44,15 +44,10 @@ namespace swift
 		return false;
 	}
 
-	sf::Vector2f Collidable::getPosition() const
-	{
-		return {bounds.left, bounds.top};
-	}
-
-	sf::FloatRect Collidable::getBounds() const
+	/*sf::FloatRect Collidable::getBounds() const
 	{
 		return bounds;
-	}
+	}*/
 
 	float Collidable::getRadius() const
 	{

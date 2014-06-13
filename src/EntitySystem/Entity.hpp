@@ -1,8 +1,8 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-#include <vector>
-#include "Component.hpp"
+#include <cassert>
+#include <map>
 
 namespace swift
 {
@@ -10,14 +10,7 @@ namespace swift
 	{
 		public:
 			Entity();
-			~Entity();
-			
-			bool has(unsigned id);
-			
-			void addID(unsigned id);
-
-		private:
-			std::vector<unsigned> components;
+			virtual ~Entity();
 	};
 }
 

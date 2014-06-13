@@ -1,7 +1,7 @@
 #ifndef COLLIDABLE_HPP
 #define COLLIDABLE_HPP
 
-#include "../Component.hpp"
+#include "../Entity.hpp"
 
 #include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Texture.hpp>
@@ -13,17 +13,15 @@
 
 namespace swift
 {
-	class Collidable : public Component
+	class Collidable
 	{
 		public:
-			Collidable(const sf::Sprite& sprite/*, const Bitmask& btm*/);
+			Collidable(/*const Bitmask& btm*/);
 			~Collidable();
 			
 			static bool collision(const Collidable& one, const Collidable& two);
 			
-			sf::Vector2f getPosition() const;
-			
-			sf::FloatRect getBounds() const;
+			//sf::FloatRect getBounds() const;
 			
 			float getRadius() const;
 			
@@ -35,7 +33,7 @@ namespace swift
 			
 		private:
 			// reference, so the position updates as the sprite's position updates
-			const sf::FloatRect& bounds;
+			//const sf::FloatRect& bounds;
 			float radius;	// length from center to top left corner
 			//const Bitmask& bitmask;
 	};

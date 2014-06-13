@@ -1,19 +1,42 @@
 #ifndef PLAYER_HPP
 #define PLAYER_HPP
 
-#include "../Entity.hpp"
-#include "../Components/Physical.hpp"
-#include "../Components/Drawable.hpp"
-#include "../Components/Collidable.hpp"
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
 namespace swift
 {
-	class Player : public Entity, public Physical, public Drawable, public Collidable
+	class Player : public sf::Drawable
 	{
 		public:
-			Player(const sf::Texture& tex/*, const Bitmask& btm*/);
+			Player();
 			~Player();
+			
+			void update(float dt);
+			
+			void setTexture(const sf::Texture& texture);
+			void setMass(float m);
+			
+			void addForce(sf::Vector2f n);
+			
+			sf::Vector2f getPosition() const;
+			void setPosition(const sf::Vector2f& pos);
 
+		private:
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+			sf::Sprite sprite;
+			
+			float mass;
+			
+			sf::Vector2f acceleration;
+			
+			sf::Vector2f velocity;
+			
+			sf::Vector2f position;
 	};
 }
 
