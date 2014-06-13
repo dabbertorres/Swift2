@@ -60,6 +60,13 @@ namespace cstr
 		return *label;
 	}
 	
+	Toggle& Window::addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s)
+	{
+		Toggle* toggle = new Toggle(rect, off, on, s);
+		widgets.push_back(std::move(toggle));
+		return *toggle;
+	}
+	
 	void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		for(auto w : widgets)

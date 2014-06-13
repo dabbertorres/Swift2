@@ -15,6 +15,7 @@
 #include "Widget.hpp"
 #include "Widgets/Button.hpp"
 #include "Widgets/Label.hpp"
+#include "Widgets/Toggle.hpp"
 
 namespace cstr
 {
@@ -28,6 +29,7 @@ namespace cstr
 			
 			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			Label& addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font);
+			Toggle& addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
 
 		private:
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
