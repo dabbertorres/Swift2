@@ -1,5 +1,7 @@
 #include "Game.hpp"
 
+#include "SystemInfo/SystemInfo.hpp"
+
 namespace swift
 {
 	const std::string errorLog = "./data/log.txt";
@@ -45,7 +47,17 @@ namespace swift
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Fullscreen, contextSettings);
 		else
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
-
+		
+		// get System Info
+		logger	<< "OS:\t\t" << getOSName() << '\n'
+				<< "Version:\t" << getOSVersion() << '\n'
+				<< "Arch:\t\t" << getOSArch() << '\n'
+				<< "Total Mem:\t" << getTotalMem() << '\n'
+				<< "CPU:\t\t" << getCPUModel() << '\n'
+				<< "Video Vendor:\t" << getVideoVendor() << '\n'
+				<< "Video Card:\t" << getVideoCard() << '\n'
+				<< "Video Driver:\t" << getVideoDriver() << '\n';
+		
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
