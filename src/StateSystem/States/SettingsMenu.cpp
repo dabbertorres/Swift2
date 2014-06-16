@@ -16,7 +16,7 @@ namespace swift
 	{
 		activeScripts.push_back(&assets.getScript("./data/scripts/settingsMenu.lua"));
 		
-		for(auto &s : activeScripts)
+		for(auto& s : activeScripts)
 		{
 			s->start();
 		}
