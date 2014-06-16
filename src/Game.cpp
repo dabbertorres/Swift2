@@ -189,7 +189,7 @@ namespace swift
 					currentState->setup();
 					break;
 				case State::Type::SettingsMenu:
-					currentState = new SettingsMenu(window, assets);
+					currentState = new SettingsMenu(window, assets, settings);
 					currentState->setup();
 					break;
 				case State::Type::Play:
