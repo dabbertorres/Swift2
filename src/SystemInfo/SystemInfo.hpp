@@ -1,4 +1,11 @@
+#ifdef __linux__
 #include <sys/utsname.h>
+#elif _WIN32
+#include <windows.h>
+#elif _OSX
+//some OSX header
+#endif
+
 #include <iostream>
 #include <fstream>
 #include <string>
@@ -73,7 +80,14 @@ namespace swift
 		
 		return totalMemStr.substr(totalMemStr.find_first_of("012345689"), totalMemStr.find_last_of(' '));
 		#elif _WIN32
-		// get windows info
+		MEMORYSTATUSEX statex;
+		
+		statex.dwLength = sizeof(statex);
+		
+		GlobalMemoryStatusEx(&statex);
+		
+		return std::string(statex.ullTotalPhys / 1024);	// convert to kB from B
+		
 		#elif _OSX
 		// get OSX info
 		#endif
@@ -95,7 +109,11 @@ namespace swift
 		
 		return cpuModel.substr(cpuModel.find_first_of(':') + 2);
 		#elif _WIN32
-		// get windows info
+		SYSTEM_INFO siSysInfo;
+		
+		GetSystemInfo(&siSysInfo);
+		
+		return siSysInfo.dwProcessorType;
 		#elif _OSX
 		// get OSX info
 		#endif
