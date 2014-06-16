@@ -3,12 +3,14 @@
 
 #include "../State.hpp"
 
+#include "../../Settings/Settings.hpp"
+
 namespace swift
 {
 	class SettingsMenu : public State
 	{
 		public:
-			SettingsMenu(sf::RenderWindow& win, AssetManager& am);
+			SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& s);
 			~SettingsMenu();
 			
 			virtual void setup();
@@ -22,6 +24,8 @@ namespace swift
 			void setupButtons();
 			
 			cstr::Window gui;
+			
+			Settings& settings;
 	};
 }
 
