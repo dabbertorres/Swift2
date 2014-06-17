@@ -32,6 +32,11 @@ namespace cstr
 		text.setColor(tc);
 	}
 	
+	void Label::setCharacterSize(unsigned size)
+	{
+		text.setCharacterSize(size);
+	}
+	
 	bool Label::contains(sf::Vector2i /*point*/)
 	{
 		return false;

@@ -20,6 +20,7 @@ namespace cstr
 			void setFont(const sf::Font& font);
 			void setText(const std::string& str);
 			void setTextColor(const sf::Color& tc);
+			void setCharacterSize(unsigned size);
 
 		protected:
 			virtual bool contains(sf::Vector2i point);
