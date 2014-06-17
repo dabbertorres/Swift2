@@ -20,6 +20,8 @@ namespace cstr
 				return false;
 			}
 			
+			virtual sf::FloatRect getGlobalBounds() const = 0;
+			
 		protected:
 			virtual bool contains(sf::Vector2i point) = 0;
 			virtual void mousePressed() = 0;

@@ -29,6 +29,11 @@ namespace cstr
 	{
 		state = s;
 	}
+	
+	sf::FloatRect Toggle::getGlobalBounds() const
+	{
+		return sprite.getGlobalBounds();
+	}
 
 	bool Toggle::contains(sf::Vector2i point)
 	{

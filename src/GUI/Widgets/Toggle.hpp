@@ -18,6 +18,8 @@ namespace cstr
 			virtual bool getState() const;
 			void setState(bool s);
 			
+			sf::FloatRect getGlobalBounds() const;
+			
 		protected:
 			virtual bool contains(sf::Vector2i point);
 			virtual void mousePressed();

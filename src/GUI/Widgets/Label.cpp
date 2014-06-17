@@ -37,6 +37,11 @@ namespace cstr
 		text.setCharacterSize(size);
 	}
 	
+	sf::FloatRect Label::getGlobalBounds() const
+	{
+		return text.getGlobalBounds();
+	}
+	
 	bool Label::contains(sf::Vector2i /*point*/)
 	{
 		return false;

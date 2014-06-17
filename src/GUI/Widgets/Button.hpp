@@ -23,7 +23,7 @@ namespace cstr
 			
 			void setColor(const sf::Color& c);
 			
-			sf::Vector2f getPosition() const;
+			sf::FloatRect getGlobalBounds() const;
 		
 		protected:
 			virtual bool contains(sf::Vector2i point);

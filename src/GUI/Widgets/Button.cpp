@@ -55,9 +55,9 @@ namespace cstr
 		sprite.setColor(color);
 	}
 	
-	sf::Vector2f Button::getPosition() const
+	sf::FloatRect Button::getGlobalBounds() const
 	{
-		return sprite.getPosition();
+		return sprite.getGlobalBounds();
 	}
 	
 	bool Button::contains(sf::Vector2i point)

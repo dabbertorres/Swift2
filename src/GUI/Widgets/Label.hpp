@@ -21,6 +21,8 @@ namespace cstr
 			void setText(const std::string& str);
 			void setTextColor(const sf::Color& tc);
 			void setCharacterSize(unsigned size);
+			
+			sf::FloatRect getGlobalBounds() const;
 
 		protected:
 			virtual bool contains(sf::Vector2i point);
