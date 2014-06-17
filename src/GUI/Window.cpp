@@ -1,5 +1,6 @@
 #include "Window.hpp"
-#include <iostream>
+#include <cassert>
+
 namespace cstr
 {
 	Window::Window()
@@ -65,6 +66,12 @@ namespace cstr
 		Toggle* toggle = new Toggle(rect, off, on, s);
 		widgets.push_back(std::move(toggle));
 		return *toggle;
+	}
+	
+	Widget& Window::getWidget(unsigned i)
+	{
+		assert(i < widgets.size());
+		return *widgets[i];
 	}
 	
 	void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const

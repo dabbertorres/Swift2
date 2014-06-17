@@ -27,9 +27,11 @@ namespace cstr
 			
 			void update(sf::Event& event);
 			
-			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			Label& addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font);
+			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			Toggle& addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
+			
+			Widget& getWidget(unsigned i);
 
 		private:
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
