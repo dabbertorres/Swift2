@@ -109,6 +109,5 @@ namespace swift
 												static_cast<float>(vsyncToggleData.y - 40)},
 												vsyncToggleData.str,
 												assets.getFont("./data/fonts/DroidSansMono.ttf"));
-		
 	}
 }
