@@ -15,6 +15,11 @@ namespace cstr
 			Widget() {};
 			virtual ~Widget() {};
 			
+			virtual bool getState() const
+			{
+				return false;
+			}
+			
 		protected:
 			virtual bool contains(sf::Vector2i point) = 0;
 			virtual void mousePressed() = 0;
