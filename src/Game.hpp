@@ -155,6 +155,7 @@ namespace swift
 			/* Settings */
 			sf::ContextSettings contextSettings;
 			Settings settings;
+			Settings controls;
 			
 			unsigned graphics;		// 0 = Low, 1 = Medium, 2 = High
 			bool smoothing;			// texture smoothing

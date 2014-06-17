@@ -7,7 +7,7 @@ namespace swift
 	const std::string errorLog = "./data/log.txt";
 
 	Game::Game()
-		:	logger("Alpha", errorLog),
+		:	logger("Swift Alpha", errorLog),
 		    console(500, 200, defaultFont, "[swift2]:")
 	{
 		graphics = Quality::Medium;
@@ -107,7 +107,6 @@ namespace swift
 			FPS.setString("000.000");
 			FPS.setColor(sf::Color::White);
 			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 10);
-			std::cerr << FPS.getPosition().x << ' ' << FPS.getPosition().y << '\n';
 		}
 
 		// setup Script static variables
@@ -280,7 +279,7 @@ namespace swift
 			arg++;
 		}
 	}
-
+	
 	void Game::loadSettings(const std::string& file)
 	{
 		// settings file settings
@@ -289,7 +288,7 @@ namespace swift
 
 		settings.get("quality", graphics);
 		settings.get("fullScreen", fullScreen);
-		settings.get("vertSync", verticalSync);
+		settings.get("vsync", verticalSync);
 		settings.get("res.x", resolution.x);
 		settings.get("res.y", resolution.y);
 		settings.get("sound", soundLevel);
