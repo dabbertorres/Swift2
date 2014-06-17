@@ -15,7 +15,7 @@ namespace cstr
 			Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
 			~Toggle();
 			
-			bool getState() const;
+			virtual bool getState() const;
 			void setState(bool s);
 			
 		protected:

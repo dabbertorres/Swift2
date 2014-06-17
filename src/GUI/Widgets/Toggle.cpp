@@ -9,7 +9,8 @@ namespace cstr
 	{
 		sprite.setTexture(state ? onTex : offTex);
 		sprite.setPosition(rect.left, rect.top);
-		sprite.setScale(static_cast<float>(rect.width) / static_cast<float>(off.getSize().x), static_cast<float>(rect.height) / static_cast<float>(off.getSize().y));
+		sprite.setScale(static_cast<float>(rect.width) / static_cast<float>(off.getSize().x), 
+						static_cast<float>(rect.height) / static_cast<float>(off.getSize().y));
 		
 		color = {128, 128, 128};
 		sprite.setColor(color);
@@ -43,6 +44,7 @@ namespace cstr
 	{
 		sprite.setColor(color);
 		state = !state;
+		sprite.setTexture(state ? onTex : offTex);
 	}
 	
 	void Toggle::mouseMovedOn()
