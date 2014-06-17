@@ -6,7 +6,6 @@ namespace cstr
 	{
 		text.setFont(font);
 		text.setString(str);
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
 		position = pos;
 		text.setPosition(position);
 	}
@@ -19,14 +18,12 @@ namespace cstr
 	void Label::setFont(const sf::Font& font)
 	{
 		text.setFont(font);
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
 		text.setPosition(position);
 	}
 	
 	void Label::setText(const std::string& str)
 	{
 		text.setString(str);
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
 		text.setPosition(position);
 	}
 	
