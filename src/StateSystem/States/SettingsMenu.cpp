@@ -36,7 +36,7 @@ namespace swift
 	{
 		updateScripts();
 		
-		bool vsyncState = gui.getWidget(1).getState();
+		bool vsyncState = gui.getWidget(2).getState();
 		settings.set("vsync", vsyncState);
 	}
 	
@@ -88,6 +88,7 @@ namespace swift
 			int y = 0;
 			int w = 0;
 			int h = 0;
+			unsigned size = 0;
 			std::string str = "";
 		} vsyncToggleData;
 		
@@ -95,19 +96,21 @@ namespace swift
 		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncH", vsyncToggleData.h);
 		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncX", vsyncToggleData.x);
 		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncY", vsyncToggleData.y);
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncSize", vsyncToggleData.size);
 		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncStr", vsyncToggleData.str);
 		
 		bool vsyncState;
 		settings.get("vsync", vsyncState);
 		
-		cstr::Toggle& vsyncToggle = gui.addToggle(	{vsyncToggleData.x, vsyncToggleData.y, vsyncToggleData.w, vsyncToggleData.h},
+		cstr::Label& vsyncLabel = gui.addLabel({static_cast<float>(vsyncToggleData.x), 
+												static_cast<float>(vsyncToggleData.y)},
+												vsyncToggleData.str,
+												assets.getFont("./data/fonts/DroidSansMono.ttf"));
+		vsyncLabel.setCharacterSize(vsyncToggleData.size);
+		
+		cstr::Toggle& vsyncToggle = gui.addToggle(	{vsyncToggleData.x + static_cast<int>(vsyncLabel.getGlobalBounds().width), vsyncToggleData.y, vsyncToggleData.w, vsyncToggleData.h},
 													assets.getTexture("./data/textures/toggleOff.png"),
 													assets.getTexture("./data/textures/toggleOn.png"),
 													vsyncState);
-		
-		cstr::Label& vsyncLabel = gui.addLabel({static_cast<float>(vsyncToggleData.x), 
-												static_cast<float>(vsyncToggleData.y - 40)},
-												vsyncToggleData.str,
-												assets.getFont("./data/fonts/DroidSansMono.ttf"));
 	}
 }
