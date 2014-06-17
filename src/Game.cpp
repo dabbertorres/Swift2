@@ -106,7 +106,7 @@ namespace swift
 			FPS.setScale(0.7, 0.7);
 			FPS.setString("000.000");
 			FPS.setColor(sf::Color::White);
-			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 2), 10);
+			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
 		}
 
 		// setup Script static variables
@@ -145,6 +145,10 @@ namespace swift
 			}
 
 			Draw(lag.asSeconds() / dt.asSeconds());
+			
+			// frames per second measurement
+			if(debug)
+				FPS.setString(std::to_string(1 / frameTime.asSeconds()).substr(0, 7));
 		}
 	}
 
@@ -165,9 +169,6 @@ namespace swift
 
 			currentState->handleEvent(event);
 		}
-
-		if(debug)
-			FPS.setString(std::to_string(1 / dt.asSeconds()).substr(0, 7));
 
 		currentState->update(dt);
 		manageStates();
