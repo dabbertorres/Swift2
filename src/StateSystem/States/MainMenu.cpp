@@ -53,6 +53,25 @@ namespace swift
 	
 	void MainMenu::setupButtons()
 	{
+		// title
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			unsigned size = 0;
+			std::string str = "";
+		} titleLabelData;
+		
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("titleLabelX", titleLabelData.x);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("titleLabelY", titleLabelData.y);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("titleLabelSize", titleLabelData.size);
+		assets.getScript("./data/scripts/mainMenu.lua").getVariable("titleLabelStr", titleLabelData.str);
+		
+		cstr::Label& titleLabel = gui.addLabel({static_cast<float>(titleLabelData.x), static_cast<float>(titleLabelData.y)}, 
+												titleLabelData.str, assets.getFont("./data/fonts/DroidSansMono.ttf"));
+		titleLabel.setCharacterSize(titleLabelData.size);
+		
+		// start/play button
 		struct
 		{
 			int x = 0;
@@ -76,6 +95,7 @@ namespace swift
 		startButton.setText(startButtonData.str);
 		startButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
 		
+		// settings button
 		struct
 		{
 			int x = 0;
@@ -99,6 +119,7 @@ namespace swift
 		settingsButton.setText(settingsButtonData.str);
 		settingsButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
 		
+		// exit button
 		struct
 		{
 			int x = 0;

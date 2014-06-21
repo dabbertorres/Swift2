@@ -22,8 +22,12 @@ namespace swift
 			
 			void addForce(sf::Vector2f n);
 			
+			sf::FloatRect getGlobalBounds() const;
 			sf::Vector2f getPosition() const;
 			void setPosition(const sf::Vector2f& pos);
+			
+			float getAngle() const;
+			void setAngle(float a);
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
@@ -37,6 +41,8 @@ namespace swift
 			sf::Vector2f velocity;
 			
 			sf::Vector2f position;
+			
+			float angle;
 	};
 }
 

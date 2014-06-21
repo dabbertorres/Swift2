@@ -4,6 +4,8 @@ namespace swift
 {
 	Player::Player()
 	{
+		angle = 90;
+		sprite.setOrigin(sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height / 2);
 	}
 
 	Player::~Player()
@@ -27,6 +29,7 @@ namespace swift
 	void Player::setTexture(const sf::Texture& texture)
 	{
 		sprite.setTexture(texture);
+		sprite.setOrigin(sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().height / 2);
 	}
 	
 	void Player::setMass(float m)
@@ -40,6 +43,11 @@ namespace swift
 		acceleration += (n / mass);
 	}
 	
+	sf::FloatRect Player::getGlobalBounds() const
+	{
+		return sprite.getGlobalBounds();
+	}
+	
 	sf::Vector2f Player::getPosition() const
 	{
 		return position;
@@ -49,6 +57,16 @@ namespace swift
 	{
 		position = pos;
 		sprite.setPosition(pos);
+	}
+	
+	float Player::getAngle() const
+	{
+		return angle;
+	}
+	
+	void Player::setAngle(float a)
+	{
+		angle = a;
 	}
 	
 	void Player::draw(sf::RenderTarget& target, sf::RenderStates states) const

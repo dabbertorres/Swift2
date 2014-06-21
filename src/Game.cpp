@@ -11,9 +11,9 @@ namespace swift
 		    console(500, 200, defaultFont, "[swift2]:")
 	{
 		graphics = Quality::Medium;
-		smoothing = false;
+		smoothing = true;
 		verticalSync = true;
-		fullScreen = false;
+		fullscreen = false;
 		resolution.x = 800;
 		resolution.y = 600;
 		running = false;
@@ -43,7 +43,7 @@ namespace swift
 		handleLaunchOps(c, args);
 
 		// Window set up.
-		if(fullScreen)
+		if(fullscreen)
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Fullscreen, contextSettings);
 		else
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
@@ -234,7 +234,7 @@ namespace swift
 		// launch options
 		editor = false;
 		debug = false;
-		fullScreen = false;
+		fullscreen = false;
 
 		// loop through options
 		int arg = 1;	// we skip arg 0 because arg 0 is the executable
@@ -250,7 +250,7 @@ namespace swift
 			}
 			else if(args[arg] == std::string("fullscreen"))
 			{
-				fullScreen = true;
+				fullscreen = true;
 			}
 			else if(args[arg] == std::string("res"))
 			{
@@ -287,8 +287,7 @@ namespace swift
 		if(!settings.loadFile(file))
 			logger << Logger::LogType::WARNING << "Could not open settings file, default settings will be used\n";
 
-		settings.get("quality", graphics);
-		settings.get("fullScreen", fullScreen);
+		settings.get("fullscreen", fullscreen);
 		settings.get("vsync", verticalSync);
 		settings.get("res.x", resolution.x);
 		settings.get("res.y", resolution.y);

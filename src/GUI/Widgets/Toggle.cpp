@@ -28,6 +28,7 @@ namespace cstr
 	void Toggle::setState(bool s)
 	{
 		state = s;
+		sprite.setTexture(state ? onTex : offTex);
 	}
 	
 	sf::FloatRect Toggle::getGlobalBounds() const

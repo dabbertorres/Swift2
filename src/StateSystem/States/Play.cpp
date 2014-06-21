@@ -22,37 +22,21 @@ namespace swift
 		{
 			player.addForce({0, -PLAYER_MOVE_FORCE});
 		}, true);
-		keyboard.newBinding("UpStop", sf::Keyboard::Up, [&]()
-		{
-			player.addForce({0, PLAYER_MOVE_FORCE});
-		}, false);
 		
 		keyboard.newBinding("LeftStart", sf::Keyboard::Left, [&]()
 		{
 			player.addForce({-PLAYER_MOVE_FORCE, 0});
 		}, true);
-		keyboard.newBinding("LeftStop", sf::Keyboard::Left, [&]()
-		{
-			player.addForce({PLAYER_MOVE_FORCE, 0});
-		}, false);
 		
 		keyboard.newBinding("DownStart", sf::Keyboard::Down, [&]()
 		{
 			player.addForce({0, PLAYER_MOVE_FORCE});
 		}, true);
-		keyboard.newBinding("DownStop", sf::Keyboard::Down, [&]()
-		{
-			player.addForce({0, -PLAYER_MOVE_FORCE});
-		}, false);
 		
 		keyboard.newBinding("RightStart", sf::Keyboard::Right, [&]()
 		{
 			player.addForce({PLAYER_MOVE_FORCE, 0});
 		}, true);
-		keyboard.newBinding("RightStop", sf::Keyboard::Right, [&]()
-		{
-			player.addForce({-PLAYER_MOVE_FORCE, 0});
-		}, false);
 	}
 
 	Play::~Play()

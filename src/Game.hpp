@@ -159,7 +159,7 @@ namespace swift
 			
 			unsigned graphics;		// 0 = Low, 1 = Medium, 2 = High
 			bool smoothing;			// texture smoothing
-			bool fullScreen;
+			bool fullscreen;
 			bool verticalSync;		// Sir, would you like some Vertical Synchronization with those frames?
 			Resolution resolution;
 			unsigned soundLevel;

@@ -37,7 +37,16 @@ namespace swift
 		updateScripts();
 		
 		bool vsyncState = gui.getWidget(2).getState();
-		settings.set("vsync", vsyncState);
+		bool currentVsyncState;
+		settings.get("vsync", currentVsyncState);
+		if(currentVsyncState != vsyncState)
+			settings.set("vsync", vsyncState);
+		
+		bool fullscreenState = gui.getWidget(4).getState();
+		bool currentFullscreenState;
+		settings.get("fullscreen", currentFullscreenState);
+		if(currentFullscreenState != fullscreenState)
+			settings.set("fullscreen", fullscreenState);
 	}
 	
 	void SettingsMenu::draw(float /*e*/)
@@ -108,9 +117,44 @@ namespace swift
 												assets.getFont("./data/fonts/DroidSansMono.ttf"));
 		vsyncLabel.setCharacterSize(vsyncToggleData.size);
 		
-		cstr::Toggle& vsyncToggle = gui.addToggle(	{vsyncToggleData.x + static_cast<int>(vsyncLabel.getGlobalBounds().width), vsyncToggleData.y, vsyncToggleData.w, vsyncToggleData.h},
+		cstr::Toggle& vsyncToggle = gui.addToggle(	{vsyncToggleData.x + static_cast<int>(vsyncLabel.getGlobalBounds().width) + 5, vsyncToggleData.y, vsyncToggleData.w, vsyncToggleData.h},
 													assets.getTexture("./data/textures/toggleOff.png"),
 													assets.getTexture("./data/textures/toggleOn.png"),
 													vsyncState);
+													
+		// fullscreen toggle
+		struct
+		{
+			int x = 0;
+			int y = 0;
+			int w = 0;
+			int h = 0;
+			unsigned size = 0;
+			std::string str = "";
+		} fullscreenToggleData;
+		
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenW", fullscreenToggleData.w);
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenH", fullscreenToggleData.h);
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenX", fullscreenToggleData.x);
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenY", fullscreenToggleData.y);
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenSize", fullscreenToggleData.size);
+		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenStr", fullscreenToggleData.str);
+		
+		bool fullscreenState;
+		settings.get("fullscreen", fullscreenState);
+		
+		cstr::Label& fullscreenLabel = gui.addLabel({	static_cast<float>(fullscreenToggleData.x), 
+														static_cast<float>(fullscreenToggleData.y)},
+														fullscreenToggleData.str,
+														assets.getFont("./data/fonts/DroidSansMono.ttf"));
+		fullscreenLabel.setCharacterSize(fullscreenToggleData.size);
+		
+		cstr::Toggle& fullscreenToggle = gui.addToggle({fullscreenToggleData.x + static_cast<int>(fullscreenLabel.getGlobalBounds().width) + 5,
+														fullscreenToggleData.y,
+														fullscreenToggleData.w,
+														fullscreenToggleData.h},
+														assets.getTexture("./data/textures/toggleOff.png"),
+														assets.getTexture("./data/textures/toggleOn.png"),
+														fullscreenState);
 	}
 }

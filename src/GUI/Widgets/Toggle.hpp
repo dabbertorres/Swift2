@@ -15,21 +15,21 @@ namespace cstr
 			Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
 			~Toggle();
 			
-			virtual bool getState() const;
+			bool getState() const;
 			void setState(bool s);
 			
 			sf::FloatRect getGlobalBounds() const;
 			
 		protected:
-			virtual bool contains(sf::Vector2i point);
-			virtual void mousePressed();
-			virtual void mouseReleased();
-			virtual void mouseMovedOn();
-			virtual void mouseMovedOff();
-			virtual void textEntered(char c);
+			bool contains(sf::Vector2i point);
+			void mousePressed();
+			void mouseReleased();
+			void mouseMovedOn();
+			void mouseMovedOff();
+			void textEntered(char c);
 
 		private:
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		
 			sf::Sprite sprite;
 			sf::Color color;
