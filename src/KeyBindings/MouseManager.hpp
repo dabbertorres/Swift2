@@ -64,7 +64,6 @@ namespace swift
 						return ((e.type == sf::Event::MouseButtonPressed && onPress) || (e.type == sf::Event::MouseButtonReleased && !onPress)) && e.mouseButton.button == button;
 					}
 
-				private:
 					bool call()
 					{
 						if(!func)
@@ -75,6 +74,7 @@ namespace swift
 						return true;
 					}
 
+				private:
 					sf::Mouse::Button button;
 
 					std::function<void()> func;

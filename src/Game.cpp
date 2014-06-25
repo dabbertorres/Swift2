@@ -63,8 +63,9 @@ namespace swift
 		window.setKeyRepeatEnabled(false);
 
 		assets.setSmooth(smoothing);
-		assets.loadResourceFolder("./data/fonts");
+		assets.loadResourceFolder("./data/animations");
 		assets.loadResourceFolder("./data/textures");
+		assets.loadResourceFolder("./data/fonts");
 		assets.loadResourceFolder("./data/music");
 		assets.loadResourceFolder("./data/scripts");
 		assets.loadResourceFolder("./data/skeletons");
