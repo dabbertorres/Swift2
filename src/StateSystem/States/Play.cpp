@@ -9,34 +9,6 @@ namespace swift
 	{		
 		returnType = State::Type::Play;
 		
-		playerFactory.setConstruction([&](Player& p)
-		{
-			p.setTexture(assets.getTexture("./data/textures/ship.png"));
-			p.setMass(1);
-		});
-		
-		Player& player = playerFactory.create();
-		player.setPosition({window.getSize().x / 2.f, window.getSize().y / 2.f});
-		
-		keyboard.newBinding("UpStart", sf::Keyboard::Up, [&]()
-		{
-			player.addForce({0, -PLAYER_MOVE_FORCE});
-		}, true);
-		
-		keyboard.newBinding("LeftStart", sf::Keyboard::Left, [&]()
-		{
-			player.addForce({-PLAYER_MOVE_FORCE, 0});
-		}, true);
-		
-		keyboard.newBinding("DownStart", sf::Keyboard::Down, [&]()
-		{
-			player.addForce({0, PLAYER_MOVE_FORCE});
-		}, true);
-		
-		keyboard.newBinding("RightStart", sf::Keyboard::Right, [&]()
-		{
-			player.addForce({PLAYER_MOVE_FORCE, 0});
-		}, true);
 	}
 
 	Play::~Play()
@@ -62,23 +34,13 @@ namespace swift
 		mouse(event);
 	}
 	
-	void Play::update(sf::Time dt)
+	void Play::update(sf::Time /*dt*/)
 	{
 		updateScripts();
-		
-		for(auto p : playerFactory.getEntities())
-		{
-			p->update(dt.asSeconds());
-		}
 	}
 	
 	void Play::draw(float /*e*/)
 	{
-		for(auto p : playerFactory.getEntities())
-		{
-			window.draw(*p);
-		}
-		
 		window.draw(gui);
 	}
 	

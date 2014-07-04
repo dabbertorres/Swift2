@@ -31,8 +31,6 @@ namespace swift
 			void setupKeyBindings();
 
 			cstr::Window gui;
-
-			Factory<Player> playerFactory;
 	};
 }
 
