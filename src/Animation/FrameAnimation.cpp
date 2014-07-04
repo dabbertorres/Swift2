@@ -26,6 +26,14 @@ namespace swift
 			done = true;
 	}
 	
+	void FrameAnimation::setFrame(unsigned fn)
+	{
+		if(fn < frames.size())
+		{
+			frameNum = fn;
+		}
+	}
+	
 	sf::FloatRect FrameAnimation::getGlobalBounds() const
 	{
 		return sprite.getGlobalBounds();

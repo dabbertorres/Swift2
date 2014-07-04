@@ -18,6 +18,7 @@ namespace swift
 			~FrameAnimation();
 			
 			void update(float dt);
+			void setFrame(unsigned fn);
 			
 			sf::FloatRect getGlobalBounds() const;
 			
