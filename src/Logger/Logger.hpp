@@ -9,14 +9,6 @@ namespace swift
 	class Logger
 	{
 		public:
-			enum class LogType
-			{
-			    ERROR,
-			    WARNING,
-				DEBUG,
-			    INFO
-			};
-
 			explicit Logger(const std::string& header, const std::string& logFile = "./data/swift.log")
 			{
 				warnings = 0;
@@ -27,7 +19,7 @@ namespace swift
 				// Write the first lines
 				if(fout.is_open())
 				{
-					fout << header << std::endl << std::endl;
+					fout << header << "\n\n";
 				}
 			}
 
@@ -46,44 +38,48 @@ namespace swift
 			}
 
 			// Make it Non Copyable
-			Logger(const Logger &) = delete;
-			Logger& operator =(const Logger &) = delete;
+			Logger(const Logger&) = delete;
+			Logger& operator=(const Logger&) = delete;
 
-			Logger& operator <<(const LogType type)
-			{
-				switch(type)
-				{
-					case LogType::ERROR:
-						fout << "[ERROR]: ";
-						errors++;
-						break;
-
-					case LogType::WARNING:
-						fout << "[WARNING]: ";
-						warnings++;
-						break;
-						
-					case LogType::DEBUG:
-						fout << "[DEBUG]: ";
-						break;
-
-					default:
-						fout << "[INFO]: ";
-						break;
-				}
-
-				return *this;
-			}
-			
-			Logger& operator <<(char c)
+			Logger& operator<<(char c)
 			{
 				fout << c;
 				return *this;
 			}
 
-			Logger& operator <<(const std::string& text)
+			Logger& operator<<(const std::string& text)
 			{
 				fout << text;
+				return *this;
+			}
+
+			Logger& operator<<(int n)
+			{
+				fout << n;
+				return *this;
+			}
+
+			Logger& operator<<(unsigned n)
+			{
+				fout << n;
+				return *this;
+			}
+			
+			Logger& operator<<(std::size_t n)
+			{
+				fout << n;
+				return *this;
+			}
+
+			Logger& operator<<(float n)
+			{
+				fout << n;
+				return *this;
+			}
+
+			Logger& operator<<(double n)
+			{
+				fout << n;
 				return *this;
 			}
 
@@ -93,6 +89,8 @@ namespace swift
 			unsigned warnings;
 			unsigned errors;
 	};
+	
+	extern Logger log;
 }
 
 #endif // LOGGER_HPP
