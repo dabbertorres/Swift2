@@ -37,16 +37,16 @@ namespace swift
 				sf::Vertex* quad = &vertices[(i + j * width) * 4];
 				
 				// define 4 corners
-				quad[0].position = {i * tileSize.x, j * tileSize.y};
-				quad[1].position = {(i + 1) * tileSize.x, j * tileSize.y};
-				quad[2].position = {(i + 1) * tileSize.x, (j + 1) * tileSize.y};
-				quad[3].position = {i * tileSize.x, (j + 1) * tileSize.y};
+				quad[0].position = {i * static_cast<float>(tileSize.x), j * static_cast<float>(tileSize.y)};
+				quad[1].position = {(i + 1) * static_cast<float>(tileSize.x), j * static_cast<float>(tileSize.y)};
+				quad[2].position = {(i + 1) * static_cast<float>(tileSize.x), (j + 1) * static_cast<float>(tileSize.y)};
+				quad[3].position = {i * static_cast<float>(tileSize.x), (j + 1) * static_cast<float>(tileSize.y)};
 				
 				// define 4 tex coordinates
-				quad[0].texCoords = {tu * tileSize.x, tv * tileSize.y};
-				quad[1].texCoords = {(tu + 1) * tileSize.x, tv * tileSize.y};
-				quad[2].texCoords = {(tu + 1) * tileSize.x, (tv + 1) * tileSize.y};
-				quad[3].texCoords = {tu * tileSize.x, (tv + 1) * tileSize.y};
+				quad[0].texCoords = {tu * static_cast<float>(tileSize.x), tv * static_cast<float>(tileSize.y)};
+				quad[1].texCoords = {(tu + 1) * static_cast<float>(tileSize.x), tv * static_cast<float>(tileSize.y)};
+				quad[2].texCoords = {(tu + 1) * static_cast<float>(tileSize.x), (tv + 1) * static_cast<float>(tileSize.y)};
+				quad[3].texCoords = {tu * static_cast<float>(tileSize.x), (tv + 1) * static_cast<float>(tileSize.y)};
 			}
 		}
 		
