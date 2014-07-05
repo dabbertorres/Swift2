@@ -40,7 +40,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			std::clog << "Unable to open resource folder: " << folder << "\n";
+			log << "Unable to open resource folder: " << folder << "\n";
 			return false;
 		}
 
@@ -48,7 +48,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				std::clog << "Unable to read resource folder: " << folder << "\n";
+				log << "Unable to read resource folder: " << folder << "\n";
 				return false;
 			}
 
@@ -79,7 +79,7 @@ namespace swift
 			temp = loadResource(f);
 			if(temp == false)
 			{
-				std::clog << "ERROR: In " << mod.getName() << ", could not load " << f << '\n';
+				log << "ERROR: In " << mod.getName() << ", could not load " << f << '\n';
 				returnVar = false;
 			}
 		}
@@ -151,13 +151,13 @@ namespace swift
 
 			if(!textures[file]->loadFromFile(file))
 			{
-				std::clog << "Unable to load " << file << " as a texture.\n";
+				log << "Unable to load " << file << " as a texture.\n";
 				textures.erase(file);
 				return false;
 			}
 			textures[file]->setSmooth(smooth);
 
-			std::clog << "Texture: " << file << '\n';
+			log << "Texture: " << file << '\n';
 		}
 		else if(file.find("/skeletons/") != std::string::npos)
 		{
@@ -169,12 +169,12 @@ namespace swift
 
 			if(!soundBuffers[file]->loadFromFile(file))
 			{
-				std::clog << "Unable to load " << file << " as a sound.\n";
+				log << "Unable to load " << file << " as a sound.\n";
 				soundBuffers.erase(file);
 				return false;
 			}
 
-			std::clog << "Sound: \t " << file << '\n';
+			log << "Sound: \t " << file << '\n';
 		}
 		else if(file.find("/music/") != std::string::npos)
 		{
@@ -182,12 +182,12 @@ namespace swift
 
 			if(!music[file]->openFromFile(file))
 			{
-				std::clog << "Unable to open " << file << " as a music file.\n";
+				log << "Unable to open " << file << " as a music file.\n";
 				music.erase(file);
 				return false;
 			}
 
-			std::clog << "Music: \t " << file << '\n';
+			log << "Music: \t " << file << '\n';
 		}
 		else if(file.find("/fonts/") != std::string::npos)
 		{
@@ -195,12 +195,12 @@ namespace swift
 
 			if(!fonts[file]->loadFromFile(file))
 			{
-				std::clog << "Unable to load " << file << " as a font.\n";
+				log << "Unable to load " << file << " as a font.\n";
 				fonts.erase(file);
 				return false;
 			}
 
-			std::clog << "Font: \t " << file << '\n';
+			log << "Font: \t " << file << '\n';
 		}
 		else if(file.find("/scripts/") != std::string::npos)
 		{
@@ -208,7 +208,7 @@ namespace swift
 			
 			if(!scripts[file]->loadFromFile(file))
 			{
-				std::clog << "Unable to load " << file << " as a script.\n";
+				log << "Unable to load " << file << " as a script.\n";
 				scripts.erase(file);
 				return false;
 			}
@@ -216,11 +216,11 @@ namespace swift
 		else if(file.find(".txt") != std::string::npos)
 		{
 			// ignore *.txt files, but don't throw a warning/error
-			std::clog << "Ignoring " << file << '\n';
+			log << "Ignoring " << file << '\n';
 		}
 		else
 		{
-			std::clog << "WARNING: " << file << " is an unknown resource type.\n";
+			log << "WARNING: " << file << " is an unknown resource type.\n";
 			return false;
 		}
 		return true;

@@ -4,11 +4,8 @@
 
 namespace swift
 {
-	const std::string errorLog = "./data/log.txt";
-
 	Game::Game()
-		:	logger("Swift Alpha", errorLog),
-		    console(500, 200, defaultFont, "[swift2]:")
+		:	console(500, 200, defaultFont, "[swift2]:")
 	{
 		graphics = Quality::Medium;
 		smoothing = true;
@@ -49,14 +46,14 @@ namespace swift
 			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
 		
 		// get System Info
-		logger	<< "OS:\t\t" << getOSName() << '\n'
-				<< "Version:\t" << getOSVersion() << '\n'
-				<< "Arch:\t\t" << getOSArch() << '\n'
-				<< "Total Mem:\t" << getTotalMem() << '\n'
-				<< "CPU:\t\t" << getCPUModel() << '\n'
-				<< "Video Vendor:\t" << getVideoVendor() << '\n'
-				<< "Video Card:\t" << getVideoCard() << '\n'
-				<< "Video Driver:\t" << getVideoDriver() << '\n';
+		log	<< "OS:\t\t" << getOSName() << '\n'
+			<< "Version:\t" << getOSVersion() << '\n'
+			<< "Arch:\t\t" << getOSArch() << '\n'
+			<< "Total Mem:\t" << getTotalMem() << '\n'
+			<< "CPU:\t\t" << getCPUModel() << '\n'
+			<< "Video Vendor:\t" << getVideoVendor() << '\n'
+			<< "Video Card:\t" << getVideoCard() << '\n'
+			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
 		
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
 		window.setVerticalSyncEnabled(verticalSync);
@@ -261,21 +258,19 @@ namespace swift
 			}
 			else if(args[arg] == std::string("videoModes"))
 			{
-				logger << Logger::LogType::INFO << "Supported Fullscreen Video Modes:\n";
+				log << "Supported Fullscreen Video Modes:\n";
 
 				std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
 				for(std::size_t i = 0; i < modes.size(); ++i)
 				{
 					sf::VideoMode mode = modes[i];
-					logger 	<< Logger::LogType::INFO
-					        << "Mode #" + std::to_string(i) + ": " + std::to_string(mode.width) + "x" + std::to_string(mode.height)
-					        + " - " + std::to_string(mode.bitsPerPixel) + " bpp\n";
+					log << "Mode #" << i << ": " << mode.width << "x" << mode.height << " - " << mode.bitsPerPixel << " bpp\n";
 					// ex: "Mode #0: 1920x1080 - 32 bbp"
 				}
 			}
 			else
 			{
-				logger << "\nUnknown launch option: " + std::string(args[arg]) + '\n';
+				log << "\nUnknown launch option: " << args[arg] << '\n';
 			}
 
 			arg++;
@@ -286,7 +281,7 @@ namespace swift
 	{
 		// settings file settings
 		if(!settings.loadFile(file))
-			logger << Logger::LogType::WARNING << "Could not open settings file, default settings will be used\n";
+			log << "Could not open settings file, default settings will be used\n";
 
 		settings.get("fullscreen", fullscreen);
 		settings.get("vsync", verticalSync);

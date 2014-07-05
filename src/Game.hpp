@@ -145,7 +145,7 @@ namespace swift
 			MouseManager mouse;
 			
 			/* Debug */
-			Logger logger;
+			//Logger logger;
 			Console console;
 
 			/* FPS tracking */

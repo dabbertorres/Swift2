@@ -24,7 +24,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			std::clog << "Unable to open resource folder!\n";
+			log << "Unable to open resource folder!\n";
 			return false;
 		}
 
@@ -32,7 +32,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				std::clog << "Unable to read resource folder!\n";
+				log << "Unable to read resource folder!\n";
 				return false;
 			}
 
@@ -55,7 +55,7 @@ namespace swift
 				
 				if(!(nameError || versionError || authorError || descriptionError))
 				{
-					std::clog << "Ill formed info.txt for mod " << entry->d_name << ", not loading.\n";
+					log << "Ill formed info.txt for mod " << entry->d_name << ", not loading.\n";
 					continue;
 				}
 				
@@ -65,10 +65,10 @@ namespace swift
 				mods[name].mod.setAuthor(author);
 				mods[name].mod.setDescription(description);
 				
-				std::clog << "\nLoading mod: " << name << '\n';
-				std::clog << "Version: " << version << '\n';
-				std::clog << "By: " << author << '\n';
-				std::clog << description << '\n';
+				log << "\nLoading mod: " << name << '\n';
+				log << "Version: " << version << '\n';
+				log << "By: " << author << '\n';
+				log << description << '\n';
 				loadMod(f + '/' + std::string(entry->d_name), mods[name].mod);
 			}
 		}
@@ -98,7 +98,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			std::clog << "Unable to open resource folder!\n";
+			log << "Unable to open resource folder!\n";
 			return false;
 		}
 
@@ -106,7 +106,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				std::clog << "Unable to read resource folder!\n";
+				log << "Unable to read resource folder!\n";
 				return false;
 			}
 
@@ -117,7 +117,7 @@ namespace swift
 			}
 			else if(entry->d_type == DT_REG)
 			{
-				std::clog << "\tFound mod file: " << f + '/' + std::string(entry->d_name) << '\n';
+				log << "\tFound mod file: " << f + '/' + std::string(entry->d_name) << '\n';
 				mod.addFile(f + '/' + std::string(entry->d_name));
 			}
 		}

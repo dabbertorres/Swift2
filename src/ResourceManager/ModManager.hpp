@@ -7,6 +7,8 @@
 
 #include <dirent.h>
 
+#include "../Logger/Logger.hpp"
+
 #include "Mod.hpp"
 
 namespace swift

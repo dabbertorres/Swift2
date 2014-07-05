@@ -16,6 +16,8 @@
 #include "../EntitySystem/Components/Collidable.hpp"	// for bitmasks
 #include "../Scripting/Script.hpp"
 
+#include "../Logger/Logger.hpp"
+
 #include "Mod.hpp"
 
 namespace swift
