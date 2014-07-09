@@ -4,6 +4,8 @@
 #include <cassert>
 #include <map>
 
+#include "../../Collision/SeparatingAxisTheorem.hpp"
+
 namespace swift
 {
 	class Entity
