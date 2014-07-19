@@ -69,17 +69,17 @@ namespace cstr
 	
 	void TextBox::textEntered(char c)
 	{
-		switch(c)
+		// 8 = backspace, 13 = enter/return, 27 = escape, 127 = delete
+		if(!(c == 8 || c == 13 || c == 27 || c == 127))
 		{
-			case '\b':
-				string.erase(string.size() - 1, 1);
-				break;
-			default:
-				string += c;
-				break;
+			string += c;
+			text.setString(string);
 		}
-		
-		text.setString(string);
+		else if(c == 8)
+		{
+			string.erase(string.size() - 1);
+			text.setString(string);
+		}
 	}
 	
 	void TextBox::draw(sf::RenderTarget& target, sf::RenderStates states) const
