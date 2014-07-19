@@ -16,6 +16,7 @@
 #include "Widgets/Button.hpp"
 #include "Widgets/Label.hpp"
 #include "Widgets/Toggle.hpp"
+#include "Widgets/TextBox.hpp"
 
 namespace cstr
 {
@@ -30,6 +31,7 @@ namespace cstr
 			Label& addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font);
 			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			Toggle& addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
+			TextBox& addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out, const sf::Font& f);
 			
 			Widget& getWidget(unsigned i);
 

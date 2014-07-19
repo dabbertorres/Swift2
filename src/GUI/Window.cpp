@@ -20,7 +20,7 @@ namespace cstr
 		{
 			case sf::Event::MouseMoved:
 				activeWidget = nullptr;
-				for(auto w : widgets)
+				for(auto& w : widgets)
 				{
 					w->mouseMovedOff();
 					if(w->contains({event.mouseMove.x, event.mouseMove.y}))
@@ -66,6 +66,13 @@ namespace cstr
 		Toggle* toggle = new Toggle(rect, off, on, s);
 		widgets.push_back(std::move(toggle));
 		return *toggle;
+	}
+	
+	TextBox& Window::addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out, const sf::Font& f)
+	{
+		TextBox* textBox = new TextBox(rect, in, out, f);
+		widgets.push_back(std::move(textBox));
+		return *textBox;
 	}
 	
 	Widget& Window::getWidget(unsigned i)
