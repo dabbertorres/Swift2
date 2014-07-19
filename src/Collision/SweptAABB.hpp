@@ -1,6 +1,9 @@
 #ifndef SWEPT_AABB_HPP
 #define SWEPT_AABB_HPP
 
+#include <SFML/System/Vector2.hpp>
+#include <SFML/Graphics/Rect.hpp>
+
 namespace swift
 {
 	struct Box
@@ -13,12 +16,12 @@ namespace swift
 		
 		sf::FloatRect box;		
 		sf::Vector2f velocity;
-	}
+	};
 	
 	// returns a value 0..1.
 	// 0 = start of frame
 	// 1 = end of frame (or no collision)
-	float sweptAABB(Box b1, Box b2, sf::Vector2f& normal)
+	inline float sweptAABB(Box b1, Box b2, sf::Vector2f& normal)
 	{
 		// distance the closest edges of the objects are from each other
 		sf::Vector2f invEntry;
@@ -78,7 +81,7 @@ namespace swift
 		float exitTime = std::max(exit.x, exit.y);
 		
 		// if no collision
-		if(entryTime > exitTime || entry.x < 0.0f && entry.y < 0.0f || entry.x > 1.0f || entry.y > 1.0f)
+		if(entryTime > exitTime || (entry.x < 0.0f && entry.y < 0.0f) || entry.x > 1.0f || entry.y > 1.0f)
 		{
 			normal.x = 0.0f;
 			normal.y = 0.0f;
@@ -110,7 +113,7 @@ namespace swift
 				else
 				{
 					normal.x = 0.0f;
-					normal.y = -1.0fl
+					normal.y = -1.0f;
 				}
 			}
 			
