@@ -84,15 +84,16 @@ namespace swift
 		});
 
 		// add some console commands
-		console.addCommand("hello", [](ArgVec /*args*/)
+		console.addCommand("hello", [&](ArgVec /*args*/)
 		{
-			return "Hello to you too!";
+			console << "\nHello to you too!";
+			return 0;
 		});
 
 		console.addCommand("exit", [&](ArgVec /*args*/)
 		{
 			running = false;
-			return "Exiting";
+			return 0;
 		});
 
 		running = true;

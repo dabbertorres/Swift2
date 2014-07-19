@@ -38,7 +38,7 @@ namespace swift
 				char t = static_cast<char>(event.text.unicode);
 				
 				// 8 = backspace, 13 = enter/return, 27 = escape, 127 = delete
-				if(!(t == 8 || t == 13 || t== 27 || t == 127))
+				if(!(t == 8 || t == 13 || t == 27 || t == 127))
 				{
 					commandStr += t;
 					command.setString(commandStr);
@@ -167,7 +167,7 @@ namespace swift
 		}
 
 		if(commandList.count(args[0]) != 0)
-			return commandList[args[0]](args);
+			return std::to_string(commandList[args[0]](args));
 		else
 			return "Unknown command";
 	}

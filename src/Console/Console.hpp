@@ -18,7 +18,7 @@
 namespace swift
 {
 	typedef std::vector<std::string> ArgVec;
-	typedef std::function<std::string(ArgVec args)> CommandFunc;
+	typedef std::function<int(ArgVec args)> CommandFunc;
 	
 	class Console : public sf::Drawable
 	{
