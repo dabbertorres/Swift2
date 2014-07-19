@@ -4,7 +4,9 @@
 #include <cassert>
 #include <map>
 
-#include "../../Collision/SeparatingAxisTheorem.hpp"
+#include "../Collision/Circular.hpp"
+#include "../Collision/SweptAABB.hpp"
+#include "../Collision/SeparatingAxisTheorem.hpp"
 
 namespace swift
 {

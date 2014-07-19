@@ -13,7 +13,6 @@
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Sound.hpp>
 #include <SFML/Audio/Music.hpp>
-#include "../EntitySystem/Components/Collidable.hpp"	// for bitmasks
 #include "../Scripting/Script.hpp"
 
 #include "../Logger/Logger.hpp"
