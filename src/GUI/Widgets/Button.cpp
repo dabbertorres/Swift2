@@ -1,6 +1,6 @@
 #include "Button.hpp"
 
-const sf::Color COLOR_CHANGE = sf::Color(40, 40, 40, 0);
+const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
 
 namespace cstr
 {
