@@ -28,10 +28,12 @@ namespace cstr
 			
 			void update(sf::Event& event);
 			
-			Label& addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font);
+			void setFont(sf::Font& font);
+			
+			Label& addLabel(const sf::Vector2i& pos, const std::string& str);
 			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			Toggle& addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
-			TextBox& addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out, const sf::Font& f);
+			TextBox& addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out);
 			
 			Widget& getWidget(unsigned i);
 
@@ -40,6 +42,8 @@ namespace cstr
 			
 			std::vector<Widget*> widgets;
 			Widget* activeWidget;
+			
+			sf::Font* font;
 	};
 }
 

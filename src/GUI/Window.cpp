@@ -4,7 +4,8 @@
 namespace cstr
 {
 	Window::Window()
-		:	activeWidget(nullptr)
+		:	activeWidget(nullptr),
+			font(nullptr)
 	{
 	}
 
@@ -47,32 +48,57 @@ namespace cstr
 		}
 	}
 	
-	Button& Window::addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f)
+	void Window::setFont(sf::Font& font)
 	{
-		Button* button = new Button(rect, tex, f);
-		widgets.push_back(std::move(button));
-		return *button;
+		this->font = &font;
 	}
 	
-	Label& Window::addLabel(const sf::Vector2f& pos, const std::string& str, const sf::Font& font)
+	Button& Window::addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f)
 	{
-		Label* label = new Label(pos, str, font);
-		widgets.push_back(std::move(label));
-		return *label;
+		unsigned oldSize = widgets.size();
+		
+		Button* b = new Button(rect, tex, f);
+		
+		if(font)
+			b->setFont(*font);
+		
+		widgets.push_back(b);
+		assert(widgets.size() > oldSize);
+		
+		return *b;
+	}
+	
+	Label& Window::addLabel(const sf::Vector2i& pos, const std::string& str)
+	{
+		unsigned oldSize = widgets.size();
+		
+		Label* l = new Label(pos, str, *font);
+		widgets.push_back(l);
+		assert(widgets.size() > oldSize);
+		
+		return *l;
 	}
 	
 	Toggle& Window::addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s)
 	{
-		Toggle* toggle = new Toggle(rect, off, on, s);
-		widgets.push_back(std::move(toggle));
-		return *toggle;
+		unsigned oldSize = widgets.size();
+		
+		Toggle* t = new Toggle(rect, off, on, s);
+		widgets.push_back(t);
+		assert(widgets.size() > oldSize);
+		
+		return *t;
 	}
 	
-	TextBox& Window::addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out, const sf::Font& f)
+	TextBox& Window::addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out)
 	{
-		TextBox* textBox = new TextBox(rect, in, out, f);
-		widgets.push_back(std::move(textBox));
-		return *textBox;
+		unsigned oldSize = widgets.size();
+		
+		TextBox* tb = new TextBox(rect, in, out, *font);
+		widgets.push_back(tb);
+		assert(widgets.size() > oldSize);
+		
+		return *tb;
 	}
 	
 	Widget& Window::getWidget(unsigned i)
