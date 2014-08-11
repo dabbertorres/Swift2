@@ -8,6 +8,12 @@
 #include <SFML/Graphics/RenderWindow.hpp>
 #include "../GUI/Window.hpp"
 
+#include "../StateSystem/State.hpp"
+
+#include "../Settings/Settings.hpp"
+
+#include "../KeyBindings/KeyboardManager.hpp"
+
 namespace swift
 {
 	/*
@@ -30,9 +36,9 @@ namespace swift
 	 *
 	 * Finish is called at a game tick that finds 'Done' to be true
 	 */
-
+	 
 	class AssetManager;
-
+	
 	class Script
 	{
 		public:
@@ -53,18 +59,29 @@ namespace swift
 			// setters for variables that Lua has access to
 			static void setWindow(sf::RenderWindow& win);
 			static void setAssetManager(AssetManager& am);
-			static void setGUI(cstr::Window& ui);
 			static void setClock(sf::Clock& c);
+			static void setSettings(Settings& s);
+			void setGUI(cstr::Window& ui);
+			void setKeyboard(KeyboardManager& k);
+			void setStateReturn(State::Type& t);
 
 		private:
+			void addVariables();
+			void addClasses();
+			void addFunctions();
+			
 			sel::State luaState;
+			
 			bool deleteMe;
 			
 			// Variables that need to be accessed by Lua
 			static sf::RenderWindow* window;
 			static AssetManager* assets;
-			static cstr::Window* gui;
 			static sf::Clock* clock;
+			static Settings* settings;
+			cstr::Window* gui;
+			KeyboardManager* keyboard;
+			State::Type* stateReturn;
 	};
 
 	template<typename T>
