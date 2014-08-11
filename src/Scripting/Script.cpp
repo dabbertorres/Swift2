@@ -118,6 +118,7 @@ namespace swift
 		luaState["Label"].SetClass<cstr::Label>("setTextSize", &cstr::Label::setCharacterSize);
 		luaState["Button"].SetClass<cstr::Button>("setText", &cstr::Button::setText);
 		luaState["Toggle"].SetClass<cstr::Toggle>("getState", &cstr::Toggle::getState);
+		luaState["TextBox"].SetClass<cstr::TextBox>("getString", &cstr::TextBox::getString);
 	}
 	
 	void Script::addFunctions()
@@ -148,7 +149,8 @@ namespace swift
 		// gui functions
 		luaState["setFont"] = [&](std::string f) -> void
 		{
-			gui->setFont(assets->getFont(f));
+			if(gui)
+				gui->setFont(assets->getFont(f));
 		};
 		
 		luaState["addLabel"] = [&](int x, int y, std::string l) -> cstr::Label*
@@ -164,6 +166,12 @@ namespace swift
 		luaState["addToggle"] = [&](int x, int y, int w, int h, std::string texOff, std::string texOn, bool s) -> cstr::Toggle*
 		{
 			return &gui->addToggle({x, y, w, h}, assets->getTexture(texOff), assets->getTexture(texOn), s);
+		};
+		
+		luaState["addTextBox"] = [&](int x, int y, int w, int h, int inR, int inG, int inB, int outR, int outG, int outB) -> cstr::TextBox*
+		{
+			return &gui->addTextBox({x, y, w, h}, {static_cast<sf::Uint8>(inR), static_cast<sf::Uint8>(inG), static_cast<sf::Uint8>(inB)}, 
+												{static_cast<sf::Uint8>(outR), static_cast<sf::Uint8>(outG), static_cast<sf::Uint8>(outB)});
 		};
 		
 		// State functions
