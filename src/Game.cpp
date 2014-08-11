@@ -78,7 +78,7 @@ namespace swift
 		}
 		
 		defaultFont = assets.getFont("./data/fonts/DroidSansMono.ttf");
-
+		
 		// add some default keybindings
 		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
 		{
@@ -89,6 +89,12 @@ namespace swift
 		console.addCommand("hello", [&](ArgVec /*args*/)
 		{
 			console << "\nHello to you too!";
+			return 0;
+		});
+		
+		console.addCommand("fps", [&](ArgVec /*args*/)
+		{
+			console << "\n" << FPS.getString();
 			return 0;
 		});
 
