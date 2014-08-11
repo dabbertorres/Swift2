@@ -50,6 +50,7 @@ namespace swift
 			Logger& operator<<(const std::string& text)
 			{
 				fout << text;
+				fout.flush();
 				return *this;
 			}
 
