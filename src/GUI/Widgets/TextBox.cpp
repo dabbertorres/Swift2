@@ -15,8 +15,9 @@ namespace cstr
 		rect.setOutlineColor(out);
 		rect.setOutlineThickness(-2);
 		text.setFont(f);
-		text.setPosition(rect.getPosition().x + 5, rect.getPosition().y + 5);
-		text.setCharacterSize(ir.height - 1);
+		text.setPosition(rect.getPosition().x + 3, rect.getPosition().y + 2);
+		text.setOrigin({0, 0});
+		text.setCharacterSize(ir.height - 5);
 	}
 
 	TextBox::~TextBox()
