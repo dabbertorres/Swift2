@@ -20,6 +20,11 @@ namespace swift
 			{
 				bindings.emplace(std::make_pair(n, KeyBinding(k, f, onPress)));
 			}
+			
+			void call(const std::string& k)
+			{
+				bindings.at(k).call();
+			}
 
 			bool operator()(sf::Event& e)
 			{
