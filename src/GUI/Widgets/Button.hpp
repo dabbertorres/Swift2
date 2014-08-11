@@ -13,15 +13,19 @@ namespace cstr
 {
 	class Button : public Widget
 	{
+		friend class Window;
+		
 		public:
-			Button(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
+			Button();	// lua use only
 			virtual ~Button();
 			
 			void setFont(const sf::Font& font);
-			void setText(const std::string& str);
+			void setText(const std::string str);
 			void setTextColor(const sf::Color& tc);
 			
 			void setColor(const sf::Color& c);
+			
+			void setFunction(const std::function<void()> f);
 			
 			sf::FloatRect getGlobalBounds() const;
 		
@@ -34,6 +38,7 @@ namespace cstr
 			virtual void textEntered(char c);
 
 		private:
+			Button(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
 			void shrinkTextToFit();

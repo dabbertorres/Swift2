@@ -2,6 +2,11 @@
 
 namespace cstr
 {
+	TextBox::TextBox()
+	{
+		rect.setPosition(0, 0);
+	}
+	
 	TextBox::TextBox(const sf::IntRect& ir, const sf::Color& in, const sf::Color& out, const sf::Font& f)
 	{
 		rect.setPosition(ir.left, ir.top);

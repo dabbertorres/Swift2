@@ -4,10 +4,16 @@ const sf::Color COLOR_CHANGE = sf::Color(40, 40, 40, 0);
 
 namespace cstr
 {
-	Toggle::Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s)
-		:	offTex(off), onTex(on), state(s)
+	Toggle::Toggle()
+		: offTex(nullptr), onTex(nullptr)
 	{
-		sprite.setTexture(state ? onTex : offTex);
+		sprite.setPosition({0, 0});
+	}
+	
+	Toggle::Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s)
+		:	offTex(&off), onTex(&on), state(s)
+	{
+		sprite.setTexture(state ? *onTex : *offTex);
 		sprite.setPosition(rect.left, rect.top);
 		sprite.setScale(static_cast<float>(rect.width) / static_cast<float>(off.getSize().x), 
 						static_cast<float>(rect.height) / static_cast<float>(off.getSize().y));
@@ -28,7 +34,7 @@ namespace cstr
 	void Toggle::setState(bool s)
 	{
 		state = s;
-		sprite.setTexture(state ? onTex : offTex);
+		sprite.setTexture(state ? *onTex : *offTex);
 	}
 	
 	sf::FloatRect Toggle::getGlobalBounds() const
@@ -50,7 +56,7 @@ namespace cstr
 	{
 		sprite.setColor(color);
 		state = !state;
-		sprite.setTexture(state ? onTex : offTex);
+		sprite.setTexture(state ? *onTex : *offTex);
 	}
 	
 	void Toggle::mouseMovedOn()

@@ -2,11 +2,17 @@
 
 namespace cstr
 {
-	Label::Label(const sf::Vector2f& pos, const std::string& str, const sf::Font& font)
+	Label::Label()
+	{
+		position = {0, 0};
+		text.setPosition(position);
+	}
+	
+	Label::Label(const sf::Vector2i& pos, const std::string& str, const sf::Font& font)
 	{
 		text.setFont(font);
 		text.setString(str);
-		position = pos;
+		position = {static_cast<float>(pos.x), static_cast<float>(pos.y)};
 		text.setPosition(position);
 	}
 
@@ -18,13 +24,11 @@ namespace cstr
 	void Label::setFont(const sf::Font& font)
 	{
 		text.setFont(font);
-		text.setPosition(position);
 	}
 	
 	void Label::setText(const std::string& str)
 	{
 		text.setString(str);
-		text.setPosition(position);
 	}
 	
 	void Label::setTextColor(const sf::Color& tc)

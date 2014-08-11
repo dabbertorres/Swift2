@@ -13,8 +13,9 @@ namespace cstr
 {
 	class Label : public Widget
 	{
+		friend class Window;
 		public:
-			Label(const sf::Vector2f& pos, const std::string& str, const sf::Font& font);
+			Label();	// lua use only
 			virtual ~Label();
 			
 			void setFont(const sf::Font& font);
@@ -33,6 +34,7 @@ namespace cstr
 			virtual void textEntered(char c);
 
 		private:
+			Label(const sf::Vector2i& pos, const std::string& str, const sf::Font& font);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
 			sf::Text text;

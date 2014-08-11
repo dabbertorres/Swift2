@@ -12,8 +12,10 @@ namespace cstr
 {
 	class TextBox : public Widget
 	{
+		friend class Window;
+		
 		public:
-			TextBox(const sf::IntRect& ir, const sf::Color& in, const sf::Color& out, const sf::Font& f);
+			TextBox();	// lua use only
 			~TextBox();
 			
 			void setFont(const sf::Font& font);
@@ -32,6 +34,7 @@ namespace cstr
 			virtual void textEntered(char c);
 
 		private:
+			TextBox(const sf::IntRect& ir, const sf::Color& in, const sf::Color& out, const sf::Font& f);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
 			sf::RectangleShape rect;

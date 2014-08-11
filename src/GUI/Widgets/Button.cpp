@@ -4,6 +4,11 @@ const sf::Color COLOR_CHANGE = sf::Color(40, 40, 40, 0);
 
 namespace cstr
 {
+	Button::Button()
+	{
+		sprite.setPosition({0, 0});
+	}
+	
 	Button::Button(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f)
 		:	function(f)
 	{
@@ -33,7 +38,7 @@ namespace cstr
 							sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2);
 	}
 	
-	void Button::setText(const std::string& str)
+	void Button::setText(const std::string str)
 	{
 		text.setString(str);
 		
@@ -53,6 +58,11 @@ namespace cstr
 	{
 		color = c;
 		sprite.setColor(color);
+	}
+	
+	void Button::setFunction(const std::function<void()> f)
+	{
+		function = f;
 	}
 	
 	sf::FloatRect Button::getGlobalBounds() const

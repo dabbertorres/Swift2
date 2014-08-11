@@ -11,8 +11,10 @@ namespace cstr
 {
 	class Toggle : public Widget
 	{
+		friend class Window;
+		
 		public:
-			Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
+			Toggle();	// lua use only
 			~Toggle();
 			
 			bool getState() const;
@@ -29,13 +31,14 @@ namespace cstr
 			void textEntered(char c);
 
 		private:
+			Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 		
 			sf::Sprite sprite;
 			sf::Color color;
 			
-			const sf::Texture& offTex;
-			const sf::Texture& onTex;
+			const sf::Texture* offTex;
+			const sf::Texture* onTex;
 			
 			bool state;
 	};
