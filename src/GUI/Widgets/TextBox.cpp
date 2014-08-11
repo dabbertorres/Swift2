@@ -82,8 +82,11 @@ namespace cstr
 		}
 		else if(c == 8)
 		{
-			string.erase(string.size() - 1);
-			text.setString(string);
+			if(string.size() > 0)
+			{
+				string.erase(string.size() - 1);
+				text.setString(string);
+			}
 		}
 	}
 	
