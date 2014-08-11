@@ -67,6 +67,8 @@ namespace swift
 		assets.loadResourceFolder("./data/scripts");
 		assets.loadResourceFolder("./data/skeletons");
 		assets.loadResourceFolder("./data/sounds");
+		
+		log << '\n';
 
 		mods.loadMods("./data/mods");
 
@@ -112,6 +114,7 @@ namespace swift
 		Script::setWindow(window);
 		Script::setAssetManager(assets);
 		Script::setClock(GameTime);
+		Script::setSettings(settings);
 
 		// state setup
 		currentState = new MainMenu(window, assets);

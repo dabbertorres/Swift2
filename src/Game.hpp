@@ -69,6 +69,7 @@
 /* Resource headers */
 #include "ResourceManager/AssetManager.hpp"
 #include "ResourceManager/ModManager.hpp"
+#include "ResourceManager/Dictionary.hpp"
 
 namespace swift
 {	
@@ -133,9 +134,10 @@ namespace swift
 			bool running;				// The game is running or not, for continuing/ending the game loop
 			sf::Font defaultFont;
 			
-			/* Resource Managers */
+			/* Resources */
 			AssetManager assets;
 			ModManager mods;
+			//Dictionary dictionary;
 			
 			/* States */
 			State* currentState;
