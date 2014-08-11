@@ -1,5 +1,5 @@
-#ifndef ASSETMANAGER_HPP
-#define ASSETMANAGER_HPP
+#ifndef ASSET_MANAGER_HPP
+#define ASSET_MANAGER_HPP
 
 #include <map>
 #include <array>
@@ -21,6 +21,7 @@
 
 namespace swift
 {
+	class Script;
 	class AssetManager
 	{
 		public:
@@ -72,4 +73,4 @@ namespace swift
 	};
 }
 
-#endif // ASSETMANAGER_HPP
+#endif // ASSET_MANAGER_HPP

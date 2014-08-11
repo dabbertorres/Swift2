@@ -1,7 +1,5 @@
 #include "AssetManager.hpp"
 
-#include <iostream>
-
 namespace swift
 {
 	AssetManager::AssetManager()
@@ -146,7 +144,6 @@ namespace swift
 		// this if chain checks what folder the file is in
 		if(file.find("/textures/") != std::string::npos)
 		{
-			// I can construct things in place using a piecewise_construct combined with a std::<container_type>.emplace(Args&& args ...)
 			textures.emplace(file, new sf::Texture());
 
 			if(!textures[file]->loadFromFile(file))
@@ -157,7 +154,7 @@ namespace swift
 			}
 			textures[file]->setSmooth(smooth);
 
-			log << "Texture: " << file << '\n';
+			log << "Texture:\t" << file << '\n';
 		}
 		else if(file.find("/skeletons/") != std::string::npos)
 		{
@@ -174,7 +171,7 @@ namespace swift
 				return false;
 			}
 
-			log << "Sound: \t " << file << '\n';
+			log << "Sound:\t" << file << '\n';
 		}
 		else if(file.find("/music/") != std::string::npos)
 		{
@@ -187,7 +184,7 @@ namespace swift
 				return false;
 			}
 
-			log << "Music: \t " << file << '\n';
+			log << "Music:\t" << file << '\n';
 		}
 		else if(file.find("/fonts/") != std::string::npos)
 		{
@@ -200,7 +197,7 @@ namespace swift
 				return false;
 			}
 
-			log << "Font: \t " << file << '\n';
+			log << "Font:\t" << file << '\n';
 		}
 		else if(file.find("/scripts/") != std::string::npos)
 		{
@@ -212,6 +209,8 @@ namespace swift
 				scripts.erase(file);
 				return false;
 			}
+			
+			log << "Script:\t" << file << '\n';
 		}
 		else if(file.find(".txt") != std::string::npos)
 		{
