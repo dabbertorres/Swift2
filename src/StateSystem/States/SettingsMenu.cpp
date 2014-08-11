@@ -1,5 +1,7 @@
 #include "SettingsMenu.hpp"
 
+#include "../../ResourceManager/AssetManager.hpp"
+
 namespace swift
 {
 	SettingsMenu::SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& s)
@@ -15,14 +17,11 @@ namespace swift
 
 	void SettingsMenu::setup()
 	{
-		activeScripts.push_back(&assets.getScript("./data/scripts/settingsMenu.lua"));
+		Script* setup = &assets.getScript("./data/scripts/settingsMenu.lua");
 		
-		for(auto& s : activeScripts)
-		{
-			s->start();
-		}
-		
-		setupButtons();
+		setup->setGUI(gui);
+		setup->setStateReturn(returnType);
+		setup->start();
 	}
 	
 	void SettingsMenu::handleEvent(sf::Event &event)
@@ -34,19 +33,9 @@ namespace swift
 	
 	void SettingsMenu::update(sf::Time /*dt*/)
 	{
-		updateScripts();
+		Script* setup = &assets.getScript("./data/scripts/settingsMenu.lua");
 		
-		bool vsyncState = gui.getWidget(2).getState();
-		bool currentVsyncState;
-		settings.get("vsync", currentVsyncState);
-		if(currentVsyncState != vsyncState)
-			settings.set("vsync", vsyncState);
-		
-		bool fullscreenState = gui.getWidget(4).getState();
-		bool currentFullscreenState;
-		settings.get("fullscreen", currentFullscreenState);
-		if(currentFullscreenState != fullscreenState)
-			settings.set("fullscreen", fullscreenState);
+		setup->run();
 	}
 	
 	void SettingsMenu::draw(float /*e*/)
@@ -62,99 +51,5 @@ namespace swift
 	State::Type SettingsMenu::finish()
 	{
 		return returnType;
-	}
-	
-	void SettingsMenu::setupButtons()
-	{
-		// return to mainMenu button
-		struct
-		{
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			std::string str = "";
-		} mainMenuReturnData;
-		
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("mainMenuReturnW", mainMenuReturnData.w);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("mainMenuReturnH", mainMenuReturnData.h);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("mainMenuReturnX", mainMenuReturnData.x);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("mainMenuReturnY", mainMenuReturnData.y);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("mainMenuReturnStr", mainMenuReturnData.str);
-		
-		cstr::Button& mainMenuButton = gui.addButton({mainMenuReturnData.x, mainMenuReturnData.y, mainMenuReturnData.w, mainMenuReturnData.h}, assets.getTexture("./data/textures/button.png"), [&]()
-		{
-			returnType = State::Type::MainMenu;
-		});
-		
-		mainMenuButton.setText(mainMenuReturnData.str);
-		mainMenuButton.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
-		
-		// v-sync toggle
-		struct
-		{
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			unsigned size = 0;
-			std::string str = "";
-		} vsyncToggleData;
-		
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncW", vsyncToggleData.w);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncH", vsyncToggleData.h);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncX", vsyncToggleData.x);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncY", vsyncToggleData.y);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncSize", vsyncToggleData.size);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("vsyncStr", vsyncToggleData.str);
-		
-		bool vsyncState;
-		settings.get("vsync", vsyncState);
-		
-		cstr::Label& vsyncLabel = gui.addLabel({static_cast<float>(vsyncToggleData.x), 
-												static_cast<float>(vsyncToggleData.y)},
-												vsyncToggleData.str,
-												assets.getFont("./data/fonts/DroidSansMono.ttf"));
-		vsyncLabel.setCharacterSize(vsyncToggleData.size);
-		
-		cstr::Toggle& vsyncToggle = gui.addToggle(	{vsyncToggleData.x + static_cast<int>(vsyncLabel.getGlobalBounds().width) + 5, vsyncToggleData.y, vsyncToggleData.w, vsyncToggleData.h},
-													assets.getTexture("./data/textures/toggleOff.png"),
-													assets.getTexture("./data/textures/toggleOn.png"),
-													vsyncState);
-													
-		// fullscreen toggle
-		struct
-		{
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			unsigned size = 0;
-			std::string str = "";
-		} fullscreenToggleData;
-		
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenW", fullscreenToggleData.w);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenH", fullscreenToggleData.h);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenX", fullscreenToggleData.x);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenY", fullscreenToggleData.y);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenSize", fullscreenToggleData.size);
-		assets.getScript("./data/scripts/settingsMenu.lua").getVariable("fullscreenStr", fullscreenToggleData.str);
-		
-		bool fullscreenState;
-		settings.get("fullscreen", fullscreenState);
-		
-		cstr::Label& fullscreenLabel = gui.addLabel({	static_cast<float>(fullscreenToggleData.x), 
-														static_cast<float>(fullscreenToggleData.y)},
-														fullscreenToggleData.str,
-														assets.getFont("./data/fonts/DroidSansMono.ttf"));
-		fullscreenLabel.setCharacterSize(fullscreenToggleData.size);
-		
-		cstr::Toggle& fullscreenToggle = gui.addToggle({fullscreenToggleData.x + static_cast<int>(fullscreenLabel.getGlobalBounds().width) + 5,
-														fullscreenToggleData.y,
-														fullscreenToggleData.w,
-														fullscreenToggleData.h},
-														assets.getTexture("./data/textures/toggleOff.png"),
-														assets.getTexture("./data/textures/toggleOn.png"),
-														fullscreenState);
 	}
 }

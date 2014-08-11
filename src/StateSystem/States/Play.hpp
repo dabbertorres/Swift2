@@ -20,17 +20,26 @@ namespace swift
 			~Play();
 
 			virtual void setup();
-			virtual void handleEvent(sf::Event &event);
+			virtual void handleEvent(sf::Event& event);
 			virtual void update(sf::Time dt);
 			virtual void draw(float e);
 			virtual bool switchFrom();
 			virtual Type finish();
 
 		private:
-			void setupButtons();
+			// sub state system
+			enum class SubState
+			{
+				Play,
+				Pause
+			};
+			
 			void setupKeyBindings();
 
-			cstr::Window gui;
+			cstr::Window hud;
+			cstr::Window pauseMenu;
+			
+			SubState state;
 	};
 }
 

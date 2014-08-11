@@ -1,47 +1,84 @@
 #include "Play.hpp"
 
+#include "../../ResourceManager/AssetManager.hpp"
+
 namespace swift
 {
-	const float PLAYER_MOVE_FORCE = 2000;
-	
 	Play::Play(sf::RenderWindow& win, AssetManager& am)
-		:	State(win, am)
+		:	State(win, am),
+			state(SubState::Play)
 	{		
 		returnType = State::Type::Play;
-		
 	}
-
+	
 	Play::~Play()
 	{
 	}
 	
 	void Play::setup()
 	{
-		activeScripts.push_back(&assets.getScript("./data/scripts/play.lua"));
+		Script* playSetup = &assets.getScript("./data/scripts/play.lua");
+		Script* pauseSetup = &assets.getScript("./data/scripts/pause.lua");
 		
-		for(auto &s : activeScripts)
-		{
-			s->start();
-		}
+		playSetup->setGUI(hud);
+		playSetup->setStateReturn(returnType);
+		playSetup->start();
 		
-		setupButtons();
+		pauseSetup->setGUI(pauseMenu);
+		pauseSetup->setKeyboard(keyboard);
+		pauseSetup->setStateReturn(returnType);
+		pauseSetup->start();
+		
+		setupKeyBindings();
 	}
 	
-	void Play::handleEvent(sf::Event &event)
+	void Play::handleEvent(sf::Event& event)
 	{
-		gui.update(event);
+		switch(state)
+		{
+			case SubState::Play:
+				hud.update(event);
+				break;
+			case SubState::Pause:
+				pauseMenu.update(event);
+				break;
+			default:
+				break;
+		}
+		
 		keyboard(event);
 		mouse(event);
 	}
 	
 	void Play::update(sf::Time /*dt*/)
 	{
-		updateScripts();
+		Script* playLogic = &assets.getScript("./data/scripts/play.lua");
+		Script* pauseLogic = &assets.getScript("./data/scripts/pause.lua");
+		
+		switch(state)
+		{
+			case SubState::Play:
+				playLogic->run();
+				break;
+			case SubState::Pause:
+				pauseLogic->run();
+				break;
+		}
 	}
 	
 	void Play::draw(float /*e*/)
 	{
-		window.draw(gui);
+		switch(state)
+		{
+			case SubState::Play:
+				window.draw(hud);
+				break;
+			case SubState::Pause:
+				window.draw(pauseMenu);
+				break;
+			default:
+				break;
+		}
 	}
 	
 	bool Play::switchFrom()
@@ -54,34 +91,11 @@ namespace swift
 		return returnType;
 	}
 	
-	void Play::setupButtons()
-	{
-		struct
-		{
-			int x = 0;
-			int y = 0;
-			int w = 0;
-			int h = 0;
-			std::string str = "";
-		} mainMenuReturnData;
-		
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnX", mainMenuReturnData.x);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnY", mainMenuReturnData.y);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnW", mainMenuReturnData.w);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnH", mainMenuReturnData.h);
-		assets.getScript("./data/scripts/play.lua").getVariable("mainMenuReturnStr", mainMenuReturnData.str);
-		
-		cstr::Button& mainMenuReturn = gui.addButton({mainMenuReturnData.x, mainMenuReturnData.y, mainMenuReturnData.w, mainMenuReturnData.h}, assets.getTexture("./data/textures/button.png"), [&]()
-		{
-			returnType = State::Type::MainMenu;
-		});
-		
-		mainMenuReturn.setText(mainMenuReturnData.str);
-		mainMenuReturn.setFont(assets.getFont("./data/fonts/DroidSansMono.ttf"));
-	}
-	
 	void Play::setupKeyBindings()
 	{
-		
+		keyboard.newBinding("PauseMenu", sf::Keyboard::Escape, [&]()
+		{
+			state = (state == SubState::Pause) ? SubState::Play : SubState::Pause;
+		}, false);
 	}
 }

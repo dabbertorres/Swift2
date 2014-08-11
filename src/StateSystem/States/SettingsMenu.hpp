@@ -5,6 +5,9 @@
 
 #include "../../Settings/Settings.hpp"
 
+/* GUI headers */
+#include "../../GUI/Window.hpp"
+
 namespace swift
 {
 	class SettingsMenu : public State
@@ -21,8 +24,6 @@ namespace swift
 			virtual Type finish();
 
 		private:
-			void setupButtons();
-			
 			cstr::Window gui;
 			
 			Settings& settings;

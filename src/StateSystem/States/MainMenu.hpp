@@ -22,8 +22,6 @@ namespace swift
 			virtual Type finish();
 
 		private:
-			void setupButtons();
-			
 			cstr::Window gui;
 	};
 }

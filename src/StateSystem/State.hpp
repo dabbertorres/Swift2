@@ -8,14 +8,9 @@
 #include "../KeyBindings/KeyboardManager.hpp"
 #include "../KeyBindings/MouseManager.hpp"
 
-/* Resource headers */
-#include "../ResourceManager/AssetManager.hpp"
-
-/* Scripting headers */
-#include "../Scripting/Script.hpp"
-
 namespace swift
-{	
+{
+	class AssetManager;
 	class State
 	{
 		public:
@@ -24,7 +19,7 @@ namespace swift
 			
 			enum Type
 			{
-				MainMenu,
+				MainMenu = 0,
 				SettingsMenu,
 				Play,
 				Exit
@@ -38,8 +33,6 @@ namespace swift
 			virtual Type finish() = 0;
 
 		protected:
-			void updateScripts();
-			
 			/* Environment */
 			sf::RenderWindow& window;
 			AssetManager& assets;
@@ -47,9 +40,6 @@ namespace swift
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
-		
-			/* Scripting */
-			std::vector<Script*> activeScripts;
 			
 			Type returnType;
 	};
