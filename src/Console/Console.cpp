@@ -1,5 +1,4 @@
 #include "Console.hpp"
-#include <iostream>
 #include <sstream>
 
 namespace swift
@@ -23,6 +22,8 @@ namespace swift
 		command.setFont(font);
 		command.setCharacterSize(FONT_SIZE);
 		command.setPosition(prompts[0].getGlobalBounds().width + 2, prompts[0].getPosition().y);
+		// work by lines... 1 sf::Text per line, but 2 strings per line, 1 for the prompt, 1 for the command
+		// may want a Line subclass for this
 	}
 
 	Console::~Console()
