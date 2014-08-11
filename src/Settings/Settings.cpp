@@ -186,7 +186,7 @@ namespace swift
 
 		std::string line, setting, value;
 
-		while(!in.eof())
+		while(in.good())
 		{
 			std::getline(in, line);
 
