@@ -27,6 +27,11 @@ namespace swift
 			{
 				bindings.emplace(std::make_pair(n, ButtonBinding(b, f, onPress)));
 			}
+			
+			void call(const std::string& k)
+			{
+				bindings.at(k).call();
+			}
 
 			bool operator()(sf::Event& e)
 			{
