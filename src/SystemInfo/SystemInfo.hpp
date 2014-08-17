@@ -51,7 +51,7 @@ namespace swift
 			osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
 			GetVersionEx(&osvi);
 		
-			return std::to_string(osvi.dwMajorVersion);
+			return std::to_string(osvi.dwMajorVersion) + '.' + std::to_string(osvi.dwMinorVersion) + '.' + std::to_string(osvi.dwBuildNumber);
 		#elif _OSX
 		// get OSX info
 		#endif
@@ -120,7 +120,7 @@ namespace swift
 			return cpuModel.substr(cpuModel.find_first_of(':') + 2);
 		#elif _WIN32
 			int cpuInfo[4];
-			__cpuid(cpuInfo, 0);
+			__cpuid(cpuInfo, 4);
 			
 			return std::to_string((cpuInfo[0] >> 4) & 0xf);
 		#elif _OSX
