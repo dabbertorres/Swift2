@@ -89,9 +89,9 @@ namespace swift
 		return totalMemStr.substr(totalMemStr.find_first_of("012345689"), totalMemStr.find_last_of(' '));
 		#elif _WIN32
 		MEMORYSTATUSEX statex;
-
 		statex.dwLength = sizeof(statex);
 		GlobalMemoryStatusEx(&statex);
+		
 		return std::to_string(statex.ullTotalPhys / 1024);	// convert to kB from B
 		#elif _OSX
 		// get OSX info

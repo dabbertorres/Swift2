@@ -32,7 +32,11 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
+<<<<<<< HEAD
 				log << "Unable to read mod folder: " << f << "\n";
+=======
+				log << "Unable to read resource folder!\n";
+>>>>>>> 6ddf77a03cd8054775bbafff5462eca43635454b
 				return false;
 			}
 
