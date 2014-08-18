@@ -10,6 +10,7 @@
 #include <iostream>
 #include <fstream>
 #include <string>
+
 #ifdef __linux__
 	#include <GL/gl.h>
 #elif _WIN32
