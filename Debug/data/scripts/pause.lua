@@ -5,7 +5,7 @@ function Start()
 	buttonWidth = 100
 	buttonHeight = 50
 	
-	setFont("./data/fonts/DroidSansMono.ttf")
+	setFont("./data/fonts/segoeui.ttf")
 	
 	resume = addButton(winW / 2 - buttonWidth / 2, winH / 2 - buttonHeight / 2 - 30, buttonWidth, buttonHeight, "./data/textures/button.png", playReturn)
 	resume:setText("Resume")

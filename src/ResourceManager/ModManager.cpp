@@ -24,7 +24,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			log << "Unable to open resource folder!\n";
+			log << "Unable to open mod folder: " << f << "\n";
 			return false;
 		}
 
@@ -32,7 +32,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				log << "Unable to read resource folder!\n";
+				log << "Unable to read mod folder: " << f << "\n";
 				return false;
 			}
 

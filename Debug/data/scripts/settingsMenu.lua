@@ -7,7 +7,7 @@ function Start()
 	buttonHeight = 50
 	labelSize = 35
 	
-	setFont("./data/fonts/DroidSansMono.ttf")
+	setFont("./data/fonts/segoeui.ttf")
 	
 	mainMenuReturnStr = "Main Menu"
 	mainMenu = addButton(winW - buttonWidth - 10, winH - buttonHeight - 10, buttonWidth, buttonHeight, "./data/textures/button.png", mainMenuReturn)

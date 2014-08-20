@@ -1,7 +1,8 @@
 #ifdef __linux__
-#include <sys/utsname.h>
+	#include <sys/utsname.h>
 #elif _WIN32
-#include <windows.h>
+	#include <windows.h>
+	#include <intrin.h>
 #elif _OSX
 //some OSX header
 #endif
@@ -9,7 +10,12 @@
 #include <iostream>
 #include <fstream>
 #include <string>
-#include <GL/gl.h>
+
+#ifdef __linux__
+	#include <GL/gl.h>
+#elif _WIN32
+	#include <GL/glew.h>
+#endif
 
 namespace swift
 {
@@ -17,16 +23,16 @@ namespace swift
 	std::string getOSName()
 	{
 		#ifdef __linux__
-		utsname linuxInfo;
-		
-		if(uname(&linuxInfo) == -1)
-			return "";
+			utsname linuxInfo;
 			
-		return static_cast<std::string>(linuxInfo.sysname);
+			if(uname(&linuxInfo) == -1)
+				return "";
+				
+			return static_cast<std::string>(linuxInfo.sysname);
 		#elif _WIN32
-		// get windows info
+			return "Windows";
 		#elif _OSX
-		// get OSX info
+			return "OSX";
 		#endif
 	}
 	
@@ -34,14 +40,19 @@ namespace swift
 	std::string getOSVersion()
 	{
 		#ifdef __linux__
-		utsname linuxInfo;
+			utsname linuxInfo;
 		
-		if(uname(&linuxInfo) == -1)
-			return "";
+			if(uname(&linuxInfo) == -1)
+				return "";
 			
-		return static_cast<std::string>(linuxInfo.release);
+			return static_cast<std::string>(linuxInfo.release);
 		#elif _WIN32
-		// get windows info
+			OSVERSIONINFO osvi;
+			ZeroMemory(&osvi, sizeof(OSVERSIONINFO));
+			osvi.dwOSVersionInfoSize = sizeof(OSVERSIONINFO);
+			GetVersionEx(&osvi);
+		
+			return std::to_string(osvi.dwMajorVersion) + '.' + std::to_string(osvi.dwMinorVersion) + '.' + std::to_string(osvi.dwBuildNumber);
 		#elif _OSX
 		// get OSX info
 		#endif
@@ -51,14 +62,17 @@ namespace swift
 	std::string getOSArch()
 	{
 		#ifdef __linux__
-		utsname linuxInfo;
+			utsname linuxInfo;
 		
-		if(uname(&linuxInfo) == -1)
-			return "";
+			if(uname(&linuxInfo) == -1)
+				return "";
 			
-		return static_cast<std::string>(linuxInfo.machine);
+			return static_cast<std::string>(linuxInfo.machine);
 		#elif _WIN32
-		// get windows info
+			SYSTEM_INFO siSysInfo;
+			GetSystemInfo(&siSysInfo);
+		
+			return std::to_string(siSysInfo.dwProcessorType);
 		#elif _OSX
 		// get OSX info
 		#endif
@@ -68,26 +82,23 @@ namespace swift
 	std::string getTotalMem()
 	{
 		#ifdef __linux__
-		std::ifstream fin;
-		fin.open("/proc/meminfo");
-		std::string totalMemStr = "";
+			std::ifstream fin;
+			fin.open("/proc/meminfo");
+			std::string totalMemStr = "";
 		
-		// while can't find "MemTotal" in the string
-		while(totalMemStr.find("MemTotal") == std::string::npos)
-			std::getline(fin, totalMemStr);
+			// while can't find "MemTotal" in the string
+			while(totalMemStr.find("MemTotal") == std::string::npos)
+				std::getline(fin, totalMemStr);
 			
-		fin.close();
+			fin.close();
 		
-		return totalMemStr.substr(totalMemStr.find_first_of("012345689"), totalMemStr.find_last_of(' '));
+			return totalMemStr.substr(totalMemStr.find_first_of("012345689"), totalMemStr.find_last_of(' '));
 		#elif _WIN32
-		MEMORYSTATUSEX statex;
+			MEMORYSTATUSEX statex;
+			statex.dwLength = sizeof(statex);
+			GlobalMemoryStatusEx(&statex);
 		
-		statex.dwLength = sizeof(statex);
-		
-		GlobalMemoryStatusEx(&statex);
-		
-		return std::string(statex.ullTotalPhys / 1024);	// convert to kB from B
-		
+			return std::to_string(statex.ullTotalPhys / 1024);	// convert to kB from B
 		#elif _OSX
 		// get OSX info
 		#endif
@@ -97,23 +108,22 @@ namespace swift
 	std::string getCPUModel()
 	{
 		#ifdef __linux__
-		std::ifstream fin;
-		fin.open("/proc/cpuinfo");
-		std::string cpuModel = "";
+			std::ifstream fin;
+			fin.open("/proc/cpuinfo");
+			std::string cpuModel = "";
 		
-		// while can't find "MemTotal" in the string
-		while(cpuModel.find("model name") == std::string::npos)
-			std::getline(fin, cpuModel);
+			// while can't find "MemTotal" in the string
+			while(cpuModel.find("model name") == std::string::npos)
+				std::getline(fin, cpuModel);
 			
-		fin.close();
+			fin.close();
 		
-		return cpuModel.substr(cpuModel.find_first_of(':') + 2);
+			return cpuModel.substr(cpuModel.find_first_of(':') + 2);
 		#elif _WIN32
-		SYSTEM_INFO siSysInfo;
-		
-		GetSystemInfo(&siSysInfo);
-		
-		return siSysInfo.dwProcessorType;
+			int cpuInfo[4];
+			__cpuid(cpuInfo, 4);
+			
+			return std::to_string((cpuInfo[0] >> 4) & 0xf);
 		#elif _OSX
 		// get OSX info
 		#endif

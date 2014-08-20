@@ -77,7 +77,7 @@ namespace swift
 			assets.loadMod(m.second.mod);
 		}
 		
-		defaultFont = assets.getFont("./data/fonts/DroidSansMono.ttf");
+		defaultFont = assets.getFont("./data/fonts/segoeui.ttf");
 		
 		// add some default keybindings
 		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
