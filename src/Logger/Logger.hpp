@@ -51,6 +51,12 @@ namespace swift
 			{
 				fout << text;
 				fout.flush();
+				
+				if(text.find("[ERROR]"))
+					errors++;
+				if(text.find("[WARNING]"))
+					warnings++;
+				
 				return *this;
 			}
 
