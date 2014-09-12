@@ -103,64 +103,82 @@ namespace swift
 		return false;
 	}
 
-	void Settings::set(const std::string& setting, std::string& value)
+	bool Settings::set(const std::string& setting, std::string& value)
 	{
 		int i = findIndex(setting);
 		if(i > -1)
 		{
 			data[i].second = value;
+			changed = true;
+			return true;
 		}
-		changed = true;
+		
+		return false;
 	}
 
-	void Settings::set(const std::string& setting, bool& value)
+	bool Settings::set(const std::string& setting, bool& value)
 	{
 		int i = findIndex(setting);
 		if(i > -1)
 		{
 			data[i].second = value ? "true" : "false";
+			changed = true;
+			return true;
 		}
-		changed = true;
+		
+		return false;
 	}
 
-	void Settings::set(const std::string& setting, char& value)
+	bool Settings::set(const std::string& setting, char& value)
 	{
 		int i = findIndex(setting);
 		if(i > -1)
 		{
 			data[i].second = value;
+			changed = true;
+			return true;
 		}
-		changed = true;
+		
+		return false;
 	}
 
-	void Settings::set(const std::string& setting, int& value)
+	bool Settings::set(const std::string& setting, int& value)
 	{
 		int i = findIndex(setting);
 		if(i > -1)
 		{
 			data[i].second = std::to_string(value);
+			changed = true;
+			return true;
 		}
-		changed = true;
+		
+		return false;
 	}
 	
-	void Settings::set(const std::string& setting, unsigned& value)
+	bool Settings::set(const std::string& setting, unsigned& value)
 	{
 		int i = findIndex(setting);
 		if(i > -1)
 		{
 			data[i].second = std::to_string(value);
+			changed = true;
+			return true;
 		}
-		changed = true;
+		
+		return false;
 	}
 
-	void Settings::set(const std::string& setting, float& value)
+	bool Settings::set(const std::string& setting, float& value)
 	{
 		int i = findIndex(setting);
 		if(i > -1)
 		{
 			data[i].second = std::to_string(value);
+			changed = true;
+			return true;
 		}
-		changed = true;
+		
+		return false;
 	}
 
 	int Settings::findIndex(const std::string& setting) const

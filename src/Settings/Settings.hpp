@@ -37,12 +37,12 @@ namespace swift
 
 			// Accepts the setting name, setting
 			// and value, the variable to set the value of setting to
-			void set(const std::string& setting, std::string& value);
-			void set(const std::string& setting, bool& value);
-			void set(const std::string& setting, char& value);
-			void set(const std::string& setting, int& value);
-			void set(const std::string& setting, unsigned& value);
-			void set(const std::string& setting, float& value);
+			bool set(const std::string& setting, std::string& value);
+			bool set(const std::string& setting, bool& value);
+			bool set(const std::string& setting, char& value);
+			bool set(const std::string& setting, int& value);
+			bool set(const std::string& setting, unsigned& value);
+			bool set(const std::string& setting, float& value);
 
 		private:
 			int findIndex(const std::string& setting) const;
