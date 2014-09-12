@@ -4,19 +4,19 @@
 
 namespace swift
 {
-	Game::Game()
-		:	console(500, 200, defaultFont, "[swift2]:")
+	Game::Game(const std::string& t, unsigned tps)
+		:	running(false),
+			title(t),
+			console(500, 200, defaultFont, "$:"),
+			graphics(Quality::Medium),
+			smoothing(true),
+			fullscreen(false),
+			verticalSync(true),
+			resolution({800, 600}),
+			soundLevel(100),
+			musicLevel(75),
+			ticksPerSecond(tps)
 	{
-		graphics = Quality::Medium;
-		smoothing = true;
-		verticalSync = true;
-		fullscreen = false;
-		resolution.x = 800;
-		resolution.y = 600;
-		running = false;
-
-		// engine integral settings
-		ticksPerSecond = 60;
 	}
 
 	Game::~Game()
@@ -29,7 +29,7 @@ namespace swift
 	// Such as setting up the scripting virtual machine
 	// and setting game quality settings.
 	// That's about it
-	void Game::Start(int c, char** args)
+	void Game::start(int c, char** args)
 	{
 		// c is the total arguments
 		// args is the arguments
@@ -41,9 +41,9 @@ namespace swift
 
 		// Window set up.
 		if(fullscreen)
-			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Fullscreen, contextSettings);
+			window.create(sf::VideoMode::getDesktopMode(), title, sf::Style::Fullscreen);
 		else
-			window.create(sf::VideoMode(resolution.x, resolution.y, 32), "Swift Engine", sf::Style::Titlebar | sf::Style::Close, contextSettings);
+			window.create(sf::VideoMode(resolution.x, resolution.y, 32), title, sf::Style::Titlebar | sf::Style::Close);
 		
 		// get System Info
 		log	<< "OS:\t\t" << getOSName() << '\n'
@@ -77,32 +77,7 @@ namespace swift
 			assets.loadMod(m.second.mod);
 		}
 		
-		defaultFont = assets.getFont("./data/fonts/segoeui.ttf");
-		
-		// add some default keybindings
-		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
-		{
-			console.activate(!console.isActivated());
-		});
-
-		// add some console commands
-		console.addCommand("hello", [&](ArgVec /*args*/)
-		{
-			console << "\nHello to you too!";
-			return 0;
-		});
-		
-		console.addCommand("fps", [&](ArgVec /*args*/)
-		{
-			console << "\n" << FPS.getString();
-			return 0;
-		});
-
-		console.addCommand("exit", [&](ArgVec /*args*/)
-		{
-			running = false;
-			return 0;
-		});
+		defaultFont = assets.getFont("./data/fonts/segoeuisl.ttf");
 
 		running = true;
 
@@ -127,7 +102,7 @@ namespace swift
 		currentState->setup();
 	}
 
-	void Game::GameLoop()
+	void Game::gameLoop()
 	{
 		const sf::Time dt = sf::seconds(1 / ticksPerSecond);
 
@@ -148,11 +123,11 @@ namespace swift
 
 			while(lag >= dt)
 			{
-				Update(dt);
+				update(dt);
 				lag -= dt;
 			}
 
-			Draw(lag.asSeconds() / dt.asSeconds());
+			draw(lag.asSeconds() / dt.asSeconds());
 			
 			// frames per second measurement
 			if(debug)
@@ -160,7 +135,13 @@ namespace swift
 		}
 	}
 
-	void Game::Update(sf::Time dt)
+	// Finish cleaning up memory, close cleanly, etc
+	void Game::finish()
+	{
+		window.close();
+	}
+
+	void Game::update(sf::Time dt)
 	{
 		sf::Event event;
 		while(window.pollEvent(event))
@@ -177,8 +158,9 @@ namespace swift
 
 			currentState->handleEvent(event);
 		}
-
-		currentState->update(dt);
+		
+		if(running)
+			currentState->update(dt);
 		manageStates();
 	}
 
@@ -194,24 +176,28 @@ namespace swift
 			{
 				case State::Type::MainMenu:
 					currentState = new MainMenu(window, assets);
-					currentState->setup();
 					break;
 				case State::Type::SettingsMenu:
 					currentState = new SettingsMenu(window, assets, settings);
-					currentState->setup();
 					break;
 				case State::Type::Play:
 					currentState = new Play(window, assets);
-					currentState->setup();
 					break;
 				case State::Type::Exit:
 					running = false;
 					break;
+				default:
+					log << "[ERROR]: State machine error, state not valid\n";
+					running = false;
+					break;
 			}
+			
+			if(running)
+				currentState->setup();
 		}
 	}
 
-	void Game::Draw(float e)
+	void Game::draw(float e)
 	{
 		if(running)
 		{
@@ -220,9 +206,10 @@ namespace swift
 
 			/* state drawing */
 			currentState->draw(e);
-
+			
 			/* other drawing */
 			window.draw(console);
+			
 			if(debug)
 				window.draw(FPS);
 
@@ -230,11 +217,36 @@ namespace swift
 			window.display();
 		}
 	}
-
-	// Finish cleaning up memory, close cleanly, etc
-	void Game::Finish()
+	
+	void Game::addKeyboardCommands()
 	{
-		window.close();
+		// add some default keybindings
+		keyboard.newBinding("toggleTerminal", sf::Keyboard::BackSlash, [&]()
+		{
+			console.activate(!console.isActivated());
+		});
+	}
+			
+	void Game::addConsoleCommands()
+	{
+		// add some console commands
+		console.addCommand("hello", [&](ArgVec /*args*/)
+		{
+			console << "\nHello to you too!";
+			return 0;
+		});
+		
+		console.addCommand("fps", [&](ArgVec /*args*/)
+		{
+			console << "\n" << FPS.getString();
+			return 0;
+		});
+
+		console.addCommand("exit", [&](ArgVec /*args*/)
+		{
+			running = false;
+			return 0;
+		});
 	}
 
 	void Game::handleLaunchOps(int c, char** args)
@@ -263,7 +275,7 @@ namespace swift
 			else if(args[arg] == std::string("res"))
 			{
 				resolution.x = std::stoi(args[arg + 1]);
-				resolution.y = std::stoi(args[arg + 1]);
+				resolution.y = std::stoi(args[arg + 2]);
 				arg += 2;
 			}
 			else if(args[arg] == std::string("videoModes"))
@@ -277,6 +289,7 @@ namespace swift
 					log << "Mode #" << i << ": " << mode.width << "x" << mode.height << " - " << mode.bitsPerPixel << " bpp\n";
 					// ex: "Mode #0: 1920x1080 - 32 bbp"
 				}
+				log << '\n';
 			}
 			else
 			{

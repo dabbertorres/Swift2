@@ -2,13 +2,13 @@
 
 int main(int argc, char **argv)
 {
-	swift::Game game;
+	swift::Game game("Swift2", 60);
 	
-	game.Start(argc, argv);
+	game.start(argc, argv);
 	
-	game.GameLoop();
+	game.gameLoop();
 	
-	game.Finish();
+	game.finish();
 	
 	return 0;
 }

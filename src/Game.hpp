@@ -93,35 +93,41 @@ namespace swift
 			// A default constructor is fine for now, may want to add a constructor
 			// that accepts command line arguments at some point, for example,
 			// enabling use of that map editor I want to do.
-			Game();
+			// t = title of the window/game,
+			// tps = engine ticks per second
+			Game(const std::string& t, unsigned tps);
 			~Game();
 
 			// Let the end user say exactly when they want the engine to commence running,
 			// calling special functions and such outside of the constructor, and setting
 			// launch options
-			void Start(int c, char** args);
+			void start(int c, char** args);
 
 			// For flexibility. Want different kinds of GameLoops? Go crazy!
 			// May want to add arguments of some sort to make that actually correct...
-			void GameLoop();
+			void gameLoop();
 
 			// Clean up, save, close data, etc. Anything that you want deleted before Game
 			// gets destroyed
-			void Finish();
+			void finish();
 
 		private:
 			/* Engine */
 			// Updating game logic, handling input, memory management, etc.
 			// In a separate function to keep GameLoop looking clean and easier
 			// to comprehend
-			void Update(sf::Time dt);
+			void update(sf::Time dt);
 			
 			// Handle state changes, etc
 			void manageStates();
 			
 			// Drawing all drawable game objects, backgrounds, etc
 			// Same reason as why it has it's own function as Update
-			void Draw(float e);
+			void draw(float e);
+			
+			void addKeyboardCommands();
+			
+			void addConsoleCommands();
 			
 			// handles any launch options and sets the respective variables
 			void handleLaunchOps(int c, char** args);
@@ -133,6 +139,7 @@ namespace swift
 			sf::RenderWindow window;
 			bool running;				// The game is running or not, for continuing/ending the game loop
 			sf::Font defaultFont;
+			std::string title;
 			
 			/* Resources */
 			AssetManager assets;
@@ -151,11 +158,9 @@ namespace swift
 			Console console;
 
 			/* FPS tracking */
-			float fps;
 			sf::Text FPS;
 			
 			/* Settings */
-			sf::ContextSettings contextSettings;
 			Settings settings;
 			Settings controls;
 			
@@ -172,7 +177,7 @@ namespace swift
 
 			/* timing */
 			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
-			int framesPerSecond;	// Iterations of the GameLoop.
+			//int framesPerSecond;	// Iterations of the GameLoop.
 			float ticksPerSecond;	// Iterations of Update
 
 			/* Launch Arguments */
