@@ -55,7 +55,7 @@ namespace swift
 				
 				if(!(nameError || versionError || authorError || descriptionError))
 				{
-					log << "Ill formed info.txt for mod " << entry->d_name << ", not loading.\n";
+					log << "Ill formed info.txt for mod \"" << entry->d_name << "\", not loading.\n";
 					continue;
 				}
 				
