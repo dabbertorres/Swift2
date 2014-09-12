@@ -2,80 +2,50 @@
 
 namespace cstr
 {
-	Label::Label()
+	Label::Label(const std::string& str, const sf::Font& f)
+		:	string(str)
 	{
-		position = {0, 0};
-		text.setPosition(position);
-	}
-	
-	Label::Label(const sf::Vector2i& pos, const std::string& str, const sf::Font& font)
-	{
-		text.setFont(font);
-		text.setString(str);
-		position = {static_cast<float>(pos.x), static_cast<float>(pos.y)};
-		text.setPosition(position);
+		text.setFont(f);
+		text.setString(string);
+		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
 	}
 
 	Label::~Label()
 	{
-		
 	}
 	
-	void Label::setFont(const sf::Font& font)
+	void Label::update(sf::Event& /*event*/)
 	{
-		text.setFont(font);
+		// do nothing
 	}
-	
-	void Label::setText(const std::string& str)
-	{
-		text.setString(str);
-	}
-	
-	void Label::setTextColor(const sf::Color& tc)
-	{
-		text.setColor(tc);
-	}
-	
-	void Label::setCharacterSize(unsigned size)
-	{
-		text.setCharacterSize(size);
-	}
-	
+
 	sf::FloatRect Label::getGlobalBounds() const
 	{
 		return text.getGlobalBounds();
 	}
 	
-	bool Label::contains(sf::Vector2i /*point*/)
+	void Label::setString(const std::string& str)
 	{
-		return false;
+		string = str;
 	}
 	
-	void Label::mousePressed()
+	const std::string& Label::getString() const
 	{
-		
+		return string;
 	}
 	
-	void Label::mouseReleased()
+	void Label::setPosition(sf::Vector2i pos)
 	{
-		
+		text.setPosition(static_cast<sf::Vector2f>(pos));
 	}
 	
-	void Label::mouseMovedOn()
+	void Label::setSize(sf::Vector2u size)
 	{
-		
+		text.setCharacterSize(size.y);
+		text.setCharacterSize(text.getCharacterSize() * static_cast<float>(size.x / text.getGlobalBounds().width));
+		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
 	}
 	
-	void Label::mouseMovedOff()
-	{
-		
-	}
-	
-	void Label::textEntered(char /*c*/)
-	{
-		
-	}
-			
 	void Label::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(text, states);

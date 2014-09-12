@@ -1,116 +1,108 @@
 #include "Button.hpp"
 
-const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
-
 namespace cstr
 {
-	Button::Button()
-	{
-		sprite.setPosition({0, 0});
-	}
+	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
 	
-	Button::Button(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f)
-		:	function(f)
+	Button::Button(sf::Vector2u size, const sf::Texture& tex, const std::function<void()>& f)
+		:	baseColor({128, 128, 128}),
+			string(""),
+			callback(f)
 	{
 		sprite.setTexture(tex);
-		sprite.setPosition(rect.left, rect.top);
-		sprite.setScale(rect.width / static_cast<float>(tex.getSize().x), rect.height / static_cast<float>(tex.getSize().y));
-		color = {128, 128, 128};
-		sprite.setColor(color);
-		
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
-		text.setPosition(	sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2,
-							sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2);
+		sprite.setColor(baseColor);
+		sprite.setScale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
 	}
 
 	Button::~Button()
 	{
 	}
-	
-	void Button::setFont(const sf::Font& font)
+
+	void Button::update(sf::Event& event)
 	{
-		text.setFont(font);
-		
-		shrinkTextToFit();
-			
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
-		text.setPosition(	sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2,
-							sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2);
+		switch(event.type)
+		{
+			case sf::Event::MouseMoved:
+				if(sprite.getGlobalBounds().contains({static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)}))
+				{
+					mouseOn = true;
+					sprite.setColor(baseColor + COLOR_CHANGE);
+				}
+				else
+				{
+					mouseOn = false;
+					sprite.setColor(baseColor);
+				}
+				break;
+			case sf::Event::MouseButtonPressed:
+				if(mouseOn)
+				{
+					sprite.setColor(baseColor - COLOR_CHANGE);
+				}
+				break;
+			case sf::Event::MouseButtonReleased:
+				if(mouseOn)
+				{
+					callback();
+					sprite.setColor(baseColor);
+				}
+				break;
+			default:
+				break;
+		}
 	}
 	
-	void Button::setText(const std::string str)
+	void Button::call()
 	{
-		text.setString(str);
-		
-		shrinkTextToFit();
-			
-		text.setOrigin(text.getGlobalBounds().left + text.getGlobalBounds().width / 2, text.getGlobalBounds().top + text.getGlobalBounds().height / 2);
-		text.setPosition(	sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2,
-							sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2);
+		callback();
 	}
-	
-	void Button::setTextColor(const sf::Color& tc)
-	{
-		text.setColor(tc);
-	}
-	
-	void Button::setColor(const sf::Color& c)
-	{
-		color = c;
-		sprite.setColor(color);
-	}
-	
-	void Button::setFunction(const std::function<void()> f)
-	{
-		function = f;
-	}
-	
+
 	sf::FloatRect Button::getGlobalBounds() const
 	{
 		return sprite.getGlobalBounds();
 	}
 	
-	bool Button::contains(sf::Vector2i point)
+	void Button::setString(const std::string& str, const sf::Font& f)
 	{
-		return sprite.getGlobalBounds().contains(static_cast<sf::Vector2f>(point));
+		string = str;
+		text.setFont(f);
+		text.setString(string);
+		text.setCharacterSize(sprite.getGlobalBounds().height);
+		if(sprite.getGlobalBounds().width < text.getGlobalBounds().width)
+			text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().width - 2) / text.getGlobalBounds().width);
+		
+		text.setOrigin({text.getLocalBounds().left + text.getLocalBounds().width / 2, text.getLocalBounds().top + text.getLocalBounds().height / 2});
+		text.setPosition({sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2});
 	}
 	
-	void Button::mousePressed()
+	void Button::setString(const std::string& str)
 	{
-		sprite.setColor(color - COLOR_CHANGE);
+		setString(str, *text.getFont());
 	}
 	
-	void Button::mouseReleased()
+	const std::string& Button::getString() const
 	{
-		sprite.setColor(color);
-		function();
+		return string;
 	}
 	
-	void Button::mouseMovedOn()
+	void Button::setPosition(sf::Vector2i pos)
 	{
-		sprite.setColor(color + COLOR_CHANGE);
+		sprite.setPosition(static_cast<sf::Vector2f>(pos));
+		text.setPosition({sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2});
 	}
 	
-	void Button::mouseMovedOff()
+	void Button::setSize(sf::Vector2u size)
 	{
-		sprite.setColor(color);
+		sprite.scale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
+		
+		if(string != "")
+			setString(string, *text.getFont());
 	}
-	
-	void Button::textEntered(char /*c*/)
-	{
-		// do nothing
-	}
-	
+
 	void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(sprite, states);
-		target.draw(text, states);
-	}
-	
-	void Button::shrinkTextToFit()
-	{
-		// the 2 here is a border
-		while(text.getGlobalBounds().width >= sprite.getGlobalBounds().width - 2)
-			text.setCharacterSize(text.getCharacterSize() - 1);
+		if(string.length() > 0)
+			target.draw(text, states);
 	}
 }

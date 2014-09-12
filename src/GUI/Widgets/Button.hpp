@@ -1,54 +1,47 @@
 #ifndef BUTTON_HPP
 #define BUTTON_HPP
 
-#include "../Widget.hpp" // Base class: sgui::Widget
+#include "../Widget.hpp"
+
+#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Sprite.hpp>
+#include <SFML/Graphics/Texture.hpp>
+#include <SFML/Graphics/Color.hpp>
 
 #include <functional>
-
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
+#include <string>
 
 namespace cstr
 {
 	class Button : public Widget
 	{
-		friend class Window;
-		
 		public:
-			Button();	// lua use only
-			virtual ~Button();
+			Button(sf::Vector2u size, const sf::Texture& tex, const std::function<void()>& f);
+			~Button();
 			
-			void setFont(const sf::Font& font);
-			void setText(const std::string str);
-			void setTextColor(const sf::Color& tc);
+			virtual void update(sf::Event& event);
 			
-			void setColor(const sf::Color& c);
+			void call();
+
+			virtual sf::FloatRect getGlobalBounds() const;
 			
-			void setFunction(const std::function<void()> f);
+			void setString(const std::string& str, const sf::Font& f);
+			void setString(const std::string& str);
 			
-			sf::FloatRect getGlobalBounds() const;
-		
-		protected:
-			virtual bool contains(sf::Vector2i point);
-			virtual void mousePressed();
-			virtual void mouseReleased();
-			virtual void mouseMovedOn();
-			virtual void mouseMovedOff();
-			virtual void textEntered(char c);
+			const std::string& getString() const;
+			
+			virtual void setPosition(sf::Vector2i pos);
+			
+			virtual void setSize(sf::Vector2u size);
 
 		private:
-			Button(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
-			void shrinkTextToFit();
-			
 			sf::Sprite sprite;
-			sf::Color color;
-			
-			std::function<void()> function;
-			
 			sf::Text text;
+			sf::Color baseColor;
+			std::string string;
+			std::function<void()> callback;
 	};
 }
 

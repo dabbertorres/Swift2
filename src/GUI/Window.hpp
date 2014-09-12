@@ -13,10 +13,7 @@
 #include <SFML/Graphics/RenderStates.hpp>
 
 #include "Widget.hpp"
-#include "Widgets/Button.hpp"
-#include "Widgets/Label.hpp"
-#include "Widgets/Toggle.hpp"
-#include "Widgets/TextBox.hpp"
+#include "Container.hpp"
 
 namespace cstr
 {
@@ -28,23 +25,28 @@ namespace cstr
 			
 			void update(sf::Event& event);
 			
+			template<typename C>
+			C& addContainer(C* c);
+			
 			void setFont(sf::Font& font);
-			
-			Label& addLabel(const sf::Vector2i& pos, const std::string& str);
-			Button& addButton(sf::IntRect rect, const sf::Texture& tex, const std::function<void()>& f);
-			Toggle& addToggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
-			TextBox& addTextBox(sf::IntRect rect, const sf::Color& in, const sf::Color& out);
-			
-			Widget& getWidget(unsigned i);
 
 		private:
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
-			std::vector<Widget*> widgets;
-			Widget* activeWidget;
+			std::vector<Container*> containers;
 			
 			sf::Font* font;
 	};
+	
+	template<typename C>
+	C& Window::addContainer(C* c)
+	{
+		static_assert(std::is_base_of<Container, C>::value, "C must be a child of cstr::Container");
+		
+		containers.push_back(c);
+		
+		return *c;
+	}
 }
 
 #endif // WINDOW_HPP

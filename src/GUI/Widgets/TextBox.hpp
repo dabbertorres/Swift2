@@ -1,45 +1,47 @@
 #ifndef TEXTBOX_HPP
 #define TEXTBOX_HPP
 
-#include "../Widget.hpp" // Base class: sgui::Widget
+#include "../Widget.hpp"
 
 #include <string>
-
-#include <SFML/Graphics/RectangleShape.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/RectangleShape.hpp>
 
 namespace cstr
 {
 	class TextBox : public Widget
 	{
-		friend class Window;
-		
 		public:
-			TextBox();	// lua use only
+			TextBox(sf::Vector2u size, sf::Font& f, const std::string& d, const std::string& c = "");
 			~TextBox();
+
+			virtual void update(sf::Event& event);
 			
-			void setFont(const sf::Font& font);
-			void setTextColor(const sf::Color& tc);
-			void setCharacterSize(unsigned size);
+			virtual sf::FloatRect getGlobalBounds() const;
+
+			virtual void setPosition(sf::Vector2i pos);
+
+			virtual void setSize(sf::Vector2u size);
 			
 			const std::string& getString() const;
-			sf::FloatRect getGlobalBounds() const;
-		
-		protected:
-			virtual bool contains(sf::Vector2i point);
-			virtual void mousePressed();
-			virtual void mouseReleased();
-			virtual void mouseMovedOn();
-			virtual void mouseMovedOff();
-			virtual void textEntered(char c);
+			
+			void setTextColor(const sf::Color& tc);
+			
+			void setOutlineColor(const sf::Color& oc);
+			
+			void setBackgroundColor(const sf::Color& bc);
 
 		private:
-			TextBox(const sf::IntRect& ir, const sf::Color& in, const sf::Color& out, const sf::Font& f);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
-			sf::RectangleShape rect;
-			std::string string;
+			std::string defaultStr;
+			std::string currentStr;
+			
+			bool selected;
+			
 			sf::Text text;
+			
+			sf::RectangleShape border;
 	};
 }
 

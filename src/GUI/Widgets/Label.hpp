@@ -1,44 +1,35 @@
 #ifndef LABEL_HPP
 #define LABEL_HPP
 
-#include "../Widget.hpp" // Base class: sgui::Widget
+#include "../Widget.hpp"
 
-#include <string>
-
-#include <SFML/Graphics/Texture.hpp>
-#include <SFML/Graphics/Sprite.hpp>
 #include <SFML/Graphics/Text.hpp>
+#include <string>
 
 namespace cstr
 {
 	class Label : public Widget
 	{
-		friend class Window;
 		public:
-			Label();	// lua use only
-			virtual ~Label();
+			Label(const std::string& str, const sf::Font& f);
+			~Label();
 			
-			void setFont(const sf::Font& font);
-			void setText(const std::string& str);
-			void setTextColor(const sf::Color& tc);
-			void setCharacterSize(unsigned size);
-			
-			sf::FloatRect getGlobalBounds() const;
+			virtual void update(sf::Event& event);
 
-		protected:
-			virtual bool contains(sf::Vector2i point);
-			virtual void mousePressed();
-			virtual void mouseReleased();
-			virtual void mouseMovedOn();
-			virtual void mouseMovedOff();
-			virtual void textEntered(char c);
+			virtual sf::FloatRect getGlobalBounds() const;
+			
+			void setString(const std::string& str);
+			const std::string& getString() const;
+			
+			virtual void setPosition(sf::Vector2i pos);
+			
+			virtual void setSize(sf::Vector2u size);
 
 		private:
-			Label(const sf::Vector2i& pos, const std::string& str, const sf::Font& font);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
 			sf::Text text;
-			sf::Vector2f position;
+			std::string string;
 	};
 }
 

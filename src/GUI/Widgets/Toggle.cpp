@@ -1,79 +1,79 @@
 #include "Toggle.hpp"
 
-const sf::Color COLOR_CHANGE = sf::Color(40, 40, 40, 0);
-
 namespace cstr
 {
-	Toggle::Toggle()
-		: offTex(nullptr), onTex(nullptr)
-	{
-		sprite.setPosition({0, 0});
-	}
+	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
 	
-	Toggle::Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s)
-		:	offTex(&off), onTex(&on), state(s)
+	Toggle::Toggle(sf::Vector2u size, const sf::Texture& on, const sf::Texture& off, bool s, std::function<void(bool s)> c)
+		:	baseColor({128, 128, 128}),
+			onTex(on),
+			offTex(off),
+			callback(c),
+			state(s)
 	{
-		sprite.setTexture(state ? *onTex : *offTex);
-		sprite.setPosition(rect.left, rect.top);
-		sprite.setScale(static_cast<float>(rect.width) / static_cast<float>(off.getSize().x), 
-						static_cast<float>(rect.height) / static_cast<float>(off.getSize().y));
-		
-		color = {128, 128, 128};
-		sprite.setColor(color);
+		sprite.setTexture(state ? onTex : offTex);
+		sprite.setColor(baseColor);
+		sprite.scale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
 	}
 
 	Toggle::~Toggle()
 	{
 	}
-
+	
 	bool Toggle::getState() const
 	{
 		return state;
 	}
-	
-	void Toggle::setState(bool s)
+
+	void Toggle::update(sf::Event& event)
 	{
-		state = s;
-		sprite.setTexture(state ? *onTex : *offTex);
+		switch(event.type)
+		{
+			case sf::Event::MouseMoved:
+				if(sprite.getGlobalBounds().contains({static_cast<float>(event.mouseMove.x), static_cast<float>(event.mouseMove.y)}))
+				{
+					mouseOn = true;
+					sprite.setColor(baseColor + COLOR_CHANGE);
+				}
+				else
+				{
+					mouseOn = false;
+					sprite.setColor(baseColor);
+				}
+				break;
+			case sf::Event::MouseButtonPressed:
+				if(mouseOn)
+					sprite.setColor(baseColor - COLOR_CHANGE);
+				break;
+			case sf::Event::MouseButtonReleased:
+				if(mouseOn)
+				{
+					state = !state;
+					sprite.setTexture(state ? onTex : offTex);
+					sprite.setColor(baseColor);
+					callback(state);
+				}
+				break;
+			default:
+				break;
+		}
 	}
 	
 	sf::FloatRect Toggle::getGlobalBounds() const
 	{
 		return sprite.getGlobalBounds();
 	}
-
-	bool Toggle::contains(sf::Vector2i point)
+	
+	void Toggle::setPosition(sf::Vector2i pos)
 	{
-		return sprite.getGlobalBounds().contains(static_cast<sf::Vector2f>(point));
+		sprite.setPosition(static_cast<sf::Vector2f>(pos));
 	}
 	
-	void Toggle::mousePressed()
+	void Toggle::setSize(sf::Vector2u size)
 	{
-		sprite.setColor(color - COLOR_CHANGE);
+		sprite.scale({size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height});
 	}
 	
-	void Toggle::mouseReleased()
-	{
-		sprite.setColor(color);
-		state = !state;
-		sprite.setTexture(state ? *onTex : *offTex);
-	}
-	
-	void Toggle::mouseMovedOn()
-	{
-		sprite.setColor(color + COLOR_CHANGE);
-	}
-	
-	void Toggle::mouseMovedOff()
-	{
-		sprite.setColor(color);
-	}
-	
-	void Toggle::textEntered(char /*c*/)
-	{
-		// do nothing
-	}
-
 	void Toggle::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		target.draw(sprite, states);

@@ -1,44 +1,41 @@
 #ifndef TOGGLE_HPP
 #define TOGGLE_HPP
 
-#include "../Widget.hpp" // Base class: sgui::Widget
+#include "../Widget.hpp"
 
-#include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Sprite.hpp>
-#include <SFML/Graphics/Text.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Texture.hpp>
+
+#include <functional>
 
 namespace cstr
 {
 	class Toggle : public Widget
 	{
-		friend class Window;
-		
 		public:
-			Toggle();	// lua use only
+			Toggle(sf::Vector2u size, const sf::Texture& on, const sf::Texture& off, bool s, std::function<void(bool s)> c);
 			~Toggle();
 			
 			bool getState() const;
-			void setState(bool s);
-			
-			sf::FloatRect getGlobalBounds() const;
-			
-		protected:
-			bool contains(sf::Vector2i point);
-			void mousePressed();
-			void mouseReleased();
-			void mouseMovedOn();
-			void mouseMovedOff();
-			void textEntered(char c);
+
+			virtual void update(sf::Event& event);
+
+			virtual sf::FloatRect getGlobalBounds() const;
+
+			virtual void setPosition(sf::Vector2i pos);
+
+			virtual void setSize(sf::Vector2u size);
 
 		private:
-			Toggle(sf::IntRect rect, const sf::Texture& off, const sf::Texture& on, bool s);
-			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-		
-			sf::Sprite sprite;
-			sf::Color color;
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
-			const sf::Texture* offTex;
-			const sf::Texture* onTex;
+			sf::Sprite sprite;
+			sf::Color baseColor;
+			const sf::Texture& onTex;
+			const sf::Texture& offTex;
+			
+			std::function<void(bool s)> callback;
 			
 			bool state;
 	};
