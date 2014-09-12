@@ -7,6 +7,7 @@
 
 /* GUI headers */
 #include "../../GUI/Window.hpp"
+#include "../../GUI/Widgets/Button.hpp"
 
 namespace swift
 {
@@ -25,7 +26,7 @@ namespace swift
 
 		private:
 			cstr::Window gui;
-			
+			cstr::Button* graphicsButton;
 			Settings& settings;
 	};
 }
