@@ -7,7 +7,7 @@ function Start()
 	buttonHeight = 50
 	labelSize = 35
 	
-	setFont("./data/fonts/segoeui.ttf")
+	--[[setFont("./data/fonts/segoeuisl.ttf")
 	
 	mainMenuReturnStr = "Main Menu"
 	mainMenu = addButton(winW - buttonWidth - 10, winH - buttonHeight - 10, buttonWidth, buttonHeight, "./data/textures/button.png", mainMenuReturn)
@@ -25,15 +25,13 @@ function Start()
 	fullscreenLabel:setTextSize(labelSize)
 	
 	local found, value = getSettingBool("fullscreen")
-	fullscreenToggle = addToggle(250, 75, buttonHeight, buttonHeight, "./data/textures/toggleOff.png", "./data/textures/toggleOn.png", value)
-	
-	
+	fullscreenToggle = addToggle(250, 75, buttonHeight, buttonHeight, "./data/textures/toggleOff.png", "./data/textures/toggleOn.png", value)]]
 end
 
 function Update()
-	changeSetting("vsync", vsyncToggle:getState())
+	--changeSetting("vsync", vsyncToggle:getState())
 	
-	changeSetting("fullscreen", fullscreenToggle:getState())
+	--changeSetting("fullscreen", fullscreenToggle:getState())
 end
 
 function mainMenuReturn()
@@ -48,8 +46,4 @@ function changeSetting(setting, new)
 			setSettingBool(setting, new)
 		end
 	end
-end
-
-function testFunc()
-	
 end

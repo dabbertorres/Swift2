@@ -5,7 +5,7 @@ function Start()
 	buttonWidth = 100
 	buttonHeight = 50
 	
-	setFont("./data/fonts/segoeui.ttf")
+	--[[setFont("./data/fonts/segoeuisl.ttf")
 	
 	title = addLabel(winW / 2 - 75, winH / 8, "Swift2")
 	title:setTextSize(50)
@@ -17,7 +17,7 @@ function Start()
 	settings:setText("Settings")
 	
 	exit = addButton(winW / 2 - buttonWidth / 2, winH / 2 + 20 + buttonHeight, buttonWidth, buttonHeight, "./data/textures/button.png", exitFunc)
-	exit:setText("Exit")
+	exit:setText("Exit")]]
 	
 	Done = true
 end
