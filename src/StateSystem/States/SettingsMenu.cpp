@@ -78,7 +78,7 @@ namespace swift
 		// row for graphics label and button
 		cstr::Row& graphicsRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& graphicsRowLabelCol = graphicsRow.addWidget(new cstr::Column({200, 50}, false));
-		vsyncLabelCol.addWidget(new cstr::Label("Graphics:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		graphicsRowLabelCol.addWidget(new cstr::Label("Graphics:", assets.getFont("./data/fonts/segoeuisl.ttf")));
 		graphicsRow.addWidget(new cstr::Spacer({400, 50}));
 		cstr::Column& graphicsRowButtonCol = graphicsRow.addWidget(new cstr::Column({100, 50}, false));
 		graphicsButton = &graphicsRowButtonCol.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
@@ -132,7 +132,7 @@ namespace swift
 		textEnterLabelCol.addWidget(new cstr::Label("Name:", assets.getFont("./data/fonts/segoeuisl.ttf")));
 		textEnterRow.addWidget(new cstr::Spacer({100, 50}));
 		cstr::Column& textEnterCol = textEnterRow.addWidget(new cstr::Column({400, 50}, false));
-		textEnterCol.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), ""));
+		textEnterCol.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), "name"));
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 100}));
 		
