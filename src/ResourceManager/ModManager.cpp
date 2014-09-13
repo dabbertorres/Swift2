@@ -24,7 +24,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			log << "Unable to open mod folder: " << f << "\n";
+			log << "[ERROR]: Unable to open mod folder: " << f << "\n";
 			return false;
 		}
 
@@ -32,7 +32,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				log << "Unable to read mod folder: " << f << "\n";
+				log << "[WARNING]: Unable to read mod folder: " << f << "\n";
 				return false;
 			}
 
@@ -55,7 +55,7 @@ namespace swift
 				
 				if(!(nameError || versionError || authorError || descriptionError))
 				{
-					log << "Ill formed info.txt for mod \"" << entry->d_name << "\", not loading.\n";
+					log << "[WARNING]: Ill formed info.txt for mod \"" << entry->d_name << "\", not loading.\n";
 					continue;
 				}
 				
@@ -98,7 +98,7 @@ namespace swift
 		// error handling
 		if(dir == nullptr)
 		{
-			log << "Unable to open resource folder!\n";
+			log << "[WARNING]: Unable to open resource folder!\n";
 			return false;
 		}
 
@@ -106,7 +106,7 @@ namespace swift
 		{
 			if(entry == nullptr)
 			{
-				log << "Unable to read resource folder!\n";
+				log << "[WARNING]: Unable to read resource folder!\n";
 				return false;
 			}
 
