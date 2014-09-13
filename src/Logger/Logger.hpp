@@ -4,6 +4,8 @@
 #include <fstream>
 #include <string>
 
+#include <SFML/System/Err.hpp>
+
 namespace swift
 {
 	class Logger
@@ -21,6 +23,8 @@ namespace swift
 				{
 					fout << header << "\n\n";
 				}
+				
+				sf::err().rdbuf(0);
 			}
 
 			~Logger()
