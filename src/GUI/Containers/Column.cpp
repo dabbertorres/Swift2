@@ -64,7 +64,7 @@ namespace cstr
 				if(totalHeight > rect.height - 2 * getBorderSize())
 				{
 					w->setSize({static_cast<unsigned>(rect.width - 2 * getBorderSize()),
-								static_cast<unsigned>(rect.height / getWidgets().size() - 2 * getBorderSize())});
+								static_cast<unsigned>(w->getGlobalBounds().height * (rect.height / totalHeight) - 2 * getBorderSize())});
 				}
 				else
 				{
