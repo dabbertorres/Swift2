@@ -5,7 +5,7 @@
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
-#include <SFML/Graphics/RectangleShape.hpp>
+//#include <SFML/Graphics/RectangleShape.hpp>
 
 #include "Widget.hpp"
 
@@ -100,8 +100,8 @@ namespace cstr
 		private:
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const
 			{
-				/* debug drawing
-				sf::RectangleShape border({rect.width, rect.height});
+				// debug drawing
+				/*sf::RectangleShape border({static_cast<float>(rect.width), static_cast<float>(rect.height)});
 				border.setFillColor(sf::Color::Transparent);
 				border.setOutlineColor(sf::Color::Red);
 				border.setOutlineThickness(1);
