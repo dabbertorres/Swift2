@@ -98,7 +98,7 @@ namespace swift
 			statex.dwLength = sizeof(statex);
 			GlobalMemoryStatusEx(&statex);
 		
-			return std::to_string(statex.ullTotalPhys / 1024);	// convert to kB from B
+			return std::to_string(statex.ullTotalPhys / 1024);	// convert to KB from B
 		#elif _OSX
 		// get OSX info
 		#endif
