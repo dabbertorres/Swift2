@@ -26,6 +26,7 @@ namespace swift
 
 	void SettingsMenu::setup()
 	{
+		window.setKeyRepeatEnabled(true);
 		Script* setup = &assets.getScript("./data/scripts/settingsMenu.lua");
 		
 		setup->setGUI(gui);
@@ -127,7 +128,11 @@ namespace swift
 		
 		// row for text entering
 		cstr::Row& textEnterRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
-		textEnterRow.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), ""));
+		cstr::Column& textEnterLabelCol = textEnterRow.addWidget(new cstr::Column({200, 50}, false));
+		textEnterLabelCol.addWidget(new cstr::Label("Name:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		textEnterRow.addWidget(new cstr::Spacer({100, 50}));
+		cstr::Column& textEnterCol = textEnterRow.addWidget(new cstr::Column({400, 50}, false));
+		textEnterCol.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), ""));
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 100}));
 		

@@ -23,6 +23,7 @@ namespace swift
 	
 	void MainMenu::setup()
 	{
+		window.setKeyRepeatEnabled(true);
 		Script* setup = &assets.getScript("./data/scripts/mainMenu.lua");
 		
 		setup->setGUI(gui);

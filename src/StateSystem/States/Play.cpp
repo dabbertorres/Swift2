@@ -24,6 +24,7 @@ namespace swift
 
 	void Play::setup()
 	{
+		window.setKeyRepeatEnabled(false);
 		Script* playSetup = &assets.getScript("./data/scripts/play.lua");
 		Script* pauseSetup = &assets.getScript("./data/scripts/pause.lua");
 
