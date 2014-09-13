@@ -56,9 +56,9 @@ namespace swift
 				fout << text;
 				fout.flush();
 				
-				if(text.find("[ERROR]"))
+				if(text.find("[ERROR]") != std::string::npos)
 					errors++;
-				if(text.find("[WARNING]"))
+				if(text.find("[WARNING]") != std::string::npos)
 					warnings++;
 				
 				return *this;
