@@ -41,7 +41,6 @@ namespace cstr
 	
 	void Label::setSize(sf::Vector2u size)
 	{
-		text.setCharacterSize(size.y);
 		text.setCharacterSize(text.getCharacterSize() * static_cast<float>(size.x / text.getGlobalBounds().width));
 		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
 	}

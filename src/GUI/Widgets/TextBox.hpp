@@ -12,7 +12,7 @@ namespace cstr
 	class TextBox : public Widget
 	{
 		public:
-			TextBox(sf::Vector2u size, sf::Font& f, const std::string& d, const std::string& c = "");
+			TextBox(sf::Vector2u size, sf::Font& f, const std::string& d = "");
 			~TextBox();
 
 			virtual void update(sf::Event& event);
@@ -34,7 +34,6 @@ namespace cstr
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
-			std::string defaultStr;
 			std::string currentStr;
 			
 			bool selected;

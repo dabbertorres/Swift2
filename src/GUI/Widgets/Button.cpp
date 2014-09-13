@@ -3,6 +3,7 @@
 namespace cstr
 {
 	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
+	const int BORDER_SIZE = 1;
 	
 	Button::Button(sf::Vector2u size, const sf::Texture& tex, const std::function<void()>& f)
 		:	baseColor({128, 128, 128}),
@@ -67,10 +68,7 @@ namespace cstr
 		string = str;
 		text.setFont(f);
 		text.setString(string);
-		text.setCharacterSize(sprite.getGlobalBounds().height);
-		if(sprite.getGlobalBounds().width < text.getGlobalBounds().width)
-			text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().width - 2) / text.getGlobalBounds().width);
-		
+		text.setCharacterSize(text.getCharacterSize() * sprite.getGlobalBounds().width / text.getGlobalBounds().width - 2 * BORDER_SIZE);
 		text.setOrigin({text.getLocalBounds().left + text.getLocalBounds().width / 2, text.getLocalBounds().top + text.getLocalBounds().height / 2});
 		text.setPosition({sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2});
 	}

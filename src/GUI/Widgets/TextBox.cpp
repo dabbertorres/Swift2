@@ -2,22 +2,24 @@
 
 namespace cstr
 {
-	TextBox::TextBox(sf::Vector2u size, sf::Font& f, const std::string& d, const std::string& c)
-		:	defaultStr(d),
-		    currentStr(c),
+	const int BORDER_SIZE = 2;
+	
+	TextBox::TextBox(sf::Vector2u size, sf::Font& f, const std::string& d)
+		:	currentStr(d),
 		    selected(false),
 		    border(static_cast<sf::Vector2f>(size))
 
 	{
+		border.setOutlineColor({128, 128, 128});
+		border.setOutlineThickness(-BORDER_SIZE);
+		border.setFillColor(sf::Color::Transparent);
+		
 		text.setFont(f);
 		text.setString("TTTTTTTTTTTTTT");	// set a tall character to correctly set the origin
 		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
-		text.setString(c);
-		text.setCharacterSize(border.getGlobalBounds().height - 4);
-
-		border.setOutlineColor({128, 128, 128});
-		border.setOutlineThickness(-2);
-		border.setFillColor(sf::Color::Transparent);
+		text.setCharacterSize(border.getGlobalBounds().height - 2 * BORDER_SIZE);
+		text.setPosition(border.getGlobalBounds().left + BORDER_SIZE, border.getGlobalBounds().top + border.getGlobalBounds().height / 4);
+		text.setString(currentStr);
 	}
 
 	TextBox::~TextBox()
@@ -69,13 +71,13 @@ namespace cstr
 	void TextBox::setPosition(sf::Vector2i pos)
 	{
 		border.setPosition(static_cast<sf::Vector2f>(pos));
-		text.setPosition(pos.x + 2, pos.y - 1);
+		text.setPosition(pos.x + BORDER_SIZE, pos.y + border.getGlobalBounds().height / 4);
 	}
 
 	void TextBox::setSize(sf::Vector2u size)
 	{
 		border.setSize(static_cast<sf::Vector2f>(size));
-		text.setCharacterSize(size.y - 4);
+		text.setCharacterSize(size.y - 2 * BORDER_SIZE);
 		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
 	}
 
