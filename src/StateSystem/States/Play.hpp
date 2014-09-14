@@ -7,9 +7,7 @@
 #include "../../GUI/Window.hpp"
 
 /* Entity System */
-#include "../../EntitySystem/Factory.hpp"
 #include "../../EntitySystem/Entity.hpp"
-#include "../../EntitySystem/Entities/Player.hpp"
 
 namespace swift
 {
@@ -40,6 +38,8 @@ namespace swift
 			cstr::Window pauseMenu;
 			
 			SubState state;
+			
+			Entity entity;
 	};
 }
 

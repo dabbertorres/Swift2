@@ -1,6 +1,12 @@
 #include "Play.hpp"
 
+#include <functional>
+
 #include "../../ResourceManager/AssetManager.hpp"
+
+/* ECS headers */
+#include "../../EntitySystem/Components/Drawable.hpp"
+#include "../../EntitySystem/Components/Controllable.hpp"
 
 /* GUI headers */
 #include "../../GUI/Containers/Column.hpp"
@@ -45,6 +51,7 @@ namespace swift
 
 		setupKeyBindings();
 		
+		// setup GUI
 		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 125}, false));
 		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
@@ -57,6 +64,31 @@ namespace swift
 		{
 			returnType = State::Type::MainMenu;
 		})).setString("Main Menu", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		
+		// setup entity
+		entity.add<Drawable>();
+		entity.get<Drawable>()->setTexture(assets.getTexture("./data/textures/guy.png"));
+		entity.add<Controllable>();
+		
+		entity.get<Controllable>()->addAction(sf::Keyboard::Down, [&](float dt)
+		{
+			entity.get<Drawable>()->sprite.move(0, 100 * dt);
+		});
+		
+		entity.get<Controllable>()->addAction(sf::Keyboard::Up, [&](float dt)
+		{
+			entity.get<Drawable>()->sprite.move(0, -100 * dt);
+		});
+		
+		entity.get<Controllable>()->addAction(sf::Keyboard::Left, [&](float dt)
+		{
+			entity.get<Drawable>()->sprite.move(-100 * dt, 0);
+		});
+		
+		entity.get<Controllable>()->addAction(sf::Keyboard::Right, [&](float dt)
+		{
+			entity.get<Drawable>()->sprite.move(100 * dt, 0);
+		});
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -65,6 +97,14 @@ namespace swift
 		{
 			case SubState::Play:
 				hud.update(event);
+				if(event.type == sf::Event::KeyPressed)
+				{
+					entity.get<Controllable>()->pressed(event.key.code);
+				}
+				else if(event.type == sf::Event::KeyReleased)
+				{
+					entity.get<Controllable>()->released(event.key.code);
+				}
 				break;
 			case SubState::Pause:
 				pauseMenu.update(event);
@@ -77,7 +117,7 @@ namespace swift
 		mouse(event);
 	}
 
-	void Play::update(sf::Time /*dt*/)
+	void Play::update(sf::Time dt)
 	{
 		Script* playLogic = &assets.getScript("./data/scripts/play.lua");
 		Script* pauseLogic = &assets.getScript("./data/scripts/pause.lua");
@@ -86,7 +126,7 @@ namespace swift
 		{
 			case SubState::Play:
 				playLogic->run();
-				
+				entity.get<Controllable>()->update(dt.asSeconds());
 				break;
 			case SubState::Pause:
 				pauseLogic->run();
@@ -96,17 +136,15 @@ namespace swift
 
 	void Play::draw(float /*e*/)
 	{
-		switch(state)
+		if(state == SubState::Play)
 		{
-			case SubState::Play:
-				window.draw(hud);
-				
-				break;
-			case SubState::Pause:
-				window.draw(pauseMenu);
-				break;
-			default:
-				break;
+			if(entity.has<Drawable>())
+				window.draw(entity.get<Drawable>()->sprite);
+			window.draw(hud);
+		}
+		else if(state == SubState::Pause)
+		{
+			window.draw(pauseMenu);
 		}
 	}
 
