@@ -1,13 +1,15 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
+#include "../MessageSystem/Observable.hpp"
+
 #include <unordered_map>
 
 #include "Component.hpp"
 
 namespace swift
 {
-	class Entity
+	class Entity : public Observable
 	{
 		public:
 			Entity()
