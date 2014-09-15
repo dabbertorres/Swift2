@@ -8,13 +8,8 @@
 /* GUI headers */
 #include "../../GUI/Window.hpp"
 
-/* Entity */
-#include "../../EntitySystem/Entity.hpp"
-
-/* Systems */
-#include "../../EntitySystem/Systems/DrawableSystem.hpp"
-#include "../../EntitySystem/Systems/MovableSystem.hpp"
-#include "../../EntitySystem/Systems/PhysicalSystem.hpp"
+/* World headers */
+#include "../../World/Worlds/MainWorld.hpp"
 
 namespace swift
 {
@@ -46,11 +41,8 @@ namespace swift
 			
 			SubState state;
 			
-			DrawableSystem drawSystem;
-			MovableSystem moveSystem;
-			PhysicalSystem physicalSystem;
-			
-			std::vector<Entity> entities;
+			MainWorld world;
+			Entity* player;
 	};
 }
 
