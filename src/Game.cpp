@@ -160,8 +160,10 @@ namespace swift
 		}
 		
 		if(running)
+		{
 			currentState->update(dt);
-		manageStates();
+			manageStates();
+		}
 	}
 
 	void Game::manageStates()
