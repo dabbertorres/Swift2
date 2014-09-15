@@ -1,23 +1,14 @@
 #ifndef SYSTEM_HPP
 #define SYSTEM_HPP
 
+#include "Entity.hpp"
+
 namespace swift
 {
 	class System
 	{
 		public:
-			System()
-			{
-
-			}
-
-			virtual ~System()
-			{
-
-			}
-
-		private:
-
+			virtual void update(Entity& entity, float dt) = 0;
 	};
 }
 

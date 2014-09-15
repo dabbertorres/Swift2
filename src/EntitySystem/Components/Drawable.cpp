@@ -2,14 +2,6 @@
 
 namespace swift
 {
-	Drawable::Drawable()
-	{
-	}
-	
-	Drawable::~Drawable()
-	{
-	}
-	
 	void Drawable::setTexture(const sf::Texture& texture)
 	{
 		sprite.setTexture(texture, true);
@@ -23,6 +15,6 @@ namespace swift
 	
 	std::string Drawable::getType()
 	{
-		return "drawable";
+		return "Drawable";
 	}
 }

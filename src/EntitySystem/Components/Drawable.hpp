@@ -10,9 +10,6 @@ namespace swift
 	class Drawable : public Component
 	{
 		public:
-			Drawable();
-			~Drawable();
-			
 			void setTexture(const sf::Texture& texture);
 			void setTextureRect(const sf::Texture& texture, sf::IntRect& rect);
 			

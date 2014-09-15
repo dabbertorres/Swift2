@@ -8,16 +8,6 @@ namespace swift
 	class Component
 	{
 		public:
-			Component()
-			{
-				
-			}
-			
-			virtual ~Component()
-			{
-				
-			}
-			
 			static std::string getType();
 	};
 }
