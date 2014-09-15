@@ -23,7 +23,8 @@ namespace swift
 			
 			void call(const std::string& k)
 			{
-				bindings.at(k).call();
+				if(bindings.find(k) != bindings.end())
+					bindings.at(k).call();
 			}
 
 			bool operator()(sf::Event& e)
