@@ -53,7 +53,21 @@ namespace swift
 		{
 			settings.set("fullscreen", s);
 			if(s)
-				window.create(sf::VideoMode::getDesktopMode(), "Swift2", sf::Style::Fullscreen);
+			{
+				unsigned resx = 0;
+				unsigned resy = 0;
+				settings.get("resx", resx);
+				settings.get("resy", resy);
+				window.create({resx, resy, 32}, "Swift2", sf::Style::Fullscreen);
+			}
+			else
+			{
+				unsigned resx = 800;
+				unsigned resy = 600;
+				settings.get("res.x", resx);
+				settings.get("res.y", resy);
+				window.create({resx, resy, 32}, "Swift2", sf::Style::Titlebar | sf::Style::Close);
+			}
 		}));
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
