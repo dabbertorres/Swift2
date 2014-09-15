@@ -6,7 +6,8 @@
 
 /* ECS headers */
 #include "../../EntitySystem/Components/Drawable.hpp"
-#include "../../EntitySystem/Components/Controllable.hpp"
+#include "../../EntitySystem/Components/Physical.hpp"
+#include "../../EntitySystem/Components/Movable.hpp"
 
 /* GUI headers */
 #include "../../GUI/Containers/Column.hpp"
@@ -66,29 +67,16 @@ namespace swift
 		})).setString("Main Menu", assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
 		// setup entity
-		entity.add<Drawable>();
-		entity.get<Drawable>()->setTexture(assets.getTexture("./data/textures/guy.png"));
-		entity.add<Controllable>();
+		entities.emplace_back();
+		entities[0].add<Drawable>();
+		entities[0].add<Physical>();
+		entities[0].add<Movable>();
 		
-		entity.get<Controllable>()->addAction(sf::Keyboard::Down, [&](float dt)
-		{
-			entity.get<Drawable>()->sprite.move(0, 100 * dt);
-		});
+		entities[0].get<Drawable>()->sprite.setTexture(assets.getTexture("./data/textures/guy.png"));
 		
-		entity.get<Controllable>()->addAction(sf::Keyboard::Up, [&](float dt)
-		{
-			entity.get<Drawable>()->sprite.move(0, -100 * dt);
-		});
-		
-		entity.get<Controllable>()->addAction(sf::Keyboard::Left, [&](float dt)
-		{
-			entity.get<Drawable>()->sprite.move(-100 * dt, 0);
-		});
-		
-		entity.get<Controllable>()->addAction(sf::Keyboard::Right, [&](float dt)
-		{
-			entity.get<Drawable>()->sprite.move(100 * dt, 0);
-		});
+		entities[0].get<Physical>()->position = {400, 300};
+		entities[0].get<Physical>()->size = assets.getTexture("./data/textures/guy.png").getSize();
+		entities[0].get<Movable>()->moveVelocity = 100;
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -97,14 +85,6 @@ namespace swift
 		{
 			case SubState::Play:
 				hud.update(event);
-				if(event.type == sf::Event::KeyPressed)
-				{
-					entity.get<Controllable>()->pressed(event.key.code);
-				}
-				else if(event.type == sf::Event::KeyReleased)
-				{
-					entity.get<Controllable>()->released(event.key.code);
-				}
 				break;
 			case SubState::Pause:
 				pauseMenu.update(event);
@@ -121,12 +101,17 @@ namespace swift
 	{
 		Script* playLogic = &assets.getScript("./data/scripts/play.lua");
 		Script* pauseLogic = &assets.getScript("./data/scripts/pause.lua");
-
+		
 		switch(state)
 		{
 			case SubState::Play:
 				playLogic->run();
-				entity.get<Controllable>()->update(dt.asSeconds());
+				for(auto& e : entities)
+				{
+					moveSystem.update(e, dt.asSeconds());
+					physicalSystem.update(e, dt.asSeconds());
+					drawSystem.update(e, dt.asSeconds());
+				}
 				break;
 			case SubState::Pause:
 				pauseLogic->run();
@@ -138,8 +123,10 @@ namespace swift
 	{
 		if(state == SubState::Play)
 		{
-			if(entity.has<Drawable>())
-				window.draw(entity.get<Drawable>()->sprite);
+			for(auto& e : entities)
+			{
+				drawSystem.draw(e, window);
+			}
 			window.draw(hud);
 		}
 		else if(state == SubState::Pause)
@@ -163,6 +150,50 @@ namespace swift
 		keyboard.newBinding("PauseMenu", sf::Keyboard::Escape, [&]()
 		{
 			state = (state == SubState::Pause) ? SubState::Play : SubState::Pause;
+		}, false);
+		
+		// move up press and release
+		keyboard.newBinding("moveUpStart", sf::Keyboard::Up, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {0, -entities[0].get<Movable>()->moveVelocity};
+		}, true);
+		
+		keyboard.newBinding("moveUpStop", sf::Keyboard::Up, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {0, entities[0].get<Movable>()->moveVelocity};
+		}, false);
+		
+		// move down press and release
+		keyboard.newBinding("moveDownStart", sf::Keyboard::Down, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {0, entities[0].get<Movable>()->moveVelocity};
+		}, true);
+		
+		keyboard.newBinding("moveDownStop", sf::Keyboard::Down, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {0, -entities[0].get<Movable>()->moveVelocity};
+		}, false);
+		
+		// move left press and release
+		keyboard.newBinding("moveLeftStart", sf::Keyboard::Left, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {-entities[0].get<Movable>()->moveVelocity, 0};
+		}, true);
+		
+		keyboard.newBinding("moveLeftStop", sf::Keyboard::Left, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {entities[0].get<Movable>()->moveVelocity, 0};
+		}, false);
+		
+		// move right press and release
+		keyboard.newBinding("moveRightStart", sf::Keyboard::Right, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {entities[0].get<Movable>()->moveVelocity, 0};
+		}, true);
+		
+		keyboard.newBinding("moveRightStop", sf::Keyboard::Right, [&]()
+		{
+			entities[0].get<Movable>()->velocity += {-entities[0].get<Movable>()->moveVelocity, 0};
 		}, false);
 	}
 }

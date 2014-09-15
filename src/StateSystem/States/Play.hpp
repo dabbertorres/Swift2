@@ -3,11 +3,18 @@
 
 #include "../State.hpp"
 
+#include <vector>
+
 /* GUI headers */
 #include "../../GUI/Window.hpp"
 
-/* Entity System */
+/* Entity */
 #include "../../EntitySystem/Entity.hpp"
+
+/* Systems */
+#include "../../EntitySystem/Systems/DrawableSystem.hpp"
+#include "../../EntitySystem/Systems/MovableSystem.hpp"
+#include "../../EntitySystem/Systems/PhysicalSystem.hpp"
 
 namespace swift
 {
@@ -39,7 +46,11 @@ namespace swift
 			
 			SubState state;
 			
-			Entity entity;
+			DrawableSystem drawSystem;
+			MovableSystem moveSystem;
+			PhysicalSystem physicalSystem;
+			
+			std::vector<Entity> entities;
 	};
 }
 
