@@ -43,7 +43,7 @@ namespace swift
 		if(fullscreen)
 			window.create(sf::VideoMode::getDesktopMode(), title, sf::Style::Fullscreen);
 		else
-			window.create(sf::VideoMode(resolution.x, resolution.y, 32), title, sf::Style::Titlebar | sf::Style::Close);
+			window.create({resolution.x, resolution.y, 32}, title, sf::Style::Titlebar | sf::Style::Close);
 		
 		// get System Info
 		log	<< "OS:\t\t" << getOSName() << '\n'
