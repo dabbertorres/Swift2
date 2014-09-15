@@ -28,7 +28,7 @@ namespace swift
 
 			bool operator()(sf::Event& e)
 			{
-				for(auto &k : bindings)
+				for(auto& k : bindings)
 				{
 					if(k.second(e))
 						return k.second.call();
@@ -42,10 +42,10 @@ namespace swift
 			{
 				public:
 					explicit KeyBinding(sf::Keyboard::Key k, std::function<void()> f, bool p)
+						:	key(k),
+							func(f),
+							onPress(p)
 					{
-						key = k;
-						onPress = p;
-						func = f;
 					}
 
 					~KeyBinding()
