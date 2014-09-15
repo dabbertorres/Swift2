@@ -4,11 +4,16 @@
 #include <cassert>
 
 #include "../ResourceManager/AssetManager.hpp"
-//#include "../GUI/Window.hpp"
-//#include "../GUI/Widgets/Button.hpp"
-//#include "../GUI/Widgets/Label.hpp"
-//#include "../GUI/Widgets/TextBox.hpp"
-//#include "../GUI/Widgets/Toggle.hpp"
+
+/* GUI */
+#include "../GUI/Window.hpp"
+#include "../GUI/Widgets/Button.hpp"
+#include "../GUI/Widgets/Label.hpp"
+#include "../GUI/Widgets/TextBox.hpp"
+#include "../GUI/Widgets/Toggle.hpp"
+
+/* EntitySystem */
+#include "../EntitySystem/Entity.hpp"
 
 namespace swift
 {
@@ -115,7 +120,7 @@ namespace swift
 	
 	void Script::addClasses()
 	{
-		
+		luaState["Entity"].SetClass<Entity>();
 	}
 	
 	void Script::addFunctions()
@@ -137,14 +142,17 @@ namespace swift
 				return 0.f;
 		};
 		
-		luaState["doKeypress"] = [&](std::string k) -> void
+		luaState["doKeypress"] = [&](std::string k)
 		{
 			if(keyboard)
 				keyboard->call(k);
 		};
 		
+		// EntitySystem functions
+		
+		
 		// gui functions
-		luaState["setFont"] = [&](std::string f) -> void
+		luaState["setFont"] = [&](std::string f)
 		{
 			if(gui)
 				gui->setFont(assets->getFont(f));
