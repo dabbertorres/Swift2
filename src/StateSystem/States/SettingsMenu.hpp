@@ -8,6 +8,7 @@
 /* GUI headers */
 #include "../../GUI/Window.hpp"
 #include "../../GUI/Widgets/Button.hpp"
+#include "../../GUI/Widgets/Slider.hpp"
 
 namespace swift
 {
@@ -27,6 +28,7 @@ namespace swift
 		private:
 			cstr::Window gui;
 			cstr::Button* graphicsButton;
+			cstr::Slider* volumeSlider;
 			Settings& settings;
 	};
 }

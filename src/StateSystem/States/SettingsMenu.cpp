@@ -8,6 +8,7 @@
 #include "../../GUI/Widgets/Label.hpp"
 #include "../../GUI/Widgets/Button.hpp"
 #include "../../GUI/Widgets/Spacer.hpp"
+#include "../../GUI/Widgets/Slider.hpp"
 #include "../../GUI/Widgets/Toggle.hpp"
 #include "../../GUI/Widgets/TextBox.hpp"
 
@@ -56,8 +57,8 @@ namespace swift
 			{
 				unsigned resx = 0;
 				unsigned resy = 0;
-				settings.get("resx", resx);
-				settings.get("resy", resy);
+				settings.get("res.x", resx);
+				settings.get("res.y", resy);
 				window.create({resx, resy, 32}, "Swift2", sf::Style::Fullscreen);
 			}
 			else
@@ -148,7 +149,19 @@ namespace swift
 		cstr::Column& textEnterCol = textEnterRow.addWidget(new cstr::Column({400, 50}, false));
 		textEnterCol.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), "name"));
 		
-		settingsColumn.addWidget(new cstr::Spacer({700, 100}));
+		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
+		
+		cstr::Row& volumeRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
+		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
+		volumeCol.addWidget(new cstr::Label("Volume:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		volumeRow.addWidget(new cstr::Spacer({100, 50}));
+		volumeSlider = &volumeRow.addWidget(new cstr::Slider({400, 50}));
+		
+		int sound = 75;
+		settings.get("sound", sound);
+		volumeSlider->setValue(sound / 100.f);
+		
+		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 		
 		// row for main menu return
 		cstr::Row& mainMenuReturnRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
@@ -172,6 +185,9 @@ namespace swift
 		Script* setup = &assets.getScript("./data/scripts/settingsMenu.lua");
 		
 		setup->run();
+		
+		int sound = volumeSlider->getValue() * 100;
+		settings.set("sound", sound);
 	}
 	
 	void SettingsMenu::draw(float /*e*/)
