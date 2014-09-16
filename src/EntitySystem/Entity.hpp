@@ -95,21 +95,26 @@ namespace swift
 // Entities can be designed via a simple text file with the following format:
 //	Entity
 //		Component1
-//			Data
+//			type Data
 //		Component2
-//			Data1
-//			Data2
+//			type Data1
+//			type Data2
+// types =
+// 	s = string
+// 	r = rect
+//	f = float
+//	i = int
 
 /* Example Entity file
  * Entity
  * 	Drawable
- * 		./data/textures/guy.png	# texture
- * 		0 0 0 0	# texture rect, if all 0s, use size of texture
+ * 		s ./data/textures/guy.png	# texture
+ * 		r 0 0 0 0	# texture rect, if all 0s, use size of texture
  * 	Movable
- * 		100	# move velocity
+ * 		f 100	# move velocity
  * 	Physical
- * 		400	# x position
- * 		300	# y position
+ * 		i 400	# x position
+ * 		i 300	# y position
  */
 
 #endif // ENTITY_HPP
