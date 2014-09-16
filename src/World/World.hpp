@@ -27,7 +27,7 @@ namespace swift
 	class World
 	{
 		public:
-			World(const sf::Vector2u& s, AssetManager& am);
+			World(const sf::Vector2i& s, AssetManager& am);
 
 			std::vector<Entity>& getEntities();
 
@@ -51,9 +51,9 @@ namespace swift
 			
 			sf::View view;
 
-		private:
-			sf::Vector2u size;
+			sf::Vector2i size;
 
+		private:
 			std::vector<Entity> entities;
 	};
 }

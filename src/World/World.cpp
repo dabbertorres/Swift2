@@ -2,7 +2,7 @@
 
 namespace swift
 {
-	World::World(const sf::Vector2u& s, AssetManager& am)
+	World::World(const sf::Vector2i& s, AssetManager& am)
 		:	assets(am),
 			size(s)
 	{

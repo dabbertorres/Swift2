@@ -4,7 +4,7 @@
 
 namespace swift
 {
-	MainWorld::MainWorld(const sf::Vector2u& s, AssetManager& am)
+	MainWorld::MainWorld(const sf::Vector2i& s, AssetManager& am)
 		:	World(s, am)
 	{
 	}
@@ -15,6 +15,20 @@ namespace swift
 		{
 			moveSystem.update(e, dt);
 			physicalSystem.update(e, dt);
+			if(e.has<Physical>())
+			{
+				Physical* phys = e.get<Physical>();
+				// check x position
+				if(phys->position.x < 0)
+					phys->position.x = 0;
+				else if(phys->position.x + phys->size.x > size.x)
+					phys->position.x = size.x - phys->size.x;
+				// check y position
+				if(phys->position.y < 0)
+					phys->position.y = 0;
+				else if(phys->position.y + phys->size.y > size.y)
+					phys->position.y = size.y - phys->size.y;
+			}
 			drawSystem.update(e, dt);
 		}
 	}

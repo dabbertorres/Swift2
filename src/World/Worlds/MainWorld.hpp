@@ -8,7 +8,7 @@ namespace swift
 	class MainWorld : public World
 	{
 		public:
-			MainWorld(const sf::Vector2u& s, AssetManager& am);
+			MainWorld(const sf::Vector2i& s, AssetManager& am);
 			
 			virtual void update(float dt);
 			
