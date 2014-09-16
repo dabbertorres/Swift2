@@ -6,6 +6,7 @@
 #include <unordered_map>
 
 #include "Component.hpp"
+#include "ComponentRegistry.hpp"
 
 namespace swift
 {
@@ -35,6 +36,19 @@ namespace swift
 				}
 				else
 					return false;
+			}
+			
+			bool add(const std::string& c)
+			{
+				Component* comp = ComponentRegistry::get(c);
+				
+				if(comp == nullptr || components.find(c) != components.end())
+					return false;
+				else
+				{
+					components.emplace(c, comp);
+					return true;
+				}
 			}
 			
 			template<typename C>
