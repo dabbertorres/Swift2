@@ -16,7 +16,7 @@ namespace swift
 	Play::Play(sf::RenderWindow& win, AssetManager& am)
 		:	State(win, am),
 		    state(SubState::Play),
-			world(window.getSize(), assets)
+			world({static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y)}, assets)
 	{
 		returnType = State::Type::Play;
 	}
