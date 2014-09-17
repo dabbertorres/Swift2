@@ -1,5 +1,5 @@
 #include "Column.hpp"
-#include <iostream>
+
 namespace cstr
 {
 	Column::Column(sf::IntRect r, bool s)

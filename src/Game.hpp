@@ -18,7 +18,6 @@
 #include <cmath>
 
 // input/output
-#include <iostream>
 #include <fstream>
 
 // containers

@@ -1,5 +1,7 @@
 #include "Settings.hpp"
 
+#include "../Logger/Logger.hpp"
+
 namespace swift
 {
 	Settings::Settings()
@@ -256,7 +258,7 @@ namespace swift
 
 		if(!out.is_open())
 		{
-			std::cerr << "Error: Unable to open settings file: \"" << file << "\" for writing." << std::endl;
+			log << "Error: Unable to open settings file: \"" << file << "\" for writing.\n";
 			return false;
 		}
 
