@@ -3,21 +3,25 @@
 
 #include "../World.hpp"
 
+#include "../../Mapping/TileMap.hpp"
+
 namespace swift
 {
-	class MainWorld : public World
+	class TestWorld : public World
 	{
 		public:
-			MainWorld(const sf::Vector2i& s, AssetManager& am);
-			
+			TestWorld(const sf::Vector2i& s, AssetManager& am);
+
 			virtual void update(float dt);
-			
+
 			virtual void draw(sf::RenderTarget& target);
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states);
-			
-			virtual void load(const std::string& file);
-			
-			virtual void save(const std::string& file);
+
+			virtual bool load(const std::string& file);
+
+			virtual bool save(const std::string& file);
+
+			TileMap tilemap;
 	};
 }
 

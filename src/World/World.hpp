@@ -38,9 +38,9 @@ namespace swift
 			virtual void draw(sf::RenderTarget& target) = 0;
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) = 0;
 
-			virtual void load(const std::string& file) = 0;
+			virtual bool load(const std::string& file) = 0;
 
-			virtual void save(const std::string& file) = 0;
+			virtual bool save(const std::string& file) = 0;
 
 		protected:
 			DrawableSystem drawSystem;
