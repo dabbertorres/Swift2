@@ -23,6 +23,7 @@ namespace swift
 
 	Play::~Play()
 	{
+		player = nullptr;
 	}
 
 	void Play::setup()
@@ -62,7 +63,18 @@ namespace swift
 			returnType = State::Type::MainMenu;
 		})).setString("Main Menu", assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
+		// World test code
 		world.load("");
+		bool result = world.tilemap.loadFile("./data/maps/maze.map");
+		
+		if(!result)
+			log << "Loading \'./data/maps/maze.map\' failed\n";
+		
+		result = world.tilemap.load(assets.getTexture(world.tilemap.getTextureFile()));
+		
+		if(!result)
+			std::cout << "Setting up vertices for \'./data/maps/maze.map\' failed\n";
+		
 		player = &world.getEntities()[0];
 	}
 
@@ -124,6 +136,7 @@ namespace swift
 
 	State::Type Play::finish()
 	{
+		world.save("");
 		return returnType;
 	}
 
