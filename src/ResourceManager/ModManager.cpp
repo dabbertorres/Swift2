@@ -1,8 +1,7 @@
 #include "ModManager.hpp"
 
-#include <iostream>
-
 #include "../Settings/Settings.hpp"
+#include "../Logger/Logger.hpp"
 
 namespace swift
 {
