@@ -10,9 +10,12 @@ namespace swift
 	class Physical : public Component
 	{
 		public:
+			Physical();
+
 			static std::string getType();
-			
+
 			sf::Vector2f position;
+			sf::Vector2f previousPosition;
 			sf::Vector2u size;
 	};
 }

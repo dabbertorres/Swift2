@@ -9,8 +9,11 @@ namespace swift
 	{
 		if(entity.has<Movable>() && entity.has<Physical>())
 		{
-			entity.get<Physical>()->position.x += entity.get<Movable>()->velocity.x * dt;
-			entity.get<Physical>()->position.y += entity.get<Movable>()->velocity.y * dt;
+			Physical* phys = entity.get<Physical>();
+			Movable* mov = entity.get<Movable>();
+			phys->previousPosition = phys->position;
+			phys->position.x += mov->velocity.x * dt;
+			phys->position.y += mov->velocity.y * dt;
 		}
 	}
 }
