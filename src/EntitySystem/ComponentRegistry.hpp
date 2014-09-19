@@ -1,8 +1,6 @@
 #ifndef COMPONENTREGISTRY_HPP
 #define COMPONENTREGISTRY_HPP
 
-#include <unordered_map>
-
 #include "Component.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Movable.hpp"
