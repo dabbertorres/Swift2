@@ -151,6 +151,7 @@ namespace swift
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 		
+		// row for volume slider
 		cstr::Row& volumeRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
 		volumeCol.addWidget(new cstr::Label("Volume:", assets.getFont("./data/fonts/segoeuisl.ttf")));
