@@ -49,7 +49,7 @@ namespace cstr
 	
 	sf::FloatRect Slider::getGlobalBounds() const
 	{
-		return {track.getGlobalBounds().left, slider.getGlobalBounds().top, track.getGlobalBounds().width, track.getGlobalBounds().height};
+		return {track.getGlobalBounds().left, slider.getGlobalBounds().top, track.getGlobalBounds().width, slider.getGlobalBounds().height};
 	}
 	
 	void Slider::setPosition(sf::Vector2i pos)
@@ -61,7 +61,7 @@ namespace cstr
 	void Slider::setSize(sf::Vector2u size)
 	{
 		track.setSize({static_cast<float>(size.x), static_cast<float>(size.y) / 3});
-		slider.setSize({static_cast<float>(size.x / 10), static_cast<float>(size.y)});
+		slider.setSize({static_cast<float>(size.x / 20), static_cast<float>(size.y)});
 	}
 	
 	void Slider::setValue(float v)
