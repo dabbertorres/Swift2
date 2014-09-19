@@ -34,7 +34,10 @@ namespace cstr
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 			
+			void setDisplayedString();
+			
 			std::string currentStr;
+			int cursorPosition;
 			
 			bool selected;
 			
