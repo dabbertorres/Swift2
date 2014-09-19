@@ -51,7 +51,9 @@ namespace cstr
 	{
 		int totalHeight = 0;
 		for(auto& widget : getWidgets())
+		{
 			totalHeight += widget->getGlobalBounds().height;
+		}
 		
 		for(unsigned i = 0; i < getWidgets().size(); i++)
 		{
@@ -64,12 +66,12 @@ namespace cstr
 				if(totalHeight > rect.height - 2 * getBorderSize())
 				{
 					w->setSize({static_cast<unsigned>(rect.width - 2 * getBorderSize()),
-								static_cast<unsigned>(w->getGlobalBounds().height * (rect.height / totalHeight) - 2 * getBorderSize())});
+								static_cast<unsigned>(w->getGlobalBounds().height * (rect.height - 2 * getBorderSize()) / totalHeight)});
 				}
 				else
 				{
 					w->setSize({static_cast<unsigned>(rect.width - 2 * getBorderSize()),
-								static_cast<unsigned>(w->getGlobalBounds().height)});
+								static_cast<unsigned>(w->getGlobalBounds().height) - 2 * getBorderSize()});
 				}
 				
 				w->setPosition({rect.left + getBorderSize() + rect.width / 2 - static_cast<int>(w->getGlobalBounds().width / 2),
