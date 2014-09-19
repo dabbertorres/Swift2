@@ -156,7 +156,8 @@ namespace swift
 		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
 		volumeCol.addWidget(new cstr::Label("Volume:", assets.getFont("./data/fonts/segoeuisl.ttf")));
 		volumeRow.addWidget(new cstr::Spacer({100, 50}));
-		volumeSlider = &volumeRow.addWidget(new cstr::Slider({400, 50}));
+		cstr::Column& volumeSliderCol = volumeRow.addWidget(new cstr::Column({400, 50}, false));
+		volumeSlider = &volumeSliderCol.addWidget(new cstr::Slider({400, 50}));
 		
 		int sound = 75;
 		settings.get("sound", sound);
