@@ -29,6 +29,37 @@ namespace swift
 
 			bool operator()(sf::Event& e)
 			{
+				if(e.type == sf::Event::KeyPressed)
+				{
+					if(e.key.code == sf::Keyboard::LShift || e.key.code == sf::Keyboard::RShift)
+					{
+						shiftPressed = true;
+					}
+					else if(e.key.code == sf::Keyboard::LControl || e.key.code == sf::Keyboard::RControl)
+					{
+						ctrlPressed = true;
+					}
+					else if(e.key.code == sf::Keyboard::LAlt || e.key.code == sf::Keyboard::RAlt)
+					{
+						altPressed = true;
+					}
+				}
+				else if(e.type == sf::Event::KeyReleased)
+				{
+					if(e.key.code == sf::Keyboard::LShift || e.key.code == sf::Keyboard::RShift)
+					{
+						shiftPressed = false;
+					}
+					else if(e.key.code == sf::Keyboard::LControl || e.key.code == sf::Keyboard::RControl)
+					{
+						ctrlPressed = false;
+					}
+					else if(e.key.code == sf::Keyboard::LAlt || e.key.code == sf::Keyboard::RAlt)
+					{
+						altPressed = false;
+					}
+				}
+				
 				for(auto& k : bindings)
 				{
 					if(k.second(e))
@@ -82,6 +113,10 @@ namespace swift
 			};
 
 			std::map<std::string, KeyBinding> bindings;
+			
+			bool shiftPressed;
+			bool ctrlPressed;
+			bool altPressed;
 	};
 }
 
