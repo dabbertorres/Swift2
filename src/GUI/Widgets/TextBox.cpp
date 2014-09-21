@@ -150,29 +150,6 @@ namespace cstr
 
 	void TextBox::setDisplayedString()
 	{
-		/*int rightTimes = 0;
-		while(text.findCharacterPos(currentStr.size() - rightTimes).x > border.getGlobalBounds().left + border.getGlobalBounds().width && text.getString().find('|') != text.getString().getSize() - 1)
-		{
-			text.setString(currentStr.substr(0, cursorPosition) + '|' + currentStr.substr(cursorPosition, currentStr.size() - rightTimes - 1));
-			rightTimes++;
-		}
-
-		int leftTimes = 0;
-		while(text.findCharacterPos(currentStr.size() - leftTimes).x < border.getGlobalBounds().left && text.getString().find('|') != 0)
-		{
-			text.setString(currentStr.substr(leftTimes + 1, cursorPosition) + '|' + currentStr.substr(cursorPosition));
-			leftTimes++;
-		}*/
-
-		/*sf::FloatRect bounds = border.getGlobalBounds();
-		int loops = 0;
-		sf::FloatRect boundsOfChar = text.getFont()->getGlyph(text.getString()[currentStr.size() - loops], text.getCharacterSize(), false).bounds;
-		while(text.findCharacterPos(currentStr.size() - loops).x > bounds.left + bounds.width - boundsOfChar.width - BORDER_SIZE)
-		{
-			text.setString(currentStr.substr(loops, cursorPosition) + '|' + currentStr.substr(cursorPosition));
-			loops++;
-		}*/
-
 		float maxWidth = border.getGlobalBounds().width - 2 * BORDER_SIZE;
 
 		if(text.getGlobalBounds().width > maxWidth)
@@ -233,24 +210,5 @@ namespace cstr
 				newCharBounds = text.getFont()->getGlyph(newChar, text.getCharacterSize(), false).bounds;
 			}
 		}
-		/*if(text.getGlobalBounds().width > border.getGlobalBounds().width && cursorPosition == currentStr.size())
-		{
-			sf::FloatRect boundsOfChar = text.getFont()->getGlyph(text.getString()[currentStr.size()], text.getCharacterSize(), false).bounds;
-			for(int i = 0; i < text.getGlobalBounds().width - border.getGlobalBounds().width; i += boundsOfChar.width)
-			{
-				text.setString(currentStr.substr(i, cursorPosition) + '|' + currentStr.substr(cursorPosition));
-				boundsOfChar = text.getFont()->getGlyph(text.getString()[currentStr.size() - i], text.getCharacterSize(), false).bounds;
-			}
-		}
-		else if(text.getGlobalBounds().width > border.getGlobalBounds().width && cursorPosition != currentStr.size())
-		{
-			sf::FloatRect boundsOfChar = text.getFont()->getGlyph(text.getString()[text.getString().getSize() - 1], text.getCharacterSize(), false).bounds;
-			int loops = 0;
-			while(text.getGlobalBounds().width + BORDER_SIZE + boundsOfChar.width < border.getGlobalBounds().width)
-			{
-				text.setString(currentStr.substr(loops, cursorPosition) + '|' + currentStr.substr(cursorPosition, loops));
-				loops++;
-			}
-		}*/
 	}
 }
