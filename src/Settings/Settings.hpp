@@ -1,6 +1,8 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
+#include "../MessageSystem/Observable.hpp"
+
 #include <string>
 #include <sstream>
 #include <fstream>
@@ -8,7 +10,7 @@
 
 namespace swift
 {
-	class Settings
+	class Settings : public Observable
 	{
 		public:
 			Settings();
