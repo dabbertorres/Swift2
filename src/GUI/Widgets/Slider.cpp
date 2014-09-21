@@ -66,8 +66,11 @@ namespace cstr
 	
 	void Slider::setValue(float v)
 	{
-		value = v;
-		slider.setPosition(track.getPosition().x + track.getGlobalBounds().width * value, slider.getPosition().y);
+		if(0 <= v && v <= 1)
+		{
+			value = v;
+			slider.setPosition(track.getPosition().x + track.getGlobalBounds().width * value, slider.getPosition().y);
+		}
 	}
 	
 	float Slider::getValue() const
