@@ -3,23 +3,23 @@
 namespace cstr
 {
 	const int BORDER_SIZE = 2;
-	
+
 	TextBox::TextBox(sf::Vector2u size, sf::Font& f, const std::string& d)
 		:	currentStr(d),
-			cursorPosition(currentStr.size()),
+		    cursorPosition(currentStr.size()),
 		    selected(false),
 		    border(static_cast<sf::Vector2f>(size))
 
 	{
-		border.setOutlineColor({128, 128, 128});
+		border.setOutlineColor( {128, 128, 128});
 		border.setOutlineThickness(-BORDER_SIZE);
 		border.setFillColor(sf::Color::Transparent);
-		
+
 		text.setFont(f);
-		text.setString("TTTTTTTTTTTTTT");	// set a tall character to correctly set the origin
-		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
+		text.setString("|||");	// set a tall character to correctly set the origin
+		text.setOrigin( {text.getLocalBounds().left, text.getLocalBounds().top});
 		text.setCharacterSize(border.getGlobalBounds().height - 2 * BORDER_SIZE);
-		text.setPosition(border.getGlobalBounds().left + BORDER_SIZE, border.getGlobalBounds().top);
+		text.setPosition(border.getGlobalBounds().left + BORDER_SIZE, border.getGlobalBounds().top + BORDER_SIZE);
 		text.setString(currentStr + '|');
 	}
 
@@ -56,10 +56,10 @@ namespace cstr
 							currentStr.erase(cursorPosition, 1);
 						}
 					}
-					
+
 					text.setString(currentStr.substr(0, cursorPosition) + '|' + currentStr.substr(cursorPosition));
-					
-					//setDisplayedString();
+
+					setDisplayedString();
 				}
 				break;
 			case sf::Event::KeyPressed:
@@ -82,15 +82,15 @@ namespace cstr
 						default:
 							break;
 					}
-					
+
 					if(cursorPosition < 0)
 						cursorPosition = 0;
 					else if(cursorPosition > static_cast<int>(currentStr.size()))
 						cursorPosition = currentStr.size();
-						
+
 					text.setString(currentStr.substr(0, cursorPosition) + '|' + currentStr.substr(cursorPosition));
-					
-					//setDisplayedString();
+
+					setDisplayedString();
 				}
 				break;
 			case sf::Event::MouseMoved:
@@ -111,15 +111,15 @@ namespace cstr
 	void TextBox::setPosition(sf::Vector2i pos)
 	{
 		border.setPosition(static_cast<sf::Vector2f>(pos));
-		text.setPosition(pos.x + BORDER_SIZE, pos.y);
+		text.setPosition(pos.x + BORDER_SIZE, pos.y + BORDER_SIZE);
 	}
 
 	void TextBox::setSize(sf::Vector2u size)
 	{
 		border.setSize(static_cast<sf::Vector2f>(size));
 		text.setCharacterSize(size.y - 2 * BORDER_SIZE);
-		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
-		text.setPosition(border.getGlobalBounds().left + BORDER_SIZE, border.getGlobalBounds().top);
+		text.setOrigin( {text.getLocalBounds().left, text.getLocalBounds().top});
+		text.setPosition(border.getGlobalBounds().left + BORDER_SIZE, border.getGlobalBounds().top + BORDER_SIZE);
 	}
 
 	const std::string& TextBox::getString() const
@@ -136,7 +136,7 @@ namespace cstr
 	{
 		border.setOutlineColor(oc);
 	}
-	
+
 	void TextBox::setBackgroundColor(const sf::Color& bc)
 	{
 		border.setFillColor(bc);
@@ -147,21 +147,110 @@ namespace cstr
 		target.draw(border, states);
 		target.draw(text, states);
 	}
-	
+
 	void TextBox::setDisplayedString()
 	{
-		int rightTimes = 0;
-		while(text.findCharacterPos(currentStr.size() - rightTimes).x >= border.getGlobalBounds().left + border.getGlobalBounds().width && text.getString().find('|') != text.getString().getSize() - 1)
+		/*int rightTimes = 0;
+		while(text.findCharacterPos(currentStr.size() - rightTimes).x > border.getGlobalBounds().left + border.getGlobalBounds().width && text.getString().find('|') != text.getString().getSize() - 1)
 		{
 			text.setString(currentStr.substr(0, cursorPosition) + '|' + currentStr.substr(cursorPosition, currentStr.size() - rightTimes - 1));
 			rightTimes++;
 		}
-		
+
 		int leftTimes = 0;
-		while(text.findCharacterPos(currentStr.size() - leftTimes).x >= border.getGlobalBounds().left + border.getGlobalBounds().width && text.getString().find('|') != 0)
+		while(text.findCharacterPos(currentStr.size() - leftTimes).x < border.getGlobalBounds().left && text.getString().find('|') != 0)
 		{
 			text.setString(currentStr.substr(leftTimes + 1, cursorPosition) + '|' + currentStr.substr(cursorPosition));
 			leftTimes++;
+		}*/
+
+		/*sf::FloatRect bounds = border.getGlobalBounds();
+		int loops = 0;
+		sf::FloatRect boundsOfChar = text.getFont()->getGlyph(text.getString()[currentStr.size() - loops], text.getCharacterSize(), false).bounds;
+		while(text.findCharacterPos(currentStr.size() - loops).x > bounds.left + bounds.width - boundsOfChar.width - BORDER_SIZE)
+		{
+			text.setString(currentStr.substr(loops, cursorPosition) + '|' + currentStr.substr(cursorPosition));
+			loops++;
+		}*/
+
+		float maxWidth = border.getGlobalBounds().width - 2 * BORDER_SIZE;
+
+		if(text.getGlobalBounds().width > maxWidth)
+		{
+			std::string beforeCursor = currentStr.substr(0, cursorPosition);
+			std::string afterCursor = currentStr.substr(cursorPosition);
+
+			text.setString('|');
+
+			bool frontOfCursor = true;
+			bool frontEmpty = false;
+			bool backEmpty = false;
+			int fronts = 0;
+			int backs = 0;
+			char newChar = '\0';
+			sf::FloatRect newCharBounds = {0, 0, 0, 0};
+			
+			while(text.getGlobalBounds().width + newCharBounds.width < maxWidth && (!frontEmpty || !backEmpty))
+			{
+				if(frontOfCursor)
+				{
+					if(newChar != '\0')
+						text.setString(newChar + text.getString());
+					
+					// calculate for after cursor
+					if(!backEmpty)
+					{
+						newChar = afterCursor[fronts];
+						fronts++;
+						if(fronts + 1 > static_cast<int>(afterCursor.size()))
+							backEmpty = true;
+					}
+					else
+					{
+						newChar = '\0';
+					}
+				}
+				else
+				{
+					if(newChar != '\0')
+						text.setString(text.getString() + newChar);
+					
+					// calculate for before cursor
+					if(!frontEmpty)
+					{
+						newChar = beforeCursor[cursorPosition - 1 - backs];
+						backs++;
+						if(cursorPosition - 1 - backs - 1 < 0)
+							frontEmpty = true;
+					}
+					else
+					{
+						newChar = '\0';
+					}
+				}
+				
+				frontOfCursor = !frontOfCursor;
+				newCharBounds = text.getFont()->getGlyph(newChar, text.getCharacterSize(), false).bounds;
+			}
 		}
+		/*if(text.getGlobalBounds().width > border.getGlobalBounds().width && cursorPosition == currentStr.size())
+		{
+			sf::FloatRect boundsOfChar = text.getFont()->getGlyph(text.getString()[currentStr.size()], text.getCharacterSize(), false).bounds;
+			for(int i = 0; i < text.getGlobalBounds().width - border.getGlobalBounds().width; i += boundsOfChar.width)
+			{
+				text.setString(currentStr.substr(i, cursorPosition) + '|' + currentStr.substr(cursorPosition));
+				boundsOfChar = text.getFont()->getGlyph(text.getString()[currentStr.size() - i], text.getCharacterSize(), false).bounds;
+			}
+		}
+		else if(text.getGlobalBounds().width > border.getGlobalBounds().width && cursorPosition != currentStr.size())
+		{
+			sf::FloatRect boundsOfChar = text.getFont()->getGlyph(text.getString()[text.getString().getSize() - 1], text.getCharacterSize(), false).bounds;
+			int loops = 0;
+			while(text.getGlobalBounds().width + BORDER_SIZE + boundsOfChar.width < border.getGlobalBounds().width)
+			{
+				text.setString(currentStr.substr(loops, cursorPosition) + '|' + currentStr.substr(cursorPosition, loops));
+				loops++;
+			}
+		}*/
 	}
 }
