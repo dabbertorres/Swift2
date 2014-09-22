@@ -38,6 +38,7 @@ namespace swift
 	 */
 	 
 	class AssetManager;
+	class World;
 	
 	class Script
 	{
@@ -64,6 +65,7 @@ namespace swift
 			void setGUI(cstr::Window& ui);
 			void setKeyboard(KeyboardManager& k);
 			void setStateReturn(State::Type& t);
+			void setWorld(World& w);
 
 		private:
 			void addVariables();
@@ -82,6 +84,7 @@ namespace swift
 			cstr::Window* gui;
 			KeyboardManager* keyboard;
 			State::Type* stateReturn;
+			World* world;
 	};
 
 	template<typename T>

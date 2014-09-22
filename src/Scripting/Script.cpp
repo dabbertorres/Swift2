@@ -5,10 +5,18 @@
 
 #include "../ResourceManager/AssetManager.hpp"
 
+#include "../World/World.hpp"
+
 /* GUI */
 #include "../GUI/Window.hpp"
+
+#include "../GUI/Containers/Column.hpp"
+#include "../GUI/Containers/Row.hpp"
+
 #include "../GUI/Widgets/Button.hpp"
 #include "../GUI/Widgets/Label.hpp"
+#include "../GUI/Widgets/Slider.hpp"
+#include "../GUI/Widgets/Spacer.hpp"
 #include "../GUI/Widgets/TextBox.hpp"
 #include "../GUI/Widgets/Toggle.hpp"
 
@@ -24,7 +32,9 @@ namespace swift
 	
 	Script::Script()
 			:	gui(nullptr),
-				stateReturn(nullptr)
+				keyboard(nullptr),
+				stateReturn(nullptr),
+				world(nullptr)
 	{
 		deleteMe = false;
 		
@@ -85,6 +95,11 @@ namespace swift
 		assets = &am;
 	}
 	
+	void Script::setClock(sf::Clock& c)
+	{
+		clock = &c;
+	}
+	
 	void Script::setSettings(Settings& s)
 	{
 		settings = &s;
@@ -105,9 +120,9 @@ namespace swift
 		stateReturn = &t;
 	}
 	
-	void Script::setClock(sf::Clock& c)
+	void Script::setWorld(World& w)
 	{
-		clock = &c;
+		world = &w;
 	}
 	
 	void Script::addVariables()
@@ -120,7 +135,34 @@ namespace swift
 	
 	void Script::addClasses()
 	{
-		luaState["Entity"].SetClass<Entity>();
+		// ECS
+		luaState["Entity"].SetClass<Entity>("add", static_cast<bool (Entity::*)(std::string)>(&Entity::add),
+											"remove", static_cast<bool (Entity::*)(std::string)>(&Entity::remove),
+											"has", static_cast<bool (Entity::*)(std::string) const>(&Entity::has),
+											"get", static_cast<Drawable* (Entity::*)(std::string)>(&Entity::get),
+											"get", static_cast<Movable* (Entity::*)(std::string)>(&Entity::get),
+											"get", static_cast<Physical* (Entity::*)(std::string)>(&Entity::get));
+		
+		// each Component type
+		luaState["Drawable"].SetClass<Drawable>();
+		luaState["Movable"].SetClass<Movable>();
+		luaState["Physical"].SetClass<Physical>();
+		
+		// vectors
+		luaState["Vector2f"].SetClass<sf::Vector2f>();
+		luaState["Vector2i"].SetClass<sf::Vector2i>();
+		luaState["Vector2u"].SetClass<sf::Vector2u>();
+		
+		// GUI
+		/*luaState["Column"].SetClass<cstr::Column>();
+		luaState["Row"].SetClass<cstr::Row>();
+		
+		luaState["Button"].SetClass<cstr::Button>();
+		luaState["Label"].SetClass<cstr::Label>();
+		luaState["Slider"].SetClass<cstr::Slider>();
+		luaState["Spacer"].SetClass<cstr::Spacer>();
+		luaState["TextBox"].SetClass<cstr::TextBox>();
+		luaState["Toggle"].SetClass<cstr::Toggle>();*/
 	}
 	
 	void Script::addFunctions()
@@ -150,13 +192,15 @@ namespace swift
 		
 		// EntitySystem functions
 		
+		luaState["newEntity"] = [&]() -> Entity*
+		{
+			if(world)
+				return &world->addEntity();
+			else
+				return nullptr;
+		};
 		
 		// gui functions
-		luaState["setFont"] = [&](std::string f)
-		{
-			if(gui)
-				gui->setFont(assets->getFont(f));
-		};
 		
 		// State functions
 		luaState["setStateReturn"] = [&](unsigned s)
