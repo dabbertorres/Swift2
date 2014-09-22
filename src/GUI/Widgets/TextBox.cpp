@@ -17,8 +17,8 @@ namespace cstr
 
 		text.setFont(f);
 		text.setString("|||");	// set a tall character to correctly set the origin
-		text.setOrigin( {text.getLocalBounds().left, text.getLocalBounds().top});
 		text.setCharacterSize(border.getGlobalBounds().height - 2 * BORDER_SIZE);
+		text.setOrigin( {text.getLocalBounds().left, text.getLocalBounds().top});
 		text.setPosition(border.getGlobalBounds().left + BORDER_SIZE, border.getGlobalBounds().top + BORDER_SIZE);
 		text.setString(currentStr + '|');
 	}
