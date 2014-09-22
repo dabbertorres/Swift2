@@ -40,6 +40,7 @@ namespace swift
 		playSetup->setGUI(hud);
 		playSetup->setStateReturn(returnType);
 		playSetup->setKeyboard(keyboard);
+		playSetup->setWorld(world);
 		playSetup->start();
 
 		pauseSetup->setGUI(pauseMenu);
