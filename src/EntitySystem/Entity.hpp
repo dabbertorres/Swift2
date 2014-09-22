@@ -38,7 +38,7 @@ namespace swift
 					return false;
 			}
 			
-			bool add(const std::string& c)
+			bool add(std::string c)
 			{
 				Component* comp = ComponentRegistry::get(c);
 				
@@ -66,6 +66,19 @@ namespace swift
 					return false;
 			}
 			
+			bool remove(std::string c)
+			{
+				Component* comp = ComponentRegistry::get(c);
+				
+				if(comp == nullptr || components.find(c) != components.end())
+					return false;
+				else
+				{
+					components.emplace(c, comp);
+					return true;
+				}
+			}
+			
 			template<typename C>
 			C* get()
 			{
@@ -79,12 +92,29 @@ namespace swift
 					return nullptr;
 			}
 			
+			// overridden by a Component for it's own type
+			template<typename C>
+			C* get(std::string c)
+			{
+				if(has(c))
+				{
+					return static_cast<C*>(components[c]);
+				}
+				else
+					return nullptr;
+			}
+			
 			template<typename C>
 			bool has() const
 			{
 				static_assert(std::is_base_of<Component, C>::value, "C must be a child of swift::Component");
 				
 				return components.find(C::getType()) != components.end();
+			}
+			
+			bool has(std::string c) const
+			{
+				return components.find(c) != components.end();
 			}
 
 		private:

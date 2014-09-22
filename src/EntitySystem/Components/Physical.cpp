@@ -1,5 +1,7 @@
 #include "Physical.hpp"
 
+#include "../Entity.hpp"
+
 namespace swift
 {
 	Physical::Physical()
@@ -13,5 +15,19 @@ namespace swift
 	std::string Physical::getType()
 	{
 		return "Physical";
+	}
+	
+	template<>
+	Physical* Entity::get(std::string c)
+	{
+		if(c != "Physical")
+			return nullptr;
+		
+		if(this->has<Physical>())
+		{
+			return static_cast<Physical*>(components["Physical"]);
+		}
+		else
+			return nullptr;
 	}
 }
