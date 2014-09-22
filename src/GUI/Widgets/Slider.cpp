@@ -25,7 +25,7 @@ namespace cstr
 				{
 					if(track.getGlobalBounds().left - slider.getGlobalBounds().width / 2 <= event.mouseMove.x && 
 					event.mouseMove.x <= track.getGlobalBounds().left + track.getGlobalBounds().width - slider.getGlobalBounds().width / 2)
-						slider.setPosition(event.mouseMove.x, slider.getGlobalBounds().top);
+						slider.setPosition(event.mouseMove.x - slider.getGlobalBounds().width / 2, slider.getGlobalBounds().top);
 					else if(event.mouseMove.x <= track.getGlobalBounds().left - slider.getGlobalBounds().width / 2)
 						slider.setPosition(track.getGlobalBounds().left - slider.getGlobalBounds().width / 2, slider.getGlobalBounds().top);
 					else
