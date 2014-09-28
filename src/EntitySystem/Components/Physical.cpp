@@ -17,7 +17,7 @@ namespace swift
 		return "Physical";
 	}
 	
-	template<>
+	/*template<>
 	Physical* Entity::get(std::string c)
 	{
 		if(c != "Physical")
@@ -29,5 +29,5 @@ namespace swift
 		}
 		else
 			return nullptr;
-	}
+	}*/
 }

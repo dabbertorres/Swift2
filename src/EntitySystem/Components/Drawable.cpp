@@ -4,23 +4,12 @@
 
 namespace swift
 {
-	void Drawable::setTexture(const sf::Texture& texture)
-	{
-		sprite.setTexture(texture, true);
-	}
-	
-	void Drawable::setTextureRect(const sf::Texture& texture, sf::IntRect& rect)
-	{
-		sprite.setTexture(texture, true);
-		sprite.setTextureRect(rect);
-	}
-	
 	std::string Drawable::getType()
 	{
 		return "Drawable";
 	}
 	
-	template<>
+	/*template<>
 	Drawable* Entity::get(std::string c)
 	{
 		if(c != "Drawable")
@@ -32,5 +21,5 @@ namespace swift
 		}
 		else
 			return nullptr;
-	}
+	}*/
 }

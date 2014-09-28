@@ -15,7 +15,7 @@ namespace swift
 		return "Movable";
 	}
 	
-	template<>
+	/*template<>
 	Movable* Entity::get(std::string c)
 	{
 		if(c != "Movable")
@@ -27,5 +27,5 @@ namespace swift
 		}
 		else
 			return nullptr;
-	}
+	}*/
 }
