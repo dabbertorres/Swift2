@@ -10,6 +10,8 @@ namespace swift
 	class Component : public Observable
 	{
 		public:
+			virtual ~Component() = default;
+			
 			static std::string getType();
 	};
 }
