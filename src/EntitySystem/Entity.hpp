@@ -1,8 +1,6 @@
 #ifndef ENTITY_HPP
 #define ENTITY_HPP
 
-#include "../MessageSystem/Observable.hpp"
-
 #include <unordered_map>
 
 #include "Component.hpp"
@@ -10,7 +8,7 @@
 
 namespace swift
 {
-	class Entity : public Observable
+	class Entity
 	{
 		public:
 			Entity()
@@ -18,10 +16,15 @@ namespace swift
 
 			}
 
-			virtual ~Entity()
+			~Entity()
 			{
-				for(auto& c : components)
-					delete c.second;
+				auto it = components.begin();
+				while(it != components.end())
+				{
+					if(it->second)
+						delete it->second;
+					it = components.erase(it);
+				}
 			}
 			
 			template<typename C>
@@ -40,12 +43,15 @@ namespace swift
 			
 			bool add(std::string c)
 			{
-				Component* comp = ComponentRegistry::get(c);
-				
-				if(comp == nullptr || components.find(c) != components.end())
+				if(components.find(c) != components.end())
 					return false;
 				else
 				{
+					Component* comp = ComponentRegistry::get(c);
+				
+					if(comp == nullptr)
+						return false;
+					
 					components.emplace(c, comp);
 					return true;
 				}
@@ -68,12 +74,15 @@ namespace swift
 			
 			bool remove(std::string c)
 			{
-				Component* comp = ComponentRegistry::get(c);
-				
-				if(comp == nullptr || components.find(c) != components.end())
+				if(components.find(c) == components.end())
 					return false;
 				else
 				{
+					Component* comp = ComponentRegistry::get(c);
+					
+					if(comp == nullptr)
+						return false;
+				
 					components.emplace(c, comp);
 					return true;
 				}
@@ -92,8 +101,8 @@ namespace swift
 					return nullptr;
 			}
 			
-			// overridden by a Component for it's own type
-			template<typename C>
+			// Must be overridden by a Component for it's own type
+			/*template<typename C>
 			C* get(std::string c)
 			{
 				if(has(c))
@@ -102,7 +111,8 @@ namespace swift
 				}
 				else
 					return nullptr;
-			}
+			}*/
+			// not needed for binding
 			
 			template<typename C>
 			bool has() const
