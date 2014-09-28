@@ -9,6 +9,9 @@ namespace swift
 	{
 		public:
 			virtual void update(Entity& entity, float dt);
+
+		private:
+			float distance(sf::Vector2f one, sf::Vector2f two) const;
 	};
 }
 
