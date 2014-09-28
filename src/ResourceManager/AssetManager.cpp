@@ -149,6 +149,12 @@ namespace swift
 			if(!textures[file]->loadFromFile(file))
 			{
 				log << "Unable to load " << file << " as a texture.\n";
+				
+				// delete new'd texture
+				auto it = textures.end();
+				it--;
+				delete it->second;
+				
 				textures.erase(file);
 				return false;
 			}
@@ -167,6 +173,12 @@ namespace swift
 			if(!soundBuffers[file]->loadFromFile(file))
 			{
 				log << "Unable to load " << file << " as a sound.\n";
+				
+				// delete new'd soundbuffer
+				auto it = soundBuffers.end();
+				it--;
+				delete it->second;
+				
 				soundBuffers.erase(file);
 				return false;
 			}
@@ -180,6 +192,12 @@ namespace swift
 			if(!music[file]->openFromFile(file))
 			{
 				log << "Unable to open " << file << " as a music file.\n";
+				
+				// delete new'd music
+				auto it = music.end();
+				it--;
+				delete it->second;
+				
 				music.erase(file);
 				return false;
 			}
@@ -193,6 +211,12 @@ namespace swift
 			if(!fonts[file]->loadFromFile(file))
 			{
 				log << "Unable to load " << file << " as a font.\n";
+				
+				// delete new'd font
+				auto it = fonts.end();
+				it--;
+				delete it->second;
+				
 				fonts.erase(file);
 				return false;
 			}
@@ -206,6 +230,12 @@ namespace swift
 			if(!scripts[file]->loadFromFile(file))
 			{
 				log << "Unable to load " << file << " as a script.\n";
+				
+				// delete new'd script
+				auto it = scripts.end();
+				it--;
+				delete it->second;
+				
 				scripts.erase(file);
 				return false;
 			}
