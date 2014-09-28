@@ -104,7 +104,7 @@ namespace swift
 
 	void Game::gameLoop()
 	{
-		const sf::Time dt = sf::seconds(1 / ticksPerSecond);
+		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
 
 		sf::Time currentTime = GameTime.getElapsedTime();
 		sf::Time lag = sf::seconds(0);
@@ -143,6 +143,11 @@ namespace swift
 
 	void Game::update(sf::Time dt)
 	{
+		if(running)
+		{
+			manageStates();
+		}
+		
 		sf::Event event;
 		while(window.pollEvent(event))
 		{
@@ -162,7 +167,6 @@ namespace swift
 		if(running)
 		{
 			currentState->update(dt);
-			manageStates();
 		}
 	}
 
