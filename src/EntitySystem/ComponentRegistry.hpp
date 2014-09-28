@@ -5,6 +5,7 @@
 #include "Components/Drawable.hpp"
 #include "Components/Movable.hpp"
 #include "Components/Physical.hpp"
+#include "Components/Name.hpp"
 
 namespace swift
 {
@@ -19,6 +20,8 @@ namespace swift
 					return new Movable;
 				else if(c == "Physical")
 					return new Physical;
+				else if(c == "Name")
+					return new Name;
 				else
 					return nullptr;
 			}
