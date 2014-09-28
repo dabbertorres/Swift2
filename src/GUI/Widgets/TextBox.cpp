@@ -165,7 +165,7 @@ namespace cstr
 			int fronts = 0;
 			int backs = 0;
 			char newChar = '\0';
-			sf::FloatRect newCharBounds = {0, 0, 0, 0};
+			sf::IntRect newCharBounds = {0, 0, 0, 0};
 			
 			while(text.getGlobalBounds().width + newCharBounds.width < maxWidth && (!frontEmpty || !backEmpty))
 			{
