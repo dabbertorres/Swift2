@@ -16,14 +16,15 @@ namespace swift
 	Play::Play(sf::RenderWindow& win, AssetManager& am)
 		:	State(win, am),
 		    state(SubState::Play),
-			world({static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y)}, assets)
+			world({static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y)}, assets),
+			player(nullptr)
 	{
 		returnType = State::Type::Play;
 	}
 
 	Play::~Play()
 	{
-		player = nullptr;
+		//player = nullptr;
 	}
 
 	void Play::setup()
@@ -76,7 +77,22 @@ namespace swift
 		if(!result)
 			std::cout << "Setting up vertices for \'./data/maps/maze.map\' failed\n";
 		
-		player = &world.getEntities()[0];
+		// setup player
+		player = world.addEntity();
+		player->add<Drawable>();
+		player->add<Physical>();
+		player->add<Name>();
+		player->get<Name>()->name = "player";
+		player->add<Movable>();
+		
+		player->get<Drawable>()->sprite.setTexture(assets.getTexture("./data/textures/guy.png"));
+		player->get<Drawable>()->sprite.setScale({0.5f, (player->get<Drawable>()->sprite.getGlobalBounds().height - 16) / player->get<Drawable>()->sprite.getGlobalBounds().height});
+		
+		player->get<Physical>()->position = {400, 300};
+		player->get<Physical>()->size = {static_cast<unsigned>(player->get<Drawable>()->sprite.getGlobalBounds().width),
+										static_cast<unsigned>(player->get<Drawable>()->sprite.getGlobalBounds().height)};
+		
+		player->get<Movable>()->moveVelocity = 100;
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -119,7 +135,7 @@ namespace swift
 		switch(state)
 		{
 			case SubState::Play:
-				world.draw(window);
+				window.draw(world);
 				window.draw(hud);
 				break;
 			case SubState::Pause:
@@ -151,45 +167,61 @@ namespace swift
 		// move up press and release
 		keyboard.newBinding("moveUpStart", sf::Keyboard::Up, [&]()
 		{
-			player->get<Movable>()->velocity += {0, -player->get<Movable>()->moveVelocity};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {0, -player->get<Movable>()->moveVelocity};
 		}, true);
 		
 		keyboard.newBinding("moveUpStop", sf::Keyboard::Up, [&]()
 		{
-			player->get<Movable>()->velocity += {0, player->get<Movable>()->moveVelocity};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {0, player->get<Movable>()->moveVelocity};
 		}, false);
 		
 		// move down press and release
 		keyboard.newBinding("moveDownStart", sf::Keyboard::Down, [&]()
 		{
-			player->get<Movable>()->velocity += {0, player->get<Movable>()->moveVelocity};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {0, player->get<Movable>()->moveVelocity};
 		}, true);
 		
 		keyboard.newBinding("moveDownStop", sf::Keyboard::Down, [&]()
 		{
-			player->get<Movable>()->velocity += {0, -player->get<Movable>()->moveVelocity};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {0, -player->get<Movable>()->moveVelocity};
 		}, false);
 		
 		// move left press and release
 		keyboard.newBinding("moveLeftStart", sf::Keyboard::Left, [&]()
 		{
-			player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
 		}, true);
 		
 		keyboard.newBinding("moveLeftStop", sf::Keyboard::Left, [&]()
 		{
-			player->get<Movable>()->velocity += {player->get<Movable>()->moveVelocity, 0};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {player->get<Movable>()->moveVelocity, 0};
 		}, false);
 		
 		// move right press and release
 		keyboard.newBinding("moveRightStart", sf::Keyboard::Right, [&]()
 		{
-			player->get<Movable>()->velocity += {player->get<Movable>()->moveVelocity, 0};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {player->get<Movable>()->moveVelocity, 0};
 		}, true);
 		
 		keyboard.newBinding("moveRightStop", sf::Keyboard::Right, [&]()
 		{
-			player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
+			if(player)
+				if(player->has<Movable>())
+					player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
 		}, false);
 	}
 }
