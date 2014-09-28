@@ -72,7 +72,7 @@ namespace swift
 
 		mods.loadMods("./data/mods");
 
-		for(auto &m : mods.getMods())
+		for(auto& m : mods.getMods())
 		{
 			assets.loadMod(m.second.mod);
 		}
