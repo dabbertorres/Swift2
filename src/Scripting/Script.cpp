@@ -1,7 +1,6 @@
 #include "Script.hpp"
 
 #include <fstream>
-#include <cassert>
 
 #include "../ResourceManager/AssetManager.hpp"
 
@@ -139,19 +138,21 @@ namespace swift
 		luaState["Entity"].SetClass<Entity>("add", static_cast<bool (Entity::*)(std::string)>(&Entity::add),
 											"remove", static_cast<bool (Entity::*)(std::string)>(&Entity::remove),
 											"has", static_cast<bool (Entity::*)(std::string) const>(&Entity::has),
-											"get", static_cast<Drawable* (Entity::*)(std::string)>(&Entity::get),
-											"get", static_cast<Movable* (Entity::*)(std::string)>(&Entity::get),
-											"get", static_cast<Physical* (Entity::*)(std::string)>(&Entity::get));
+											"getDrawable", static_cast<Drawable* (Entity::*)()>(&Entity::get<Drawable>),
+											"getMovable", static_cast<Movable* (Entity::*)()>(&Entity::get<Movable>),
+											"getPhysical", static_cast<Physical* (Entity::*)()>(&Entity::get<Physical>),
+											"getName", static_cast<Name* (Entity::*)()>(&Entity::get<Name>));
 		
 		// each Component type
 		luaState["Drawable"].SetClass<Drawable>();
 		luaState["Movable"].SetClass<Movable>();
 		luaState["Physical"].SetClass<Physical>();
+		luaState["Name"].SetClass<Name>();
 		
 		// vectors
-		luaState["Vector2f"].SetClass<sf::Vector2f>();
-		luaState["Vector2i"].SetClass<sf::Vector2i>();
-		luaState["Vector2u"].SetClass<sf::Vector2u>();
+		luaState["Vector2f"].SetClass<sf::Vector2f>("x", &sf::Vector2f::x, "y", &sf::Vector2f::y);
+		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
+		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
 		
 		// GUI
 		/*luaState["Column"].SetClass<cstr::Column>();
@@ -167,7 +168,7 @@ namespace swift
 	
 	void Script::addFunctions()
 	{
-		// utility functions
+		/* utility functions */
 		luaState["getWindowSize"] = [&]()
 		{
 			if(window)
@@ -190,25 +191,138 @@ namespace swift
 				keyboard->call(k);
 		};
 		
-		// EntitySystem functions
-		
+		/* EntitySystem */
+		// World
 		luaState["newEntity"] = [&]() -> Entity*
 		{
 			if(world)
-				return &world->addEntity();
+				return world->addEntity();
 			else
 				return nullptr;
 		};
 		
-		// gui functions
+		luaState["getTotalEntities"] = [&]()
+		{
+			if(world)
+				return static_cast<unsigned>(world->getEntities().size());
+			else
+				return 0u;
+		};
 		
-		// State functions
+		luaState["getEntity"] = [&](unsigned e) -> Entity*
+		{
+			if(world && e < world->getEntities().size())
+				return world->getEntities()[e];
+			else
+				return nullptr;
+		};
+		
+		// Drawable
+		luaState["setTexture"] = [&](Drawable* d, std::string t)
+		{
+			if(d)
+			{
+				d->sprite.setTexture(assets->getTexture(t));
+				return true;
+			}
+			else
+				return false;
+		};
+		
+		luaState["setTextureRect"] = [&](Drawable* d, int x, int y, int w, int h)
+		{
+			if(d)
+				d->sprite.setTextureRect({x, y, w, h});
+		};
+		
+		luaState["getSpriteSize"] = [&](Drawable* d)
+		{
+			if(d)
+				return std::make_tuple(d->sprite.getGlobalBounds().width, d->sprite.getGlobalBounds().height);
+			else
+				return std::make_tuple(0.f, 0.f);
+		};
+		
+		luaState["setScale"] = [&](Drawable* d, float x, float y)
+		{
+			if(d)
+				d->sprite.setScale(x, y);
+		};
+		
+		// Movable
+		luaState["setMoveVelocity"] = [&](Movable* m, float v)
+		{
+			if(m)
+			{
+				m->moveVelocity = v;
+			}
+		};
+		
+		luaState["getVelocity"] = [&](Movable* m)
+		{
+			if(m)
+				return std::make_tuple(m->velocity.x, m->velocity.y);
+			else
+				return std::make_tuple(0.f, 0.f);
+		};
+		
+		// Physical
+		luaState["setPosition"] = [&](Physical* p, float x, float y)
+		{
+			if(p)
+				p->position = {x, y};
+			else if(p)
+				p->position = {0, 0};
+		};
+		
+		luaState["getPosition"] = [&](Physical* p)
+		{
+			if(p)
+				return std::make_tuple(p->position.x, p->position.y);
+			else
+				return std::make_tuple(0.f, 0.f);
+		};
+		
+		luaState["setSize"] = [&](Physical* p, unsigned x, unsigned y)
+		{
+			if(p)
+				p->size = {x, y};
+			else if(p)
+				p->size = {0, 0};
+		};
+		
+		luaState["getSize"] = [&](Physical* p)
+		{
+			if(p)
+				return std::make_tuple(p->size.x, p->size.y);
+			else
+				return std::make_tuple(0u, 0u);
+		};
+		
+		// Name
+		luaState["setName"] = [&](Name* n, std::string s)
+		{
+			if(n)
+				n->name = s;
+		};
+		
+		luaState["getName"] = [&](Name* n) -> std::string
+		{
+			if(n)
+				return n->name;
+			else
+				return "null";
+		};
+		
+		/* gui functions */
+		
+		/* State */
 		luaState["setStateReturn"] = [&](unsigned s)
 		{
 			*stateReturn = static_cast<State::Type>(s);
 		};
 		
-		// Settings functions
+		/* Settings */
 		luaState["getSettingStr"] = [&](std::string n)
 		{
 			std::string v;

@@ -1,6 +1,10 @@
 #ifndef SCRIPT_HPP
 #define SCRIPT_HPP
 
+/*
+ * Lua is expected to be compiled with float as lua_number!!!
+ */
+
 #include <Selene/selene.h>
 
 #include <string>
