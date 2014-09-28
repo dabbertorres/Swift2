@@ -15,8 +15,7 @@ namespace swift
 		public:
 			virtual void update(Entity& entity, float dt);
 			
-			virtual void draw(Entity& entity, sf::RenderTarget& target);
-			virtual void draw(Entity& entity, sf::RenderTarget& target, sf::RenderStates states);
+			virtual void draw(const Entity& entity, sf::RenderTarget& target, sf::RenderStates states) const;
 	};
 }
 
