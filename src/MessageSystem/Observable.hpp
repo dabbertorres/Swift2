@@ -8,6 +8,8 @@ namespace swift
 	class Observable
 	{
 		public:
+			virtual ~Observable() = default;
+
 			void sendMessage(const std::string& m);
 			std::string getMessage();
 
