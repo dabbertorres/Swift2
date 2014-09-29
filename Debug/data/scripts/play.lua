@@ -2,6 +2,8 @@
 function Start()
 	winSizeX, winSizeY = getWindowSize()
 	
+	Done = false
+	
 	local e = newEntity()
 	
 	e:add("Drawable")
@@ -14,8 +16,6 @@ function Start()
 	setPosition(e:getPhysical(), 400, 20)
 	setSize(e:getPhysical(), getSpriteSize(e:getDrawable()))
 	setName(e:getName(), "Lua Entity")
-	
-	Done = false
 end
 
 function Update()
