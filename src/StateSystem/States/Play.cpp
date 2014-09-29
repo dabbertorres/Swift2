@@ -32,23 +32,23 @@ namespace swift
 		window.setKeyRepeatEnabled(false);
 		Script* playSetup = &assets.getScript("./data/scripts/play.lua");
 		Script* pauseSetup = &assets.getScript("./data/scripts/pause.lua");
-
+		
 		if(playSetup == nullptr)
-			std::cerr << "Play script isn't being loaded\n";
+			log << "Play script isn't being loaded\n";
 		if(pauseSetup == nullptr)
-			std::cerr << "Pause script isn't being loaded\n";
-
+			log << "Pause script isn't being loaded\n";
+		
 		playSetup->setGUI(hud);
 		playSetup->setStateReturn(returnType);
 		playSetup->setKeyboard(keyboard);
 		playSetup->setWorld(world);
 		playSetup->start();
-
+		
 		pauseSetup->setGUI(pauseMenu);
 		pauseSetup->setStateReturn(returnType);
 		pauseSetup->setKeyboard(keyboard);
 		pauseSetup->start();
-
+		
 		setupKeyBindings();
 		
 		// setup pause menu GUI
@@ -75,7 +75,7 @@ namespace swift
 		result = world.tilemap.load(assets.getTexture(world.tilemap.getTextureFile()));
 		
 		if(!result)
-			std::cout << "Setting up vertices for \'./data/maps/maze.map\' failed\n";
+			log << "Setting up vertices for \'./data/maps/maze.map\' failed\n";
 		
 		// setup player
 		player = world.addEntity();
