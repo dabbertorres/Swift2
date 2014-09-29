@@ -96,6 +96,7 @@ namespace swift
 		Script::setAssetManager(assets);
 		Script::setClock(GameTime);
 		Script::setSettings(settings);
+		Script::setLogger(log);
 
 		// state setup
 		currentState = new MainMenu(window, assets);
@@ -144,12 +145,10 @@ namespace swift
 	void Game::update(sf::Time dt)
 	{
 		if(running)
-		{
 			manageStates();
-		}
 		
 		sf::Event event;
-		while(window.pollEvent(event))
+		while(window.pollEvent(event) && running)
 		{
 			keyboard(event);
 			mouse(event);
@@ -160,14 +159,13 @@ namespace swift
 
 			if(event.type == sf::Event::Closed)
 				running = false;
-
-			currentState->handleEvent(event);
+			
+			if(running)
+				currentState->handleEvent(event);
 		}
 		
 		if(running)
-		{
 			currentState->update(dt);
-		}
 	}
 
 	void Game::manageStates()
