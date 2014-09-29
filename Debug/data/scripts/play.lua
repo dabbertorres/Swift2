@@ -6,16 +6,20 @@ function Start()
 	
 	local e = newEntity()
 	
-	e:add("Drawable")
-	e:add("Movable")
-	e:add("Physical")
-	e:add("Name")
-	
-	setTexture(e:getDrawable(), "./data/textures/ship.png")
-	setMoveVelocity(e:getMovable(), 100)
-	setPosition(e:getPhysical(), 400, 20)
-	setSize(e:getPhysical(), getSpriteSize(e:getDrawable()))
-	setName(e:getName(), "Lua Entity")
+	if e == nil then
+		log("[WARNING]: e is nil")
+	else
+		e:add("Drawable")
+		e:add("Movable")
+		e:add("Physical")
+		e:add("Name")
+		
+		setTexture(e:getDrawable(), "./data/textures/ship.png")
+		setMoveVelocity(e:getMovable(), 100)
+		setPosition(e:getPhysical(), 400, 20)
+		setSize(e:getPhysical(), getSpriteSize(e:getDrawable()))
+		setName(e:getName(), "Lua Entity")
+	end
 end
 
 function Update()
