@@ -134,6 +134,11 @@ namespace swift
 	
 	void Script::addClasses()
 	{
+		// vectors
+		luaState["Vector2f"].SetClass<sf::Vector2f>("x", &sf::Vector2f::x, "y", &sf::Vector2f::y);
+		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
+		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
+		
 		// ECS
 		luaState["Entity"].SetClass<Entity>("add", static_cast<bool (Entity::*)(std::string)>(&Entity::add),
 											"remove", static_cast<bool (Entity::*)(std::string)>(&Entity::remove),
@@ -148,11 +153,6 @@ namespace swift
 		luaState["Movable"].SetClass<Movable>();
 		luaState["Physical"].SetClass<Physical>();
 		luaState["Name"].SetClass<Name>();
-		
-		// vectors
-		luaState["Vector2f"].SetClass<sf::Vector2f>("x", &sf::Vector2f::x, "y", &sf::Vector2f::y);
-		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
-		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
 		
 		// GUI
 		/*luaState["Column"].SetClass<cstr::Column>();
