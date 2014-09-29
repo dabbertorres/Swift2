@@ -1,10 +1,10 @@
 #include "Script.hpp"
 
-#include <fstream>
-
+/* Assets */
 #include "../ResourceManager/AssetManager.hpp"
 
-#include "../World/World.hpp"
+/* Logger */
+#include "../Logger/Logger.hpp"
 
 /* GUI */
 #include "../GUI/Window.hpp"
@@ -22,12 +22,15 @@
 /* EntitySystem */
 #include "../EntitySystem/Entity.hpp"
 
+#include "../World/World.hpp"
+
 namespace swift
 {
 	sf::RenderWindow* Script::window = nullptr;
 	AssetManager* Script::assets = nullptr;
 	sf::Clock* Script::clock = nullptr;
 	Settings* Script::settings = nullptr;
+	Logger* Script::log = nullptr;
 	
 	Script::Script()
 			:	gui(nullptr),
@@ -102,6 +105,11 @@ namespace swift
 	void Script::setSettings(Settings& s)
 	{
 		settings = &s;
+	}
+	
+	void Script::setLogger(Logger& l)
+	{
+		log = &l;
 	}
 	
 	void Script::setGUI(cstr::Window& ui)
@@ -189,6 +197,12 @@ namespace swift
 		{
 			if(keyboard)
 				keyboard->call(k);
+		};
+		
+		luaState["log"] = [&](std::string m)
+		{
+			if(log)
+				*log << m;
 		};
 		
 		/* EntitySystem */

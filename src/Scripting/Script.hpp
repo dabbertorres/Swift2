@@ -43,6 +43,7 @@ namespace swift
 	 
 	class AssetManager;
 	class World;
+	class Logger;
 	
 	class Script
 	{
@@ -66,6 +67,7 @@ namespace swift
 			static void setAssetManager(AssetManager& am);
 			static void setClock(sf::Clock& c);
 			static void setSettings(Settings& s);
+			static void setLogger(Logger& l);
 			void setGUI(cstr::Window& ui);
 			void setKeyboard(KeyboardManager& k);
 			void setStateReturn(State::Type& t);
@@ -85,6 +87,7 @@ namespace swift
 			static AssetManager* assets;
 			static sf::Clock* clock;
 			static Settings* settings;
+			static Logger* log;
 			cstr::Window* gui;
 			KeyboardManager* keyboard;
 			State::Type* stateReturn;
