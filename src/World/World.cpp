@@ -1,5 +1,7 @@
 #include "World.hpp"
 
+#include <cmath>
+
 namespace swift
 {
 	World::World(const sf::Vector2i& s, AssetManager& am)
@@ -37,8 +39,38 @@ namespace swift
 		return true;
 	}
 	
-	const std::vector<Entity*>& World::getEntities()
+	const std::vector<Entity*>& World::getEntities() const
 	{
 		return entities;
+	}
+	
+	const std::vector<Entity*>& World::calculateEntitiesAround(sf::Vector2f pos, float radius)
+	{
+		entitiesAround.clear();
+		// if pos is outside of the world, or the radius is 0 or less, just return an empty vector
+		if(!(0 <= pos.x && pos.x < size.x && 0 <= pos.y && pos.y < size.y) || radius <= 0)
+			return entitiesAround;
+		
+		for(auto& e : entities)
+		{
+			if(e->has<Physical>())
+			{
+				Physical* p = e->get<Physical>();
+				if(distance(p->position, pos) <= radius)
+					entitiesAround.push_back(e);
+			}
+		}
+		
+		return entitiesAround;
+	}
+	
+	const std::vector<Entity*>& World::getEntitiesAround() const
+	{
+		return entitiesAround;
+	}
+	
+	float World::distance(sf::Vector2f one, sf::Vector2f two) const
+	{
+		return std::sqrt(std::pow(two.x - one.x, 2) + std::pow(two.y - one.y, 2));
 	}
 }

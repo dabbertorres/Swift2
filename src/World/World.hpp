@@ -25,7 +25,11 @@ namespace swift
 			
 			bool removeEntity(int e);
 			
-			const std::vector<Entity*>& getEntities();
+			const std::vector<Entity*>& getEntities() const;
+			
+			const std::vector<Entity*>& calculateEntitiesAround(sf::Vector2f pos, float radius);
+			
+			const std::vector<Entity*>& getEntitiesAround() const;
 
 			virtual void update(float dt) = 0;
 
@@ -41,9 +45,13 @@ namespace swift
 			sf::Vector2i size;
 			
 			std::vector<Entity*> entities;
+			
+			std::vector<Entity*> entitiesAround;
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
+
+			float distance(sf::Vector2f one, sf::Vector2f two) const;
 	};
 }
 
