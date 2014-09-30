@@ -2,9 +2,11 @@
 
 namespace swift
 {
-	State::State(sf::RenderWindow& win, AssetManager& am)
+	State::State(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
 		: 	window(win),
-			assets(am)
+			assets(am),
+			settings(set),
+			dictionary(dic)
 	{
 	}
 

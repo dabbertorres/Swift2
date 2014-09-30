@@ -13,8 +13,8 @@
 
 namespace swift
 {
-	Play::Play(sf::RenderWindow& win, AssetManager& am)
-		:	State(win, am),
+	Play::Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
+		:	State(win, am, set, dic),
 		    state(SubState::Play),
 			world({static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y)}, assets),
 			player(nullptr)
@@ -34,20 +34,24 @@ namespace swift
 		Script* pauseSetup = &assets.getScript("./data/scripts/pause.lua");
 		
 		if(playSetup == nullptr)
-			log << "Play script isn't being loaded\n";
+			log << "Play script wasn't loaded\n";
+		else
+		{
+			playSetup->setGUI(hud);
+			playSetup->setStateReturn(returnType);
+			playSetup->setKeyboard(keyboard);
+			playSetup->setWorld(world);
+			playSetup->start();
+		}
 		if(pauseSetup == nullptr)
-			log << "Pause script isn't being loaded\n";
-		
-		playSetup->setGUI(hud);
-		playSetup->setStateReturn(returnType);
-		playSetup->setKeyboard(keyboard);
-		playSetup->setWorld(world);
-		playSetup->start();
-		
-		pauseSetup->setGUI(pauseMenu);
-		pauseSetup->setStateReturn(returnType);
-		pauseSetup->setKeyboard(keyboard);
-		pauseSetup->start();
+			log << "Pause script wasn't loaded\n";
+		else
+		{
+			pauseSetup->setGUI(pauseMenu);
+			pauseSetup->setStateReturn(returnType);
+			pauseSetup->setKeyboard(keyboard);
+			pauseSetup->start();
+		}
 		
 		setupKeyBindings();
 		
@@ -136,6 +140,7 @@ namespace swift
 		{
 			case SubState::Play:
 				window.draw(world);
+				
 				window.draw(hud);
 				break;
 			case SubState::Pause:

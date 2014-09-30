@@ -14,9 +14,8 @@
 
 namespace swift
 {
-	SettingsMenu::SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& s)
-		:	State(win, am),
-			settings(s)
+	SettingsMenu::SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
+		:	State(win, am, set, dic)
 	{
 		returnType = State::Type::SettingsMenu;
 	}

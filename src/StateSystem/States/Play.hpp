@@ -16,7 +16,7 @@ namespace swift
 	class Play : public State
 	{
 		public:
-			Play(sf::RenderWindow& win, AssetManager& am);
+			Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
 			~Play();
 
 			virtual void setup();

@@ -11,10 +11,12 @@
 namespace swift
 {
 	class AssetManager;
+	class Settings;
+	
 	class State
 	{
 		public:
-			State(sf::RenderWindow& win, AssetManager& am);
+			State(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
 			virtual ~State();
 			
 			enum Type
@@ -36,6 +38,8 @@ namespace swift
 			/* Environment */
 			sf::RenderWindow& window;
 			AssetManager& assets;
+			Settings& settings;
+			Settings& dictionary;
 			
 			/* Input */
 			KeyboardManager keyboard;

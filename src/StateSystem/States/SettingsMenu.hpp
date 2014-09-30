@@ -15,7 +15,7 @@ namespace swift
 	class SettingsMenu : public State
 	{
 		public:
-			SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& s);
+			SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
 			~SettingsMenu();
 			
 			virtual void setup();
@@ -29,7 +29,6 @@ namespace swift
 			cstr::Window gui;
 			cstr::Button* graphicsButton;
 			cstr::Slider* volumeSlider;
-			Settings& settings;
 	};
 }
 

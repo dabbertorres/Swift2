@@ -11,8 +11,8 @@
 
 namespace swift
 {
-	MainMenu::MainMenu(sf::RenderWindow& win, AssetManager& am)
-		:	State(win, am)
+	MainMenu::MainMenu(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
+		:	State(win, am, set, dic)
 	{		
 		returnType = State::Type::MainMenu;
 	}
