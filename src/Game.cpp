@@ -35,9 +35,12 @@ namespace swift
 		// args is the arguments
 
 		// loads settings from the settings file
-		loadSettings("./data/settings/settings.ini");
+		loadSettings("./data/settings.ini");
 
 		handleLaunchOps(c, args);
+		
+		// loads a dictionary
+		dictionary.loadFile(language + ".dic");
 
 		// Window set up.
 		if(fullscreen)
@@ -99,7 +102,7 @@ namespace swift
 		Script::setLogger(log);
 
 		// state setup
-		currentState = new MainMenu(window, assets);
+		currentState = new MainMenu(window, assets, settings, dictionary);
 		currentState->setup();
 	}
 
@@ -179,13 +182,13 @@ namespace swift
 			switch(nextState)
 			{
 				case State::Type::MainMenu:
-					currentState = new MainMenu(window, assets);
+					currentState = new MainMenu(window, assets, settings, dictionary);
 					break;
 				case State::Type::SettingsMenu:
-					currentState = new SettingsMenu(window, assets, settings);
+					currentState = new SettingsMenu(window, assets, settings, dictionary);
 					break;
 				case State::Type::Play:
-					currentState = new Play(window, assets);
+					currentState = new Play(window, assets, settings, dictionary);
 					break;
 				case State::Type::Exit:
 					running = false;
@@ -316,5 +319,6 @@ namespace swift
 		settings.get("res.y", resolution.y);
 		settings.get("sound", soundLevel);
 		settings.get("music", musicLevel);
+		settings.get("lang", language);
 	}
 }

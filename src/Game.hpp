@@ -5,44 +5,11 @@
  * 
  **/
 
-#define VERSION "0.2.1-020414"
+#define VERSION "0.5.1-09292014"
 #define AUTHOR "Alec Iverson"
 
 #ifndef GAME_HPP
 #define GAME_HPP
-
-/* C++ headers */
-// standards
-#include <cstdlib>
-#include <cctype>
-#include <cmath>
-
-// input/output
-#include <fstream>
-
-// containers
-#include <vector>
-#include <map>
-
-// multithreading
-//#include <thread>
-//#include <mutex>
-
-// misc
-#include <string>
-#include <utility>
-#include <chrono>
-#include <random>
-
-/* POSIX headers */
-#include <dirent.h>
-
-/* SFML headers */
-#include <SFML/System.hpp>
-#include <SFML/Window.hpp>
-#include <SFML/Config.hpp>
-#include <SFML/Graphics.hpp>
-#include <SFML/Audio.hpp>
 
 /* State System */
 #include "StateSystem/State.hpp"
@@ -50,15 +17,9 @@
 #include "StateSystem/States/MainMenu.hpp"
 #include "StateSystem/States/SettingsMenu.hpp"
 
-/* Lua headers */
-#include "Scripting/Script.hpp"
-
 /* Input headers */
 #include "KeyBindings/KeyboardManager.hpp"
 #include "KeyBindings/MouseManager.hpp"
-
-/* GUI headers */
-#include "GUI/Window.hpp"
 
 /* Utility headers */
 #include "Console/Console.hpp"
@@ -68,7 +29,6 @@
 /* Resource headers */
 #include "ResourceManager/AssetManager.hpp"
 #include "ResourceManager/ModManager.hpp"
-#include "ResourceManager/Dictionary.hpp"
 
 namespace swift
 {	
@@ -143,7 +103,6 @@ namespace swift
 			/* Resources */
 			AssetManager assets;
 			ModManager mods;
-			//Dictionary dictionary;
 			
 			/* States */
 			State* currentState;
@@ -153,7 +112,6 @@ namespace swift
 			MouseManager mouse;
 			
 			/* Debug */
-			//Logger logger;
 			Console console;
 
 			/* FPS tracking */
@@ -162,6 +120,7 @@ namespace swift
 			/* Settings */
 			Settings settings;
 			Settings controls;
+			Settings dictionary;
 			
 			unsigned graphics;		// 0 = Low, 1 = Medium, 2 = High
 			bool smoothing;			// texture smoothing
@@ -170,6 +129,7 @@ namespace swift
 			Resolution resolution;
 			unsigned soundLevel;
 			unsigned musicLevel;
+			std::string language;
 
 			// random number generator
 			std::mt19937 randomNumberGenerator;	// Whenever something random is needed, this is all ready!
@@ -180,7 +140,7 @@ namespace swift
 			float ticksPerSecond;	// Iterations of Update
 
 			/* Launch Arguments */
-			bool editor;	// for running the "map" editor - not in use
+			bool editor;	// for running the map editor - not in use
 			bool debug;		// show debugging/performance info
 	};
 }
