@@ -31,13 +31,15 @@ function Update()
 		
 		if x < 0 then
 			setPosition(p, 0, y)
-		elseif x + w > winSizeX then
+		end
+		if x + w > winSizeX then
 			setPosition(p, winSizeX - w, y)
 		end
 		
 		if y < 0 then
 			setPosition(p, x, 0)
-		elseif y + h > winSizeY then
+		end
+		if y + h > winSizeY then
 			setPosition(p, x, winSizeY - h)
 		end
 	end
