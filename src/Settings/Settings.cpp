@@ -221,7 +221,8 @@ namespace swift
 		while(in.good())
 		{
 			std::getline(in, line);
-
+			
+			// lines starting with '#' are a comment
 			if(line.size() > 0 && line[0] != '#')
 			{
 				size_t j = 0;
