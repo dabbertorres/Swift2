@@ -63,7 +63,7 @@ CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/src_Game.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IntermediateDirectory)/GUI_Window.cpp$(ObjectSuffix) $(IntermediateDirectory)/Logger_Logger.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_AssetManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Mod.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/StateSystem_State.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) 
+	$(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) 
 
 
 
@@ -369,14 +369,6 @@ $(IntermediateDirectory)/States_SettingsMenu.cpp$(DependSuffix): src/StateSystem
 
 $(IntermediateDirectory)/States_SettingsMenu.cpp$(PreprocessSuffix): src/StateSystem/States/SettingsMenu.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/States_SettingsMenu.cpp$(PreprocessSuffix) "src/StateSystem/States/SettingsMenu.cpp"
-
-$(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix): src/World/Worlds/TestWorld.cpp $(IntermediateDirectory)/Worlds_TestWorld.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/World/Worlds/TestWorld.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/Worlds_TestWorld.cpp$(DependSuffix): src/World/Worlds/TestWorld.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Worlds_TestWorld.cpp$(DependSuffix) -MM "src/World/Worlds/TestWorld.cpp"
-
-$(IntermediateDirectory)/Worlds_TestWorld.cpp$(PreprocessSuffix): src/World/Worlds/TestWorld.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Worlds_TestWorld.cpp$(PreprocessSuffix) "src/World/Worlds/TestWorld.cpp"
 
 
 -include $(IntermediateDirectory)/*$(DependSuffix)
