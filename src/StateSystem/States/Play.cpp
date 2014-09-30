@@ -16,7 +16,7 @@ namespace swift
 	Play::Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
 		:	State(win, am, set, dic),
 		    state(SubState::Play),
-			world({static_cast<int>(window.getSize().x), static_cast<int>(window.getSize().y)}, assets),
+			activeWorld(nullptr),
 			player(nullptr)
 	{
 		returnType = State::Type::Play;
@@ -24,7 +24,8 @@ namespace swift
 
 	Play::~Play()
 	{
-		//player = nullptr;
+		for(auto& w : worlds)
+			delete w;
 	}
 
 	void Play::setup()
@@ -33,6 +34,9 @@ namespace swift
 		Script* playSetup = &assets.getScript("./data/scripts/play.lua");
 		Script* pauseSetup = &assets.getScript("./data/scripts/pause.lua");
 		
+		worlds.emplace_back(new World({800, 600}, assets));
+		activeWorld = worlds[0];
+		
 		if(playSetup == nullptr)
 			log << "Play script wasn't loaded\n";
 		else
@@ -40,7 +44,7 @@ namespace swift
 			playSetup->setGUI(hud);
 			playSetup->setStateReturn(returnType);
 			playSetup->setKeyboard(keyboard);
-			playSetup->setWorld(world);
+			playSetup->setWorld(*activeWorld);
 			playSetup->start();
 		}
 		if(pauseSetup == nullptr)
@@ -69,20 +73,12 @@ namespace swift
 			returnType = State::Type::MainMenu;
 		})).setString("Main Menu", assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
-		// World test code
-		world.load("");
-		bool result = world.tilemap.loadFile("./data/maps/maze.map");
-		
-		if(!result)
-			log << "Loading \'./data/maps/maze.map\' failed\n";
-		
-		result = world.tilemap.load(assets.getTexture(world.tilemap.getTextureFile()));
-		
-		if(!result)
-			log << "Setting up vertices for \'./data/maps/maze.map\' failed\n";
+		activeWorld->load("");
+		activeWorld->tilemap.loadFile("./data/maps/maze.map");
+		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
 		
 		// setup player
-		player = world.addEntity();
+		player = activeWorld->addEntity();
 		player->add<Drawable>();
 		player->add<Physical>();
 		player->add<Name>();
@@ -125,7 +121,7 @@ namespace swift
 		switch(state)
 		{
 			case SubState::Play:
-				world.update(dt.asSeconds());
+				activeWorld->update(dt.asSeconds());
 				playLogic->run();
 				break;
 			case SubState::Pause:
@@ -139,7 +135,9 @@ namespace swift
 		switch(state)
 		{
 			case SubState::Play:
-				window.draw(world);
+				activeWorld->drawWorld(window);
+				
+				activeWorld->drawEntities(window);
 				
 				window.draw(hud);
 				break;
@@ -158,7 +156,7 @@ namespace swift
 
 	State::Type Play::finish()
 	{
-		world.save("");
+		activeWorld->save("");
 		return returnType;
 	}
 

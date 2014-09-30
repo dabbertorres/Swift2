@@ -9,7 +9,7 @@
 #include "../../GUI/Window.hpp"
 
 /* World headers */
-#include "../../World/Worlds/TestWorld.hpp"
+#include "../../World/World.hpp"
 
 namespace swift
 {
@@ -41,7 +41,8 @@ namespace swift
 			
 			SubState state;
 			
-			TestWorld world;
+			std::vector<World*> worlds;
+			World* activeWorld;
 			Entity* player;
 	};
 }
