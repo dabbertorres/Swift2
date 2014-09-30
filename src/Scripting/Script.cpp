@@ -147,6 +147,9 @@ namespace swift
 		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
 		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
 		
+		// c++ containers
+		luaState["entityList"].SetClass<std::vector<Entity*>>();
+		
 		// ECS
 		luaState["Entity"].SetClass<Entity>("add", static_cast<bool (Entity::*)(std::string)>(&Entity::add),
 											"remove", static_cast<bool (Entity::*)(std::string)>(&Entity::remove),
@@ -226,6 +229,28 @@ namespace swift
 		luaState["getEntity"] = [&](unsigned e) -> Entity*
 		{
 			if(world && e < world->getEntities().size())
+				return world->getEntities()[e];
+			else
+				return nullptr;
+		};
+		
+		luaState["calculateEntitiesAround"] = [&](float x, float y, float radius)
+		{
+			if(world)
+				world->calculateEntitiesAround({x, y}, radius);
+		};
+		
+		luaState["getTotalEntitiesAround"] = [&]()
+		{
+			if(world)
+				return static_cast<unsigned>(world->getEntitiesAround().size());
+			else
+				return 0u;
+		};
+		
+		luaState["getEntityAround"] = [&](unsigned e) -> Entity*
+		{
+			if(world && e < world->getEntitiesAround().size())
 				return world->getEntities()[e];
 			else
 				return nullptr;
