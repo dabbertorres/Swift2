@@ -40,7 +40,8 @@ namespace swift
 		handleLaunchOps(c, args);
 		
 		// loads a dictionary
-		dictionary.loadFile(language + ".dic");
+		log << "Loading language: " << language + ".dic\n";
+		dictionary.loadFile("./data/dictionaries/" + language + ".dic");
 
 		// Window set up.
 		if(fullscreen)
