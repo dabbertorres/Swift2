@@ -5,9 +5,11 @@
 namespace swift
 {
 	World::World(const sf::Vector2i& s, AssetManager& am)
-		:	assets(am),
+		:	tilemap(static_cast<sf::Vector2u>(s)),
+			assets(am),
 			size(s)
 	{
+		
 	}
 	
 	World::~World()
@@ -16,6 +18,51 @@ namespace swift
 		{
 			delete e;
 		}
+	}
+	
+	void World::update(float dt)
+	{
+		for(auto& e : entities)
+		{
+			moveSystem.update(*e, dt);
+			physicalSystem.update(*e, dt);
+			drawSystem.update(*e, dt);
+		}
+	}
+	
+	void World::drawWorld(sf::RenderTarget& target, sf::RenderStates states)
+	{
+		target.draw(tilemap, states);
+	}
+	
+	void World::drawEntities(sf::RenderTarget& target, sf::RenderStates states)
+	{
+		for(auto& e : entities)
+		{
+			drawSystem.draw(*e, target, states);
+		}
+	}
+	
+	bool World::load(const std::string& file)
+	{
+		std::ifstream fin;
+		fin.open(file);
+		
+		if(fin.bad())
+			return false;
+		
+		return true;
+	}
+	
+	bool World::save(const std::string& file)
+	{
+		std::ofstream fout;
+		fout.open(file);
+		
+		if(fout.bad())
+			return false;
+			
+		return true;
 	}
 	
 	Entity* World::addEntity()

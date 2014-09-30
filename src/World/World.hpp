@@ -13,13 +13,28 @@
 /* Entity */
 #include "../EntitySystem/Entity.hpp"
 
+/* Systems */
+#include "../EntitySystem/Systems/DrawableSystem.hpp"
+#include "../EntitySystem/Systems/MovableSystem.hpp"
+#include "../EntitySystem/Systems/PhysicalSystem.hpp"
+
+#include "../Mapping/TileMap.hpp"
+
 namespace swift
 {
-	class World : public sf::Drawable
+	class World
 	{
 		public:
 			World(const sf::Vector2i& s, AssetManager& am);
 			virtual ~World();
+
+			virtual void update(float dt);
+			
+			virtual void drawWorld(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
+			virtual void drawEntities(sf::RenderTarget& target, sf::RenderStates = sf::RenderStates::Default);
+
+			virtual bool load(const std::string& file);
+			virtual bool save(const std::string& file);
 
 			Entity* addEntity();
 			
@@ -31,11 +46,7 @@ namespace swift
 			
 			const std::vector<Entity*>& getEntitiesAround() const;
 
-			virtual void update(float dt) = 0;
-
-			virtual bool load(const std::string& file) = 0;
-
-			virtual bool save(const std::string& file) = 0;
+			TileMap tilemap;
 
 		protected:
 			AssetManager& assets;
@@ -43,14 +54,15 @@ namespace swift
 			sf::View view;
 
 			sf::Vector2i size;
+
+			DrawableSystem drawSystem;
+			MovableSystem moveSystem;
+			PhysicalSystem physicalSystem;
 			
 			std::vector<Entity*> entities;
-			
 			std::vector<Entity*> entitiesAround;
 
 		private:
-			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const = 0;
-
 			float distance(sf::Vector2f one, sf::Vector2f two) const;
 	};
 }
