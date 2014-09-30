@@ -21,7 +21,7 @@ namespace swift
 
 			bool loadFile(const std::string& f);
 
-			bool load(const sf::Texture& tex);
+			bool loadTexture(const sf::Texture& tex);
 			
 			int getTileNum(unsigned t) const;
 			

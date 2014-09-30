@@ -71,7 +71,7 @@ namespace swift
 		return true;
 	}
 	
-	bool TileMap::load(const sf::Texture& tex)
+	bool TileMap::loadTexture(const sf::Texture& tex)
 	{
 		texture = &tex;
 		vertices.resize(sizeTiles.x * sizeTiles.y * 4);
