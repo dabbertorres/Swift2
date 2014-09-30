@@ -60,10 +60,10 @@ AS       := /usr/bin/as
 ## User defined environment variables
 ##
 CodeLiteDir:=/usr/share/codelite
-Objects0=$(IntermediateDirectory)/src_Game.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/LD30_Maze.cpp$(ObjectSuffix) $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IntermediateDirectory)/GUI_Window.cpp$(ObjectSuffix) $(IntermediateDirectory)/Logger_Logger.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_AssetManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Mod.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/StateSystem_State.cpp$(ObjectSuffix) $(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) 
+Objects0=$(IntermediateDirectory)/src_Game.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IntermediateDirectory)/GUI_Window.cpp$(ObjectSuffix) $(IntermediateDirectory)/Logger_Logger.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_AssetManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Mod.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/StateSystem_State.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) 
 
 
 
@@ -105,14 +105,6 @@ $(IntermediateDirectory)/test_main.cpp$(DependSuffix): test/main.cpp
 
 $(IntermediateDirectory)/test_main.cpp$(PreprocessSuffix): test/main.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/test_main.cpp$(PreprocessSuffix) "test/main.cpp"
-
-$(IntermediateDirectory)/LD30_Maze.cpp$(ObjectSuffix): LD30/Maze.cpp $(IntermediateDirectory)/LD30_Maze.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/LD30/Maze.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/LD30_Maze.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/LD30_Maze.cpp$(DependSuffix): LD30/Maze.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/LD30_Maze.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/LD30_Maze.cpp$(DependSuffix) -MM "LD30/Maze.cpp"
-
-$(IntermediateDirectory)/LD30_Maze.cpp$(PreprocessSuffix): LD30/Maze.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/LD30_Maze.cpp$(PreprocessSuffix) "LD30/Maze.cpp"
 
 $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix): src/Console/Console.cpp $(IntermediateDirectory)/Console_Console.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/Console/Console.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IncludePath)
@@ -161,14 +153,6 @@ $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(DependSuffix): src/Reso
 
 $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(PreprocessSuffix): src/ResourceManager/ModManager.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(PreprocessSuffix) "src/ResourceManager/ModManager.cpp"
-
-$(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(ObjectSuffix): src/ResourceManager/Dictionary.cpp $(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(DependSuffix)
-	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/ResourceManager/Dictionary.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(ObjectSuffix) $(IncludePath)
-$(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(DependSuffix): src/ResourceManager/Dictionary.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(DependSuffix) -MM "src/ResourceManager/Dictionary.cpp"
-
-$(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(PreprocessSuffix): src/ResourceManager/Dictionary.cpp
-	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/ResourceManager_Dictionary.cpp$(PreprocessSuffix) "src/ResourceManager/Dictionary.cpp"
 
 $(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix): src/Settings/Settings.cpp $(IntermediateDirectory)/Settings_Settings.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/Settings/Settings.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IncludePath)
