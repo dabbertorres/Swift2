@@ -23,6 +23,7 @@ function Start()
 end
 
 function Update()
+	--bound entities to the world size
 	for i = 0, getTotalEntities() - 1 do
 		local e = getEntity(i)
 		local p = e:getPhysical()
