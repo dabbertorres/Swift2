@@ -34,30 +34,38 @@ namespace swift
 		
 		titleColumn.addWidget(new cstr::Spacer({200, 100}));
 		
+		std::string title = "Swift2";
+		dictionary.get("titleLabel", title);
 		titleColumn.addWidget(new cstr::Label("Swift2", assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		titleColumn.addWidget(new cstr::Spacer({200, 100}));
 		
 		cstr::Column& buttonColumn = titleColumn.addWidget(new cstr::Column({100, 200}, false));
 		
+		std::string start = "Start";
+		dictionary.get("startButton", start);
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::Play;
-		})).setString("Start", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(start, assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
+		std::string settings = "Settings";
+		dictionary.get("settingButton", settings);
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::SettingsMenu;
-		})).setString("Settings", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(settings, assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
+		std::string exit = "Start";
+		dictionary.get("exitButton", exit);
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::Exit;
-		})).setString("Exit", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(exit, assets.getFont("./data/fonts/segoeuisl.ttf"));
 	}
 	
 	void MainMenu::handleEvent(sf::Event &event)

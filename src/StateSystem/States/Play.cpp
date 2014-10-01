@@ -60,18 +60,22 @@ namespace swift
 		setupKeyBindings();
 		
 		// setup pause menu GUI
+		std::string resume = "Resume";
+		dictionary.get("resumeButton", resume);
 		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 125}, false));
 		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			state = SubState::Play;
-		})).setString("Resume", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(resume, assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
 		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
 		
+		std::string mainMenu = "Main Menu";
+		dictionary.get("mainMenuButton", mainMenu);
 		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::MainMenu;
-		})).setString("Main Menu", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
 		activeWorld->load("");
 		activeWorld->tilemap.loadFile("./data/maps/maze.map");

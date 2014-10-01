@@ -35,16 +35,22 @@ namespace swift
 		
 		cstr::Column& settingsColumn = gui.addContainer(new cstr::Column({50, 50, 700, 500}, false));
 		
+		std::string settingsStr = "Settings";
+		dictionary.get("settingsLabel", settingsStr);
 		cstr::Column& titleCol = settingsColumn.addWidget(new cstr::Column({200, 50}, false));
-		titleCol.addWidget(new cstr::Label("Settings", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		titleCol.addWidget(new cstr::Label(settingsStr, assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 		
 		// row for fullscreen label and toggle
 		cstr::Row& fullscreenRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& fullscreenLabelCol = fullscreenRow.addWidget(new cstr::Column({200, 50}, false));
-		fullscreenLabelCol.addWidget(new cstr::Label("Fullscreen:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		std::string fullscreen = "Fullscreen:";
+		dictionary.get("fullscreenLabel", fullscreen);
+		fullscreenLabelCol.addWidget(new cstr::Label(fullscreen + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		
 		fullscreenRow.addWidget(new cstr::Spacer({450, 50}));
+		
 		cstr::Column& fullscreenToggleCol = fullscreenRow.addWidget(new cstr::Column({50, 50}, false));
 		bool fullscreenState = false;
 		settings.get("fullscreen", fullscreenState);
@@ -75,8 +81,12 @@ namespace swift
 		// row for vsync label and toggle
 		cstr::Row& vsyncRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& vsyncLabelCol = vsyncRow.addWidget(new cstr::Column({200, 50}, false));
-		vsyncLabelCol.addWidget(new cstr::Label("V-Sync:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		std::string vsync = "V-Sync:";
+		dictionary.get("vsyncLabel", vsync);
+		vsyncLabelCol.addWidget(new cstr::Label(vsync + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		
 		vsyncRow.addWidget(new cstr::Spacer({450, 50}));
+		
 		cstr::Column& vsyncToggleCol = vsyncRow.addWidget(new cstr::Column({50, 50}, false));
 		bool vsyncState = false;
 		settings.get("vsync", vsyncState);
@@ -92,28 +102,37 @@ namespace swift
 		// row for graphics label and button
 		cstr::Row& graphicsRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& graphicsRowLabelCol = graphicsRow.addWidget(new cstr::Column({200, 50}, false));
-		graphicsRowLabelCol.addWidget(new cstr::Label("Graphics:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		std::string graphics = "Graphics";
+		dictionary.get("graphicsLabel", graphics);
+		graphicsRowLabelCol.addWidget(new cstr::Label(graphics + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		
 		graphicsRow.addWidget(new cstr::Spacer({400, 50}));
+		
 		cstr::Column& graphicsRowButtonCol = graphicsRow.addWidget(new cstr::Column({100, 50}, false));
 		graphicsButton = &graphicsRowButtonCol.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			unsigned graphicsLevel = 0;
 			settings.get("graphics", graphicsLevel);
+			std::string graphicsLevelStr = "Low";
 			graphicsLevel++;
 			switch(graphicsLevel)
 			{
 				case 0:
-					graphicsButton->setString("Low", assets.getFont("./data/fonts/segoeuisl.ttf"));
+					dictionary.get("graphicsLevelLow", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 					break;
 				case 1:
-					graphicsButton->setString("Medium", assets.getFont("./data/fonts/segoeuisl.ttf"));
+					dictionary.get("graphicsLevelMed", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 					break;
 				case 2:
-					graphicsButton->setString("High", assets.getFont("./data/fonts/segoeuisl.ttf"));
+					dictionary.get("graphicsLevelHigh", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 					break;
 				default:
 					graphicsLevel = 0;
-					graphicsButton->setString("Low", assets.getFont("./data/fonts/segoeuisl.ttf"));
+					dictionary.get("graphicsLevelLow", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 					break;
 			}
 			settings.set("graphics", graphicsLevel);
@@ -121,20 +140,25 @@ namespace swift
 		// set button to the correct text
 		unsigned graphicsLevel = 0;
 		settings.get("graphics", graphicsLevel);
+		std::string graphicsLevelStr = "Low";
 		switch(graphicsLevel)
 		{
 			case 0:
-				graphicsButton->setString("Low", assets.getFont("./data/fonts/segoeuisl.ttf"));
+				dictionary.get("graphicsLevelLow", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 				break;
 			case 1:
-				graphicsButton->setString("Medium", assets.getFont("./data/fonts/segoeuisl.ttf"));
+				dictionary.get("graphicsLevelMed", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 				break;
 			case 2:
-				graphicsButton->setString("High", assets.getFont("./data/fonts/segoeuisl.ttf"));
+				dictionary.get("graphicsLevelHigh", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 				break;
 			default:
 				graphicsLevel = 0;
-				graphicsButton->setString("Low", assets.getFont("./data/fonts/segoeuisl.ttf"));
+				dictionary.get("graphicsLevelLow", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
 				break;
 		}
 		
@@ -143,10 +167,14 @@ namespace swift
 		// row for text entering
 		cstr::Row& textEnterRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& textEnterLabelCol = textEnterRow.addWidget(new cstr::Column({200, 50}, false));
-		textEnterLabelCol.addWidget(new cstr::Label("Name:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		std::string name = "Name";
+		dictionary.get("nameLabel", name);
+		textEnterLabelCol.addWidget(new cstr::Label(name + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		
 		textEnterRow.addWidget(new cstr::Spacer({100, 50}));
+		
 		cstr::Column& textEnterCol = textEnterRow.addWidget(new cstr::Column({400, 50}, false));
-		textEnterCol.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), "name"));
+		textEnterCol.addWidget(new cstr::TextBox({400, 50}, assets.getFont("./data/fonts/segoeuisl.ttf"), name));
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 		
@@ -154,7 +182,9 @@ namespace swift
 		cstr::Row& volumeRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
 		volumeCol.addWidget(new cstr::Label("Volume:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		
 		volumeRow.addWidget(new cstr::Spacer({100, 50}));
+		
 		cstr::Column& volumeSliderCol = volumeRow.addWidget(new cstr::Column({400, 50}, false));
 		volumeSlider = &volumeSliderCol.addWidget(new cstr::Slider({400, 50}));
 		
@@ -166,12 +196,16 @@ namespace swift
 		
 		// row for main menu return
 		cstr::Row& mainMenuReturnRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
+		
 		mainMenuReturnRow.addWidget(new cstr::Spacer({600, 50}));
+		
 		cstr::Column& mainMenuReturnCol = mainMenuReturnRow.addWidget(new cstr::Column({100, 50}, false));
+		std::string mainMenu = "Main Menu";
+		dictionary.get("mainMenuReturn", mainMenu);
 		mainMenuReturnCol.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::MainMenu;
-		})).setString("Main Menu", assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"));
 	}
 	
 	void SettingsMenu::handleEvent(sf::Event &event)
