@@ -29,6 +29,7 @@ namespace swift
 			cstr::Window gui;
 			cstr::Button* graphicsButton;
 			cstr::Slider* volumeSlider;
+			cstr::Slider* musicSlider;
 	};
 }
 

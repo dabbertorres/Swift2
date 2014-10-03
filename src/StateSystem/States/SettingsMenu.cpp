@@ -33,7 +33,7 @@ namespace swift
 		setup->setStateReturn(returnType);
 		setup->start();
 		
-		cstr::Column& settingsColumn = gui.addContainer(new cstr::Column({50, 50, 700, 500}, false));
+		cstr::Column& settingsColumn = gui.addContainer(new cstr::Column({50, 25, 700, 550}, false));
 		
 		std::string settingsStr = "Settings";
 		dictionary.get("settingsLabel", settingsStr);
@@ -45,7 +45,7 @@ namespace swift
 		// row for fullscreen label and toggle
 		cstr::Row& fullscreenRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& fullscreenLabelCol = fullscreenRow.addWidget(new cstr::Column({200, 50}, false));
-		std::string fullscreen = "Fullscreen:";
+		std::string fullscreen = "Fullscreen";
 		dictionary.get("fullscreenLabel", fullscreen);
 		fullscreenLabelCol.addWidget(new cstr::Label(fullscreen + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
@@ -81,7 +81,7 @@ namespace swift
 		// row for vsync label and toggle
 		cstr::Row& vsyncRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& vsyncLabelCol = vsyncRow.addWidget(new cstr::Column({200, 50}, false));
-		std::string vsync = "V-Sync:";
+		std::string vsync = "V-Sync";
 		dictionary.get("vsyncLabel", vsync);
 		vsyncLabelCol.addWidget(new cstr::Label(vsync + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
@@ -137,6 +137,7 @@ namespace swift
 			}
 			settings.set("graphics", graphicsLevel);
 		}));
+		
 		// set button to the correct text
 		unsigned graphicsLevel = 0;
 		settings.get("graphics", graphicsLevel);
@@ -181,7 +182,9 @@ namespace swift
 		// row for volume slider
 		cstr::Row& volumeRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
-		volumeCol.addWidget(new cstr::Label("Volume:", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		std::string volume = "Volume";
+		dictionary.get("volumeLabel", volume);
+		volumeCol.addWidget(new cstr::Label(volume + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		volumeRow.addWidget(new cstr::Spacer({100, 50}));
 		
@@ -191,6 +194,24 @@ namespace swift
 		int sound = 75;
 		settings.get("sound", sound);
 		volumeSlider->setValue(sound / 100.f);
+		
+		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
+		
+		// row for music slider
+		cstr::Row& musicRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
+		cstr::Column& musicCol = musicRow.addWidget(new cstr::Column({200, 50}, false));
+		std::string musicStr = "Music";
+		dictionary.get("musicLabel", musicStr);
+		musicCol.addWidget(new cstr::Label(musicStr + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		
+		musicRow.addWidget(new cstr::Spacer({100, 50}));
+		
+		cstr::Column& musicSliderCol = musicRow.addWidget(new cstr::Column({400, 50}, false));
+		musicSlider = &musicSliderCol.addWidget(new cstr::Slider({400, 50}));
+		
+		int music = 75;
+		settings.get("music", music);
+		musicSlider->setValue(music / 100.f);
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 		
@@ -223,6 +244,9 @@ namespace swift
 		
 		int sound = volumeSlider->getValue() * 100;
 		settings.set("sound", sound);
+		
+		int music = musicSlider->getValue() * 100;
+		settings.set("music", music);
 	}
 	
 	void SettingsMenu::draw(float /*e*/)
