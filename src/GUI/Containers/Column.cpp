@@ -38,22 +38,18 @@ namespace cstr
 	
 	void Column::setPosition(sf::Vector2i pos)
 	{
+		for(auto& w : getWidgets())
+			w->setPosition({pos.x + (static_cast<int>(w->getGlobalBounds().left) - rect.left), pos.y + (static_cast<int>(w->getGlobalBounds().top) - rect.top)});
+		
 		rect.left = pos.x;
 		rect.top = pos.y;
-		
-		for(auto& w : getWidgets())
-		{
-			w->setPosition({pos.x + (static_cast<int>(w->getGlobalBounds().left) - rect.left), pos.y + (static_cast<int>(w->getGlobalBounds().top) - rect.top)});
-		}
 	}
 	
 	void Column::reposition()
 	{
 		int totalHeight = 0;
 		for(auto& widget : getWidgets())
-		{
 			totalHeight += widget->getGlobalBounds().height;
-		}
 		
 		for(unsigned i = 0; i < getWidgets().size(); i++)
 		{
@@ -109,13 +105,11 @@ namespace cstr
 	{
 		if(getWidgets().size() > 0)
 		{
-			if((!(getWidgets()[0]->getGlobalBounds().top <= rect.top) && amount > 0) || 
-				(!(getWidgets()[getWidgets().size() - 1]->getGlobalBounds().top + getWidgets()[getWidgets().size() - 1]->getGlobalBounds().height >= rect.top + rect.height) && amount < 0))
+			if(((getWidgets()[0]->getGlobalBounds().top + getWidgets()[0]->getGlobalBounds().height < rect.top + rect.height) && amount < 0) || 
+				((getWidgets()[getWidgets().size() - 1]->getGlobalBounds().top > rect.top) && amount > 0))
 			{
 				for(auto& w : getWidgets())
-				{
 					w->setPosition({static_cast<int>(w->getGlobalBounds().left), static_cast<int>(w->getGlobalBounds().top - amount * 10)});
-				}
 			}
 		}
 	}

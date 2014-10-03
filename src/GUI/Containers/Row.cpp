@@ -1,5 +1,5 @@
 #include "Row.hpp"
-
+#include <iostream>
 namespace cstr
 {
 	Row::Row(sf::IntRect r, bool s)
@@ -38,13 +38,11 @@ namespace cstr
 	
 	void Row::setPosition(sf::Vector2i pos)
 	{
+		for(auto& w : getWidgets())
+			w->setPosition({pos.x + (static_cast<int>(w->getGlobalBounds().left) - rect.left), pos.y + (static_cast<int>(w->getGlobalBounds().top) - rect.top)});
+		
 		rect.left = pos.x;
 		rect.top = pos.y;
-		
-		for(auto& w : getWidgets())
-		{
-			w->setPosition({pos.x + (static_cast<int>(w->getGlobalBounds().left) - rect.left), pos.y + (static_cast<int>(w->getGlobalBounds().top) - rect.top)});
-		}
 	}
 	
 	void Row::reposition()

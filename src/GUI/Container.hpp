@@ -1,12 +1,12 @@
 #ifndef CONTAINER_HPP
 #define CONTAINER_HPP
 
+#include "Widget.hpp"
+
 #include <vector>
 
 #include <SFML/Graphics/Rect.hpp>
 #include <SFML/Window/Event.hpp>
-
-#include "Widget.hpp"
 
 namespace cstr
 {
