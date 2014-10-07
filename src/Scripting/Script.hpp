@@ -55,12 +55,14 @@ namespace swift
 
 			void start();
 
-			void run();
+			void update();
+			
+			void load(const std::vector<std::string>& args);
+			std::vector<std::string> save();
 
 			bool toDelete();
 
-			template<typename T>
-			void getVariable(const std::string& name, T& value);
+			sel::Selector getVariable(const std::string& name);
 			
 			// setters for variables that Lua has access to
 			static void setWindow(sf::RenderWindow& win);
@@ -93,12 +95,6 @@ namespace swift
 			State::Type* stateReturn;
 			World* world;
 	};
-
-	template<typename T>
-	void Script::getVariable(const std::string& name, T& value)
-	{
-		value = static_cast<T>(luaState[name.c_str()]);
-	}
 }
 
 #endif // SCRIPT_HPP

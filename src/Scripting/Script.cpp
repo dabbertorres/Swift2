@@ -72,7 +72,7 @@ namespace swift
 		}
 	}
 
-	void Script::run()
+	void Script::update()
 	{
 		luaState["Update"]();
 		
@@ -81,10 +81,41 @@ namespace swift
 			deleteMe = true;
 		}
 	}
+	
+	void Script::load(const std::vector<std::string>& args)
+	{
+		for(auto& a : args)
+		{
+			
+		}
+		
+		luaState["Load"]();
+	}
+	
+	std::vector<std::string> Script::save()
+	{
+		std::vector<std::string> variablesToSave;
+		
+		luaState("saveSize = #Save");
+		int saveSize = luaState["saveSize"];
+		
+		for(int i = 1; i <= saveSize; i++)
+		{
+			std::string temp = luaState["Save"][i];
+			variablesToSave.push_back(temp);
+		}
+		
+		return std::move(variablesToSave);
+	}
 
 	bool Script::toDelete()
 	{
 		return deleteMe;
+	}
+
+	sel::Selector Script::getVariable(const std::string& name)
+	{
+		return luaState[name.c_str()];
 	}
 	
 	void Script::setWindow(sf::RenderWindow& win)
@@ -234,26 +265,20 @@ namespace swift
 				return nullptr;
 		};
 		
-		luaState["calculateEntitiesAround"] = [&](float x, float y, float radius)
+		luaState["isAround"] = [&](Physical* p, float x, float y, float r)
 		{
 			if(world)
-				world->calculateEntitiesAround({x, y}, radius);
+				return world->distance(p->position, {x, y}) <= r;
+			else
+				return false;
 		};
 		
-		luaState["getTotalEntitiesAround"] = [&]()
+		luaState["getWorldSize"] = [&]()
 		{
 			if(world)
-				return static_cast<unsigned>(world->getEntitiesAround().size());
+				return std::make_tuple(world->getSize().x, world->getSize().y);
 			else
-				return 0u;
-		};
-		
-		luaState["getEntityAround"] = [&](unsigned e) -> Entity*
-		{
-			if(world && e < world->getEntitiesAround().size())
-				return world->getEntities()[e];
-			else
-				return nullptr;
+				return std::make_tuple(0, 0);
 		};
 		
 		// Drawable
