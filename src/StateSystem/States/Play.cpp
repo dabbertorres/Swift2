@@ -11,6 +11,9 @@
 #include "../../GUI/Widgets/Button.hpp"
 #include "../../GUI/Widgets/Spacer.hpp"
 
+/* Worlds */
+#include "../../World/Worlds/TestWorld.hpp"
+
 namespace swift
 {
 	Play::Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
@@ -25,37 +28,18 @@ namespace swift
 	Play::~Play()
 	{
 		for(auto& w : worlds)
+		{
+			w->save("");
 			delete w;
+		}
 	}
 
 	void Play::setup()
 	{
 		window.setKeyRepeatEnabled(false);
-		Script* playSetup = &assets.getScript("./data/scripts/play.lua");
-		Script* pauseSetup = &assets.getScript("./data/scripts/pause.lua");
 		
-		worlds.emplace_back(new World({800, 600}, assets));
+		worlds.emplace_back(new TestWorld({800, 600}, assets));
 		activeWorld = worlds[0];
-		
-		if(playSetup == nullptr)
-			log << "Play script wasn't loaded\n";
-		else
-		{
-			playSetup->setGUI(hud);
-			playSetup->setStateReturn(returnType);
-			playSetup->setKeyboard(keyboard);
-			playSetup->setWorld(*activeWorld);
-			playSetup->start();
-		}
-		if(pauseSetup == nullptr)
-			log << "Pause script wasn't loaded\n";
-		else
-		{
-			pauseSetup->setGUI(pauseMenu);
-			pauseSetup->setStateReturn(returnType);
-			pauseSetup->setKeyboard(keyboard);
-			pauseSetup->start();
-		}
 		
 		setupKeyBindings();
 		
@@ -77,10 +61,6 @@ namespace swift
 			returnType = State::Type::MainMenu;
 		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
-		activeWorld->load("");
-		activeWorld->tilemap.loadFile("./data/maps/maze.map");
-		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
-		
 		// setup player
 		player = activeWorld->addEntity();
 		player->add<Drawable>();
@@ -97,6 +77,11 @@ namespace swift
 										static_cast<unsigned>(player->get<Drawable>()->sprite.getGlobalBounds().height)};
 		
 		player->get<Movable>()->moveVelocity = 100;
+		
+		// setup world
+		activeWorld->load("./data/saves/default/maze.world");
+		activeWorld->tilemap.loadFile("./data/maps/maze.map");
+		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -119,17 +104,12 @@ namespace swift
 
 	void Play::update(sf::Time dt)
 	{
-		Script* playLogic = &assets.getScript("./data/scripts/play.lua");
-		Script* pauseLogic = &assets.getScript("./data/scripts/pause.lua");
-		
 		switch(state)
 		{
 			case SubState::Play:
 				activeWorld->update(dt.asSeconds());
-				playLogic->run();
 				break;
 			case SubState::Pause:
-				pauseLogic->run();
 				break;
 		}
 	}
@@ -160,7 +140,6 @@ namespace swift
 
 	State::Type Play::finish()
 	{
-		activeWorld->save("");
 		return returnType;
 	}
 

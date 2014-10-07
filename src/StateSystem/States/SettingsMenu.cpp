@@ -27,11 +27,6 @@ namespace swift
 	void SettingsMenu::setup()
 	{
 		window.setKeyRepeatEnabled(true);
-		Script* setup = &assets.getScript("./data/scripts/settingsMenu.lua");
-		
-		setup->setGUI(gui);
-		setup->setStateReturn(returnType);
-		setup->start();
 		
 		cstr::Column& settingsColumn = gui.addContainer(new cstr::Column({50, 25, 700, 550}, false));
 		
@@ -238,10 +233,6 @@ namespace swift
 	
 	void SettingsMenu::update(sf::Time /*dt*/)
 	{
-		Script* setup = &assets.getScript("./data/scripts/settingsMenu.lua");
-		
-		setup->run();
-		
 		int sound = volumeSlider->getValue() * 100;
 		settings.set("sound", sound);
 		

@@ -24,11 +24,6 @@ namespace swift
 	void MainMenu::setup()
 	{
 		window.setKeyRepeatEnabled(true);
-		Script* setup = &assets.getScript("./data/scripts/mainMenu.lua");
-		
-		setup->setGUI(gui);
-		setup->setStateReturn(returnType);
-		setup->start();
 		
 		cstr::Column& titleColumn = gui.addContainer(new cstr::Column({300, 0, 200, 600}, false));
 		
