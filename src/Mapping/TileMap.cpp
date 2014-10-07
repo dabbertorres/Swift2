@@ -6,7 +6,8 @@
 namespace swift
 {
 	TileMap::TileMap(sf::Vector2u s)
-		:	sizePixels(s)
+		:	sizePixels(s),
+			position({0, 0})
 	{
 		vertices.setPrimitiveType(sf::Quads);
 	}
@@ -124,6 +125,23 @@ namespace swift
 	const sf::Vector2u& TileMap::getSize() const
 	{
 		return sizeTiles;
+	}
+	
+	void TileMap::setPosition(const sf::Vector2i& pos)
+	{
+		for(unsigned i = 0; i < sizeTiles.x; i++)
+		{
+			for(unsigned j = 0; j < sizeTiles.y; j++)
+			{
+				sf::Vertex* quad = &vertices[(i + j * sizeTiles.x) * 4];
+				quad[0].position = static_cast<sf::Vector2f>(pos + static_cast<sf::Vector2i>(quad[0].position) - position);
+				quad[1].position = static_cast<sf::Vector2f>(pos + static_cast<sf::Vector2i>(quad[1].position) - position);
+				quad[2].position = static_cast<sf::Vector2f>(pos + static_cast<sf::Vector2i>(quad[2].position) - position);
+				quad[3].position = static_cast<sf::Vector2f>(pos + static_cast<sf::Vector2i>(quad[3].position) - position);
+			}
+		}
+		
+		position = pos;
 	}
 	
 	const std::string& TileMap::getTextureFile() const

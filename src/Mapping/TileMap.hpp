@@ -27,6 +27,8 @@ namespace swift
 			
 			const sf::Vector2u& getTileSize() const;
 			const sf::Vector2u& getSize() const;
+			
+			void setPosition(const sf::Vector2i& pos);
 
 			const std::string& getTextureFile() const;
 
@@ -48,6 +50,8 @@ namespace swift
 			sf::Vector2u sizePixels;
 			sf::Vector2u sizeTiles;
 			std::string textureFile;
+			
+			sf::Vector2i position;
 
 			sf::VertexArray vertices;
 
