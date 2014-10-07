@@ -9,7 +9,6 @@ namespace swift
 			assets(am),
 			size(s)
 	{
-		
 	}
 	
 	World::~World()
@@ -17,16 +16,6 @@ namespace swift
 		for(auto& e : entities)
 		{
 			delete e;
-		}
-	}
-	
-	void World::update(float dt)
-	{
-		for(auto& e : entities)
-		{
-			moveSystem.update(*e, dt);
-			physicalSystem.update(*e, dt);
-			drawSystem.update(*e, dt);
 		}
 	}
 	
@@ -39,30 +28,14 @@ namespace swift
 	{
 		for(auto& e : entities)
 		{
-			drawSystem.draw(*e, target, states);
+			if(e->has<Drawable>())
+				target.draw(e->get<Drawable>()->sprite, states);
 		}
 	}
 	
-	bool World::load(const std::string& file)
+	sf::Vector2i World::getSize() const
 	{
-		std::ifstream fin;
-		fin.open(file);
-		
-		if(fin.bad())
-			return false;
-		
-		return true;
-	}
-	
-	bool World::save(const std::string& file)
-	{
-		std::ofstream fout;
-		fout.open(file);
-		
-		if(fout.bad())
-			return false;
-			
-		return true;
+		return size;
 	}
 	
 	Entity* World::addEntity()
@@ -86,17 +59,40 @@ namespace swift
 		return true;
 	}
 	
+	bool World::addScript(const std::string& scriptFile)
+	{
+		if(scripts.find(scriptFile) != scripts.end())
+		{
+			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	bool World::removeScript(const std::string& scriptFile)
+	{
+		if(scripts.find(scriptFile) != scripts.end())
+		{
+			scripts.erase(scriptFile);
+			return true;
+		}
+		else
+			return false;
+	}
+	
 	const std::vector<Entity*>& World::getEntities() const
 	{
 		return entities;
 	}
 	
-	const std::vector<Entity*>& World::calculateEntitiesAround(sf::Vector2f pos, float radius)
+	const std::vector<Entity*> World::getEntitiesAround(sf::Vector2f pos, float radius)
 	{
-		entitiesAround.clear();
+		std::vector<Entity*> around;
+		
 		// if pos is outside of the world, or the radius is 0 or less, just return an empty vector
 		if(!(0 <= pos.x && pos.x < size.x && 0 <= pos.y && pos.y < size.y) || radius <= 0)
-			return entitiesAround;
+			return around;
 		
 		for(auto& e : entities)
 		{
@@ -104,16 +100,11 @@ namespace swift
 			{
 				Physical* p = e->get<Physical>();
 				if(distance(p->position, pos) <= radius)
-					entitiesAround.push_back(e);
+					around.push_back(e);
 			}
 		}
 		
-		return entitiesAround;
-	}
-	
-	const std::vector<Entity*>& World::getEntitiesAround() const
-	{
-		return entitiesAround;
+		return around;
 	}
 	
 	float World::distance(sf::Vector2f one, sf::Vector2f two) const
