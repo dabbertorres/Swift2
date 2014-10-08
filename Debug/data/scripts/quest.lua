@@ -1,6 +1,8 @@
+ShipPosX = 400
+ShipPosY = 20
+Done = false
+
 function Start()
-	Done = false
-	
 	ship = newEntity()
 	
 	if ship == nil then
@@ -13,23 +15,21 @@ function Start()
 		
 		setTexture(ship:getDrawable(), "./data/textures/ship.png")
 		setMoveVelocity(ship:getMovable(), 100)
-		setPosition(ship:getPhysical(), 400, 20)
+		setPosition(ship:getPhysical(), ShipPosX, ShipPosY)
 		setSize(ship:getPhysical(), getSpriteSize(ship:getDrawable()))
 		setName(ship:getName(), "Lua Entity")
 	end
 	
-	Save = {}
+	Save = {"nshipPosX", "nshipPosY", "bDone"}
 end
 
 function Update()
-	local ship = getEntity(1)
-	
 	shipPosX, shipPosY = getPosition(ship:getPhysical())
 	
-	if isAround(getEntity(0):getPhysical(), shipPosX, shipPosY, 20) then
+	local around = isAround(getEntity(0):getPhysical(), shipPosX, shipPosY, 20)
+	
+	if not Done and around then
 		print("Congratulations!")
 		Done = true
 	end
-	
-	Save = {shipPosX, shipPosY}
 end
