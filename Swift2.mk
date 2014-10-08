@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Alec Iverson
-Date                   :=10/06/14
+Date                   :=10/08/14
 CodeLitePath           :="/home/alec/.codelite"
 LinkerName             :=/usr/bin/g++ 
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -39,8 +39,8 @@ LinkOptions            :=
 IncludePath            :=  $(IncludeSwitch). $(IncludeSwitch). 
 IncludePCH             := 
 RcIncludePath          := 
-Libs                   := $(LibrarySwitch)sfml-graphics $(LibrarySwitch)sfml-audio $(LibrarySwitch)sfml-window $(LibrarySwitch)sfml-system $(LibrarySwitch)lua $(LibrarySwitch)dl $(LibrarySwitch)GL $(LibrarySwitch)pugixml 
-ArLibs                 :=  "sfml-graphics" "sfml-audio" "sfml-window" "sfml-system" "lua" "dl" "GL" "pugixml" 
+Libs                   := $(LibrarySwitch)sfml-graphics $(LibrarySwitch)sfml-audio $(LibrarySwitch)sfml-window $(LibrarySwitch)sfml-system $(LibrarySwitch)lua $(LibrarySwitch)dl $(LibrarySwitch)GL $(LibrarySwitch)tinyxml2 
+ArLibs                 :=  "sfml-graphics" "sfml-audio" "sfml-window" "sfml-system" "lua" "dl" "GL" "tinyxml2" 
 LibPath                :=$(LibraryPathSwitch)/usr/local/lib  $(LibraryPathSwitch). 
 
 ##
