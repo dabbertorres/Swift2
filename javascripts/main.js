@@ -7,7 +7,7 @@ $(document).ready(function()
 			height: "+=50"
 		}, 500);
 		
-		$(this "a").animate(
+		$("this a").animate(
 		{
 			top: "+=50"
 		}, 500);
@@ -19,7 +19,7 @@ $(document).ready(function()
 			height: "-=50"
 		}, 500);
 		
-		$(this "a").animate(
+		$("this a").animate(
 		{
 			top: "+=50"
 		}, 500);
