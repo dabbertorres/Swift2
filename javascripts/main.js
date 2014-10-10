@@ -5,7 +5,7 @@ $(document).ready(function()
 	{
 		$(this).animate(
 		{
-			paddingTop: "+=25",
+			paddingTop: "+=30",
 			height: "+=40"
 		}, 500);
 	}, 
@@ -13,7 +13,7 @@ $(document).ready(function()
 	{
 		$(this).animate(
 		{
-			paddingTop: "-=25",
+			paddingTop: "-=30",
 			height: "-=40"
 		}, 500);
 	});
