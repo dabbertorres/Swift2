@@ -99,7 +99,6 @@ namespace swift
 		Script::setAssetManager(assets);
 		Script::setClock(GameTime);
 		Script::setSettings(settings);
-		Script::setLogger(log);
 
 		// state setup
 		currentState = new MainMenu(window, assets, settings, dictionary);
