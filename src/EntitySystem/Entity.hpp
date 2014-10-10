@@ -102,16 +102,16 @@ namespace swift
 			}
 			
 			// Must be overridden by a Component for it's own type
-			/*template<typename C>
-			C* get(std::string c)
+			//template<typename C>
+			Component* get(std::string c)
 			{
 				if(has(c))
 				{
-					return static_cast<C*>(components[c]);
+					return components[c];
 				}
 				else
 					return nullptr;
-			}*/
+			}
 			// not needed for binding
 			
 			template<typename C>
@@ -125,6 +125,11 @@ namespace swift
 			bool has(std::string c) const
 			{
 				return components.find(c) != components.end();
+			}
+			
+			const std::unordered_map<std::string, Component*>& getComponents() const
+			{
+				return components;
 			}
 
 		private:

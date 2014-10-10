@@ -13,9 +13,11 @@ namespace swift
 			Physical();
 
 			static std::string getType();
+			
+			virtual std::map<std::string, std::string> serialize() const;
+			virtual void unserialize(const std::map<std::string, std::string>& variables);
 
 			sf::Vector2f position;
-			sf::Vector2f previousPosition;
 			sf::Vector2u size;
 	};
 }

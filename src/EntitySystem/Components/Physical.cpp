@@ -6,7 +6,6 @@ namespace swift
 {
 	Physical::Physical()
 		:	position({0, 0}),
-			previousPosition({0, 0}),
 			size({0, 0})
 	{
 		
@@ -15,6 +14,26 @@ namespace swift
 	std::string Physical::getType()
 	{
 		return "Physical";
+	}
+	
+	std::map<std::string, std::string> Physical::serialize() const
+	{
+		std::map<std::string, std::string> variables;
+		
+		variables.emplace("positionX", std::to_string(position.x));
+		variables.emplace("positionY", std::to_string(position.y));
+		variables.emplace("sizeX", std::to_string(size.x));
+		variables.emplace("sizeY", std::to_string(size.y));
+		
+		return std::move(variables);
+	}
+	
+	void Physical::unserialize(const std::map<std::string, std::string>& variables)
+	{
+		position.x = std::stoi(variables.at("positionX"));
+		position.y = std::stoi(variables.at("positionY"));
+		size.x = std::stoi(variables.at("sizeX"));
+		size.y = std::stoi(variables.at("sizeY"));
 	}
 	
 	/*template<>

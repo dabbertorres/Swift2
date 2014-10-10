@@ -11,7 +11,6 @@ namespace swift
 		{
 			Physical* phys = entity.get<Physical>();
 			Movable* mov = entity.get<Movable>();
-			phys->previousPosition = phys->position;
 			phys->position.x += mov->velocity.x * dt;
 			phys->position.y += mov->velocity.y * dt;
 		}

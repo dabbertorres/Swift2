@@ -15,6 +15,24 @@ namespace swift
 		return "Movable";
 	}
 	
+	std::map<std::string, std::string> Movable::serialize() const
+	{
+		std::map<std::string, std::string> variables;
+		
+		variables.emplace("moveVelocity", std::to_string(moveVelocity));
+		variables.emplace("velocityX", std::to_string(velocity.x));
+		variables.emplace("velocityY", std::to_string(velocity.y));
+		
+		return std::move(variables);
+	}
+	
+	void Movable::unserialize(const std::map<std::string, std::string>& variables)
+	{
+		moveVelocity = std::stof(variables.at("moveVelocity"));
+		velocity.x = std::stof(variables.at("velocityX"));
+		velocity.y = std::stof(variables.at("velocityY"));
+	}
+	
 	/*template<>
 	Movable* Entity::get(std::string c)
 	{
