@@ -13,7 +13,7 @@ $(document).ready(function()
 	{
 		$(this).animate(
 		{
-			paddingTop: "-=" + $(this).height().toString(),
+			paddingTop: 10,
 			height: ($(this).height() / 2)
 		}, 500);
 	});
