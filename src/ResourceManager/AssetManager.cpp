@@ -25,7 +25,10 @@ namespace swift
 			delete f.second;
 		
 		for(auto& s : scripts)
+		{
+			s.second->save("./data/saves/" + s.first.substr(s.first.find_last_of('/') + 1) + ".script");
 			delete s.second;
+		}
 	}
 
 	bool AssetManager::loadResourceFolder(const std::string& folder)
@@ -239,6 +242,8 @@ namespace swift
 				scripts.erase(file);
 				return false;
 			}
+			
+			scripts[file]->load("./data/saves/" + file.substr(file.find_last_of('/') + 1) + ".script");
 			
 			log << "Script:\t" << file << '\n';
 		}
