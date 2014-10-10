@@ -2,21 +2,140 @@
 
 #include <cmath>
 
+// serialization headers
+#include <tinyxml2.h>
+
 namespace swift
 {
-	World::World(const sf::Vector2i& s, AssetManager& am)
+	World::World(const std::string& n, const sf::Vector2i& s, AssetManager& am)
 		:	tilemap(static_cast<sf::Vector2u>(s)),
 			assets(am),
-			size(s)
+			size(s),
+			name(n)
 	{
 	}
 	
 	World::~World()
 	{
+		save("./data/saves/maze.world");
+		
 		for(auto& e : entities)
 		{
 			delete e;
 		}
+	}
+	
+	/* save file format */
+	/* It is an xml file
+	 * <world>
+	 * 	<entity>
+	 * 		<component type = "">
+	 * 			<variable>component data</variable>
+	 * 		</component>
+	 * 	</entity>
+	 * .
+	 * .
+	 * .
+	 * </world>
+	 */
+	bool World::load(const std::string& file)
+	{
+		tinyxml2::XMLDocument loadFile;
+		tinyxml2::XMLError result = loadFile.LoadFile(file.c_str());
+		
+		if(result != tinyxml2::XML_SUCCESS)
+		{
+			log << "Loading world save file \"" << file << "\" failed.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* worldRoot = loadFile.FirstChildElement("world");
+		if(worldRoot == nullptr)
+		{
+			log << "World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* entityElement = worldRoot->FirstChildElement("entity");
+		while(entityElement != nullptr)
+		{
+			Entity* entity = addEntity();
+			
+			tinyxml2::XMLElement* component = entityElement->FirstChildElement();
+			while(component != nullptr)
+			{
+				std::string componentName = component->Value();
+				entity->add(componentName);
+				
+				std::map<std::string, std::string> variables;
+				tinyxml2::XMLElement* variableElement = component->FirstChildElement();
+				while(variableElement != nullptr)
+				{
+					variables.emplace(variableElement->Value(), variableElement->GetText());
+					variableElement = variableElement->NextSiblingElement();
+				}
+				
+				// get component and add to it
+				entity->get(componentName)->unserialize(variables);
+				
+				if(componentName == "Drawable")
+				{
+					entity->get<Drawable>()->sprite.setTexture(assets.getTexture(entity->get<Drawable>()->texture));
+				}
+				
+				component = component->NextSiblingElement();
+			}
+			
+			entityElement = entityElement->NextSiblingElement("entity");
+		}
+		
+		return true;
+	}
+	
+	bool World::save(const std::string& file)
+	{
+		tinyxml2::XMLDocument saveFile;
+		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
+		
+		if(result != tinyxml2::XML_SUCCESS)
+		{
+			log << "Loading world save file \"" << file << "\" failed.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* root = saveFile.FirstChildElement("world");
+		if(root == nullptr)
+		{
+			log << "World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			return false;
+		}
+		
+		root->DeleteChildren();
+		
+		for(auto& e : entities)
+		{
+			tinyxml2::XMLElement* entity = saveFile.NewElement("entity");
+			
+			for(auto& c : e->getComponents())
+			{
+				tinyxml2::XMLElement* component = saveFile.NewElement(c.first.c_str());
+				
+				for(auto& v : c.second->serialize())
+				{
+					tinyxml2::XMLElement* variable = saveFile.NewElement(v.first.c_str());
+					variable->SetText(v.second.c_str());
+					component->InsertEndChild(variable);
+				}
+				
+				entity->InsertEndChild(component);
+			}
+			
+			root->InsertEndChild(entity);
+		}
+		
+		saveFile.SaveFile(file.c_str());
+		
+		return true;
 	}
 	
 	void World::drawWorld(sf::RenderTarget& target, sf::RenderStates states)
@@ -36,6 +155,11 @@ namespace swift
 	sf::Vector2i World::getSize() const
 	{
 		return size;
+	}
+	
+	std::string World::getName() const
+	{
+		return name;
 	}
 	
 	Entity* World::addEntity()
@@ -61,9 +185,10 @@ namespace swift
 	
 	bool World::addScript(const std::string& scriptFile)
 	{
-		if(scripts.find(scriptFile) != scripts.end())
+		if(scripts.find(scriptFile) == scripts.end())
 		{
 			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
+			assets.getScript(scriptFile).setWorld(*this);
 			return true;
 		}
 		else
