@@ -24,13 +24,14 @@
 
 #include "../World/World.hpp"
 
+#include <tinyxml2.h>
+
 namespace swift
 {
 	sf::RenderWindow* Script::window = nullptr;
 	AssetManager* Script::assets = nullptr;
 	sf::Clock* Script::clock = nullptr;
 	Settings* Script::settings = nullptr;
-	Logger* Script::log = nullptr;
 	
 	Script::Script()
 			:	gui(nullptr),
@@ -82,18 +83,57 @@ namespace swift
 		}
 	}
 	
-	void Script::load(const std::vector<std::string>& args)
+	bool Script::load(const std::string& file)
 	{
-		for(auto& a : args)
+		tinyxml2::XMLDocument loadFile;
+		tinyxml2::XMLError result = loadFile.LoadFile(file.c_str());
+		
+		if(result != tinyxml2::XML_SUCCESS)
 		{
-			
+			log << "Loading script save file \"" << file << "\" failed.\n";
+			return false;
 		}
 		
-		luaState["Load"]();
+		tinyxml2::XMLElement* root = loadFile.FirstChildElement("script");
+		if(root == nullptr)
+		{
+			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* variable = root->FirstChildElement("variable");
+		while(variable != nullptr)
+		{
+			std::string name = variable->Attribute("name");
+			
+			// boolean
+			if(name[0] == 'b')
+			{
+				bool value;
+				variable->QueryBoolText(&value);
+				luaState[name.substr(1).c_str()] = value;
+			}
+			// number
+			else if(name[0] == 'n')
+			{
+				float value;
+				variable->QueryFloatText(&value);
+				luaState[name.substr(1).c_str()] = value;
+			}
+			else
+			{
+				luaState[name.c_str()] = variable->GetText();
+			}
+			
+			variable = variable->NextSiblingElement("variable");
+		}
+		
+		return true;
 	}
 	
-	std::vector<std::string> Script::save()
+	bool Script::save(const std::string& file)
 	{
+		// get all variables to save
 		std::vector<std::string> variablesToSave;
 		
 		luaState("saveSize = #Save");
@@ -105,7 +145,54 @@ namespace swift
 			variablesToSave.push_back(temp);
 		}
 		
-		return std::move(variablesToSave);
+		// save all variables to save file
+		tinyxml2::XMLDocument saveFile;
+		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
+		
+		if(result != tinyxml2::XML_SUCCESS)
+		{
+			log << "Loading script save file \"" << file << "\" failed.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* root = saveFile.FirstChildElement("script");
+		if(root == nullptr)
+		{
+			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
+			return false;
+		}
+		
+		root->DeleteChildren();
+		
+		for(auto& v : variablesToSave)
+		{
+			tinyxml2::XMLElement* newVariable = saveFile.NewElement("variable");
+			newVariable->SetAttribute("name", v.c_str());
+			
+			// boolean
+			if(v[0] == 'b')
+			{
+				bool value = luaState[v.substr(1).c_str()];
+				newVariable->SetText(value);
+			}
+			// number
+			else if(v[0] == 'n')
+			{
+				float value = luaState[v.substr(1).c_str()];
+				newVariable->SetText(value);
+			}
+			else
+			{
+				std::string value = luaState[v.c_str()];
+				newVariable->SetText(value.c_str());
+			}
+			
+			root->InsertEndChild(newVariable);
+		}
+		
+		saveFile.SaveFile(file.c_str());
+		
+		return true;
 	}
 
 	bool Script::toDelete()
@@ -136,11 +223,6 @@ namespace swift
 	void Script::setSettings(Settings& s)
 	{
 		settings = &s;
-	}
-	
-	void Script::setLogger(Logger& l)
-	{
-		log = &l;
 	}
 	
 	void Script::setGUI(cstr::Window& ui)
@@ -235,8 +317,7 @@ namespace swift
 		
 		luaState["log"] = [&](std::string m)
 		{
-			if(log)
-				*log << m;
+			log << m;
 		};
 		
 		/* EntitySystem */
@@ -279,6 +360,14 @@ namespace swift
 				return std::make_tuple(world->getSize().x, world->getSize().y);
 			else
 				return std::make_tuple(0, 0);
+		};
+		
+		luaState["getCurrentWorld"] = [&]()
+		{
+			if(world)
+				return world->getName().c_str();
+			else
+				return "none";
 		};
 		
 		// Drawable

@@ -18,6 +18,8 @@
 
 #include "../KeyBindings/KeyboardManager.hpp"
 
+#include "../Logger/Logger.hpp"
+
 namespace swift
 {
 	/*
@@ -43,7 +45,6 @@ namespace swift
 	 
 	class AssetManager;
 	class World;
-	class Logger;
 	
 	class Script
 	{
@@ -57,8 +58,8 @@ namespace swift
 
 			void update();
 			
-			void load(const std::vector<std::string>& args);
-			std::vector<std::string> save();
+			bool load(const std::string& file);
+			bool save(const std::string& file);
 
 			bool toDelete();
 
@@ -69,10 +70,11 @@ namespace swift
 			static void setAssetManager(AssetManager& am);
 			static void setClock(sf::Clock& c);
 			static void setSettings(Settings& s);
-			static void setLogger(Logger& l);
 			void setGUI(cstr::Window& ui);
+			// may be able to remove
 			void setKeyboard(KeyboardManager& k);
 			void setStateReturn(State::Type& t);
+			// may be able to remove
 			void setWorld(World& w);
 
 		private:
@@ -89,7 +91,6 @@ namespace swift
 			static AssetManager* assets;
 			static sf::Clock* clock;
 			static Settings* settings;
-			static Logger* log;
 			cstr::Window* gui;
 			KeyboardManager* keyboard;
 			State::Type* stateReturn;
