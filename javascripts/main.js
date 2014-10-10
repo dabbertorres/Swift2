@@ -1,5 +1,5 @@
 $(document).ready(function()
 {
-	$("head").slideDown(500);
+	$("#forkme_banner").slideDown(500);
 	alert("I slid down the head");
 });
