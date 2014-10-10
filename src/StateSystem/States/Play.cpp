@@ -28,17 +28,14 @@ namespace swift
 	Play::~Play()
 	{
 		for(auto& w : worlds)
-		{
-			w->save("");
 			delete w;
-		}
 	}
 
 	void Play::setup()
 	{
 		window.setKeyRepeatEnabled(false);
 		
-		worlds.emplace_back(new TestWorld({800, 600}, assets));
+		worlds.emplace_back(new TestWorld("testWorld", {800, 600}, assets));
 		activeWorld = worlds[0];
 		
 		setupKeyBindings();
@@ -61,27 +58,13 @@ namespace swift
 			returnType = State::Type::MainMenu;
 		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"));
 		
-		// setup player
-		player = activeWorld->addEntity();
-		player->add<Drawable>();
-		player->add<Physical>();
-		player->add<Name>();
-		player->get<Name>()->name = "player";
-		player->add<Movable>();
-		
-		player->get<Drawable>()->sprite.setTexture(assets.getTexture("./data/textures/guy.png"));
-		player->get<Drawable>()->sprite.setScale({0.5f, (player->get<Drawable>()->sprite.getGlobalBounds().height - 16) / player->get<Drawable>()->sprite.getGlobalBounds().height});
-		
-		player->get<Physical>()->position = {400, 300};
-		player->get<Physical>()->size = {static_cast<unsigned>(player->get<Drawable>()->sprite.getGlobalBounds().width),
-										static_cast<unsigned>(player->get<Drawable>()->sprite.getGlobalBounds().height)};
-		
-		player->get<Movable>()->moveVelocity = 100;
-		
 		// setup world
-		activeWorld->load("./data/saves/default/maze.world");
 		activeWorld->tilemap.loadFile("./data/maps/maze.map");
 		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
+		activeWorld->load("./data/saves/maze.world");
+		player = activeWorld->getEntities()[0];
+		activeWorld->addScript("./data/scripts/quest.lua");
+		assets.getScript("./data/scripts/quest.lua").start();
 	}
 
 	void Play::handleEvent(sf::Event& event)
