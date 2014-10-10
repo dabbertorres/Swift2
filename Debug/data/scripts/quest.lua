@@ -1,34 +1,33 @@
-ShipPosX = 400
-ShipPosY = 20
+ship = nil
 Done = false
+startDone = false
 
-function Start()
-	ship = newEntity()
-	
-	if ship == nil then
-		log("[WARNING]: ship is nil\n")
-	else
-		ship:add("Drawable")
-		ship:add("Movable")
-		ship:add("Physical")
-		ship:add("Name")
-		
-		setTexture(ship:getDrawable(), "./data/textures/ship.png")
-		setMoveVelocity(ship:getMovable(), 100)
-		setPosition(ship:getPhysical(), ShipPosX, ShipPosY)
-		setSize(ship:getPhysical(), getSpriteSize(ship:getDrawable()))
-		setName(ship:getName(), "Lua Entity")
-	end
-	
-	Save = {"nshipPosX", "nshipPosY", "bDone"}
+function Start()	
+	Save = {"bDone"}
 end
 
 function Update()
-	shipPosX, shipPosY = getPosition(ship:getPhysical())
+	if not startDone then
+		ship = getEntity(1)
+		
+		if ship == nil then
+			ship = newEntity()
+			ship:add("Drawable")
+			ship:add("Movable")
+			ship:add("Physical")
+			ship:add("Name")
+			
+			setTexture(ship:getDrawable(), "./data/textures/ship.png")
+			setMoveVelocity(ship:getMovable(), 100)
+			setPosition(ship:getPhysical(), 400, 20)
+			setSize(ship:getPhysical(), getSpriteSize(ship:getDrawable()))
+			setName(ship:getName(), "Lua Entity")
+		end
+		
+		startDone = true
+	end
 	
-	local around = isAround(getEntity(0):getPhysical(), shipPosX, shipPosY, 20)
-	
-	if not Done and around then
+	if not Done and isAround(getEntity(0):getPhysical(), 400, 20, 20) then
 		print("Congratulations!")
 		Done = true
 	end
