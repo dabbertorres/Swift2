@@ -1,27 +1,18 @@
 $(document).ready(function()
 {
-	$("#forkme_banner").mouseenter(function()
+	$("#forkme_banner").hover(function()
 	{
 		$(this).animate(
 		{
-			height: "+=50"
+			top: "+= 25",
+			height: "+= 50"
 		}, 500);
-		
-		$("this a").animate(
-		{
-			top: "+=50"
-		}, 500);
-	});
-	
-	$("#forkme_banner").mouseleave(function()
+	}, 
+	function()
 	{
 		$(this).animate({
-			height: "-=50"
-		}, 500);
-		
-		$("this a").animate(
-		{
-			top: "+=50"
+			top: "+= 25",
+			height: "-= 50"
 		}, 500);
 	});
 });
