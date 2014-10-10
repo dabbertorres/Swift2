@@ -271,7 +271,7 @@ Full-Width Styles
 
 #forkme_banner {
   display: block;
-  position: relative;
+  position: absolute;
   top:0;
   right: 10px;
   z-index: 10;
