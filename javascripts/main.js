@@ -6,7 +6,7 @@ $(document).ready(function()
 		$(this).animate(
 		{
 			paddingTop: "+=30",
-			height: "+=40"
+			height: ($(this).height() * 2)
 		}, 500);
 	}, 
 	function()
