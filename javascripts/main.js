@@ -5,9 +5,13 @@ $(document).ready(function()
 		$(this).animate(
 		{
 			height: "+=50"
-		}, 500, function()
-		{
-			alert("Animation done");
-		});
+		}, 500);
+	});
+	
+	$("#forkme_banner").mouseleave(function()
+	{
+		$(this).animate({
+			height: "-=50"
+		}, 500);
 	});
 });
