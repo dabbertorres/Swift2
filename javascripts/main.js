@@ -5,14 +5,14 @@ $(document).ready(function()
 	{
 		$(this).animate(
 		{
-			height: "+= 50"
+			height: "+=50"
 		}, 500);
 	}, 
 	function()
 	{
 		$(this).animate(
 		{
-			height: "-= 50"
+			height: "-=50"
 		}, 500);
 	});
 });
