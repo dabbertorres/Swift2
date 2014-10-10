@@ -6,7 +6,7 @@ $(document).ready(function()
 		$(this).animate(
 		{
 			paddingTop: "+=25",
-			height: "+=50"
+			height: "+=40"
 		}, 500);
 	}, 
 	function()
@@ -14,7 +14,7 @@ $(document).ready(function()
 		$(this).animate(
 		{
 			paddingTop: "-=25",
-			height: "-=50"
+			height: "-=40"
 		}, 500);
 	});
 });
