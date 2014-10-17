@@ -1,4 +1,5 @@
 ship = nil
+player = nil
 Done = false
 startDone = false
 
@@ -8,6 +9,7 @@ end
 
 function Update()
 	if not startDone then
+		player = getPlayer()
 		ship = getEntity(1)
 		
 		if ship == nil then
@@ -27,7 +29,7 @@ function Update()
 		startDone = true
 	end
 	
-	if not Done and isAround(getEntity(0):getPhysical(), 400, 20, 20) then
+	if not Done and isAround(player:getPhysical(), 400, 20, 20) then
 		print("Congratulations!")
 		Done = true
 	end
