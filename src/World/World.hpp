@@ -28,8 +28,8 @@ namespace swift
 
 			virtual void update(float dt) = 0;
 
-			virtual bool load(const std::string& file);
-			virtual bool save(const std::string& file);
+			virtual bool load();
+			virtual bool save();
 
 			void drawWorld(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 			void drawEntities(sf::RenderTarget& target, sf::RenderStates = sf::RenderStates::Default);

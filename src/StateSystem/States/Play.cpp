@@ -61,8 +61,34 @@ namespace swift
 		// setup world
 		activeWorld->tilemap.loadFile("./data/maps/maze.map");
 		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
-		activeWorld->load("./data/saves/maze.world");
-		player = activeWorld->getEntities()[0];
+		
+		if(!activeWorld->load())
+		{
+			player = activeWorld->addEntity();
+			player->add<Drawable>();
+			Drawable* drawable = player->get<Drawable>();
+			sf::Texture& texture = assets.getTexture("./data/textures/guy.png");
+			drawable->texture = "./data/textures/guy.png";
+			drawable->sprite.setTexture(texture);
+			drawable->sprite.setScale({16.f / texture.getSize().x, 48.f / texture.getSize().y});
+			
+			player->add<Name>();
+			Name* name = player->get<Name>();
+			name->name = "player";
+			
+			player->add<Physical>();
+			Physical* physical = player->get<Physical>();
+			physical->size = {16, 48};
+			physical->position = {window.getSize().x / 2.f, 500};
+			
+			player->add<Movable>();
+			Movable* movable = player->get<Movable>();
+			movable->moveVelocity = 50;
+			movable->velocity = {0, 0};
+		}
+		else
+			player = activeWorld->getEntities()[0];
+		
 		activeWorld->addScript("./data/scripts/quest.lua");
 		assets.getScript("./data/scripts/quest.lua").start();
 	}

@@ -346,6 +346,15 @@ namespace swift
 				return nullptr;
 		};
 		
+		// equivalent to getEntity(0)
+		luaState["getPlayer"] = [&]() -> Entity*
+		{
+			if(world && world->getEntities()[0])
+				return world->getEntities()[0];
+			else
+				return nullptr;
+		};
+		
 		luaState["isAround"] = [&](Physical* p, float x, float y, float r)
 		{
 			if(world)
@@ -376,6 +385,7 @@ namespace swift
 			if(d)
 			{
 				d->sprite.setTexture(assets->getTexture(t));
+				d->texture = t;
 				return true;
 			}
 			else

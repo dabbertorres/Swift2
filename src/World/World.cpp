@@ -17,7 +17,7 @@ namespace swift
 	
 	World::~World()
 	{
-		save("./data/saves/maze.world");
+		save();
 		
 		for(auto& e : entities)
 		{
@@ -38,21 +38,24 @@ namespace swift
 	 * .
 	 * </world>
 	 */
-	bool World::load(const std::string& file)
+	bool World::load()
 	{
-		tinyxml2::XMLDocument loadFile;
-		tinyxml2::XMLError result = loadFile.LoadFile(file.c_str());
+		std::string file = "./data/saves/" + name + ".world";
 		
-		if(result != tinyxml2::XML_SUCCESS)
+		tinyxml2::XMLDocument loadFile;
+		
+		if(loadFile.LoadFile(file.c_str()))
 		{
-			log << "Loading world save file \"" << file << "\" failed.\n";
+			tinyxml2::XMLError error = loadFile.LoadFile(file.c_str());
+			log << error << '\n';
+			log << "[ERROR] Loading world save file \"" << file << "\" failed.\n";
 			return false;
 		}
 		
 		tinyxml2::XMLElement* worldRoot = loadFile.FirstChildElement("world");
 		if(worldRoot == nullptr)
 		{
-			log << "World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			log << "[WARNING] World save file \"" << file << "\" does not have a \"world\" root element.\n";
 			return false;
 		}
 		
@@ -71,7 +74,8 @@ namespace swift
 				tinyxml2::XMLElement* variableElement = component->FirstChildElement();
 				while(variableElement != nullptr)
 				{
-					variables.emplace(variableElement->Value(), variableElement->GetText());
+					if(std::string(variableElement->Value()).size() > 0 && std::string(variableElement->GetText()).size() > 0)
+						variables.emplace(variableElement->Value(), variableElement->GetText());
 					variableElement = variableElement->NextSiblingElement();
 				}
 				
@@ -92,25 +96,28 @@ namespace swift
 		return true;
 	}
 	
-	bool World::save(const std::string& file)
+	bool World::save()
 	{
-		tinyxml2::XMLDocument saveFile;
-		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
+		std::string file = "./data/saves/" + name + ".world";
 		
-		if(result != tinyxml2::XML_SUCCESS)
+		tinyxml2::XMLDocument saveFile;
+		
+		if(saveFile.LoadFile(file.c_str()))
 		{
-			log << "Loading world save file \"" << file << "\" failed.\n";
+			log << "[ERROR] Saving world save file \"" << file << "\" failed.\n";
 			return false;
 		}
 		
 		tinyxml2::XMLElement* root = saveFile.FirstChildElement("world");
 		if(root == nullptr)
 		{
-			log << "World save file \"" << file << "\" does not have a \"world\" root element.\n";
-			return false;
+			log << "[WARNING] World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			//return false;
+			root = saveFile.NewElement("world");
+			saveFile.InsertFirstChild(root);
 		}
-		
-		root->DeleteChildren();
+		else
+			root->DeleteChildren();
 		
 		for(auto& e : entities)
 		{
