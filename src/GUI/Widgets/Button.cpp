@@ -1,5 +1,5 @@
 #include "Button.hpp"
-
+#include <iostream>
 namespace cstr
 {
 	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
@@ -8,7 +8,8 @@ namespace cstr
 	Button::Button(sf::Vector2u size, const sf::Texture& tex, const std::function<void()>& f)
 		:	baseColor({128, 128, 128}),
 			string(""),
-			callback(f)
+			callback(f),
+			textSize(0)
 	{
 		sprite.setTexture(tex);
 		sprite.setColor(baseColor);
@@ -63,21 +64,33 @@ namespace cstr
 		return sprite.getGlobalBounds();
 	}
 	
-	void Button::setString(const std::string& str, const sf::Font& f)
+	void Button::setString(const std::string& str, const sf::Font& f, unsigned ts)
 	{
 		string = str;
 		text.setFont(f);
 		text.setString(string);
-		text.setCharacterSize(100);
-		text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().height - 2 * BORDER_SIZE) / text.getLocalBounds().height);
-		text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().width - 2 * BORDER_SIZE) / text.getLocalBounds().width);
+		textSize = ts;
+		
+		if(textSize != 0)
+		{
+			std::cerr << "text size isn';t 0\n";
+			text.setCharacterSize(ts);
+		}
+		else
+		{
+			std::cerr << "text size is 0\n";
+			text.setCharacterSize(100);
+			text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().height - 2 * BORDER_SIZE) / text.getLocalBounds().height);
+			text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().width - 2 * BORDER_SIZE) / text.getLocalBounds().width);
+		}
+		
 		text.setOrigin({text.getLocalBounds().left + text.getLocalBounds().width / 2, text.getLocalBounds().top + text.getLocalBounds().height / 2});
 		text.setPosition({sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2});
 	}
 	
-	void Button::setString(const std::string& str)
+	void Button::setString(const std::string& str, unsigned ts)
 	{
-		setString(str, *text.getFont());
+		setString(str, *text.getFont(), ts);
 	}
 	
 	const std::string& Button::getString() const
@@ -96,7 +109,7 @@ namespace cstr
 		sprite.scale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
 		
 		if(string != "")
-			setString(string, *text.getFont());
+			setString(string, *text.getFont(), textSize);
 	}
 
 	void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const

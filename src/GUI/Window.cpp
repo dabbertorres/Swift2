@@ -3,7 +3,8 @@
 namespace cstr
 {
 	Window::Window()
-		:	font(nullptr)
+		:	font(nullptr),
+			textSize(0)
 	{
 	}
 
@@ -19,6 +20,11 @@ namespace cstr
 		{
 			c->update(event);
 		}
+	}
+	
+	void Window::setTextSize(unsigned s)
+	{
+		textSize = s;
 	}
 	
 	void Window::setFont(sf::Font& font)

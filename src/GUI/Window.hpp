@@ -25,6 +25,8 @@ namespace cstr
 			
 			void update(sf::Event& event);
 			
+			void setTextSize(unsigned s);
+			
 			template<typename C>
 			C& addContainer(C* c);
 			
@@ -36,6 +38,8 @@ namespace cstr
 			std::vector<Container*> containers;
 			
 			sf::Font* font;
+			
+			unsigned textSize;
 	};
 	
 	template<typename C>

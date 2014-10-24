@@ -11,14 +11,14 @@ namespace cstr
 	class Label : public Widget
 	{
 		public:
-			Label(const std::string& str, const sf::Font& f);
+			Label(const std::string& str, const sf::Font& f, unsigned ts = 0);
 			~Label();
 			
 			virtual void update(sf::Event& event);
 
 			virtual sf::FloatRect getGlobalBounds() const;
 			
-			void setString(const std::string& str);
+			void setString(const std::string& str, unsigned ts = 0);
 			const std::string& getString() const;
 			
 			virtual void setPosition(sf::Vector2i pos);
@@ -30,6 +30,7 @@ namespace cstr
 			
 			sf::Text text;
 			std::string string;
+			unsigned textSize;
 	};
 }
 

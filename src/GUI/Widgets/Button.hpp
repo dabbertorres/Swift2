@@ -25,8 +25,8 @@ namespace cstr
 
 			virtual sf::FloatRect getGlobalBounds() const;
 			
-			void setString(const std::string& str, const sf::Font& f);
-			void setString(const std::string& str);
+			void setString(const std::string& str, const sf::Font& f, unsigned ts = 0);
+			void setString(const std::string& str, unsigned ts = 0);
 			
 			const std::string& getString() const;
 			
@@ -42,6 +42,7 @@ namespace cstr
 			sf::Color baseColor;
 			std::string string;
 			std::function<void()> callback;
+			unsigned textSize;
 	};
 }
 
