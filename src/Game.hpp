@@ -5,7 +5,7 @@
  * 
  **/
 
-#define VERSION "0.5.1-09292014"
+#define VERSION "0.6.0-10262014"
 #define AUTHOR "Alec Iverson"
 
 #ifndef GAME_HPP
@@ -13,6 +13,7 @@
 
 /* State System */
 #include "StateSystem/State.hpp"
+#include "StateSystem/States/Editor.hpp"
 #include "StateSystem/States/Play.hpp"
 #include "StateSystem/States/MainMenu.hpp"
 #include "StateSystem/States/SettingsMenu.hpp"

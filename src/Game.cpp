@@ -101,7 +101,11 @@ namespace swift
 		Script::setSettings(settings);
 
 		// state setup
-		currentState = new MainMenu(window, assets, settings, dictionary);
+		if(!editor)
+			currentState = new MainMenu(window, assets, settings, dictionary);
+		else
+			currentState = new Editor(window, assets, settings, dictionary);
+		
 		currentState->setup();
 	}
 
