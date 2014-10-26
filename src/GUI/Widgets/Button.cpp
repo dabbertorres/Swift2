@@ -1,5 +1,5 @@
 #include "Button.hpp"
-#include <iostream>
+
 namespace cstr
 {
 	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
@@ -73,12 +73,10 @@ namespace cstr
 		
 		if(textSize != 0)
 		{
-			std::cerr << "text size isn';t 0\n";
 			text.setCharacterSize(ts);
 		}
 		else
 		{
-			std::cerr << "text size is 0\n";
 			text.setCharacterSize(100);
 			text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().height - 2 * BORDER_SIZE) / text.getLocalBounds().height);
 			text.setCharacterSize(text.getCharacterSize() * (sprite.getGlobalBounds().width - 2 * BORDER_SIZE) / text.getLocalBounds().width);
