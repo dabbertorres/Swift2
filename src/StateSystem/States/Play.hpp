@@ -3,6 +3,8 @@
 
 #include "../State.hpp"
 
+#include "../SubState.hpp"
+
 #include <vector>
 
 /* GUI headers */
@@ -27,19 +29,16 @@ namespace swift
 			virtual Type finish();
 
 		private:
-			// sub state system
-			enum class SubState
-			{
-				Play,
-				Pause
-			};
+			// SubState system
+			SubState* activeState;
+			SubState play;
+			SubState pause;
 			
+			void setupGUI();
 			void setupKeyBindings();
 
 			cstr::Window hud;
 			cstr::Window pauseMenu;
-			
-			SubState state;
 			
 			std::vector<World*> worlds;
 			World* activeWorld;

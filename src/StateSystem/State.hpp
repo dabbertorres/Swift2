@@ -1,8 +1,7 @@
 #ifndef STATE_HPP
 #define STATE_HPP
 
-#include <SFML/Window.hpp>
-#include <SFML/Graphics.hpp>
+#include <SFML/Graphics/RenderWindow.hpp>
 
 /* Input headers */
 #include "../KeyBindings/KeyboardManager.hpp"
@@ -19,7 +18,7 @@ namespace swift
 			State(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
 			virtual ~State();
 			
-			enum Type
+			enum class Type
 			{
 				MainMenu = 0,
 				SettingsMenu,

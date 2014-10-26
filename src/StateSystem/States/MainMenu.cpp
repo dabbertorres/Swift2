@@ -31,7 +31,7 @@ namespace swift
 		
 		std::string title = "Swift2";
 		dictionary.get("titleLabel", title);
-		titleColumn.addWidget(new cstr::Label("Swift2", assets.getFont("./data/fonts/segoeuisl.ttf")));
+		titleColumn.addWidget(new cstr::Label("Swift2", assets.getFont("./data/fonts/segoeuisl.ttf"), 60));
 		
 		titleColumn.addWidget(new cstr::Spacer({200, 100}));
 		
@@ -42,7 +42,7 @@ namespace swift
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::Play;
-		})).setString(start, assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(start, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
@@ -51,7 +51,7 @@ namespace swift
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::SettingsMenu;
-		})).setString(settings, assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(settings, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
@@ -60,7 +60,7 @@ namespace swift
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::Exit;
-		})).setString(exit, assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(exit, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 	}
 	
 	void MainMenu::handleEvent(sf::Event &event)

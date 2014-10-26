@@ -33,7 +33,7 @@ namespace swift
 		std::string settingsStr = "Settings";
 		dictionary.get("settingsLabel", settingsStr);
 		cstr::Column& titleCol = settingsColumn.addWidget(new cstr::Column({200, 50}, false));
-		titleCol.addWidget(new cstr::Label(settingsStr, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		titleCol.addWidget(new cstr::Label(settingsStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 60));
 		
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 		
@@ -42,7 +42,7 @@ namespace swift
 		cstr::Column& fullscreenLabelCol = fullscreenRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string fullscreen = "Fullscreen";
 		dictionary.get("fullscreenLabel", fullscreen);
-		fullscreenLabelCol.addWidget(new cstr::Label(fullscreen + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		fullscreenLabelCol.addWidget(new cstr::Label(fullscreen + ':', assets.getFont("./data/fonts/segoeuisl.ttf"), 50));
 		
 		fullscreenRow.addWidget(new cstr::Spacer({450, 50}));
 		
@@ -78,7 +78,7 @@ namespace swift
 		cstr::Column& vsyncLabelCol = vsyncRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string vsync = "V-Sync";
 		dictionary.get("vsyncLabel", vsync);
-		vsyncLabelCol.addWidget(new cstr::Label(vsync + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		vsyncLabelCol.addWidget(new cstr::Label(vsync + ':', assets.getFont("./data/fonts/segoeuisl.ttf"), 50));
 		
 		vsyncRow.addWidget(new cstr::Spacer({450, 50}));
 		
@@ -99,7 +99,7 @@ namespace swift
 		cstr::Column& graphicsRowLabelCol = graphicsRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string graphics = "Graphics";
 		dictionary.get("graphicsLabel", graphics);
-		graphicsRowLabelCol.addWidget(new cstr::Label(graphics + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		graphicsRowLabelCol.addWidget(new cstr::Label(graphics + ':', assets.getFont("./data/fonts/segoeuisl.ttf"), 50));
 		
 		graphicsRow.addWidget(new cstr::Spacer({400, 50}));
 		
@@ -114,20 +114,20 @@ namespace swift
 			{
 				case 0:
 					dictionary.get("graphicsLevelLow", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 					break;
 				case 1:
 					dictionary.get("graphicsLevelMed", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 					break;
 				case 2:
 					dictionary.get("graphicsLevelHigh", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 					break;
 				default:
 					graphicsLevel = 0;
 					dictionary.get("graphicsLevelLow", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+					graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 					break;
 			}
 			settings.set("graphics", graphicsLevel);
@@ -141,20 +141,20 @@ namespace swift
 		{
 			case 0:
 				dictionary.get("graphicsLevelLow", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 				break;
 			case 1:
 				dictionary.get("graphicsLevelMed", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 				break;
 			case 2:
 				dictionary.get("graphicsLevelHigh", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 				break;
 			default:
 				graphicsLevel = 0;
 				dictionary.get("graphicsLevelLow", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"));
+				graphicsButton->setString(graphicsLevelStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 				break;
 		}
 		
@@ -165,7 +165,7 @@ namespace swift
 		cstr::Column& textEnterLabelCol = textEnterRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string name = "Name";
 		dictionary.get("nameLabel", name);
-		textEnterLabelCol.addWidget(new cstr::Label(name + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		textEnterLabelCol.addWidget(new cstr::Label(name + ':', assets.getFont("./data/fonts/segoeuisl.ttf"), 50));
 		
 		textEnterRow.addWidget(new cstr::Spacer({100, 50}));
 		
@@ -179,7 +179,7 @@ namespace swift
 		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string volume = "Volume";
 		dictionary.get("volumeLabel", volume);
-		volumeCol.addWidget(new cstr::Label(volume + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		volumeCol.addWidget(new cstr::Label(volume + ':', assets.getFont("./data/fonts/segoeuisl.ttf"), 50));
 		
 		volumeRow.addWidget(new cstr::Spacer({100, 50}));
 		
@@ -197,7 +197,7 @@ namespace swift
 		cstr::Column& musicCol = musicRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string musicStr = "Music";
 		dictionary.get("musicLabel", musicStr);
-		musicCol.addWidget(new cstr::Label(musicStr + ':', assets.getFont("./data/fonts/segoeuisl.ttf")));
+		musicCol.addWidget(new cstr::Label(musicStr + ':', assets.getFont("./data/fonts/segoeuisl.ttf"), 50));
 		
 		musicRow.addWidget(new cstr::Spacer({100, 50}));
 		
@@ -221,7 +221,7 @@ namespace swift
 		mainMenuReturnCol.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			returnType = State::Type::MainMenu;
-		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"));
+		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"), 20);
 	}
 	
 	void SettingsMenu::handleEvent(sf::Event &event)

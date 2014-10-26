@@ -1,7 +1,5 @@
 #include "Play.hpp"
 
-#include <functional>
-
 #include "../../ResourceManager/AssetManager.hpp"
 
 /* GUI headers */
@@ -18,7 +16,7 @@ namespace swift
 {
 	Play::Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
 		:	State(win, am, set, dic),
-		    state(SubState::Play),
+		    activeState(nullptr),
 			activeWorld(nullptr),
 			player(nullptr)
 	{
@@ -39,29 +37,50 @@ namespace swift
 		activeWorld = worlds[0];
 		
 		setupKeyBindings();
+		setupGUI();
 		
-		// setup pause menu GUI
-		std::string resume = "Resume";
-		dictionary.get("resumeButton", resume);
-		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 125}, false));
-		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		// setup SubStates
+		play.setEventFunc([&](sf::Event& e)
 		{
-			state = SubState::Play;
-		})).setString(resume, assets.getFont("./data/fonts/segoeuisl.ttf"));
+			hud.update(e);
+		});
 		
-		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
-		
-		std::string mainMenu = "Main Menu";
-		dictionary.get("mainMenuButton", mainMenu);
-		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		play.setUpdateFunc([&](sf::Time dt)
 		{
-			returnType = State::Type::MainMenu;
-		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"));
+			activeWorld->update(dt.asSeconds());
+		});
+		
+		play.setDrawFunc([&](float)
+		{
+			activeWorld->drawWorld(window);
+			activeWorld->drawEntities(window);
+			
+			window.draw(hud);
+		});
+		
+		pause.setEventFunc([&](sf::Event& e)
+		{
+			pauseMenu.update(e);
+		});
+		
+		pause.setUpdateFunc([&](sf::Time)
+		{
+			// do nothing
+		});
+		
+		pause.setDrawFunc([&](float)
+		{
+			window.draw(pauseMenu);
+		});
+		
+		// set the active state
+		activeState = &play;
 		
 		// setup world
 		activeWorld->tilemap.loadFile("./data/maps/maze.map");
 		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
 		
+		// loading fails, so create a player
 		if(!activeWorld->load())
 		{
 			player = activeWorld->addEntity();
@@ -86,6 +105,7 @@ namespace swift
 			movable->moveVelocity = 50;
 			movable->velocity = {0, 0};
 		}
+		// loading suceeds, so get the player
 		else
 			player = activeWorld->getEntities()[0];
 		
@@ -95,17 +115,7 @@ namespace swift
 
 	void Play::handleEvent(sf::Event& event)
 	{
-		switch(state)
-		{
-			case SubState::Play:
-				hud.update(event);
-				break;
-			case SubState::Pause:
-				pauseMenu.update(event);
-				break;
-			default:
-				break;
-		}
+		activeState->handleEvents(event);
 
 		keyboard(event);
 		mouse(event);
@@ -113,33 +123,12 @@ namespace swift
 
 	void Play::update(sf::Time dt)
 	{
-		switch(state)
-		{
-			case SubState::Play:
-				activeWorld->update(dt.asSeconds());
-				break;
-			case SubState::Pause:
-				break;
-		}
+		activeState->update(dt);
 	}
 
-	void Play::draw(float /*e*/)
+	void Play::draw(float e)
 	{
-		switch(state)
-		{
-			case SubState::Play:
-				activeWorld->drawWorld(window);
-				
-				activeWorld->drawEntities(window);
-				
-				window.draw(hud);
-				break;
-			case SubState::Pause:
-				window.draw(pauseMenu);
-				break;
-			default:
-				break;
-		}
+		activeState->draw(e);
 	}
 
 	bool Play::switchFrom()
@@ -151,12 +140,33 @@ namespace swift
 	{
 		return returnType;
 	}
+	
+	void Play::setupGUI()
+	{
+		// setup pause menu GUI
+		std::string resume = "Resume";
+		dictionary.get("resumeButton", resume);
+		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 125}, false));
+		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			activeState = &play;
+		})).setString(resume, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		
+		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
+		
+		std::string mainMenu = "Main Menu";
+		dictionary.get("mainMenuButton", mainMenu);
+		pauseColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		{
+			returnType = State::Type::MainMenu;
+		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"), 20);
+	}
 
 	void Play::setupKeyBindings()
 	{
 		keyboard.newBinding("PauseMenu", sf::Keyboard::Escape, [&]()
 		{
-			state = (state == SubState::Pause) ? SubState::Play : SubState::Pause;
+			activeState = (activeState == &pause) ? &play : &pause;
 		}, false);
 		
 		// move up press and release
