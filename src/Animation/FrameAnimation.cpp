@@ -25,7 +25,7 @@ namespace swift
 		if(!looping && currentTime >= totalTime)
 			done = true;
 	}
-	
+
 	void FrameAnimation::setFrame(unsigned fn)
 	{
 		if(fn < frames.size())
@@ -33,12 +33,12 @@ namespace swift
 			frameNum = fn;
 		}
 	}
-	
+
 	sf::FloatRect FrameAnimation::getGlobalBounds() const
 	{
 		return sprite.getGlobalBounds();
 	}
-	
+
 	void FrameAnimation::setTexture(const sf::Texture& tex)
 	{
 		sprite.setTexture(tex);
@@ -53,22 +53,22 @@ namespace swift
 	{
 		sprite.setPosition(pos);
 	}
-	
+
 	void FrameAnimation::setLooping(bool l)
 	{
 		looping = l;
 	}
-	
+
 	void FrameAnimation::setRotation(float a)
 	{
 		sprite.setRotation(a);
 	}
-	
+
 	void FrameAnimation::setOrigin(sf::Vector2f o)
 	{
 		sprite.setOrigin(o);
 	}
-	
+
 	void FrameAnimation::setScale(sf::Vector2f s)
 	{
 		sprite.setScale(s);
@@ -81,7 +81,7 @@ namespace swift
 
 	void FrameAnimation::nextFrame()
 	{
-		if(frames.size() > 0)
+		if(frames.size() > 0 && !done)
 		{
 			frameNum >= frames.size() ? frameNum = 0 : frameNum++;
 			sprite.setTextureRect(frames[frameNum]);
