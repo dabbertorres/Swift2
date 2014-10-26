@@ -230,19 +230,19 @@ namespace swift
 		gui = &ui;
 	}
 	
-	void Script::setKeyboard(KeyboardManager& k)
-	{
-		keyboard = &k;
-	}
-	
-	void Script::setStateReturn(State::Type& t)
-	{
-		stateReturn = &t;
-	}
-	
 	void Script::setWorld(World& w)
 	{
 		world = &w;
+	}
+	
+	void Script::setWorld(std::nullptr_t)
+	{
+		world = nullptr;
+	}
+	
+	const World* Script::getWorld() const
+	{
+		return world;
 	}
 	
 	void Script::addVariables()

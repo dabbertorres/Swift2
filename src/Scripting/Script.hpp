@@ -71,11 +71,11 @@ namespace swift
 			static void setClock(sf::Clock& c);
 			static void setSettings(Settings& s);
 			void setGUI(cstr::Window& ui);
-			// may be able to remove
-			void setKeyboard(KeyboardManager& k);
-			void setStateReturn(State::Type& t);
-			// may be able to remove
 			void setWorld(World& w);
+			void setWorld(std::nullptr_t);
+			
+			// get world pointer for comparison
+			const World* getWorld() const;
 
 		private:
 			void addVariables();
