@@ -16,20 +16,21 @@ namespace swift
 	class TileMap : public sf::Drawable
 	{
 		public:
-			TileMap(sf::Vector2u s);
+			TileMap();
 			~TileMap();
 
 			bool loadFile(const std::string& f);
-
 			bool loadTexture(const sf::Texture& tex);
 			
-			int getTileNum(unsigned t) const;
+			void setPosition(const sf::Vector2i& pos);
+			void setTileNum(unsigned t, int n);
+			void setTileSize(const sf::Vector2u& ts);
+			void setSize(const sf::Vector2u& s);
+			void setTextureFile(const std::string& str);
 			
+			int getTileNum(unsigned t) const;
 			const sf::Vector2u& getTileSize() const;
 			const sf::Vector2u& getSize() const;
-			
-			void setPosition(const sf::Vector2i& pos);
-
 			const std::string& getTextureFile() const;
 
 		private:

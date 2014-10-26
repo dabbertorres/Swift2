@@ -8,16 +8,22 @@
 namespace swift
 {
 	World::World(const std::string& n, const sf::Vector2i& s, AssetManager& am)
-		:	tilemap(static_cast<sf::Vector2u>(s)),
-			assets(am),
+		:	assets(am),
 			size(s),
 			name(n)
 	{
+		tilemap.setSize(static_cast<sf::Vector2u>(s));
 	}
 	
 	World::~World()
 	{
 		save();
+		
+		// set all script's world to nullptr, so scripts don't call destroyed worlds
+		for(auto& it : scripts)
+		{
+			it.second->setWorld(nullptr);
+		}
 		
 		for(auto& e : entities)
 		{
@@ -74,6 +80,7 @@ namespace swift
 				tinyxml2::XMLElement* variableElement = component->FirstChildElement();
 				while(variableElement != nullptr)
 				{
+					// make sure the strings aren't empty...
 					if(std::string(variableElement->Value()).size() > 0 && std::string(variableElement->GetText()).size() > 0)
 						variables.emplace(variableElement->Value(), variableElement->GetText());
 					variableElement = variableElement->NextSiblingElement();

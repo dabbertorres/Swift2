@@ -32,7 +32,7 @@ namespace swift
 			virtual bool save();
 
 			void drawWorld(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
-			void drawEntities(sf::RenderTarget& target, sf::RenderStates = sf::RenderStates::Default);
+			void drawEntities(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 
 			sf::Vector2i getSize() const;
 			

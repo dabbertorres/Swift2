@@ -25,6 +25,9 @@ namespace swift
 		
 		for(auto& s : scripts)
 		{
+			if(s.second->getWorld() != this)
+				s.second->setWorld(*this);
+			
 			s.second->update();
 			
 			// check if script is done, if so, push it for deletion
