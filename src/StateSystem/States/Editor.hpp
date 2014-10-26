@@ -8,6 +8,8 @@
 
 #include "../../Mapping/TileMap.hpp"
 
+#include <SFML/Graphics/View.hpp>
+
 namespace swift
 {
 	class Editor : public State
@@ -35,6 +37,8 @@ namespace swift
 			
 			sf::RenderWindow toolsWindow;
 			
+			sf::View editorView;
+			
 			SubState* activeState;
 			SubState editor;
 			SubState pause;
@@ -43,9 +47,12 @@ namespace swift
 			cstr::Window pauseMenu;
 			
 			TileMap currentMap;
+			std::string mapName;
 			
 			bool mapLoaded;
 			int tileSelected;
+			
+			bool done;
 	};
 }
 
