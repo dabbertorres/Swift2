@@ -16,21 +16,14 @@ namespace swift
 			MouseManager() {}
 			~MouseManager() {};
 			
-			sf::Vector2i getPosition(sf::Window* win = nullptr)
-			{
-				if(win != nullptr)
-					return sf::Mouse::getPosition(*win);
-				return sf::Mouse::getPosition();
-			}
-			
-			void newBinding(const std::string& n, sf::Mouse::Button b, std::function<void()> f = [](){return true;}, bool onPress = false)
+			void newBinding(const std::string& n, sf::Mouse::Button b, std::function<void(const sf::Vector2i&)> f = [](const sf::Vector2i&){return true;}, bool onPress = false)
 			{
 				bindings.emplace(std::make_pair(n, ButtonBinding(b, f, onPress)));
 			}
 			
-			void call(const std::string& k)
+			void call(const std::string& k, const sf::Vector2i& pos)
 			{
-				bindings.at(k).call();
+				bindings.at(k).call(pos);
 			}
 
 			bool operator()(sf::Event& e)
@@ -38,7 +31,7 @@ namespace swift
 				for(auto &b : bindings)
 				{
 					if(b.second(e))
-						return b.second.call();
+						return b.second.call({e.mouseButton.x, e.mouseButton.y});
 				}
 				
 				return false;
@@ -48,7 +41,7 @@ namespace swift
 			class ButtonBinding
 			{
 				public:
-					explicit ButtonBinding(sf::Mouse::Button b, std::function<void()> f, bool p)
+					explicit ButtonBinding(sf::Mouse::Button b, std::function<void(const sf::Vector2i&)> f, bool p)
 					{
 						button = b;
 						onPress = p;
@@ -69,12 +62,12 @@ namespace swift
 						return ((e.type == sf::Event::MouseButtonPressed && onPress) || (e.type == sf::Event::MouseButtonReleased && !onPress)) && e.mouseButton.button == button;
 					}
 
-					bool call()
+					bool call(sf::Vector2i pos)
 					{
 						if(!func)
 							return false;
 
-						func();
+						func(pos);
 
 						return true;
 					}
@@ -82,7 +75,7 @@ namespace swift
 				private:
 					sf::Mouse::Button button;
 
-					std::function<void()> func;
+					std::function<void(const sf::Vector2i&)> func;
 
 					bool onPress;	// if true, means if key is pressed, if false, means if key is released
 			};
