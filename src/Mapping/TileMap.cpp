@@ -113,6 +113,35 @@ namespace swift
 		return true;
 	}
 	
+	bool TileMap::saveFile(const std::string& f)
+	{
+		std::ofstream fout;
+		fout.open(f);
+		
+		if(fout.bad())
+			return false;
+			
+		fout << "texture = \"" << textureFile << "\"\n";
+		fout << "size = " << tileSize.x << ' ' << tileSize.y << '\n';
+		
+		for(auto t = 0u; t < tileTypes.size(); t++)
+		{
+			fout << t << " = " << tileTypes[t].pos.x << ' ' << tileTypes[t].pos.y << '\n';
+		}
+		
+		for(auto i = 0u; i < sizeTiles.y; i++)
+		{
+			for(auto j = 0u; j < sizeTiles.x; j++)
+			{
+				fout << tiles[j + i * sizeTiles.x] << ' ';
+			}
+			
+			fout << '\n';
+		}
+		
+		return true;
+	}
+	
 	void TileMap::setPosition(const sf::Vector2i& pos)
 	{
 		for(unsigned i = 0; i < sizeTiles.x; i++)

@@ -22,6 +22,8 @@ namespace swift
 			bool loadFile(const std::string& f);
 			bool loadTexture(const sf::Texture& tex);
 			
+			bool saveFile(const std::string& f);
+			
 			void setPosition(const sf::Vector2i& pos);
 			void setTileNum(unsigned t, int n);
 			void setTileSize(const sf::Vector2u& ts);
