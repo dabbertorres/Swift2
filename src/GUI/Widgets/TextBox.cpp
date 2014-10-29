@@ -126,6 +126,13 @@ namespace cstr
 	{
 		return currentStr;
 	}
+	
+	void TextBox::clear()
+	{
+		currentStr.clear();
+		text.setString("");
+		setDisplayedString();
+	}
 
 	void TextBox::setTextColor(const sf::Color& tc)
 	{

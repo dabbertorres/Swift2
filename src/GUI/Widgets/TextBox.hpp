@@ -25,6 +25,8 @@ namespace cstr
 			
 			const std::string& getString() const;
 			
+			void clear();
+			
 			void setTextColor(const sf::Color& tc);
 			
 			void setOutlineColor(const sf::Color& oc);
