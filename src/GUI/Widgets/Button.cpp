@@ -109,6 +109,13 @@ namespace cstr
 		if(string != "")
 			setString(string, *text.getFont(), textSize);
 	}
+	
+	void Button::setTextureRect(const sf::IntRect& rect, const sf::Vector2f& size)
+	{
+		sprite.setTextureRect(rect);
+		sprite.setScale({1, 1});
+		sprite.setScale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
+	}
 
 	void Button::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{

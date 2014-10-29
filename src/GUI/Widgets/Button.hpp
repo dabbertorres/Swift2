@@ -33,6 +33,8 @@ namespace cstr
 			virtual void setPosition(sf::Vector2i pos);
 			
 			virtual void setSize(sf::Vector2u size);
+			
+			virtual void setTextureRect(const sf::IntRect& rect, const sf::Vector2f& size);
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
