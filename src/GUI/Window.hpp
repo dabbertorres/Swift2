@@ -31,6 +31,8 @@ namespace cstr
 			C& addContainer(C* c);
 			
 			void setFont(sf::Font& font);
+			
+			void clear();
 
 		private:
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;

@@ -32,6 +32,12 @@ namespace cstr
 		this->font = &font;
 	}
 	
+	void Window::clear()
+	{
+		for(auto& c : containers)
+			delete c;
+	}
+	
 	void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		for(auto& c : containers)
