@@ -18,14 +18,18 @@ namespace swift
 		public:
 			TileMap();
 			~TileMap();
+			
+			// used in map making
+			bool init();
 
 			bool loadFile(const std::string& f);
 			bool loadTexture(const sf::Texture& tex);
 			
 			bool saveFile(const std::string& f);
 			
-			void setPosition(const sf::Vector2i& pos);
 			void setTileNum(unsigned t, int n);
+			
+			void setPosition(const sf::Vector2i& pos);
 			void setTileSize(const sf::Vector2u& ts);
 			void setSize(const sf::Vector2u& s);
 			void setTextureFile(const std::string& str);
@@ -34,11 +38,12 @@ namespace swift
 			const sf::Vector2u& getTileSize() const;
 			const sf::Vector2u& getSize() const;
 			const std::string& getTextureFile() const;
+			unsigned getNumOfTileTypes() const;
 
 		private:
 			struct Tile
 			{
-				Tile(sf::Vector2u p)
+				Tile(const sf::Vector2u& p)
 					:	pos(p)
 				{}
 				

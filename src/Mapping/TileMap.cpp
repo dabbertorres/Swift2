@@ -21,6 +21,35 @@ namespace swift
 		texture = nullptr;
 	}
 	
+	bool TileMap::init()
+	{
+		if(tileSize == sf::Vector2u(0, 0) || sizeTiles == sf::Vector2u(0, 0) || textureFile == "" || texture == nullptr)
+			return false;
+		
+		sizePixels = {sizeTiles.x * tileSize.x, sizeTiles.y * tileSize.y};
+		
+		for(unsigned i = 0; i < texture->getSize().y; i += tileSize.y)
+		{
+			for(unsigned j = 0; j < texture->getSize().x; j += tileSize.x)
+			{
+				tileTypes.push_back(sf::Vector2u(j, i));
+			}
+		}
+		
+		for(unsigned i = 0; i < sizeTiles.y; i++)
+		{
+			for(unsigned j = 0; j < sizeTiles.x; j++)
+			{
+				tiles.push_back(0);
+			}
+		}
+		
+		if(!loadTexture(*texture))
+			return false;
+		
+		return true;
+	}
+	
 	bool TileMap::loadFile(const std::string& f)
 	{
 		std::ifstream fin;
@@ -106,7 +135,7 @@ namespace swift
 				quad[0].texCoords = {static_cast<float>(tileTypes[tileNum].pos.x), static_cast<float>(tileTypes[tileNum].pos.y)};
 				quad[1].texCoords = {static_cast<float>(tileTypes[tileNum].pos.x + tileSize.x), static_cast<float>(tileTypes[tileNum].pos.y)};
 				quad[2].texCoords = {static_cast<float>(tileTypes[tileNum].pos.x + tileSize.x), static_cast<float>(tileTypes[tileNum].pos.y + tileSize.y)};
-				quad[3].texCoords = {static_cast<float>(tileTypes[tileNum].pos.x), tileTypes[tileNum].pos.y + static_cast<float>(tileSize.y)};
+				quad[3].texCoords = {static_cast<float>(tileTypes[tileNum].pos.x), static_cast<float>(tileTypes[tileNum].pos.y + tileSize.y)};
 			}
 		}
 		
@@ -142,6 +171,20 @@ namespace swift
 		return true;
 	}
 	
+	void TileMap::setTileNum(unsigned t, int n)
+	{
+		if(t < tiles.size() && static_cast<unsigned>(n) < tileTypes.size())
+		{
+			tiles[t] = n;
+			
+			sf::Vertex* quad = &vertices[t * 4];
+			quad[0].texCoords = {static_cast<float>(tileTypes[n].pos.x), static_cast<float>(tileTypes[n].pos.y)};
+			quad[1].texCoords = {static_cast<float>(tileTypes[n].pos.x + tileSize.x), static_cast<float>(tileTypes[n].pos.y)};
+			quad[2].texCoords = {static_cast<float>(tileTypes[n].pos.x + tileSize.x), static_cast<float>(tileTypes[n].pos.y + tileSize.y)};
+			quad[3].texCoords = {static_cast<float>(tileTypes[n].pos.x), static_cast<float>(tileTypes[n].pos.y + tileSize.y)};
+		}
+	}
+	
 	void TileMap::setPosition(const sf::Vector2i& pos)
 	{
 		for(unsigned i = 0; i < sizeTiles.x; i++)
@@ -157,20 +200,6 @@ namespace swift
 		}
 		
 		position = pos;
-	}
-	
-	void TileMap::setTileNum(unsigned t, int n)
-	{
-		if(t < tiles.size() && static_cast<unsigned>(n) < tileTypes.size())
-		{
-			tiles[t] = n;
-			
-			sf::Vertex* quad = &vertices[t * 4];
-			quad[0].texCoords = {static_cast<float>(tileTypes[n].pos.x), static_cast<float>(tileTypes[n].pos.y)};
-			quad[1].texCoords = {static_cast<float>(tileTypes[n].pos.x + tileSize.x), static_cast<float>(tileTypes[n].pos.y)};
-			quad[2].texCoords = {static_cast<float>(tileTypes[n].pos.x + tileSize.x), static_cast<float>(tileTypes[n].pos.y + tileSize.y)};
-			quad[3].texCoords = {static_cast<float>(tileTypes[n].pos.x), static_cast<float>(tileTypes[n].pos.y + tileSize.y)};
-		}
 	}
 	
 	void TileMap::setTileSize(const sf::Vector2u& ts)
@@ -209,6 +238,11 @@ namespace swift
 	const std::string& TileMap::getTextureFile() const
 	{
 		return textureFile;
+	}
+	
+	unsigned TileMap::getNumOfTileTypes() const
+	{
+		return tileTypes.size();
 	}
 	
 	void TileMap::draw(sf::RenderTarget& target, sf::RenderStates states) const
