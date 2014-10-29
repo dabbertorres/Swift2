@@ -14,7 +14,7 @@ namespace cstr
 	class Toggle : public Widget
 	{
 		public:
-			Toggle(sf::Vector2u size, const sf::Texture& on, const sf::Texture& off, bool s, std::function<void(bool s)> c);
+			Toggle(sf::Vector2u size, const sf::Texture& tex, const sf::IntRect& on, const sf::IntRect& off, bool s, std::function<void(bool s)> c);
 			~Toggle();
 			
 			bool getState() const;
@@ -32,8 +32,8 @@ namespace cstr
 			
 			sf::Sprite sprite;
 			sf::Color baseColor;
-			const sf::Texture& onTex;
-			const sf::Texture& offTex;
+			const sf::IntRect onRect;
+			const sf::IntRect offRect;
 			
 			std::function<void(bool s)> callback;
 			

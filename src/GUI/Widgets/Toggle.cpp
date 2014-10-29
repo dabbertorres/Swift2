@@ -4,14 +4,15 @@ namespace cstr
 {
 	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
 	
-	Toggle::Toggle(sf::Vector2u size, const sf::Texture& on, const sf::Texture& off, bool s, std::function<void(bool s)> c)
+	Toggle::Toggle(sf::Vector2u size, const sf::Texture& tex, const sf::IntRect& on, const sf::IntRect& off, bool s, std::function<void(bool s)> c)
 		:	baseColor({128, 128, 128}),
-			onTex(on),
-			offTex(off),
+			onRect(on),
+			offRect(off),
 			callback(c),
 			state(s)
 	{
-		sprite.setTexture(state ? onTex : offTex);
+		sprite.setTexture(tex);
+		sprite.setTextureRect(state ? onRect : offRect);
 		sprite.setColor(baseColor);
 		sprite.scale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
 	}
@@ -49,7 +50,7 @@ namespace cstr
 				if(mouseOn)
 				{
 					state = !state;
-					sprite.setTexture(state ? onTex : offTex);
+					sprite.setTextureRect(state ? onRect : offRect);
 					sprite.setColor(baseColor);
 					callback(state);
 				}
