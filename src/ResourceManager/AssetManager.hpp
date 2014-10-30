@@ -48,15 +48,6 @@ namespace swift
 			sf::Music& getSong(const std::string& n);
 			sf::Font& getFont(const std::string& n);
 			Script& getScript(const std::string& n);
-			
-			// following 6 const iterators are for the programmer/scripter checking if something was found or not
-			const std::map<std::string, sf::Texture*>::iterator		TEXTURE_NOT_FOUND = textures.end();
-			//const std::map<std::string, Bitmask*>::iterator			BITMASK_NOT_FOUND = bitmasks.end();
-			//const std::map<std::string, Skeleton>::iterator	SKELETON_NOT_FOUND = skeletons.end();
-			const std::map<std::string, sf::SoundBuffer*>::iterator SOUNDBUFFER_NOT_FOUND = soundBuffers.end();
-			const std::map<std::string, sf::Music*>::iterator 		MUSIC_NOT_FOUND = music.end();
-			const std::map<std::string, sf::Font*>::iterator 		FONT_NOT_FOUND = fonts.end();
-			const std::map<std::string, Script*>::iterator 			SCRIPT_NOT_FOUND = scripts.end();
 
 		private:
 			bool loadResource(const std::string& file);
