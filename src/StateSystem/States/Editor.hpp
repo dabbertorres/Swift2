@@ -37,12 +37,9 @@ namespace swift
 			void setupEditorGUI();
 			
 			void setupNewMapGUI();
-			void setupSaveMapGUI();
 			void setupLoadMapGUI();
 			
 			void setupKeyBindings();
-			
-			sf::RenderWindow toolsWindow;
 			
 			sf::View editorView;
 			sf::Vector2f editorViewMove;
@@ -52,17 +49,15 @@ namespace swift
 			SubState pause;
 			
 			SubState newMap;
-			SubState saveMap;
 			SubState loadMap;
 			
 			cstr::Window editorCtrls;
 			cstr::Window pauseMenu;
 			
 			cstr::Window newMapGUI;
-			cstr::Window saveMapGUI;
 			cstr::Window loadMapGUI;
 			
-			TileMap currentMap;
+			TileMap* currentMap;
 			std::string mapName;
 			
 			bool mapLoaded;
