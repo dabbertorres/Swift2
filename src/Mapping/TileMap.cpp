@@ -108,6 +108,8 @@ namespace swift
 	bool TileMap::loadTexture(const sf::Texture& tex)
 	{
 		texture = &tex;
+		if(!texture)
+			return false;
 		vertices.resize(sizeTiles.x * sizeTiles.y * 4);
 		
 		sf::Vector2f scale = {sizePixels.x / static_cast<float>(sizeTiles.x) / static_cast<float>(tileSize.x), sizePixels.y / static_cast<float>(sizeTiles.y) / static_cast<float>(tileSize.y)};
