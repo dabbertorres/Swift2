@@ -34,8 +34,12 @@ namespace cstr
 	
 	void Window::clear()
 	{
-		for(auto& c : containers)
-			delete c;
+		for(unsigned i = 0; i < containers.size(); i++)
+		{
+			delete containers[i];
+		}
+		
+		containers.clear();
 	}
 	
 	void Window::draw(sf::RenderTarget& target, sf::RenderStates states) const
