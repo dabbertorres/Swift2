@@ -12,7 +12,7 @@
 
 namespace swift
 {
-	const float EDITOR_MOVE_SPEED = 250.f;
+	const float EDITOR_MOVE_SPEED = 400.f;
 	
 	Editor::Editor(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
 		:	State(win, am, set, dic),
