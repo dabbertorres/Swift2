@@ -102,6 +102,8 @@ namespace swift
 		
 		sizeTiles.y = height;
 		
+		sizePixels = {sizeTiles.x * tileSize.x, sizeTiles.y * tileSize.y};
+		
 		return true;
 	}
 	
