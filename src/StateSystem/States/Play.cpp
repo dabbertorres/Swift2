@@ -17,6 +17,7 @@ namespace swift
 	Play::Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
 		:	State(win, am, set, dic),
 		    activeState(nullptr),
+			playView({0, 0, static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
 			activeWorld(nullptr),
 			player(nullptr)
 	{
@@ -48,12 +49,15 @@ namespace swift
 		play.setUpdateFunc([&](sf::Time dt)
 		{
 			activeWorld->update(dt.asSeconds());
+			playView.setCenter({std::floor(player->get<Physical>()->position.x), std::floor(player->get<Physical>()->position.y)});
 		});
 		
 		play.setDrawFunc([&](float)
 		{
+			window.setView(playView);
 			activeWorld->drawWorld(window);
 			activeWorld->drawEntities(window);
+			window.setView(window.getDefaultView());
 			
 			window.draw(hud);
 		});
@@ -77,8 +81,14 @@ namespace swift
 		activeState = &play;
 		
 		// setup world
-		activeWorld->tilemap.loadFile("./data/maps/maze.map");
-		activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
+		bool loadResult = activeWorld->tilemap.loadFile("./data/maps/maze.map");
+		bool textureResult = activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
+		
+		if(!loadResult)
+			std::cerr << "load failed\n";
+		
+		if(!textureResult)
+			std::cerr << "texture failed\n";
 		
 		// loading fails, so create a player
 		if(!activeWorld->load())
@@ -102,7 +112,7 @@ namespace swift
 			
 			player->add<Movable>();
 			Movable* movable = player->get<Movable>();
-			movable->moveVelocity = 50;
+			movable->moveVelocity = 100;
 			movable->velocity = {0, 0};
 		}
 		// loading suceeds, so get the player

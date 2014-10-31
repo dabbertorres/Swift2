@@ -40,6 +40,8 @@ namespace swift
 			cstr::Window hud;
 			cstr::Window pauseMenu;
 			
+			sf::View playView;
+			
 			std::vector<World*> worlds;
 			World* activeWorld;
 			Entity* player;
