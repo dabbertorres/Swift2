@@ -49,7 +49,7 @@ namespace swift
 		cstr::Column& fullscreenToggleCol = fullscreenRow.addWidget(new cstr::Column({50, 50}, false));
 		bool fullscreenState = false;
 		settings.get("fullscreen", fullscreenState);
-		fullscreenToggleCol.addWidget(new cstr::Toggle({50, 50}, assets.getTexture("./data/textures/toggle.png"), {0, 0, 64, 64}, {64, 0, 64, 64}, fullscreenState, 
+		fullscreenToggleCol.addWidget(new cstr::Toggle({50, 50}, assets.getTexture("./data/textures/toggle.png"), {64, 0, 64, 64}, {0, 0, 64, 64}, fullscreenState, 
 		[&](bool s)
 		{
 			settings.set("fullscreen", s);
@@ -85,7 +85,7 @@ namespace swift
 		cstr::Column& vsyncToggleCol = vsyncRow.addWidget(new cstr::Column({50, 50}, false));
 		bool vsyncState = false;
 		settings.get("vsync", vsyncState);
-		vsyncToggleCol.addWidget(new cstr::Toggle({50, 50}, assets.getTexture("./data/textures/toggle.png"), {0, 0, 64, 64}, {64, 0, 64, 64}, vsyncState,
+		vsyncToggleCol.addWidget(new cstr::Toggle({50, 50}, assets.getTexture("./data/textures/toggle.png"), {64, 0, 64, 64}, {0, 0, 64, 64}, vsyncState,
 		[&](bool s)
 		{
 			settings.set("vsync", s);
