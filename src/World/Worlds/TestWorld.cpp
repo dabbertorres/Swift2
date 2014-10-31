@@ -2,7 +2,6 @@
 
 namespace swift
 {
-
 	TestWorld::TestWorld(const std::string& n, const sf::Vector2i& s, AssetManager& a)
 		:	World(n, s, a)
 	{
