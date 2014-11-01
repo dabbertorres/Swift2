@@ -61,9 +61,10 @@ AS       := /usr/bin/as
 ##
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/src_Game.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IntermediateDirectory)/GUI_Window.cpp$(ObjectSuffix) $(IntermediateDirectory)/Logger_Logger.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_AssetManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Mod.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/StateSystem_State.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/StateSystem_SubState.cpp$(ObjectSuffix) $(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Editor.cpp$(ObjectSuffix) $(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) 
+	$(IntermediateDirectory)/StateSystem_SubState.cpp$(ObjectSuffix) $(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_Camera.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Editor.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) 
 
 
 
@@ -233,6 +234,30 @@ $(IntermediateDirectory)/MessageSystem_Observer.cpp$(DependSuffix): src/MessageS
 
 $(IntermediateDirectory)/MessageSystem_Observer.cpp$(PreprocessSuffix): src/MessageSystem/Observer.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(PreprocessSuffix) "src/MessageSystem/Observer.cpp"
+
+$(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix): src/SoundSystem/SoundPlayer.cpp $(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/SoundSystem/SoundPlayer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(DependSuffix): src/SoundSystem/SoundPlayer.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(DependSuffix) -MM "src/SoundSystem/SoundPlayer.cpp"
+
+$(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(PreprocessSuffix): src/SoundSystem/SoundPlayer.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(PreprocessSuffix) "src/SoundSystem/SoundPlayer.cpp"
+
+$(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix): src/SoundSystem/MusicPlayer.cpp $(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/SoundSystem/MusicPlayer.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(DependSuffix): src/SoundSystem/MusicPlayer.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(DependSuffix) -MM "src/SoundSystem/MusicPlayer.cpp"
+
+$(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(PreprocessSuffix): src/SoundSystem/MusicPlayer.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(PreprocessSuffix) "src/SoundSystem/MusicPlayer.cpp"
+
+$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix): src/SoundSystem/SoundsLimit.cpp $(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/SoundSystem/SoundsLimit.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(DependSuffix): src/SoundSystem/SoundsLimit.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(DependSuffix) -MM "src/SoundSystem/SoundsLimit.cpp"
+
+$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(PreprocessSuffix): src/SoundSystem/SoundsLimit.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(PreprocessSuffix) "src/SoundSystem/SoundsLimit.cpp"
 
 $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix): src/GUI/Widgets/Label.cpp $(IntermediateDirectory)/Widgets_Label.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/GUI/Widgets/Label.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IncludePath)
