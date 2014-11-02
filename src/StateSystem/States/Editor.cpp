@@ -448,11 +448,31 @@ namespace swift
 		keyboard.newBinding("boostStart", sf::Keyboard::LShift, [&]()
 		{
 			MOVE_SPEED_INCREASE = true;
+			
+			if(std::abs(editorViewMove.x) == EDITOR_MOVE_SPEED)
+			{
+				editorViewMove.x *= 2;
+			}
+			
+			if(std::abs(editorViewMove.y) == EDITOR_MOVE_SPEED)
+			{
+				editorViewMove.y *= 2;
+			}
 		}, true);
 		
 		keyboard.newBinding("boostEnd", sf::Keyboard::LShift, [&]()
 		{
 			MOVE_SPEED_INCREASE = false;
+			
+			if(std::abs(editorViewMove.x) == 2 * EDITOR_MOVE_SPEED)
+			{
+				editorViewMove.x /= 2;
+			}
+			
+			if(std::abs(editorViewMove.y) == 2 * EDITOR_MOVE_SPEED)
+			{
+				editorViewMove.y /= 2;
+			}
 		}, false);
 		
 		// keyboard controls, scrolling the map
