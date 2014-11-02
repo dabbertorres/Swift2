@@ -31,6 +31,10 @@
 #include "ResourceManager/AssetManager.hpp"
 #include "ResourceManager/ModManager.hpp"
 
+/* Sound headers */
+#include "SoundSystem/SoundPlayer.hpp"
+#include "SoundSystem/MusicPlayer.hpp"
+
 namespace swift
 {	
 	namespace Quality
@@ -104,6 +108,10 @@ namespace swift
 			/* Resources */
 			AssetManager assets;
 			ModManager mods;
+			
+			/* Sound */
+			SoundPlayer soundPlayer;
+			MusicPlayer musicPlayer;
 			
 			/* States */
 			State* currentState;

@@ -102,9 +102,9 @@ namespace swift
 
 		// state setup
 		if(!editor)
-			currentState = new MainMenu(window, assets, settings, dictionary);
+			currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
 		else
-			currentState = new Editor(window, assets, settings, dictionary);
+			currentState = new Editor(window, assets, soundPlayer, musicPlayer, settings, dictionary);
 		
 		currentState->setup();
 	}
@@ -185,13 +185,13 @@ namespace swift
 			switch(nextState)
 			{
 				case State::Type::MainMenu:
-					currentState = new MainMenu(window, assets, settings, dictionary);
+					currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
 					break;
 				case State::Type::SettingsMenu:
-					currentState = new SettingsMenu(window, assets, settings, dictionary);
+					currentState = new SettingsMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
 					break;
 				case State::Type::Play:
-					currentState = new Play(window, assets, settings, dictionary);
+					currentState = new Play(window, assets, soundPlayer, musicPlayer, settings, dictionary);
 					break;
 				case State::Type::Exit:
 					running = false;

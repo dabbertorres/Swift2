@@ -15,7 +15,7 @@ namespace swift
 	class Editor : public State
 	{
 		public:
-			Editor(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
+			Editor(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
 			virtual ~Editor();
 
 			virtual void setup();

@@ -11,11 +11,13 @@ namespace swift
 {
 	class AssetManager;
 	class Settings;
+	class SoundPlayer;
+	class MusicPlayer;
 	
 	class State
 	{
 		public:
-			State(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
+			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
 			virtual ~State();
 			
 			enum class Type
@@ -37,6 +39,8 @@ namespace swift
 			/* Environment */
 			sf::RenderWindow& window;
 			AssetManager& assets;
+			SoundPlayer& soundPlayer;
+			MusicPlayer& musicPlayer;
 			Settings& settings;
 			Settings& dictionary;
 			

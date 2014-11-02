@@ -14,8 +14,8 @@
 
 namespace swift
 {
-	Play::Play(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
-		:	State(win, am, set, dic),
+	Play::Play(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
+		:	State(win, am, sp, mp, set, dic),
 		    activeState(nullptr),
 			playView({0, 0, static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
 			activeWorld(nullptr),

@@ -15,7 +15,7 @@ namespace swift
 	class SettingsMenu : public State
 	{
 		public:
-			SettingsMenu(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
+			SettingsMenu(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
 			~SettingsMenu();
 			
 			virtual void setup();

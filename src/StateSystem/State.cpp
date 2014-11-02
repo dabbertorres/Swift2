@@ -2,9 +2,11 @@
 
 namespace swift
 {
-	State::State(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
+	State::State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
 		: 	window(win),
 			assets(am),
+			soundPlayer(sp),
+			musicPlayer(mp),
 			settings(set),
 			dictionary(dic)
 	{

@@ -11,7 +11,7 @@ namespace swift
 	class MainMenu : public State
 	{
 		public:
-			MainMenu(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic);
+			MainMenu(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
 			~MainMenu();
 
 			virtual void setup();

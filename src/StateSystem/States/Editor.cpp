@@ -13,9 +13,10 @@
 namespace swift
 {
 	const float EDITOR_MOVE_SPEED = 400.f;
+	bool MOVE_SPEED_INCREASE = false;
 	
-	Editor::Editor(sf::RenderWindow& win, AssetManager& am, Settings& set, Settings& dic)
-		:	State(win, am, set, dic),
+	Editor::Editor(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
+		:	State(win, am, sp, mp, set, dic),
 			editorView({0, 0, static_cast<float>(win.getSize().x - 200), static_cast<float>(win.getSize().y)}),
 			editorViewMove({0, 0}),
 			activeState(nullptr),
@@ -443,53 +444,104 @@ namespace swift
 			editorViewMove = {0, 0};
 		});
 		
+		// shift key increases move speed of scrolling the map
+		keyboard.newBinding("boostStart", sf::Keyboard::LShift, [&]()
+		{
+			MOVE_SPEED_INCREASE = true;
+		}, true);
+		
+		keyboard.newBinding("boostEnd", sf::Keyboard::LShift, [&]()
+		{
+			MOVE_SPEED_INCREASE = false;
+		}, false);
+		
 		// keyboard controls, scrolling the map
 		keyboard.newBinding("upStart", sf::Keyboard::Up, [&]()
 		{
 			if(activeState == &editor)
-				editorViewMove.y -= EDITOR_MOVE_SPEED;
-		}, true);
-		
-		keyboard.newBinding("downStart", sf::Keyboard::Down, [&]()
-		{
-			if(activeState == &editor)
-				editorViewMove.y += EDITOR_MOVE_SPEED;
-		}, true);
-		
-		keyboard.newBinding("leftStart", sf::Keyboard::Left, [&]()
-		{
-			if(activeState == &editor)
-				editorViewMove.x -= EDITOR_MOVE_SPEED;
-		}, true);
-		
-		keyboard.newBinding("rightStart", sf::Keyboard::Right, [&]()
-		{
-			if(activeState == &editor)
-				editorViewMove.x += EDITOR_MOVE_SPEED;
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.y -= EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.y -= EDITOR_MOVE_SPEED;
+			}
 		}, true);
 		
 		keyboard.newBinding("upEnd", sf::Keyboard::Up, [&]()
 		{
 			if(activeState == &editor)
-				editorViewMove.y += EDITOR_MOVE_SPEED;
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.y += EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.y += EDITOR_MOVE_SPEED;
+			}
 		});
+		
+		keyboard.newBinding("downStart", sf::Keyboard::Down, [&]()
+		{
+			if(activeState == &editor)
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.y += EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.y += EDITOR_MOVE_SPEED;
+			}
+		}, true);
 		
 		keyboard.newBinding("downEnd", sf::Keyboard::Down, [&]()
 		{
 			if(activeState == &editor)
-				editorViewMove.y -= EDITOR_MOVE_SPEED;
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.y -= EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.y -= EDITOR_MOVE_SPEED;
+			}
 		});
+		
+		keyboard.newBinding("leftStart", sf::Keyboard::Left, [&]()
+		{
+			if(activeState == &editor)
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.x -= EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.x -= EDITOR_MOVE_SPEED;
+			}
+		}, true);
 		
 		keyboard.newBinding("leftEnd", sf::Keyboard::Left, [&]()
 		{
 			if(activeState == &editor)
-				editorViewMove.x += EDITOR_MOVE_SPEED;
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.x += EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.x += EDITOR_MOVE_SPEED;
+			}
 		});
+		
+		keyboard.newBinding("rightStart", sf::Keyboard::Right, [&]()
+		{
+			if(activeState == &editor)
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.x += EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.x += EDITOR_MOVE_SPEED;
+			}
+		}, true);
 		
 		keyboard.newBinding("rightEnd", sf::Keyboard::Right, [&]()
 		{
 			if(activeState == &editor)
-				editorViewMove.x -= EDITOR_MOVE_SPEED;
+			{
+				if(MOVE_SPEED_INCREASE)
+					editorViewMove.x -= EDITOR_MOVE_SPEED * 2;
+				else
+					editorViewMove.x -= EDITOR_MOVE_SPEED;
+			};
 		});
 		
 		// mouse controls, adding/removing tiles
