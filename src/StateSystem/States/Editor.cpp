@@ -134,6 +134,7 @@ namespace swift
 		editor.setUpdateFunc([&](sf::Time dt)
 		{
 			editorView.move(editorViewMove * dt.asSeconds());
+			editorView.setCenter({std::floor(editorView.getCenter().x), std::floor(editorView.getCenter().y)});
 		});
 		
 		editor.setDrawFunc([&](float)

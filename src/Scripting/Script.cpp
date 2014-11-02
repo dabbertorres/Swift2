@@ -270,13 +270,15 @@ namespace swift
 											"getDrawable", static_cast<Drawable* (Entity::*)()>(&Entity::get<Drawable>),
 											"getMovable", static_cast<Movable* (Entity::*)()>(&Entity::get<Movable>),
 											"getPhysical", static_cast<Physical* (Entity::*)()>(&Entity::get<Physical>),
-											"getName", static_cast<Name* (Entity::*)()>(&Entity::get<Name>));
+											"getName", static_cast<Name* (Entity::*)()>(&Entity::get<Name>),
+											"getNoisy", static_cast<Noisy* (Entity::*)()>(&Entity::get<Noisy>));
 		
 		// each Component type
 		luaState["Drawable"].SetClass<Drawable>();
 		luaState["Movable"].SetClass<Movable>();
 		luaState["Physical"].SetClass<Physical>();
 		luaState["Name"].SetClass<Name>();
+		luaState["Noisy"].SetClass<Noisy>();
 		
 		// GUI
 		/*luaState["Column"].SetClass<cstr::Column>();
@@ -473,6 +475,21 @@ namespace swift
 		{
 			if(n)
 				return n->name;
+			else
+				return "null";
+		};
+		
+		// Noisy
+		luaState["setSound"] = [&](Noisy* n, std::string s)
+		{
+			if(n)
+				n->soundFile = s;
+		};
+		
+		luaState["getSound"] = [&](Noisy* n) -> std::string
+		{
+			if(n)
+				return n->soundFile;
 			else
 				return "null";
 		};
