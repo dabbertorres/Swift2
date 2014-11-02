@@ -63,8 +63,8 @@ CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/src_Game.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IntermediateDirectory)/GUI_Window.cpp$(ObjectSuffix) $(IntermediateDirectory)/Logger_Logger.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_AssetManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Mod.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/StateSystem_State.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/StateSystem_SubState.cpp$(ObjectSuffix) $(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix) \
 	$(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Editor.cpp$(ObjectSuffix) $(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Noisy.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Editor.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Worlds_TestWorld.cpp$(ObjectSuffix) 
 
 
 
@@ -346,6 +346,14 @@ $(IntermediateDirectory)/Components_Name.cpp$(DependSuffix): src/EntitySystem/Co
 
 $(IntermediateDirectory)/Components_Name.cpp$(PreprocessSuffix): src/EntitySystem/Components/Name.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Components_Name.cpp$(PreprocessSuffix) "src/EntitySystem/Components/Name.cpp"
+
+$(IntermediateDirectory)/Components_Noisy.cpp$(ObjectSuffix): src/EntitySystem/Components/Noisy.cpp $(IntermediateDirectory)/Components_Noisy.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/EntitySystem/Components/Noisy.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Components_Noisy.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Components_Noisy.cpp$(DependSuffix): src/EntitySystem/Components/Noisy.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Components_Noisy.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Components_Noisy.cpp$(DependSuffix) -MM "src/EntitySystem/Components/Noisy.cpp"
+
+$(IntermediateDirectory)/Components_Noisy.cpp$(PreprocessSuffix): src/EntitySystem/Components/Noisy.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Components_Noisy.cpp$(PreprocessSuffix) "src/EntitySystem/Components/Noisy.cpp"
 
 $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix): src/EntitySystem/Systems/DrawableSystem.cpp $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/EntitySystem/Systems/DrawableSystem.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IncludePath)
