@@ -35,6 +35,7 @@ namespace swift
 			void setTextureFile(const std::string& str);
 			
 			int getTileNum(unsigned t) const;
+			int getTileNum(const sf::Vector2f& pos) const;
 			const sf::Vector2u& getTileSize() const;
 			const sf::Vector2u& getSize() const;
 			const std::string& getTextureFile() const;

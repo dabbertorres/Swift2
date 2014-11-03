@@ -229,6 +229,14 @@ namespace swift
 			return -1;
 	}
 	
+	int TileMap::getTileNum(const sf::Vector2f& pos) const
+	{
+		sf::Vector2i tilePos = {static_cast<int>(pos.x / tileSize.x), static_cast<int>(pos.y / tileSize.y)};
+		int tileNum = tilePos.x + tilePos.y * sizeTiles.x;
+		
+		return getTileNum(tileNum);
+	}
+	
 	const sf::Vector2u& TileMap::getTileSize() const
 	{
 		return tileSize;
