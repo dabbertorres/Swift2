@@ -331,6 +331,14 @@ namespace swift
 				return false;
 		};
 		
+		luaState["removeScript"] = [&](std::string s)
+		{
+			if(world)
+				return world->removeScript(s);
+			else
+				return false;
+		};
+		
 		/* EntitySystem */
 		// World
 		luaState["newEntity"] = [&]() -> Entity*
