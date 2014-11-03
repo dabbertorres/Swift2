@@ -50,7 +50,7 @@ namespace swift
 
 			const std::vector<Entity*>& getEntities() const;
 
-			const std::vector<Entity*> getEntitiesAround(sf::Vector2f pos, float radius);
+			const std::vector<Entity*> getEntitiesAround(const sf::Vector2f& pos, float radius);
 
 			float distance(const sf::Vector2f& one, const sf::Vector2f& two) const;
 

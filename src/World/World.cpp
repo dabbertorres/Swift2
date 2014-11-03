@@ -255,7 +255,7 @@ namespace swift
 		return entities;
 	}
 	
-	const std::vector<Entity*> World::getEntitiesAround(sf::Vector2f pos, float radius)
+	const std::vector<Entity*> World::getEntitiesAround(const sf::Vector2f& pos, float radius)
 	{
 		std::vector<Entity*> around;
 		
