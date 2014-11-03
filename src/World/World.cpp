@@ -276,7 +276,7 @@ namespace swift
 		return around;
 	}
 	
-	float World::distance(sf::Vector2f one, sf::Vector2f two) const
+	float World::distance(const sf::Vector2f& one, const sf::Vector2f& two) const
 	{
 		return std::sqrt(std::pow(two.x - one.x, 2) + std::pow(two.y - one.y, 2));
 	}

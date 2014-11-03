@@ -52,7 +52,7 @@ namespace swift
 
 			const std::vector<Entity*> getEntitiesAround(sf::Vector2f pos, float radius);
 
-			float distance(sf::Vector2f one, sf::Vector2f two) const;
+			float distance(const sf::Vector2f& one, const sf::Vector2f& two) const;
 
 			TileMap tilemap;
 
