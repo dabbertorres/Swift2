@@ -8,7 +8,7 @@ namespace swift
 {
 	struct Box
 	{
-		Box(sf::FloatRect fr, sf::Vector2f vel)
+		Box(const sf::FloatRect& fr, const sf::Vector2f& vel)
 		{
 			fr = box;
 			velocity = vel;
@@ -21,7 +21,7 @@ namespace swift
 	// returns a value 0..1.
 	// 0 = start of frame
 	// 1 = end of frame (or no collision)
-	inline float sweptAABB(Box b1, Box b2, sf::Vector2f& normal)
+	inline float sweptAABB(const Box& b1, const Box& b2, const sf::Vector2f& normal)
 	{
 		// distance the closest edges of the objects are from each other
 		sf::Vector2f invEntry;

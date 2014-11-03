@@ -6,7 +6,7 @@
 
 namespace swift
 {
-	inline float dotProduct(sf::Vector2f one, sf::Vector2f two)
+	inline float dotProduct(const sf::Vector2f& one, const sf::Vector2f& two)
 	{
 		return one.x * two.x + one.y * two.y;
 	}

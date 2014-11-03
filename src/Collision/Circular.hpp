@@ -16,7 +16,7 @@ namespace swift
 		sf::Vector2f velocity;
 	};
 	
-	inline bool circularCollision(Circle c1, Circle c2)
+	inline bool circularCollision(const Circle& c1, const Circle& c2)
 	{
 		bool pen = (c2.position.x - c1.position.x) * (c2.position.x - c1.position.x) + (c2.position.y - c1.position.y) * (c2.position.y - c1.position.y) < (c1.radius + c2.radius);
 		if(!pen)
