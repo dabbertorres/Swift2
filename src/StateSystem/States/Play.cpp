@@ -27,15 +27,15 @@ namespace swift
 	Play::~Play()
 	{
 		for(auto& w : worlds)
-			delete w;
+			delete w.second;
 	}
 
 	void Play::setup()
 	{
 		window.setKeyRepeatEnabled(false);
 		
-		worlds.emplace_back(new TestWorld("testWorld", {800, 600}, assets));
-		activeWorld = worlds[0];
+		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets));
+		activeWorld = worlds["testWorld"];
 		
 		setupKeyBindings();
 		setupGUI();

@@ -42,7 +42,7 @@ namespace swift
 			
 			sf::View playView;
 			
-			std::vector<World*> worlds;
+			std::map<std::string, World*> worlds;
 			World* activeWorld;
 			Entity* player;
 	};
