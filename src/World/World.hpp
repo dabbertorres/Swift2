@@ -16,6 +16,10 @@
 /* Entity */
 #include "../EntitySystem/Entity.hpp"
 
+#include "../EntitySystem/Systems/DrawableSystem.hpp"
+#include "../EntitySystem/Systems/MovableSystem.hpp"
+#include "../EntitySystem/Systems/PhysicalSystem.hpp"
+
 #include "../Mapping/TileMap.hpp"
 
 namespace swift
@@ -26,7 +30,7 @@ namespace swift
 			World(const std::string& n, const sf::Vector2i& s, AssetManager& am);
 			virtual ~World();
 
-			virtual void update(float dt) = 0;
+			virtual void update(float dt);
 
 			virtual bool load();
 			virtual bool save();
@@ -54,6 +58,10 @@ namespace swift
 
 		protected:
 			AssetManager& assets;
+			
+			DrawableSystem drawSystem;
+			MovableSystem moveSystem;
+			PhysicalSystem physicalSystem;
 
 			sf::Vector2i size;
 
