@@ -322,6 +322,15 @@ namespace swift
 			log << m;
 		};
 		
+		/* World */
+		luaState["addScript"] = [&](std::string s)
+		{
+			if(world)
+				return world->addScript(s);
+			else
+				return false;
+		};
+		
 		/* EntitySystem */
 		// World
 		luaState["newEntity"] = [&]() -> Entity*
