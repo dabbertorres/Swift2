@@ -9,9 +9,6 @@
 #include "../../GUI/Widgets/Button.hpp"
 #include "../../GUI/Widgets/Spacer.hpp"
 
-/* Worlds */
-#include "../../World/Worlds/TestWorld.hpp"
-
 namespace swift
 {
 	Play::Play(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
