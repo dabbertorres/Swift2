@@ -8,7 +8,7 @@
 
 namespace swift
 {
-	class Component : public Observable
+	class Component : public Observable<Component*>
 	{
 		public:
 			virtual ~Component() = default;

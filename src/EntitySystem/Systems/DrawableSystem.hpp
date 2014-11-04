@@ -3,8 +3,8 @@
 
 #include "../System.hpp"
 
-#include <vector>
 #include "../Entity.hpp"
+
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 

@@ -10,7 +10,7 @@
 
 namespace swift
 {
-	class Settings : public Observable
+	class Settings : public Observable<std::string>
 	{
 		public:
 			Settings();

@@ -19,6 +19,7 @@ namespace swift
 
 			sf::Vector2f position;
 			sf::Vector2u size;
+			bool collides;
 	};
 }
 

@@ -24,7 +24,7 @@ namespace swift
 		}
 	}
 	
-	void setListenerPosition(const sf::Vector3f& pos)
+	void SoundPlayer::setListenerPosition(const sf::Vector3f& pos)
 	{
 		sf::Listener::setPosition(pos);
 	}

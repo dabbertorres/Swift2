@@ -6,7 +6,8 @@ namespace swift
 {
 	Physical::Physical()
 		:	position({0, 0}),
-			size({0, 0})
+			size({0, 0}),
+			collides(false)
 	{
 		
 	}
@@ -24,6 +25,7 @@ namespace swift
 		variables.emplace("positionY", std::to_string(position.y));
 		variables.emplace("sizeX", std::to_string(size.x));
 		variables.emplace("sizeY", std::to_string(size.y));
+		variables.emplace("collides", collides ? "true" : "false");
 		
 		return std::move(variables);
 	}
@@ -34,6 +36,7 @@ namespace swift
 		position.y = std::stoi(variables.at("positionY"));
 		size.x = std::stoi(variables.at("sizeX"));
 		size.y = std::stoi(variables.at("sizeY"));
+		collides = variables.at("collides") == "true" ? true : false;
 	}
 	
 	/*template<>

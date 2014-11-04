@@ -113,7 +113,7 @@ namespace swift
 			data[i].second = value;
 			changed = true;
 			
-			sendMessage(setting + '=' + value);
+			sendMessage(setting, value);
 			return true;
 		}
 		
@@ -128,7 +128,7 @@ namespace swift
 			data[i].second = value ? "true" : "false";
 			changed = true;
 			
-			sendMessage(setting + '=' + (value ? "true" : "false"));
+			sendMessage(setting, value ? "true" : "false");
 			return true;
 		}
 		
@@ -143,7 +143,7 @@ namespace swift
 			data[i].second = value;
 			changed = true;
 			
-			sendMessage(setting + '=' + value);
+			sendMessage(setting, std::to_string(value));
 			return true;
 		}
 		
@@ -158,7 +158,7 @@ namespace swift
 			data[i].second = std::to_string(value);
 			changed = true;
 			
-			sendMessage(setting + '=' + std::to_string(value));
+			sendMessage(setting, std::to_string(value));
 			return true;
 		}
 		
@@ -173,7 +173,7 @@ namespace swift
 			data[i].second = std::to_string(value);
 			changed = true;
 			
-			sendMessage(setting + '=' + std::to_string(value));
+			sendMessage(setting, std::to_string(value));
 			return true;
 		}
 		
@@ -188,7 +188,7 @@ namespace swift
 			data[i].second = std::to_string(value);
 			changed = true;
 			
-			sendMessage(setting + '=' + std::to_string(value));
+			sendMessage(setting, std::to_string(value));
 			return true;
 		}
 		

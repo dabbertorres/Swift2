@@ -2,23 +2,27 @@
 
 namespace swift
 {
-	void Observer::addSubscription(const std::string& s, Observable& o)
+	template<typename T>
+	void Observer<T>::addSubscription(const std::string& s, Observable<T>& o)
 	{
 		subscriptions.emplace(s, &o);
 	}
-
-	void Observer::removeSubscription(const std::string& s)
+	
+	template<typename T>
+	void Observer<T>::removeSubscription(const std::string& s)
 	{
 		subscriptions.erase(s);
 	}
 	
-	void Observer::checkMessages()
+	template<typename T>
+	void Observer<T>::checkMessages()
 	{
 		for(auto& s : subscriptions)
 		{
-			std::string message = s.second->getMessage();
-			if(message != "")
-				messages.push(message);
+			for(auto& m : s.second->getMessages())
+			{
+				messages.push(m);
+			}
 		}
 	}
 }

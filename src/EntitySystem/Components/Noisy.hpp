@@ -16,6 +16,8 @@ namespace swift
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
 
 			std::string soundFile;
+			bool shouldPlay;
+			bool isPlaying;
 	};
 }
 

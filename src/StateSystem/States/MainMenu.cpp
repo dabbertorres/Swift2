@@ -9,6 +9,10 @@
 #include "../../GUI/Widgets/Button.hpp"
 #include "../../GUI/Widgets/Spacer.hpp"
 
+/* SoundSystem headers */
+#include "../../SoundSystem/SoundPlayer.hpp"
+#include "../../SoundSystem/MusicPlayer.hpp"
+
 namespace swift
 {
 	MainMenu::MainMenu(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
@@ -72,7 +76,8 @@ namespace swift
 	
 	void MainMenu::update(sf::Time /*dt*/)
 	{
-		
+		soundPlayer.update();
+		musicPlayer.update();
 	}
 	
 	void MainMenu::draw(float /*e*/)

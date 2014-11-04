@@ -17,7 +17,7 @@ namespace swift
 	
 	void DrawableSystem::draw(const Entity& entity, sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		if(entity.has<Drawable>() && entity.has<Physical>())
+		if(entity.has<Drawable>())
 		{
 			target.draw(const_cast<Entity&>(entity).get<Drawable>()->sprite, states);
 		}

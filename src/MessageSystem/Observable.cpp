@@ -2,15 +2,9 @@
 
 namespace swift
 {
-	void Observable::sendMessage(const std::string& m)
+	template<typename T>
+	typename Observable<T>::MessageQueue Observable<T>::getMessages()
 	{
-		message = m;
-	}
-	
-	std::string Observable::getMessage()
-	{
-		std::string temp = message;
-		message = "";
-		return temp;
+		return messages;
 	}
 }

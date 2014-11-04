@@ -12,6 +12,10 @@
 #include "../../GUI/Widgets/Toggle.hpp"
 #include "../../GUI/Widgets/TextBox.hpp"
 
+/* SoundSystem headers */
+#include "../../SoundSystem/SoundPlayer.hpp"
+#include "../../SoundSystem/MusicPlayer.hpp"
+
 namespace swift
 {
 	SettingsMenu::SettingsMenu(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
@@ -241,6 +245,12 @@ namespace swift
 		
 		int music = musicSlider->getValue() * 100;
 		settings.set("music", music);
+		
+		soundPlayer.setVolume(sound);
+		musicPlayer.setVolume(music);
+			
+		soundPlayer.update();
+		musicPlayer.update();
 	}
 	
 	void SettingsMenu::draw(float /*e*/)

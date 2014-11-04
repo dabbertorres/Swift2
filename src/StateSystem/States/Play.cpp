@@ -9,6 +9,10 @@
 #include "../../GUI/Widgets/Button.hpp"
 #include "../../GUI/Widgets/Spacer.hpp"
 
+/* SoundSystem headers */
+#include "../../SoundSystem/SoundPlayer.hpp"
+#include "../../SoundSystem/MusicPlayer.hpp"
+
 namespace swift
 {
 	Play::Play(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
@@ -31,7 +35,7 @@ namespace swift
 	{
 		window.setKeyRepeatEnabled(false);
 		
-		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets));
+		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets, soundPlayer, musicPlayer));
 		activeWorld = worlds["testWorld"];
 		
 		setupKeyBindings();
@@ -47,6 +51,7 @@ namespace swift
 		{
 			activeWorld->update(dt.asSeconds());
 			playView.setCenter({std::floor(player->get<Physical>()->position.x), std::floor(player->get<Physical>()->position.y)});
+			soundPlayer.setListenerPosition({player->get<Physical>()->position.x, player->get<Physical>()->position.y, 0});
 		});
 		
 		play.setDrawFunc([&](float)
@@ -131,6 +136,9 @@ namespace swift
 	void Play::update(sf::Time dt)
 	{
 		activeState->update(dt);
+			
+		soundPlayer.update();
+		musicPlayer.update();
 	}
 
 	void Play::draw(float e)

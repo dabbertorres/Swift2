@@ -10,6 +10,10 @@
 #include "../../GUI/Widgets/Button.hpp"
 #include "../../GUI/Widgets/TextBox.hpp"
 
+/* SoundSystem headers */
+#include "../../SoundSystem/SoundPlayer.hpp"
+#include "../../SoundSystem/MusicPlayer.hpp"
+
 namespace swift
 {
 	const float EDITOR_MOVE_SPEED = 400.f;
@@ -56,6 +60,9 @@ namespace swift
 	void Editor::update(sf::Time dt)
 	{
 		activeState->update(dt);
+		
+		soundPlayer.update();
+		musicPlayer.update();
 	}
 
 	void Editor::draw(float e)
