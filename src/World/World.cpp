@@ -36,13 +36,10 @@ namespace swift
 	
 	void World::update(float dt)
 	{
-		for(auto& e : entities)
-		{
-			moveSystem.update(*e, dt);
-			physicalSystem.update(*e, dt);
-			drawSystem.update(*e, dt);
-			noisySystem.update(*e, dt);
-		}
+		moveSystem.update(entities, dt);
+		physicalSystem.update(entities, dt);
+		drawSystem.update(entities, dt);
+		noisySystem.update(entities, dt);
 		
 		std::vector<std::string> doneScripts;
 		
