@@ -17,7 +17,6 @@ namespace swift
 
 			std::string soundFile;
 			bool shouldPlay;
-			bool isPlaying;
 	};
 }
 
