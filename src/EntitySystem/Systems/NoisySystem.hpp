@@ -14,7 +14,7 @@ namespace swift
 	{
 		public:
 			NoisySystem(SoundPlayer& sp, AssetManager& am);
-			virtual void update(Entity& entity, float dt);
+			virtual void update(const std::vector<Entity*>& entities, float dt);
 
 		private:
 			SoundPlayer& soundPlayer;

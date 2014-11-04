@@ -4,21 +4,23 @@ namespace swift
 {
 	NoisySystem::NoisySystem(SoundPlayer& sp, AssetManager& am)
 		:	soundPlayer(sp),
-			assets(am)
+		    assets(am)
 	{}
-	
-	void NoisySystem::update(Entity& entity, float)
+
+	void NoisySystem::update(const std::vector<Entity*>& entities, float)
 	{
-		if(entity.has<Noisy>() && entity.has<Physical>())
+		for(auto& e : entities)
 		{
-			Noisy* noisy = entity.get<Noisy>();
-			Physical* physical = entity.get<Physical>();
-			
-			if(noisy->shouldPlay && !noisy->isPlaying)
+			if(e->has<Noisy>() && e->has<Physical>())
 			{
-				soundPlayer.newSound(assets.getSoundBuffer(noisy->soundFile), {physical->position.x, physical->position.y, 0}, false);
-				noisy->isPlaying = true;
-				noisy->shouldPlay = false;
+				Noisy* noisy = e->get<Noisy>();
+				Physical* physical = e->get<Physical>();
+
+				if(noisy->shouldPlay)
+				{
+					soundPlayer.newSound(assets.getSoundBuffer(noisy->soundFile), {physical->position.x, physical->position.y, 0}, false);
+					noisy->shouldPlay = false;
+				}
 			}
 		}
 	}

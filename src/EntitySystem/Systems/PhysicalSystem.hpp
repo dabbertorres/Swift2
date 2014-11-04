@@ -3,12 +3,21 @@
 
 #include "../System.hpp"
 
+#include <vector>
+
 namespace swift
 {
+	class Collision;
+	
 	class PhysicalSystem : public System
 	{
 		public:
-			virtual void update(Entity& entity, float dt);
+			virtual void update(const std::vector<Entity*>& entities, float dt);
+			
+			std::vector<Collision*> getCollisions() const;
+			
+		private:
+			std::vector<Collision*> collisions;
 	};
 }
 

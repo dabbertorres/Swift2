@@ -5,14 +5,18 @@
 
 namespace swift
 {
-	void MovableSystem::update(Entity& entity, float dt)
+	void MovableSystem::update(const std::vector<Entity*>& entities, float dt)
 	{
-		if(entity.has<Movable>() && entity.has<Physical>())
+		for(auto& e : entities)
 		{
-			Physical* phys = entity.get<Physical>();
-			Movable* mov = entity.get<Movable>();
-			phys->position.x += mov->velocity.x * dt;
-			phys->position.y += mov->velocity.y * dt;
+			if(e->has<Movable>() && e->has<Physical>())
+			{
+				Physical* phys = e->get<Physical>();
+				Movable* mov = e->get<Movable>();
+				
+				phys->position.x += mov->velocity.x * dt;
+				phys->position.y += mov->velocity.y * dt;
+			}
 		}
 	}
 }

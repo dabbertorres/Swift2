@@ -7,19 +7,25 @@
 
 namespace swift
 {
-	void DrawableSystem::update(Entity& entity, float /*dt*/)
+	void DrawableSystem::update(const std::vector<Entity*>& entities, float /*dt*/)
 	{
-		if(entity.has<Drawable>() && entity.has<Physical>())
+		for(auto& e : entities)
 		{
-			entity.get<Drawable>()->sprite.setPosition(entity.get<Physical>()->position);
+			if(e->has<Drawable>() && e->has<Physical>())
+			{
+				e->get<Drawable>()->sprite.setPosition(e->get<Physical>()->position);
+			}
 		}
 	}
-	
-	void DrawableSystem::draw(const Entity& entity, sf::RenderTarget& target, sf::RenderStates states) const
+
+	void DrawableSystem::draw(const std::vector<Entity*>& entities, sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		if(entity.has<Drawable>())
+		for(auto& e : entities)
 		{
-			target.draw(const_cast<Entity&>(entity).get<Drawable>()->sprite, states);
+			if(e->has<Drawable>())
+			{
+				target.draw(const_cast<Entity*>(e)->get<Drawable>()->sprite, states);
+			}
 		}
 	}
 }

@@ -9,7 +9,7 @@ namespace swift
 	{
 		public:
 			virtual ~System() = default;
-			virtual void update(Entity& entity, float dt) = 0;
+			virtual void update(const std::vector<Entity*>& entities, float dt) = 0;
 	};
 }
 

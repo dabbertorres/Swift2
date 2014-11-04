@@ -13,9 +13,9 @@ namespace swift
 	class DrawableSystem : public System
 	{
 		public:
-			virtual void update(Entity& entity, float dt);
+			virtual void update(const std::vector<Entity*>& entities, float dt);
 			
-			virtual void draw(const Entity& entity, sf::RenderTarget& target, sf::RenderStates states) const;
+			virtual void draw(const std::vector<Entity*>& entities, sf::RenderTarget& target, sf::RenderStates states) const;
 	};
 }
 
