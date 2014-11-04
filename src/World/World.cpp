@@ -7,8 +7,11 @@
 
 namespace swift
 {
-	World::World(const std::string& n, const sf::Vector2i& s, AssetManager& am)
+	World::World(const std::string& n, const sf::Vector2i& s, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp)
 		:	assets(am),
+			soundPlayer(sp),
+			musicPlayer(mp),
+			noisySystem(soundPlayer, assets),
 			size(s),
 			name(n)
 	{
@@ -38,6 +41,7 @@ namespace swift
 			moveSystem.update(*e, dt);
 			physicalSystem.update(*e, dt);
 			drawSystem.update(*e, dt);
+			noisySystem.update(*e, dt);
 		}
 		
 		std::vector<std::string> doneScripts;
@@ -276,8 +280,13 @@ namespace swift
 		return around;
 	}
 	
-	float World::distance(const sf::Vector2f& one, const sf::Vector2f& two) const
+	float World::distance(const sf::Vector2f& one, const sf::Vector2f& two)
 	{
-		return std::sqrt(std::pow(two.x - one.x, 2) + std::pow(two.y - one.y, 2));
+		return std::sqrt((two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y));
+	}
+	
+	float World::distanceSquared(const sf::Vector2f& one, const sf::Vector2f& two)
+	{
+		return (two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y);
 	}
 }

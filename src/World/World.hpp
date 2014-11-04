@@ -19,6 +19,7 @@
 #include "../EntitySystem/Systems/DrawableSystem.hpp"
 #include "../EntitySystem/Systems/MovableSystem.hpp"
 #include "../EntitySystem/Systems/PhysicalSystem.hpp"
+#include "../EntitySystem/Systems/NoisySystem.hpp"
 
 #include "../Mapping/TileMap.hpp"
 
@@ -27,7 +28,7 @@ namespace swift
 	class World
 	{
 		public:
-			World(const std::string& n, const sf::Vector2i& s, AssetManager& am);
+			World(const std::string& n, const sf::Vector2i& s, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp);
 			virtual ~World();
 
 			virtual void update(float dt);
@@ -52,16 +53,20 @@ namespace swift
 
 			const std::vector<Entity*> getEntitiesAround(const sf::Vector2f& pos, float radius);
 
-			float distance(const sf::Vector2f& one, const sf::Vector2f& two) const;
+			static float distance(const sf::Vector2f& one, const sf::Vector2f& two);
+			static float distanceSquared(const sf::Vector2f& one, const sf::Vector2f& two);
 
 			TileMap tilemap;
 
 		protected:
 			AssetManager& assets;
+			SoundPlayer& soundPlayer;
+			MusicPlayer& musicPlayer;
 			
 			DrawableSystem drawSystem;
 			MovableSystem moveSystem;
 			PhysicalSystem physicalSystem;
+			NoisySystem noisySystem;
 
 			sf::Vector2i size;
 
