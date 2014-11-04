@@ -8,19 +8,11 @@ namespace swift
 {
 	Collision::Collision(Entity& f, Entity& s)
 		:	one(f),
-			two(s)
+			two(s),
+			position({-1.f, -1.f}),
+			result(false)
 	{
-		if(one.has<Physical>() && two.has<Physical>())
-		{
-			bool result = handle();
-
-			if(result)
-				sendMessage("Collision occured", *this);
-		}
-	}
-
-	Collision::~Collision()
-	{
+		result = handle();
 	}
 
 	Entity& Collision::getFirstEntity() const
@@ -37,12 +29,14 @@ namespace swift
 	{
 		return position;
 	}
+	
+	bool Collision::getResult() const
+	{
+		return result;
+	}
 
 	bool Collision::handle()
 	{
-		if(!one.has<Physical>() || !two.has<Physical>())
-			return false;
-			
 		Physical* physOne = one.get<Physical>();
 		Physical* physTwo = two.get<Physical>();
 		
@@ -67,10 +61,10 @@ namespace swift
 		float halfDepth = depth / 2;	// each circle went half of depth into the other circle
 		
 		// midpoint of 2 vectors formula
-		sf::Vector2f collisionPoint = centerPosOne + 0.5f * (centerPosTwo - centerPosOne);
+		sf::Vector2f position = centerPosOne + 0.5f * (centerPosTwo - centerPosOne);
 		
-		sf::Vector2f newCenterPosOne = scaledDiffVector(centerPosOne, collisionPoint, halfDepth);
-		sf::Vector2f newCenterPosTwo = scaledDiffVector(centerPosTwo, collisionPoint, halfDepth);
+		sf::Vector2f newCenterPosOne = scaledDiffVector(centerPosOne, position, halfDepth);
+		sf::Vector2f newCenterPosTwo = scaledDiffVector(centerPosTwo, position, halfDepth);
 		
 		// translate from center to top-left
 		physOne->position = newCenterPosOne - static_cast<sf::Vector2f>(physOne->size) / 2.f;

@@ -1,24 +1,23 @@
 #ifndef COLLISION_HPP
 #define COLLISION_HPP
 
-#include "../MessageSystem/Observable.hpp"
-
 #include <SFML/System/Vector2.hpp>
 
 namespace swift
 {
 	class Entity;
 	
-	class Collision : public Observable<Collision&>
+	class Collision
 	{
 		public:
 			Collision(Entity& f, Entity& s);
-			virtual ~Collision();
 			
 			Entity& getFirstEntity() const;
 			Entity& getSecondEntity() const;
 			
 			const sf::Vector2f& getPosition() const;
+			
+			bool getResult() const;
 			
 		private:
 			bool handle();
@@ -28,6 +27,8 @@ namespace swift
 			Entity& one;
 			Entity& two;
 			sf::Vector2f position;
+			
+			bool result;
 	};
 }
 
