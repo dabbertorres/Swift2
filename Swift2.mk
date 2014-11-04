@@ -13,7 +13,7 @@ CurrentFileName        :=
 CurrentFilePath        :=
 CurrentFileFullPath    :=
 User                   :=Alec Iverson
-Date                   :=11/03/14
+Date                   :=11/04/14
 CodeLitePath           :="/home/alec/.codelite"
 LinkerName             :=/usr/bin/g++ 
 SharedObjectLinkerName :=/usr/bin/g++ -shared -fPIC
@@ -61,10 +61,10 @@ AS       := /usr/bin/as
 ##
 CodeLiteDir:=/usr/share/codelite
 Objects0=$(IntermediateDirectory)/src_Game.cpp$(ObjectSuffix) $(IntermediateDirectory)/test_main.cpp$(ObjectSuffix) $(IntermediateDirectory)/Console_Console.cpp$(ObjectSuffix) $(IntermediateDirectory)/GUI_Window.cpp$(ObjectSuffix) $(IntermediateDirectory)/Logger_Logger.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_AssetManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_Mod.cpp$(ObjectSuffix) $(IntermediateDirectory)/ResourceManager_ModManager.cpp$(ObjectSuffix) $(IntermediateDirectory)/Settings_Settings.cpp$(ObjectSuffix) $(IntermediateDirectory)/StateSystem_State.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/StateSystem_SubState.cpp$(ObjectSuffix) $(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) \
-	$(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Noisy.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Editor.cpp$(ObjectSuffix) \
-	
+	$(IntermediateDirectory)/StateSystem_SubState.cpp$(ObjectSuffix) $(IntermediateDirectory)/Scripting_Script.cpp$(ObjectSuffix) $(IntermediateDirectory)/Animation_FrameAnimation.cpp$(ObjectSuffix) $(IntermediateDirectory)/Mapping_TileMap.cpp$(ObjectSuffix) $(IntermediateDirectory)/Collision_Collision.cpp$(ObjectSuffix) $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observable.cpp$(ObjectSuffix) $(IntermediateDirectory)/MessageSystem_Observer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_SoundPlayer.cpp$(ObjectSuffix) $(IntermediateDirectory)/SoundSystem_MusicPlayer.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/SoundSystem_SoundsLimit.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Label.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Button.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Spacer.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Toggle.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_TextBox.cpp$(ObjectSuffix) $(IntermediateDirectory)/Widgets_Slider.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Column.cpp$(ObjectSuffix) $(IntermediateDirectory)/Containers_Row.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Drawable.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/Components_Physical.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Movable.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Name.cpp$(ObjectSuffix) $(IntermediateDirectory)/Components_Noisy.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_DrawableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_MovableSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/Systems_NoisySystem.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Play.cpp$(ObjectSuffix) \
+	$(IntermediateDirectory)/States_SettingsMenu.cpp$(ObjectSuffix) $(IntermediateDirectory)/States_Editor.cpp$(ObjectSuffix) 
 
 
 
@@ -202,6 +202,14 @@ $(IntermediateDirectory)/Mapping_TileMap.cpp$(DependSuffix): src/Mapping/TileMap
 
 $(IntermediateDirectory)/Mapping_TileMap.cpp$(PreprocessSuffix): src/Mapping/TileMap.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Mapping_TileMap.cpp$(PreprocessSuffix) "src/Mapping/TileMap.cpp"
+
+$(IntermediateDirectory)/Collision_Collision.cpp$(ObjectSuffix): src/Collision/Collision.cpp $(IntermediateDirectory)/Collision_Collision.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/Collision/Collision.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Collision_Collision.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Collision_Collision.cpp$(DependSuffix): src/Collision/Collision.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Collision_Collision.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Collision_Collision.cpp$(DependSuffix) -MM "src/Collision/Collision.cpp"
+
+$(IntermediateDirectory)/Collision_Collision.cpp$(PreprocessSuffix): src/Collision/Collision.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Collision_Collision.cpp$(PreprocessSuffix) "src/Collision/Collision.cpp"
 
 $(IntermediateDirectory)/World_World.cpp$(ObjectSuffix): src/World/World.cpp $(IntermediateDirectory)/World_World.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/World/World.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/World_World.cpp$(ObjectSuffix) $(IncludePath)
@@ -378,6 +386,14 @@ $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(DependSuffix): src/EntitySy
 
 $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(PreprocessSuffix): src/EntitySystem/Systems/PhysicalSystem.cpp
 	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Systems_PhysicalSystem.cpp$(PreprocessSuffix) "src/EntitySystem/Systems/PhysicalSystem.cpp"
+
+$(IntermediateDirectory)/Systems_NoisySystem.cpp$(ObjectSuffix): src/EntitySystem/Systems/NoisySystem.cpp $(IntermediateDirectory)/Systems_NoisySystem.cpp$(DependSuffix)
+	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/EntitySystem/Systems/NoisySystem.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/Systems_NoisySystem.cpp$(ObjectSuffix) $(IncludePath)
+$(IntermediateDirectory)/Systems_NoisySystem.cpp$(DependSuffix): src/EntitySystem/Systems/NoisySystem.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) -MG -MP -MT$(IntermediateDirectory)/Systems_NoisySystem.cpp$(ObjectSuffix) -MF$(IntermediateDirectory)/Systems_NoisySystem.cpp$(DependSuffix) -MM "src/EntitySystem/Systems/NoisySystem.cpp"
+
+$(IntermediateDirectory)/Systems_NoisySystem.cpp$(PreprocessSuffix): src/EntitySystem/Systems/NoisySystem.cpp
+	@$(CXX) $(CXXFLAGS) $(IncludePCH) $(IncludePath) $(PreprocessOnlySwitch) $(OutputSwitch) $(IntermediateDirectory)/Systems_NoisySystem.cpp$(PreprocessSuffix) "src/EntitySystem/Systems/NoisySystem.cpp"
 
 $(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix): src/StateSystem/States/MainMenu.cpp $(IntermediateDirectory)/States_MainMenu.cpp$(DependSuffix)
 	$(CXX) $(IncludePCH) $(SourceSwitch) "/home/alec/Code/Swift2/src/StateSystem/States/MainMenu.cpp" $(CXXFLAGS) $(ObjectSwitch)$(IntermediateDirectory)/States_MainMenu.cpp$(ObjectSuffix) $(IncludePath)
