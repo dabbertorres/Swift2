@@ -260,9 +260,6 @@ namespace swift
 		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
 		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
 		
-		// c++ containers
-		luaState["entityList"].SetClass<std::vector<Entity*>>();
-		
 		// ECS
 		luaState["Entity"].SetClass<Entity>("add", static_cast<bool (Entity::*)(std::string)>(&Entity::add),
 											"remove", static_cast<bool (Entity::*)(std::string)>(&Entity::remove),
@@ -339,8 +336,7 @@ namespace swift
 				return false;
 		};
 		
-		/* EntitySystem */
-		// World
+		/* World */
 		luaState["newEntity"] = [&]() -> Entity*
 		{
 			if(world)
@@ -390,14 +386,15 @@ namespace swift
 				return std::make_tuple(0, 0);
 		};
 		
-		luaState["getCurrentWorld"] = [&]()
+		luaState["getCurrentWorld"] = [&]() -> std::string
 		{
 			if(world)
-				return world->getName().c_str();
+				return world->getName();
 			else
 				return "none";
 		};
 		
+		/* Entity System */
 		// Drawable
 		luaState["setTexture"] = [&](Drawable* d, std::string t)
 		{
