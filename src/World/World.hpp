@@ -52,6 +52,9 @@ namespace swift
 			const std::vector<Entity*>& getEntities() const;
 
 			const std::vector<Entity*> getEntitiesAround(const sf::Vector2f& pos, float radius);
+			const std::vector<unsigned> getEntitiesAroundIDs(const sf::Vector2f& pos, float radius);
+			
+			const std::vector<Collision*> getCollisions() const;
 
 			static float distance(const sf::Vector2f& one, const sf::Vector2f& two);
 			static float distanceSquared(const sf::Vector2f& one, const sf::Vector2f& two);

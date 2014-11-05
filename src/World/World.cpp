@@ -277,6 +277,32 @@ namespace swift
 		return around;
 	}
 	
+	const std::vector<unsigned> World::getEntitiesAroundIDs(const sf::Vector2f& pos, float radius)
+	{
+		std::vector<unsigned> around;
+		
+		if(!(0 <= pos.x && pos.x < size.x && 0 <= pos.y && pos.y < size.y) || radius <= 0)
+			return around;
+		
+		for(unsigned i = 0; i < entities.size(); i++)
+		{
+			if(entities[i]->has<Physical>())
+			{
+				Physical* p = entities[i]->get<Physical>();
+				
+				if(distance(p->position, pos) <= radius)
+					around.push_back(i);
+			}
+		}
+		
+		return around;
+	}
+	
+	const std::vector<Collision*> World::getCollisions() const
+	{
+		return physicalSystem.getCollisions();
+	}
+	
 	float World::distance(const sf::Vector2f& one, const sf::Vector2f& two)
 	{
 		return std::sqrt((two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y));
