@@ -23,6 +23,9 @@
 
 #include "../Mapping/TileMap.hpp"
 
+#include "../SoundSystem/MusicPlayer.hpp"
+#include "../SoundSystem/SoundPlayer.hpp"
+
 namespace swift
 {
 	class World

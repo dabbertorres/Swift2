@@ -34,18 +34,16 @@ namespace swift
 	Settings* Script::settings = nullptr;
 	
 	Script::Script()
-			:	gui(nullptr),
-				keyboard(nullptr),
-				stateReturn(nullptr),
+			:	keyboard(nullptr),
 				world(nullptr)
 	{
 		deleteMe = false;
 		
 		// We don't want to give the scripts access to os commands or file writing abilities
-		luaState.OpenLib("base", luaopen_base);
-		luaState.OpenLib("math", luaopen_math);
-		luaState.OpenLib("string", luaopen_string);
-		luaState.OpenLib("table", luaopen_table);
+		luaState.openLib("base", luaopen_base);
+		luaState.openLib("math", luaopen_math);
+		luaState.openLib("string", luaopen_string);
+		luaState.openLib("table", luaopen_table);
 		
 		addVariables();
 		addClasses();
@@ -58,9 +56,11 @@ namespace swift
 
 	bool Script::loadFromFile(const std::string& file)
 	{
-		bool r = luaState.Load(file);	// r will be false if errors, true otherwise
+		if(luaState.loadFile(file) != LUA_OK)	// r will be false if errors, true otherwise
+			log << luaState.getErrors() << '\n';
 		
-		return r;
+		
+		return luaState.run() != LUA_OK;
 	}
 	
 	void Script::start()
@@ -200,9 +200,9 @@ namespace swift
 		return deleteMe;
 	}
 
-	sel::Selector Script::getVariable(const std::string& name)
+	lpp::Selection Script::getVariable(const std::string& name)
 	{
-		return luaState[name.c_str()];
+		return luaState[name];
 	}
 	
 	void Script::setWindow(sf::RenderWindow& win)
@@ -223,11 +223,6 @@ namespace swift
 	void Script::setSettings(Settings& s)
 	{
 		settings = &s;
-	}
-	
-	void Script::setGUI(cstr::Window& ui)
-	{
-		gui = &ui;
 	}
 	
 	void Script::setWorld(World& w)
@@ -256,7 +251,7 @@ namespace swift
 	void Script::addClasses()
 	{
 		// vectors
-		luaState["Vector2f"].SetClass<sf::Vector2f>("x", &sf::Vector2f::x, "y", &sf::Vector2f::y);
+		/*luaState["Vector2f"].SetClass<sf::Vector2f>("x", &sf::Vector2f::x, "y", &sf::Vector2f::y);
 		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
 		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
 		
@@ -276,7 +271,7 @@ namespace swift
 		luaState["Physical"].SetClass<Physical>();
 		luaState["Name"].SetClass<Name>();
 		luaState["Noisy"].SetClass<Noisy>();
-		
+		*/
 		// GUI
 		/*luaState["Column"].SetClass<cstr::Column>();
 		luaState["Row"].SetClass<cstr::Row>();
@@ -506,14 +501,6 @@ namespace swift
 				return n->soundFile;
 			else
 				return "null";
-		};
-		
-		/* gui functions */
-		
-		/* State */
-		luaState["setStateReturn"] = [&](unsigned s)
-		{
-			*stateReturn = static_cast<State::Type>(s);
 		};
 		
 		/* Settings */
