@@ -38,18 +38,4 @@ namespace swift
 		size.y = std::stoi(variables.at("sizeY"));
 		collides = variables.at("collides") == "true" ? true : false;
 	}
-	
-	/*template<>
-	Physical* Entity::get(std::string c)
-	{
-		if(c != "Physical")
-			return nullptr;
-		
-		if(this->has<Physical>())
-		{
-			return static_cast<Physical*>(components["Physical"]);
-		}
-		else
-			return nullptr;
-	}*/
 }

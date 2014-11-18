@@ -20,7 +20,6 @@
 
 namespace swift
 {
-	class Script;
 	class AssetManager
 	{
 		public:

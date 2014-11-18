@@ -48,10 +48,8 @@ namespace swift
 
 			Entity* addEntity();
 			bool removeEntity(int e);
-
-			bool addScript(const std::string& scriptFile);
-			bool removeScript(const std::string& scriptFile);
-
+			
+			Entity* getEntity(int e) const;
 			const std::vector<Entity*>& getEntities() const;
 
 			const std::vector<Entity*> getEntitiesAround(const sf::Vector2f& pos, float radius);
@@ -77,8 +75,6 @@ namespace swift
 			sf::Vector2i size;
 
 			std::vector<Entity*> entities;
-
-			std::map<std::string, Script*> scripts;
 
 		private:
 			std::string name;

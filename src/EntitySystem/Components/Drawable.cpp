@@ -25,18 +25,4 @@ namespace swift
 		texture = variables.at("texture");
 		sprite.setScale(std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY")));
 	}
-	
-	/*template<>
-	Drawable* Entity::get(std::string c)
-	{
-		if(c != "Drawable")
-			return nullptr;
-		
-		if(this->has<Drawable>())
-		{
-			return static_cast<Drawable*>(components["Drawable"]);
-		}
-		else
-			return nullptr;
-	}*/
 }

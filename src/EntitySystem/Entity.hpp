@@ -13,7 +13,6 @@ namespace swift
 		public:
 			Entity()
 			{
-
 			}
 
 			~Entity()
@@ -43,7 +42,7 @@ namespace swift
 			
 			bool add(std::string c)
 			{
-				if(components.find(c) != components.end())
+				if(has(c))
 					return false;
 				else
 				{
@@ -74,7 +73,7 @@ namespace swift
 			
 			bool remove(std::string c)
 			{
-				if(components.find(c) == components.end())
+				if(has(c))
 					return false;
 				else
 				{
@@ -112,7 +111,6 @@ namespace swift
 				else
 					return nullptr;
 			}
-			// not needed for binding
 			
 			template<typename C>
 			bool has() const

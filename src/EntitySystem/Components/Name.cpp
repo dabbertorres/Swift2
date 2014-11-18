@@ -27,18 +27,4 @@ namespace swift
 	{
 		name = variables.at("name");
 	}
-	
-	/*template<>
-	Name* Entity::get(std::string c)
-	{
-		if(c != "Name")
-			return nullptr;
-		
-		if(this->has<Name>())
-		{
-			return static_cast<Name*>(components["Name"]);
-		}
-		else
-			return nullptr;
-	}*/
 }

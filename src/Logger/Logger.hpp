@@ -63,6 +63,20 @@ namespace swift
 				
 				return *this;
 			}
+			
+			Logger& operator<<(const char* t)
+			{
+				std::string text = t;
+				fout << text;
+				fout.flush();
+				
+				if(text.find("[ERROR]") != std::string::npos)
+					errors++;
+				if(text.find("[WARNING]") != std::string::npos)
+					warnings++;
+				
+				return *this;
+			}
 
 			Logger& operator<<(int n)
 			{

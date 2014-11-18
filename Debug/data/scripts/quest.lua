@@ -2,9 +2,10 @@ ship = nil
 player = nil
 Done = false
 startDone = false
+Save = {"bDone"}
 
 function Start()	
-	Save = {"bDone"}
+	
 end
 
 function Update()
@@ -13,24 +14,31 @@ function Update()
 		ship = getEntity(1)
 		
 		if ship == nil then
+			print("creating ship")
 			ship = newEntity()
-			ship:add("Drawable")
-			ship:add("Movable")
-			ship:add("Physical")
-			ship:add("Name")
+			add(ship, "Drawable")
+			add(ship, "Movable")
+			add(ship, "Physical")
+			add(ship, "Name")
 			
-			setTexture(ship:getDrawable(), "./data/textures/ship.png")
-			setMoveVelocity(ship:getMovable(), 100)
-			setPosition(ship:getPhysical(), 400, 20)
-			setSize(ship:getPhysical(), getSpriteSize(ship:getDrawable()))
-			setName(ship:getName(), "Lua Entity")
+			setTexture(getDrawable(ship), "./data/textures/ship.png")
+			setMoveVelocity(getMovable(ship), 100)
+			setPosition(getPhysical(ship), 400, 20)
+			setSize(getPhysical(ship), getSpriteSize(getDrawable(ship)))
+			setName(getName(ship), "Lua Entity")
 		end
 		
 		startDone = true
 	end
 	
-	if not Done and isAround(player:getPhysical(), 400, 20, 20) then
-		print("Congratulations!")
-		Done = true
-	end
+	--getDrawable(player)
+	print(has(player, "Noisy"))
+	--getDrawable(ship)
+	--shipPhys = getPhysical(ship)
+	shipPosX, shipPosY = getPosition(shipPhys)
+	
+	--if not Done and isAround(getPhysical(player), shipPosX, shipPosY, 20) then
+	--	print("Congratulations!")
+	--	Done = true
+	--end
 end

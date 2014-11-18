@@ -22,12 +22,6 @@ namespace swift
 	{
 		save();
 		
-		// set all script's world to nullptr, so scripts don't call destroyed worlds
-		for(auto& it : scripts)
-		{
-			it.second->setWorld(nullptr);
-		}
-		
 		for(auto& e : entities)
 		{
 			delete e;
@@ -40,26 +34,6 @@ namespace swift
 		physicalSystem.update(entities, dt);
 		drawSystem.update(entities, dt);
 		noisySystem.update(entities, dt);
-		
-		std::vector<std::string> doneScripts;
-		
-		for(auto& s : scripts)
-		{
-			if(s.second->getWorld() != this)
-				s.second->setWorld(*this);
-			
-			s.second->update();
-			
-			// check if script is done, if so, push it for deletion
-			if(s.second->toDelete())
-				doneScripts.push_back(s.first);
-		}
-		
-		// remove all done scripts
-		for(auto& s : doneScripts)
-		{
-			removeScript(s);
-		}
 	}
 	
 	/* save file format */
@@ -220,7 +194,7 @@ namespace swift
 	{
 		// if e is positive, check if is greater than last entity
 		// if e is negative, check if it refers to entity less than 0
-		if(e >= static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
+		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
 			return false;
 		
 		entities.erase((e >= 0 ? entities.begin() : entities.end()) + e);
@@ -228,27 +202,14 @@ namespace swift
 		return true;
 	}
 	
-	bool World::addScript(const std::string& scriptFile)
+	Entity* World::getEntity(int e) const
 	{
-		if(scripts.find(scriptFile) == scripts.end())
-		{
-			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
-			assets.getScript(scriptFile).setWorld(*this);
-			return true;
-		}
-		else
-			return false;
-	}
-	
-	bool World::removeScript(const std::string& scriptFile)
-	{
-		if(scripts.find(scriptFile) != scripts.end())
-		{
-			scripts.erase(scriptFile);
-			return true;
-		}
-		else
-			return false;
+		// if e is positive, check if is greater than last entity
+		// if e is negative, check if it refers to entity less than 0
+		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
+			return nullptr;
+			
+		return entities[(e >= 0 ? 0 : entities.size()) + e];
 	}
 	
 	const std::vector<Entity*>& World::getEntities() const

@@ -3,24 +3,7 @@
 /* Assets */
 #include "../ResourceManager/AssetManager.hpp"
 
-/* Logger */
-#include "../Logger/Logger.hpp"
-
-/* GUI */
-#include "../GUI/Window.hpp"
-
-#include "../GUI/Containers/Column.hpp"
-#include "../GUI/Containers/Row.hpp"
-
-#include "../GUI/Widgets/Button.hpp"
-#include "../GUI/Widgets/Label.hpp"
-#include "../GUI/Widgets/Slider.hpp"
-#include "../GUI/Widgets/Spacer.hpp"
-#include "../GUI/Widgets/TextBox.hpp"
-#include "../GUI/Widgets/Toggle.hpp"
-
-/* EntitySystem */
-#include "../EntitySystem/Entity.hpp"
+#include "../StateSystem/States/Play.hpp"
 
 #include "../World/World.hpp"
 
@@ -32,19 +15,20 @@ namespace swift
 	AssetManager* Script::assets = nullptr;
 	sf::Clock* Script::clock = nullptr;
 	Settings* Script::settings = nullptr;
-	
+	KeyboardManager* Script::keyboard = nullptr;
+	World* Script::world = nullptr;
+	Play* Script::play = nullptr;
+
 	Script::Script()
-			:	keyboard(nullptr),
-				world(nullptr)
+		:	deleteMe(false)
 	{
-		deleteMe = false;
-		
 		// We don't want to give the scripts access to os commands or file writing abilities
+		// so we only open the necessary libraries
 		luaState.openLib("base", luaopen_base);
 		luaState.openLib("math", luaopen_math);
 		luaState.openLib("string", luaopen_string);
 		luaState.openLib("table", luaopen_table);
-		
+
 		addVariables();
 		addClasses();
 		addFunctions();
@@ -56,17 +40,23 @@ namespace swift
 
 	bool Script::loadFromFile(const std::string& file)
 	{
-		if(luaState.loadFile(file) != LUA_OK)	// r will be false if errors, true otherwise
-			log << luaState.getErrors() << '\n';
-		
-		
-		return luaState.run() != LUA_OK;
+		bool loadResult = luaState.loadFile(file) == LUA_OK;
+
+		if(!loadResult)
+			log << "[ERROR]: " << file << " load: " << luaState.getErrors() << '\n';
+
+		bool runResult = luaState.run() == LUA_OK;
+
+		if(!runResult)
+			log << "[ERROR]: " << file << " run: " << luaState.getErrors() << '\n';
+
+		return loadResult && runResult;
 	}
-	
+
 	void Script::start()
 	{
 		luaState["Start"]();
-		
+
 		if(static_cast<bool>(luaState["Done"]) == true)
 		{
 			deleteMe = true;
@@ -76,36 +66,36 @@ namespace swift
 	void Script::update()
 	{
 		luaState["Update"]();
-		
+
 		if(static_cast<bool>(luaState["Done"]) == true)
 		{
 			deleteMe = true;
 		}
 	}
-	
+
 	bool Script::load(const std::string& file)
 	{
 		tinyxml2::XMLDocument loadFile;
 		tinyxml2::XMLError result = loadFile.LoadFile(file.c_str());
-		
+
 		if(result != tinyxml2::XML_SUCCESS)
 		{
 			log << "Loading script save file \"" << file << "\" failed.\n";
 			return false;
 		}
-		
+
 		tinyxml2::XMLElement* root = loadFile.FirstChildElement("script");
 		if(root == nullptr)
 		{
 			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
 			return false;
 		}
-		
+
 		tinyxml2::XMLElement* variable = root->FirstChildElement("variable");
 		while(variable != nullptr)
 		{
 			std::string name = variable->Attribute("name");
-			
+
 			// boolean
 			if(name[0] == 'b')
 			{
@@ -124,51 +114,42 @@ namespace swift
 			{
 				luaState[name.c_str()] = variable->GetText();
 			}
-			
+
 			variable = variable->NextSiblingElement("variable");
 		}
-		
+
 		return true;
 	}
-	
+
 	bool Script::save(const std::string& file)
 	{
 		// get all variables to save
-		std::vector<std::string> variablesToSave;
-		
-		luaState("saveSize = #Save");
-		int saveSize = luaState["saveSize"];
-		
-		for(int i = 1; i <= saveSize; i++)
-		{
-			std::string temp = luaState["Save"][i];
-			variablesToSave.push_back(temp);
-		}
-		
+		std::vector<std::string> variablesToSave = luaState["Save"];
+
 		// save all variables to save file
 		tinyxml2::XMLDocument saveFile;
 		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
-		
+
 		if(result != tinyxml2::XML_SUCCESS)
 		{
 			log << "Loading script save file \"" << file << "\" failed.\n";
 			return false;
 		}
-		
+
 		tinyxml2::XMLElement* root = saveFile.FirstChildElement("script");
 		if(root == nullptr)
 		{
 			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
 			return false;
 		}
-		
+
 		root->DeleteChildren();
-		
+
 		for(auto& v : variablesToSave)
 		{
 			tinyxml2::XMLElement* newVariable = saveFile.NewElement("variable");
 			newVariable->SetAttribute("name", v.c_str());
-			
+
 			// boolean
 			if(v[0] == 'b')
 			{
@@ -186,12 +167,12 @@ namespace swift
 				std::string value = luaState[v.c_str()];
 				newVariable->SetText(value.c_str());
 			}
-			
+
 			root->InsertEndChild(newVariable);
 		}
-		
+
 		saveFile.SaveFile(file.c_str());
-		
+
 		return true;
 	}
 
@@ -200,341 +181,420 @@ namespace swift
 		return deleteMe;
 	}
 
-	lpp::Selection Script::getVariable(const std::string& name)
-	{
-		return luaState[name];
-	}
-	
 	void Script::setWindow(sf::RenderWindow& win)
 	{
 		window = &win;
 	}
-	
+
 	void Script::setAssetManager(AssetManager& am)
 	{
 		assets = &am;
 	}
-	
+
 	void Script::setClock(sf::Clock& c)
 	{
 		clock = &c;
 	}
-	
+
 	void Script::setSettings(Settings& s)
 	{
 		settings = &s;
 	}
-	
+
+	void Script::setKeyboard(KeyboardManager& k)
+	{
+		keyboard = &k;
+	}
+
 	void Script::setWorld(World& w)
 	{
 		world = &w;
 	}
-	
+
 	void Script::setWorld(std::nullptr_t)
 	{
 		world = nullptr;
 	}
 	
-	const World* Script::getWorld() const
+	void Script::setPlayState(Play& p)
+	{
+		play = &p;
+	}
+
+	const World* Script::getWorld()
 	{
 		return world;
 	}
-	
+
 	void Script::addVariables()
 	{
-		luaState["states"]["MainMenu"] = 0;
-		luaState["states"]["Settings"] = 1;
-		luaState["states"]["Play"] = 2;
-		luaState["states"]["Exit"] = 3;
 	}
-	
+
 	void Script::addClasses()
 	{
-		// vectors
-		/*luaState["Vector2f"].SetClass<sf::Vector2f>("x", &sf::Vector2f::x, "y", &sf::Vector2f::y);
-		luaState["Vector2i"].SetClass<sf::Vector2i>("x", &sf::Vector2i::x, "y", &sf::Vector2i::y);
-		luaState["Vector2u"].SetClass<sf::Vector2u>("x", &sf::Vector2u::x, "y", &sf::Vector2u::y);
-		
-		// ECS
-		luaState["Entity"].SetClass<Entity>("add", static_cast<bool (Entity::*)(std::string)>(&Entity::add),
-											"remove", static_cast<bool (Entity::*)(std::string)>(&Entity::remove),
-											"has", static_cast<bool (Entity::*)(std::string) const>(&Entity::has),
-											"getDrawable", static_cast<Drawable* (Entity::*)()>(&Entity::get<Drawable>),
-											"getMovable", static_cast<Movable* (Entity::*)()>(&Entity::get<Movable>),
-											"getPhysical", static_cast<Physical* (Entity::*)()>(&Entity::get<Physical>),
-											"getName", static_cast<Name* (Entity::*)()>(&Entity::get<Name>),
-											"getNoisy", static_cast<Noisy* (Entity::*)()>(&Entity::get<Noisy>));
-		
-		// each Component type
-		luaState["Drawable"].SetClass<Drawable>();
-		luaState["Movable"].SetClass<Movable>();
-		luaState["Physical"].SetClass<Physical>();
-		luaState["Name"].SetClass<Name>();
-		luaState["Noisy"].SetClass<Noisy>();
-		*/
-		// GUI
-		/*luaState["Column"].SetClass<cstr::Column>();
-		luaState["Row"].SetClass<cstr::Row>();
-		
-		luaState["Button"].SetClass<cstr::Button>();
-		luaState["Label"].SetClass<cstr::Label>();
-		luaState["Slider"].SetClass<cstr::Slider>();
-		luaState["Spacer"].SetClass<cstr::Spacer>();
-		luaState["TextBox"].SetClass<cstr::TextBox>();
-		luaState["Toggle"].SetClass<cstr::Toggle>();*/
 	}
-	
+
 	void Script::addFunctions()
 	{
-		/* utility functions */
-		luaState["getWindowSize"] = [&]()
-		{
-			if(window)
-				return std::make_tuple(window->getSize().x, window->getSize().y);
-			else
-				return std::make_tuple(0u, 0u);
-		};
+		// utility functions
+		luaState["getWindowSize"] = &getWindowSize;
+		luaState["getTime"] = &getTime;
+		luaState["doKeypress"] = &doKeypress;
+		luaState["log"] = &logMsg;
 		
-		luaState["getTime"] = [&]()
-		{
-			if(clock)
-				return clock->getElapsedTime().asSeconds();
-			else
-				return 0.f;
-		};
+		// play
+		luaState["addScript"] = &addScript;
+		luaState["removeScript"] = &removeScript;
 		
-		luaState["doKeypress"] = [&](std::string k)
-		{
-			if(keyboard)
-				keyboard->call(k);
-		};
+		// world
+		luaState["newEntity"] = &newEntity;
+		luaState["removeEntity"] = &removeEntity;
+		luaState["getEntities"] = &getEntities;
+		luaState["getEntity"] = &getEntity;
+		luaState["getPlayer"] = &getPlayer;
+		luaState["isAround"] = &isAround;
+		luaState["getWorldSize"] = &getWorldSize;
+		luaState["getCurrentWorld"] = &getCurrentWorld;
 		
-		luaState["log"] = [&](std::string m)
-		{
-			log << m;
-		};
+		// Entity System
+		luaState["add"] = &add;
+		luaState["remove"] = &remove;
+		luaState["has"] = &has;
 		
-		/* World */
-		luaState["addScript"] = [&](std::string s)
-		{
-			if(world)
-				return world->addScript(s);
-			else
-				return false;
-		};
-		
-		luaState["removeScript"] = [&](std::string s)
-		{
-			if(world)
-				return world->removeScript(s);
-			else
-				return false;
-		};
-		
-		/* World */
-		luaState["newEntity"] = [&]() -> Entity*
-		{
-			if(world)
-				return world->addEntity();
-			else
-				return nullptr;
-		};
-		
-		luaState["getTotalEntities"] = [&]()
-		{
-			if(world)
-				return static_cast<unsigned>(world->getEntities().size());
-			else
-				return 0u;
-		};
-		
-		luaState["getEntity"] = [&](unsigned e) -> Entity*
-		{
-			if(world && e < world->getEntities().size())
-				return world->getEntities()[e];
-			else
-				return nullptr;
-		};
-		
-		// equivalent to getEntity(0)
-		luaState["getPlayer"] = [&]() -> Entity*
-		{
-			if(world && world->getEntities()[0])
-				return world->getEntities()[0];
-			else
-				return nullptr;
-		};
-		
-		luaState["isAround"] = [&](Physical* p, float x, float y, float r)
-		{
-			if(world)
-				return world->distance(p->position, {x, y}) <= r;
-			else
-				return false;
-		};
-		
-		luaState["getWorldSize"] = [&]()
-		{
-			if(world)
-				return std::make_tuple(world->getSize().x, world->getSize().y);
-			else
-				return std::make_tuple(0, 0);
-		};
-		
-		luaState["getCurrentWorld"] = [&]() -> std::string
-		{
-			if(world)
-				return world->getName();
-			else
-				return "none";
-		};
-		
-		/* Entity System */
 		// Drawable
-		luaState["setTexture"] = [&](Drawable* d, std::string t)
-		{
-			if(d)
-			{
-				d->sprite.setTexture(assets->getTexture(t));
-				d->texture = t;
-				return true;
-			}
-			else
-				return false;
-		};
-		
-		luaState["setTextureRect"] = [&](Drawable* d, int x, int y, int w, int h)
-		{
-			if(d)
-				d->sprite.setTextureRect({x, y, w, h});
-		};
-		
-		luaState["getSpriteSize"] = [&](Drawable* d)
-		{
-			if(d)
-				return std::make_tuple(d->sprite.getGlobalBounds().width, d->sprite.getGlobalBounds().height);
-			else
-				return std::make_tuple(0.f, 0.f);
-		};
-		
-		luaState["setScale"] = [&](Drawable* d, float x, float y)
-		{
-			if(d)
-				d->sprite.setScale(x, y);
-		};
+		luaState["getDrawable"] = &getDrawable;
+		luaState["setTexture"] = &setTexture;
+		luaState["setTextureRect"] = &setTextureRect;
+		luaState["getSpriteSize"] = &getSpriteSize;
+		luaState["setScale"] = &setScale;
 		
 		// Movable
-		luaState["setMoveVelocity"] = [&](Movable* m, float v)
-		{
-			if(m)
-			{
-				m->moveVelocity = v;
-			}
-		};
-		
-		luaState["getVelocity"] = [&](Movable* m)
-		{
-			if(m)
-				return std::make_tuple(m->velocity.x, m->velocity.y);
-			else
-				return std::make_tuple(0.f, 0.f);
-		};
+		luaState["getMovable"] = &getMovable;
+		luaState["setMoveVelocity"] = &setMoveVelocity;
+		luaState["getVelocity"] = &getVelocity;
 		
 		// Physical
-		luaState["setPosition"] = [&](Physical* p, float x, float y)
-		{
-			if(p)
-				p->position = {x, y};
-			else if(p)
-				p->position = {0, 0};
-		};
-		
-		luaState["getPosition"] = [&](Physical* p)
-		{
-			if(p)
-				return std::make_tuple(p->position.x, p->position.y);
-			else
-				return std::make_tuple(0.f, 0.f);
-		};
-		
-		luaState["setSize"] = [&](Physical* p, unsigned x, unsigned y)
-		{
-			if(p)
-				p->size = {x, y};
-			else if(p)
-				p->size = {0, 0};
-		};
-		
-		luaState["getSize"] = [&](Physical* p)
-		{
-			if(p)
-				return std::make_tuple(p->size.x, p->size.y);
-			else
-				return std::make_tuple(0u, 0u);
-		};
+		luaState["getPhysical"] = &getPhysical;
+		luaState["setPosition"] = &setPosition;
+		luaState["getPosition"] = &getPosition;
+		luaState["setSize"] = &setSize;
+		luaState["getSize"] = &getSize;
 		
 		// Name
-		luaState["setName"] = [&](Name* n, std::string s)
-		{
-			if(n)
-				n->name = s;
-		};
-		
-		luaState["getName"] = [&](Name* n) -> std::string
-		{
-			if(n)
-				return n->name;
-			else
-				return "null";
-		};
+		luaState["getName"] = &getName;
+		luaState["setName"] = &setName;
+		luaState["getNameVal"] = &getNameVal;
 		
 		// Noisy
-		luaState["setSound"] = [&](Noisy* n, std::string s)
-		{
-			if(n)
-				n->soundFile = s;
-		};
+		luaState["getNoisy"] = &getNoisy;
+		luaState["setSound"] = &setSound;
+		luaState["getSound"] = &getSound;
 		
-		luaState["getSound"] = [&](Noisy* n) -> std::string
-		{
-			if(n)
-				return n->soundFile;
-			else
-				return "null";
-		};
+		// Settings
+		luaState["getSettingStr"] = &getSettingStr;
+		luaState["getSettingBool"] = &getSettingBool;
+		luaState["getSettingNum"] = &getSettingNum;
+	}
+	
+	/* Lua converted functions */
+	// Utility
+	std::tuple<unsigned, unsigned> Script::getWindowSize()
+	{
+		if(window)
+			return std::make_tuple(window->getSize().x, window->getSize().y);
+		else
+			return std::make_tuple(0u, 0u);
+	}
+	
+	float Script::getTime()
+	{
+		if(clock)
+			return clock->getElapsedTime().asSeconds();
+		else
+			return 0.f;
+	}
+	
+	void Script::doKeypress(std::string k)
+	{
+		if(keyboard)
+			keyboard->call(k);
+	}
+	
+	void Script::logMsg(std::string m)
+	{
+		log << m << '\n';
+	}
+
+	// Play
+	bool Script::addScript(std::string s)
+	{
+		if(play)
+			return play->addScript(s);
+		else
+			return false;
+	}
+	
+	bool Script::removeScript(std::string s)
+	{
+		if(play)
+			return play->removeScript(s);
+		else
+			return false;
+	}
+	
+	// World
+	Entity* Script::newEntity()
+	{
+		if(world)
+			return world->addEntity();
+		else
+			return nullptr;
+	}
+	
+	bool Script::removeEntity(int e)
+	{
+		if(world)
+			return world->removeEntity(e);
+		else
+			return false;
+	}
+	
+	std::vector<Entity*> Script::getEntities()
+	{
+		if(world)
+			return world->getEntities();
+		else
+			return std::vector<Entity*>{};
+	}
+	
+	Entity* Script::getEntity(int e)
+	{
+		if(world)
+			return world->getEntity(e);
+		else
+			return nullptr;
+	}
+	
+	Entity* Script::getPlayer()
+	{
+		if(world)
+			return world->getEntity(0);
+		else
+			return nullptr;
+	}
+	
+	bool Script::isAround(Physical* p, float x, float y, float r)
+	{
+		if(world)
+			return world->distance(p->position, {x, y}) <= r;
+		else
+			return false;
+	}
+	
+	std::tuple<int, int> Script::getWorldSize()
+	{
+		if(world)
+			return std::make_tuple(world->getSize().x, world->getSize().y);
+		else
+			return std::make_tuple(0, 0);
+	}
+	
+	std::string Script::getCurrentWorld()
+	{
+		if(world)
+			return world->getName();
+		else
+			return "nil";
+	}
 		
-		/* Settings */
-		luaState["getSettingStr"] = [&](std::string n)
+	// Entity System
+	bool Script::add(Entity* e, std::string c)
+	{
+		if(e)
+			return e->add(c);
+		else
+			return false;
+	}
+	
+	bool Script::remove(Entity* e, std::string c)
+	{
+		if(e)
+			return e->remove(c);
+		else
+			return false;
+	}
+	
+	bool Script::has(Entity* e, std::string c)
+	{
+		if(e)
+			return e->has(c);
+		else
+			return false;
+	}
+
+	// Drawable
+	Drawable* Script::getDrawable(Entity* e)
+	{
+		if(e && e->has<Drawable>())
+			return e->get<Drawable>();
+		else
+			return nullptr;
+	}
+	
+	bool Script::setTexture(Drawable* d, std::string t)
+	{
+		if(d)
 		{
-			std::string v;
-			return std::make_tuple(settings->get(n, v), v);
-		};
-		
-		luaState["setSettingStr"] = [&](std::string n, std::string v)
-		{
-			return settings->set(n, v);
-		};
-		
-		luaState["getSettingBool"] = [&](std::string n)
-		{
-			bool v;
-			return std::make_tuple(settings->get(n, v), v);
-		};
-		
-		luaState["setSettingBool"] = [&](std::string n, bool v)
-		{
-			return settings->set(n, v);
-		};
-		
-		luaState["getSettingNum"] = [&](std::string n)
-		{
-			int v;
-			return std::make_tuple(settings->get(n, v), v);
-		};
-		
-		luaState["setSettingNum"] = [&](std::string n, int v)
-		{
-			return settings->set(n, v);
-		};
+			d->sprite.setTexture(assets->getTexture(t));
+			d->texture = t;
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	void Script::setTextureRect(Drawable* d, int x, int y, int w, int h)
+	{
+		if(d)
+			d->sprite.setTextureRect({x, y, w, h});
+	}
+	
+	std::tuple<float, float> Script::getSpriteSize(Drawable* d)
+	{
+		if(d)
+			return std::make_tuple(d->sprite.getGlobalBounds().width, d->sprite.getGlobalBounds().height);
+		else
+			return std::make_tuple(0.f, 0.f);
+	}
+	
+	void Script::setScale(Drawable* d, float x, float y)
+	{
+		if(d)
+			d->sprite.setScale({x, y});
+	}
+	
+	// Movable
+	Movable* Script::getMovable(Entity* e)
+	{
+		if(e && e->has<Movable>())
+			return e->get<Movable>();
+		else
+			return nullptr;
+	}
+	
+	void Script::setMoveVelocity(Movable* m, float v)
+	{
+		if(m)
+			m->moveVelocity = v;
+	}
+	
+	std::tuple<float, float> Script::getVelocity(Movable* m)
+	{
+		if(m)
+			return std::make_tuple(m->velocity.x, m->velocity.y);
+		else
+			return std::make_tuple(0.f, 0.f);
+	}
+
+	// Physical
+	Physical* Script::getPhysical(Entity* e)
+	{
+		if(e && e->has<Physical>())
+			return e->get<Physical>();
+		else
+			return nullptr;
+	}
+	
+	void Script::setPosition(Physical* p, float x, float y)
+	{
+		if(p)
+			p->position = {x, y};
+	}
+	
+	std::tuple<float, float> Script::getPosition(Physical* p)
+	{
+		if(p)
+			return std::make_tuple(p->position.x, p->position.y);
+		else
+			return std::make_tuple(0.f, 0.f);
+	}
+	
+	void Script::setSize(Physical* p, unsigned x, unsigned y)
+	{
+		if(p)
+			p->size = {x, y};
+	}
+	
+	std::tuple<unsigned, unsigned> Script::getSize(Physical* p)
+	{
+		if(p)
+			return std::make_tuple(p->size.x, p->size.y);
+		else
+			return std::make_tuple(0u, 0u);
+	}
+
+	// Name
+	Name* Script::getName(Entity* e)
+	{
+		if(e && e->has<Name>())
+			return e->get<Name>();
+		else
+			return nullptr;
+	}
+	
+	void Script::setName(Name* n, std::string name)
+	{
+		if(n)
+			n->name = name;
+	}
+	
+	std::string Script::getNameVal(Name* n)
+	{
+		if(n)
+			return n->name;
+		else
+			return "null";
+	}
+
+	// Noisy
+	Noisy* Script::getNoisy(Entity* e)
+	{
+		if(e && e->has<Noisy>())
+			return e->get<Noisy>();
+		else
+			return nullptr;
+	}
+	
+	void Script::setSound(Noisy* n, std::string s)
+	{
+		if(n)
+			n->soundFile = s;
+	}
+	
+	std::string Script::getSound(Noisy* n)
+	{
+		if(n)
+			return n->soundFile;
+		else
+			return "null";
+	}
+	
+	// Settings
+	std::tuple<bool, std::string> Script::getSettingStr(std::string s)
+	{
+		std::string v;
+		return std::make_tuple(settings->get(s, v), v);
+	}
+	
+	std::tuple<bool, bool> Script::getSettingBool(std::string s)
+	{
+		bool v;
+		return std::make_tuple(settings->get(s, v), v);
+	}
+	
+	std::tuple<bool, float> Script::getSettingNum(std::string s)
+	{
+		float v;
+		return std::make_tuple(settings->get(s, v), v);
 	}
 }

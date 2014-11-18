@@ -27,6 +27,9 @@ namespace swift
 			virtual void draw(float e);
 			virtual bool switchFrom();
 			virtual Type finish();
+			
+			bool addScript(const std::string& scriptFile);
+			bool removeScript(const std::string& scriptFile);
 
 		private:
 			// SubState system
@@ -43,6 +46,8 @@ namespace swift
 			sf::View playView;
 			
 			std::map<std::string, World*> worlds;
+			std::map<std::string, Script*> scripts;
+			
 			World* activeWorld;
 			Entity* player;
 	};

@@ -38,6 +38,9 @@ namespace swift
 		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets, soundPlayer, musicPlayer));
 		activeWorld = worlds["testWorld"];
 		
+		Script::setPlayState(*this);
+		Script::setWorld(*activeWorld);
+		
 		setupKeyBindings();
 		setupGUI();
 		
@@ -87,10 +90,10 @@ namespace swift
 		bool textureResult = activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
 		
 		if(!loadResult)
-			std::cerr << "load failed\n";
+			log << "[ERROR]: Loading \"./data/maps/maze.map\" failed.\n";
 		
 		if(!textureResult)
-			std::cerr << "texture failed\n";
+			log << "[ERROR]: Setting texture for \"./data/maps/maze.map\" failed.\n";
 		
 		// loading fails, so create a player
 		if(!activeWorld->load())
@@ -121,8 +124,10 @@ namespace swift
 		else
 			player = activeWorld->getEntities()[0];
 		
-		activeWorld->addScript("./data/scripts/quest.lua");
-		assets.getScript("./data/scripts/quest.lua").start();
+		addScript("./data/scripts/quest.lua");
+		
+		for(auto& s : scripts)
+			s.second->start();
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -139,6 +144,23 @@ namespace swift
 			
 		soundPlayer.update();
 		musicPlayer.update();
+		
+		std::vector<std::string> doneScripts;
+		
+		for(auto& s : scripts)
+		{
+			s.second->update();
+			
+			// check if script is done, if so, push it for deletion
+			if(s.second->toDelete())
+				doneScripts.push_back(s.first);
+		}
+		
+		// remove all done scripts
+		for(auto& s : doneScripts)
+		{
+			scripts.erase(s);
+		}
 	}
 
 	void Play::draw(float e)
@@ -154,6 +176,28 @@ namespace swift
 	State::Type Play::finish()
 	{
 		return returnType;
+	}
+	
+	bool Play::addScript(const std::string& scriptFile)
+	{
+		if(scripts.find(scriptFile) == scripts.end())
+		{
+			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	bool Play::removeScript(const std::string& scriptFile)
+	{
+		if(scripts.find(scriptFile) != scripts.end())
+		{
+			scripts.erase(scriptFile);
+			return true;
+		}
+		else
+			return false;
 	}
 	
 	void Play::setupGUI()

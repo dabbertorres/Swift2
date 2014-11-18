@@ -32,18 +32,4 @@ namespace swift
 		velocity.x = std::stof(variables.at("velocityX"));
 		velocity.y = std::stof(variables.at("velocityY"));
 	}
-	
-	/*template<>
-	Movable* Entity::get(std::string c)
-	{
-		if(c != "Movable")
-			return nullptr;
-		
-		if(this->has<Movable>())
-		{
-			return static_cast<Movable*>(components["Movable"]);
-		}
-		else
-			return nullptr;
-	}*/
 }

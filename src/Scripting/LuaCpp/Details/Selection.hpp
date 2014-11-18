@@ -1,15 +1,12 @@
 #ifndef SELECTION_HPP
 #define SELECTION_HPP
 
-#include <lua.hpp>
-
 #include <string>
 #include <functional>
 #include <vector>
 #include <map>
 #include <memory>
 
-#include "Details.hpp"
 #include "CppFunction.hpp"
 
 namespace lpp

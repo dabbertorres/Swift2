@@ -1,5 +1,5 @@
-#ifndef STATE_HPP
-#define STATE_HPP
+#ifndef LUA_STATE_HPP
+#define LUA_STATE_HPP
 
 #include <lua.hpp>
 
