@@ -1,5 +1,5 @@
 #include "Row.hpp"
-#include <iostream>
+
 namespace cstr
 {
 	Row::Row(sf::IntRect r, bool s)

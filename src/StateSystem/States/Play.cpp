@@ -29,6 +29,9 @@ namespace swift
 	{
 		for(auto& w : worlds)
 			delete w.second;
+		
+		for(auto& s : scripts)
+			s.second->reset();
 	}
 
 	void Play::setup()

@@ -88,26 +88,12 @@ namespace detail
 		return 1;
 	}
 	
-	// push tuple
-	template<typename... T>
-	inline int pushValue(lua_State* state, const std::tuple<T...>& tup)
-	{
-		return pushValue(state, tup, typename indicesBuilder<sizeof...(T)>::type());
-	}
-	
-	template<typename... T, std::size_t... N>
-	inline int pushValue(lua_State* state, const std::tuple<T...>& tup, indices<N...>)
-	{
-		distributeArgs(state, std::get<N>(tup)...);
-		return sizeof...(N);
-	}
-	
 	// pushing objects
 	template<typename T>
-	inline int pushValue(lua_State* state, const T* t)
+	inline int pushValue(lua_State* state, T* t)
 	{
 		if(t)
-			lua_pushlightuserdata(state, const_cast<T*>(t));
+			lua_pushlightuserdata(state, t);
 		else
 			lua_pushnil(state);
 		
@@ -115,10 +101,24 @@ namespace detail
 	}
 	
 	template<typename T>
-	inline int pushValue(lua_State* state, const T& t)
+	inline int pushValue(lua_State* state, T& t)
 	{
-		lua_pushlightuserdata(state, &const_cast<T&>(t));
+		lua_pushlightuserdata(state, &t);
 		return 1;
+	}
+	
+	// push tuple
+	template<typename... Ts>
+	inline int pushValue(lua_State* state, std::tuple<Ts...>& tup)
+	{
+		return pushValue(state, tup, typename indicesBuilder<sizeof...(Ts)>::type());
+	}
+	
+	template<typename... Ts, std::size_t... N>
+	inline int pushValue(lua_State* state, const std::tuple<Ts...>& tup, indices<N...>)
+	{
+		distributeArgs(state, std::get<N>(tup)...);
+		return sizeof...(Ts);
 	}
 	
 	// recursive argument distribution

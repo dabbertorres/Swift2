@@ -20,7 +20,8 @@ namespace swift
 	Play* Script::play = nullptr;
 
 	Script::Script()
-		:	deleteMe(false)
+		:	file(""),
+			deleteMe(false)
 	{
 		// We don't want to give the scripts access to os commands or file writing abilities
 		// so we only open the necessary libraries
@@ -49,6 +50,8 @@ namespace swift
 
 		if(!runResult)
 			log << "[ERROR]: " << file << " run: " << luaState.getErrors() << '\n';
+			
+		this->file = file;
 
 		return loadResult && runResult;
 	}
@@ -112,7 +115,8 @@ namespace swift
 			}
 			else
 			{
-				luaState[name.c_str()] = variable->GetText();
+				std::string text = variable->GetText();
+				luaState[name.c_str()] = text;
 			}
 
 			variable = variable->NextSiblingElement("variable");
@@ -179,6 +183,24 @@ namespace swift
 	bool Script::toDelete()
 	{
 		return deleteMe;
+	}
+	
+	void Script::reset()
+	{
+		luaState.reload();
+		
+		// We don't want to give the scripts access to os commands or file writing abilities
+		// so we only open the necessary libraries
+		luaState.openLib("base", luaopen_base);
+		luaState.openLib("math", luaopen_math);
+		luaState.openLib("string", luaopen_string);
+		luaState.openLib("table", luaopen_table);
+
+		addVariables();
+		addClasses();
+		addFunctions();
+		
+		loadFromFile(file);
 	}
 
 	void Script::setWindow(sf::RenderWindow& win)

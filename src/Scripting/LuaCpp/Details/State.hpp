@@ -49,11 +49,18 @@ namespace lpp
 			
 			// act as a lua_State
 			operator lua_State*() const;
+			
+			// reset the Lua state
+			void reload();
 
 		private:
 			void clean();
 
 			lua_State* state;
+			
+			using FunctionsMap = std::unordered_map<std::string, std::unique_ptr<BaseCppFunction>>;
+			
+			FunctionsMap functions;
 	};
 }
 

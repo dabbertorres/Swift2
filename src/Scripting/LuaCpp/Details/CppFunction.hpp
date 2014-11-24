@@ -3,7 +3,6 @@
 
 #include <string>
 #include <functional>
-#include <unordered_map>
 #include <memory>
 
 #include "Details.hpp"
@@ -20,8 +19,6 @@ namespace lpp
 				BaseCppFunction* func = static_cast<BaseCppFunction*>(lua_touserdata(state, lua_upvalueindex(1)));
 				return func->run(state);
 			}
-			
-			static std::unordered_map<std::string, std::unique_ptr<BaseCppFunction>> functions;
 	};
 	
 	template<typename Ret, typename... Args>

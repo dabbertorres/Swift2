@@ -31,7 +31,7 @@ namespace lpp
 	
 	Selection State::operator[](const std::string& name)
 	{
-		return Selection(state, name);
+		return Selection(state, name, functions);
 	}
 	
 	auto State::operator() (const std::string& name) -> decltype(LUA_OK)
@@ -58,6 +58,13 @@ namespace lpp
 	State::operator lua_State*() const
 	{
 		return state;
+	}
+	
+	void State::reload()
+	{
+		lua_close(state);
+		state = luaL_newstate();
+		functions.clear();
 	}
 	
 	void State::clean()

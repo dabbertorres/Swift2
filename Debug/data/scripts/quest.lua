@@ -14,7 +14,6 @@ function Update()
 		ship = getEntity(1)
 		
 		if ship == nil then
-			print("creating ship")
 			ship = newEntity()
 			add(ship, "Drawable")
 			add(ship, "Movable")
@@ -31,14 +30,11 @@ function Update()
 		startDone = true
 	end
 	
-	--getDrawable(player)
-	print(has(player, "Noisy"))
-	--getDrawable(ship)
-	--shipPhys = getPhysical(ship)
+	shipPhys = getPhysical(ship)
 	shipPosX, shipPosY = getPosition(shipPhys)
 	
-	--if not Done and isAround(getPhysical(player), shipPosX, shipPosY, 20) then
-	--	print("Congratulations!")
-	--	Done = true
-	--end
+	if not Done and isAround(getPhysical(player), shipPosX, shipPosY, 20) then
+		print("Congratulations!")
+		Done = true
+	end
 end

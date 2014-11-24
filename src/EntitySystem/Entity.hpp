@@ -105,9 +105,7 @@ namespace swift
 			Component* get(std::string c)
 			{
 				if(has(c))
-				{
 					return components[c];
-				}
 				else
 					return nullptr;
 			}

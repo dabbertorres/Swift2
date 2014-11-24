@@ -64,6 +64,8 @@ namespace swift
 
 			bool toDelete();
 			
+			void reset();
+			
 			// setters for variables that Lua has access to
 			static void setWindow(sf::RenderWindow& win);
 			static void setAssetManager(AssetManager& am);
@@ -93,6 +95,7 @@ namespace swift
 			static World* world;
 			static Play* play;
 			
+			std::string file;
 			bool deleteMe;
 			
 			/* Lua converted functions */
