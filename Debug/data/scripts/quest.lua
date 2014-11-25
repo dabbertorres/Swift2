@@ -2,10 +2,8 @@ ship = nil
 player = nil
 Done = false
 startDone = false
-Save = {"bDone"}
 
-function Start()	
-	
+function Start()
 end
 
 function Update()
@@ -33,8 +31,18 @@ function Update()
 	shipPhys = getPhysical(ship)
 	shipPosX, shipPosY = getPosition(shipPhys)
 	
-	if not Done and isAround(getPhysical(player), shipPosX, shipPosY, 20) then
+	if not Done and isAround(getPhysical(player), shipPosX, shipPosY, 40) then
 		print("Congratulations!")
 		Done = true
 	end
+end
+
+function Save()
+	print(Done)
+	return Done
+end
+
+function Load(...)
+	Done = ...
+	print(Done)
 end
