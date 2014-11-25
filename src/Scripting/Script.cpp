@@ -60,7 +60,7 @@ namespace swift
 	{
 		luaState["Start"]();
 
-		if(static_cast<bool>(luaState["Done"]) == true)
+		if(static_cast<bool>(luaState["Done"]))
 		{
 			deleteMe = true;
 		}
@@ -70,7 +70,7 @@ namespace swift
 	{
 		luaState["Update"]();
 
-		if(static_cast<bool>(luaState["Done"]) == true)
+		if(static_cast<bool>(luaState["Done"]))
 		{
 			deleteMe = true;
 		}
@@ -93,47 +93,47 @@ namespace swift
 			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
 			return false;
 		}
-
+		
+		int total = 0;
 		tinyxml2::XMLElement* variable = root->FirstChildElement("variable");
 		while(variable != nullptr)
 		{
-			std::string name = variable->Attribute("name");
-
-			// boolean
-			if(name[0] == 'b')
+			char type = variable->Attribute("type")[0];
+			std::string value = variable->GetText();
+			
+			switch(type)
 			{
-				bool value;
-				variable->QueryBoolText(&value);
-				luaState[name.substr(1).c_str()] = value;
+				case 'n':	// number
+					luaState.push(std::stod(value));
+					break;
+				case 'b':	// bool
+					luaState.push(value != "0");
+					break;
+				case 's':	// string
+					luaState.push(value);
+					break;
+				case '0':	// nil
+					luaState.push(nullptr);
+					break;
+				default:
+					break;
 			}
-			// number
-			else if(name[0] == 'n')
-			{
-				float value;
-				variable->QueryFloatText(&value);
-				luaState[name.substr(1).c_str()] = value;
-			}
-			else
-			{
-				std::string text = variable->GetText();
-				luaState[name.c_str()] = text;
-			}
-
+			
+			total++;
 			variable = variable->NextSiblingElement("variable");
 		}
+		
+		luaState.call("Load", total);
 
 		return true;
 	}
 
 	bool Script::save(const std::string& file)
 	{
-		// get all variables to save
-		std::vector<std::string> variablesToSave = luaState["Save"];
-
 		// save all variables to save file
 		tinyxml2::XMLDocument saveFile;
 		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
-
+		
 		if(result != tinyxml2::XML_SUCCESS)
 		{
 			log << "Loading script save file \"" << file << "\" failed.\n";
@@ -148,28 +148,42 @@ namespace swift
 		}
 
 		root->DeleteChildren();
-
-		for(auto& v : variablesToSave)
+		
+		luaState.clean();
+		
+		// call save function
+		luaState["Save"]();
+		
+		int totalRets = luaState.getTop();
+		
+		for(int i = 1; i <= totalRets; i++)
 		{
 			tinyxml2::XMLElement* newVariable = saveFile.NewElement("variable");
-			newVariable->SetAttribute("name", v.c_str());
-
-			// boolean
-			if(v[0] == 'b')
+			
+			decltype(LUA_TNUMBER) type = luaState[i].getType();
+			
+			switch(type)
 			{
-				bool value = luaState[v.substr(1).c_str()];
-				newVariable->SetText(value);
-			}
-			// number
-			else if(v[0] == 'n')
-			{
-				float value = luaState[v.substr(1).c_str()];
-				newVariable->SetText(value);
-			}
-			else
-			{
-				std::string value = luaState[v.c_str()];
-				newVariable->SetText(value.c_str());
+				case LUA_TNONE:
+					log << "[WARNING]: Invalid type on Lua stack\n";
+					newVariable->SetAttribute("type", "0");
+					newVariable->SetText("nil");
+				case LUA_TNUMBER:
+					newVariable->SetAttribute("type", "n");
+					newVariable->SetText(static_cast<float>(luaState[i]));
+					break;
+				case LUA_TBOOLEAN:
+					newVariable->SetAttribute("type", "b");
+					newVariable->SetText(static_cast<bool>(luaState[i]));
+					break;
+				case LUA_TSTRING:
+					newVariable->SetAttribute("type", "s");
+					newVariable->SetText(static_cast<const char*>(luaState[i]));
+					break;
+				default:
+					newVariable->SetAttribute("type", "0");
+					newVariable->SetText("nil");
+					break;
 			}
 
 			root->InsertEndChild(newVariable);

@@ -12,7 +12,7 @@ namespace detail
 	template<typename First, typename... Args>
 	void distributeArgs(lua_State* state, First first, Args... args);
 	
-	// indice building
+	// indices building
 	template<std::size_t... Is>
 	struct indices {};
 
@@ -136,6 +136,11 @@ namespace detail
 	struct id {};
 	
 	// primitives
+	inline bool checkGet(id<bool>, lua_State* state, int idx = -1)
+	{
+		return lua_toboolean(state, idx);
+	}
+	
 	inline int checkGet(id<int>, lua_State* state, int idx = -1)
 	{
 		return luaL_checkint(state, idx);
@@ -211,6 +216,8 @@ namespace detail
 			lua_pop(state, 2);
 		}
 		
+		lua_pop(state, 1);	// pop the leftover key
+		
 		return newMap;
 	}
 	
@@ -237,6 +244,7 @@ namespace detail
 	template<typename... T, std::size_t... N>
 	std::tuple<T...> getArgs(lua_State* state, indices<N...>)
 	{
+		(void)state; // silence warning that doesn't make sense. I AM using it!
 		return std::make_tuple(checkGet(id<T>{}, state, N + 1)...);
 	}
 

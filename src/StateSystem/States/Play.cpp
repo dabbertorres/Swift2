@@ -31,7 +31,11 @@ namespace swift
 			delete w.second;
 		
 		for(auto& s : scripts)
+		{
+			if(!s.second->save("./data/saves/" + s.first.substr(s.first.find_last_of('/') + 1) + ".script"))
+				log << "[ERROR]: Could not save script: " << s.first << '\n';
 			s.second->reset();
+		}
 	}
 
 	void Play::setup()
@@ -162,7 +166,7 @@ namespace swift
 		// remove all done scripts
 		for(auto& s : doneScripts)
 		{
-			scripts.erase(s);
+			removeScript(s);
 		}
 	}
 
@@ -196,6 +200,7 @@ namespace swift
 	{
 		if(scripts.find(scriptFile) != scripts.end())
 		{
+			scripts.find(scriptFile)->second->save("./data/saves/" + scriptFile.substr(scriptFile.find_last_of('/') + 1) + ".script");
 			scripts.erase(scriptFile);
 			return true;
 		}

@@ -34,7 +34,45 @@ namespace lpp
 		return Selection(state, name, functions);
 	}
 	
-	auto State::operator() (const std::string& name) -> decltype(LUA_OK)
+	Selection State::operator[](int idx)
+	{
+		int top = lua_gettop(state);
+		
+		if(top != 0 && std::abs(idx) <= top)
+			return Selection(state, "", functions, idx);
+		else
+			return Selection(state, "", functions);
+	}
+	
+	unsigned int State::getTop() const
+	{
+		return lua_gettop(state);
+	}
+	
+	void State::call(const std::string& func, int nargs)
+	{
+		// put everything in the right order
+		lua_getglobal(state, func.c_str());
+		
+		for(int i = -(nargs + 1); i < -1; i++)
+		{
+			lua_pushvalue(state, i);
+		}
+		
+		// get to it
+		if(lua_pcall(state, nargs, 0, 0) != LUA_OK)
+		{
+			std::size_t size;
+			const char* buff = lua_tolstring(state, -1, &size);
+			std::string msg = {buff, size};
+			luaL_error(state, msg.c_str());
+		}
+		
+		// clean up
+		lua_pop(state, nargs);
+	}
+	
+	auto State::operator()(const std::string& name) -> decltype(LUA_OK)
 	{
 		luaL_loadstring(state, name.c_str());
 		return lua_pcall(state, 0, 0, 0);

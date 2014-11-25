@@ -51,6 +51,9 @@ namespace lpp
 			template<typename K, typename V>
 			operator std::map<K, V>() const;
 			
+			// getting type
+			auto getType() const -> decltype(LUA_TNUMBER);
+			
 			// operator chaining
 			Selection operator [](const std::string& n) const;
 			Selection operator [](const int i) const;
@@ -85,8 +88,6 @@ namespace lpp
 		
 		if(nrets == 0)
 			return Selection(state, "", functions);
-		else if(nrets == 1)
-			return Selection(state, name + " return", functions, -1);
 		else
 			return Selection(state, name + " return", functions, -nrets);
 	}
@@ -104,7 +105,6 @@ namespace lpp
 	{
 		detail::pushValue(state, t);
 		lua_setglobal(state, name.c_str());
-		lua_settop(state, 0);
 	}
 	
 	// assignment of Lua variable to C++ function
@@ -125,6 +125,7 @@ namespace lpp
 	Selection::operator T() const
 	{
 		T ret;
+		
 		if(index == 0)
 		{
 			lua_getglobal(state, name.c_str());
@@ -135,7 +136,7 @@ namespace lpp
 			ret = detail::checkGet(detail::id<T>{}, state, index);
 		}
 		
-		lua_settop(state, 0);
+		lua_pop(state, 1);
 		return ret;
 	}
 	
@@ -154,7 +155,7 @@ namespace lpp
 			ret = detail::checkGet(detail::id<std::vector<T>>{}, state, index);
 		}
 		
-		lua_settop(state, 0);
+		lua_pop(state, 1);
 		return ret;
 	}
 			
@@ -173,7 +174,7 @@ namespace lpp
 			ret = detail::checkGet(detail::id<std::map<K, V>>{}, state, index);
 		}
 		
-		lua_settop(state, 0);
+		lua_pop(state, 1);
 		return ret;
 	}
 }

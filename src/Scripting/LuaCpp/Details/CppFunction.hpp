@@ -33,8 +33,6 @@ namespace lpp
 				lua_pushcclosure(state, &luaDispatcher, 1);
 				
 				lua_setglobal(state, name.c_str());
-				
-				lua_settop(state, 0);
 			}
 			
 			~CppFunction() {}
@@ -60,11 +58,9 @@ namespace lpp
 			{
 				lua_pushlightuserdata(state, static_cast<BaseCppFunction*>(this));
 				
-				lua_pushcclosure(state, luaDispatcher, 1);
+				lua_pushcclosure(state, &luaDispatcher, 1);
 				
 				lua_setglobal(state, name.c_str());
-				
-				lua_settop(state, 0);
 			}
 			
 			~CppFunction() {}

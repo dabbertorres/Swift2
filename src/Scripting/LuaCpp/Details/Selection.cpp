@@ -18,7 +18,7 @@ namespace lpp
 
 	Selection::~Selection()
 	{
-		lua_settop(state, 0);
+		
 	}
 	
 	/* Selection operators */
@@ -51,5 +51,23 @@ namespace lpp
 		lua_rawgeti(state, -1, i);
 		
 		return Selection(state, newName, functions, -1);
+	}
+	
+	// getting type
+	auto Selection::getType() const -> decltype(LUA_TNUMBER)
+	{
+		decltype(LUA_TNUMBER) ret;
+		
+		if(index == 0)
+		{
+			lua_getglobal(state, name.c_str());
+			ret = lua_type(state, -1);
+		}
+		else
+		{
+			ret = lua_type(state, index);
+		}
+		
+		return ret;
 	}
 }

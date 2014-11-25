@@ -16,12 +16,12 @@ namespace lpp
 			
 			// non-copyable
 			State(const State&) = delete;
-			State& operator =(const State&) = delete;
+			State& operator=(const State&) = delete;
 			
 			~State();
 			
 			// comparing a state to another doesn't make much sense
-			bool operator ==(State&) = delete;
+			bool operator==(State&) = delete;
 			
 			// load a file to be called
 			// Returns an error code if an error occurs (ex: syntax error)
@@ -41,8 +41,21 @@ namespace lpp
 			// select a global variable
 			Selection operator[](const std::string& name);
 			
+			// select a variable off the stack
+			Selection operator[](int idx);
+			
+			// get the number of elements on the stack
+			unsigned int getTop() const;
+			
+			// directly push a value onto the stack
+			template<typename T>
+			void push(T v);
+			
+			// call a function with a number of pushed args
+			void call(const std::string& func, int nargs);
+			
 			// run a string of Lua code
-			auto operator() (const std::string& name) -> decltype(LUA_OK);
+			auto operator()(const std::string& name) -> decltype(LUA_OK);
 			
 			// pull from the stack an error message and return it (if one exists)
 			std::string getErrors() const;
@@ -52,16 +65,22 @@ namespace lpp
 			
 			// reset the Lua state
 			void reload();
-
-		private:
+			
 			void clean();
 
+		private:
 			lua_State* state;
 			
 			using FunctionsMap = std::unordered_map<std::string, std::unique_ptr<BaseCppFunction>>;
 			
 			FunctionsMap functions;
 	};
+	
+	template<typename T>
+	void State::push(T v)
+	{
+		detail::pushValue(state, v);
+	}
 }
 
 #endif // STATE_HPP
