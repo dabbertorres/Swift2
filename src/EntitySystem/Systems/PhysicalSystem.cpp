@@ -21,15 +21,12 @@ namespace swift
 				{
 					if(e1->has<Physical>() && e2->has<Physical>())
 					{
-						if(e1->get<Physical>()->collides && e2->get<Physical>()->collides)
+						collisions.emplace_back(new Collision(*e1, *e2));
+						
+						if(!collisions.back()->getResult())
 						{
-							collisions.emplace_back(new Collision(*e1, *e2));
-							
-							if(!collisions.back()->getResult())
-							{
-								delete collisions.back();
-								collisions.pop_back();
-							}
+							delete collisions.back();
+							collisions.pop_back();
 						}
 					}
 				}
