@@ -132,9 +132,6 @@ namespace swift
 			player = activeWorld->getEntities()[0];
 		
 		addScript("./data/scripts/quest.lua");
-		
-		for(auto& s : scripts)
-			s.second->start();
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -190,6 +187,7 @@ namespace swift
 		if(scripts.find(scriptFile) == scripts.end())
 		{
 			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
+			scripts[scriptFile]->start();
 			return true;
 		}
 		else
