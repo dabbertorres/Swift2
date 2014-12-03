@@ -69,8 +69,8 @@ namespace swift
 			window.setView(playView);
 			activeWorld->drawWorld(window);
 			activeWorld->drawEntities(window);
-			window.setView(window.getDefaultView());
 			
+			window.setView(window.getDefaultView());
 			window.draw(hud);
 		});
 		

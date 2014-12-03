@@ -2,6 +2,7 @@
 
 #include "../../ResourceManager/AssetManager.hpp"
 
+/* GUI headers */
 #include "../../GUI/Containers/Column.hpp"
 #include "../../GUI/Containers/Row.hpp"
 
@@ -13,6 +14,9 @@
 /* SoundSystem headers */
 #include "../../SoundSystem/SoundPlayer.hpp"
 #include "../../SoundSystem/MusicPlayer.hpp"
+
+/* serialization headers */
+#include <tinyxml2.h>
 
 namespace swift
 {

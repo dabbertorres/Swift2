@@ -5,6 +5,7 @@ namespace swift
 	AssetManager::AssetManager()
 	{
 		smooth = false;
+		sf::err().rdbuf(nullptr);	// redirect sfml errors to nothing, we want to handle errors on our own
 	}
 
 	AssetManager::~AssetManager()

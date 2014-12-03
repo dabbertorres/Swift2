@@ -2,7 +2,7 @@
 
 #include <cmath>
 
-// serialization headers
+/* serialization headers */
 #include <tinyxml2.h>
 
 namespace swift
@@ -164,11 +164,7 @@ namespace swift
 	
 	void World::drawEntities(sf::RenderTarget& target, sf::RenderStates states)
 	{
-		for(auto& e : entities)
-		{
-			if(e->has<Drawable>())
-				target.draw(e->get<Drawable>()->sprite, states);
-		}
+		drawSystem.draw(entities, target, states);
 	}
 	
 	sf::Vector2i World::getSize() const

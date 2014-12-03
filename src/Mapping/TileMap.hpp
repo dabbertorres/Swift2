@@ -45,7 +45,7 @@ namespace swift
 			struct Tile
 			{
 				Tile(const sf::Vector2u& p)
-					:	pos(p)
+				:	pos(p)
 				{}
 				
 				sf::Vector2u pos;

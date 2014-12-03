@@ -24,7 +24,7 @@ namespace swift
 		{
 			if(e->has<Drawable>())
 			{
-				target.draw(const_cast<Entity*>(e)->get<Drawable>()->sprite, states);
+				target.draw(e->get<Drawable>()->sprite, states);
 			}
 		}
 	}
