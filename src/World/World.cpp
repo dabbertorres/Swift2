@@ -1,6 +1,7 @@
 #include "World.hpp"
 
 #include <cmath>
+#include "../Math/Math.hpp"
 
 /* serialization headers */
 #include <tinyxml2.h>
@@ -54,11 +55,10 @@ namespace swift
 		std::string file = "./data/saves/" + name + ".world";
 		
 		tinyxml2::XMLDocument loadFile;
+		loadFile.LoadFile(file.c_str());
 		
-		if(loadFile.LoadFile(file.c_str()))
+		if(loadFile.Error())
 		{
-			tinyxml2::XMLError error = loadFile.LoadFile(file.c_str());
-			log << error << '\n';
 			log << "[ERROR] Loading world save file \"" << file << "\" failed.\n";
 			return false;
 		}
@@ -226,7 +226,7 @@ namespace swift
 			if(e->has<Physical>())
 			{
 				Physical* p = e->get<Physical>();
-				if(distance(p->position, pos) <= radius)
+				if(math::distance(p->position, pos) <= radius)
 					around.push_back(e);
 			}
 		}
@@ -247,7 +247,7 @@ namespace swift
 			{
 				Physical* p = entities[i]->get<Physical>();
 				
-				if(distance(p->position, pos) <= radius)
+				if(math::distance(p->position, pos) <= radius)
 					around.push_back(i);
 			}
 		}
@@ -258,15 +258,5 @@ namespace swift
 	const std::vector<Collision*> World::getCollisions() const
 	{
 		return physicalSystem.getCollisions();
-	}
-	
-	float World::distance(const sf::Vector2f& one, const sf::Vector2f& two)
-	{
-		return std::sqrt((two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y));
-	}
-	
-	float World::distanceSquared(const sf::Vector2f& one, const sf::Vector2f& two)
-	{
-		return (two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y);
 	}
 }

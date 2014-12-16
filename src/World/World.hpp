@@ -57,9 +57,6 @@ namespace swift
 			
 			const std::vector<Collision*> getCollisions() const;
 
-			static float distance(const sf::Vector2f& one, const sf::Vector2f& two);
-			static float distanceSquared(const sf::Vector2f& one, const sf::Vector2f& two);
-
 			TileMap tilemap;
 
 		protected:
