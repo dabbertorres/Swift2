@@ -22,7 +22,10 @@ namespace swift
 		private:
 			bool handle();
 			
-			static sf::Vector2f scaledDiffVector(const sf::Vector2f& one, const sf::Vector2f& two, float scale);
+			bool circularCollision();
+			bool separatingAxisTheorem();
+			
+			static sf::Vector2f scaledDiffVector(const sf::Vector2f& oneVec, const sf::Vector2f& twoVec, float scale);
 			
 			Entity& one;
 			Entity& two;
