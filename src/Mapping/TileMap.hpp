@@ -10,6 +10,9 @@
 
 #include <string>
 #include <vector>
+#include <map>
+
+#include "Layer.hpp"
 
 namespace swift
 {
@@ -18,51 +21,41 @@ namespace swift
 		public:
 			TileMap();
 			~TileMap();
-			
-			// used in map making
-			bool init();
 
 			bool loadFile(const std::string& f);
 			bool loadTexture(const sf::Texture& tex);
-			
-			bool saveFile(const std::string& f);
-			
-			void setTileNum(unsigned t, int n);
-			
-			void setPosition(const sf::Vector2i& pos);
+
 			void setTileSize(const sf::Vector2u& ts);
 			void setSize(const sf::Vector2u& s);
 			void setTextureFile(const std::string& str);
+
+			Tile* getTile(unsigned int t, unsigned int l);
+			Tile* getTile(const sf::Vector2f& pos, unsigned int l);
 			
-			int getTileNum(unsigned t) const;
-			int getTileNum(const sf::Vector2f& pos) const;
-			const sf::Vector2u& getTileSize() const;
-			const sf::Vector2u& getSize() const;
-			const std::string& getTextureFile() const;
-			unsigned getNumOfTileTypes() const;
+			sf::Vector2u getTileSize() const;
+			sf::Vector2u getSize() const;
+			std::string getTextureFile() const;
+			unsigned int getNumOfTileTypes() const;
 
 		private:
-			struct Tile
+			struct TileType
 			{
-				Tile(const sf::Vector2u& p)
-				:	pos(p)
-				{}
-				
-				sf::Vector2u pos;
+				bool passable;
+				//bool animated;
+				sf::Vector2u texPos;
 			};
 
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
-			std::vector<Tile> tileTypes;
-			std::vector<int> tiles;
+			std::map<unsigned int, TileType> tileTypes;
+			std::vector<Layer> layers;
+
 			sf::Vector2u tileSize;
 			sf::Vector2u sizePixels;
 			sf::Vector2u sizeTiles;
+			sf::Vector2u textureSize;
+			sf::Vector2u textureTileSize;
 			std::string textureFile;
-			
-			sf::Vector2i position;
-
-			sf::VertexArray vertices;
 
 			const sf::Texture* texture;
 	};
