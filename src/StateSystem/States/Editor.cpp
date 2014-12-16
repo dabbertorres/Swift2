@@ -84,7 +84,7 @@ namespace swift
 		return State::Type::Exit;
 	}
 	
-	void Editor::addTile(const sf::Vector2i& pos)
+	/*void Editor::addTile(const sf::Vector2i& pos)
 	{
 		int tileNum = mouseToTile(pos);
 		
@@ -98,7 +98,7 @@ namespace swift
 		
 		if(tileNum != -1)
 			currentMap->setTileNum(tileNum, 0);
-	}
+	}*/
 	
 	int Editor::mouseToTile(const sf::Vector2i& pos) const	
 	{
@@ -222,8 +222,8 @@ namespace swift
 		dictionary.get("saveButton", saveStr);
 		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
 		{
-			if(mapName != "")
-				currentMap->saveFile("./data/maps/" + mapName + ".map");
+			//if(mapName != "")
+			//	currentMap->saveFile("./data/maps/" + mapName + ".map");
 		})).setString(saveStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
@@ -377,8 +377,8 @@ namespace swift
 				currentMap->setSize({static_cast<unsigned>(std::stoi(xSizeText.getString())), static_cast<unsigned>(std::stoi(ySizeText.getString()))});
 				currentMap->setTileSize({static_cast<unsigned>(std::stoi(xTileSizeText.getString())), static_cast<unsigned>(std::stoi(yTileSizeText.getString()))});
 				
-				if(!currentMap->init())
-					return;
+				//if(!currentMap->init())
+				//	return;
 				
 				setupEditorGUI();
 				
@@ -577,7 +577,7 @@ namespace swift
 		});
 		
 		// mouse controls, adding/removing tiles
-		mouse.newBinding("AddTile", sf::Mouse::Left, [&](const sf::Vector2i& pos)
+		/*mouse.newBinding("AddTile", sf::Mouse::Left, [&](const sf::Vector2i& pos)
 		{
 			if(activeState == &editor)
 				if(tileSelected != -1)
@@ -588,6 +588,6 @@ namespace swift
 		{
 			if(activeState == &editor)
 				removeTile(pos);
-		});
+		});*/
 	}
 }

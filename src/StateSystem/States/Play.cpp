@@ -23,38 +23,22 @@ namespace swift
 			player(nullptr)
 	{
 		returnType = State::Type::Play;
-	}
-
-	Play::~Play()
-	{
-		for(auto& w : worlds)
-			delete w.second;
-		
-		for(auto& s : scripts)
-		{
-			if(!s.second->save("./data/saves/" + s.first.substr(s.first.find_last_of('/') + 1) + ".script"))
-				log << "[ERROR]: Could not save script: " << s.first << '\n';
-			s.second->reset();
-		}
-	}
-
-	void Play::setup()
-	{
-		window.setKeyRepeatEnabled(false);
-		
-		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets, soundPlayer, musicPlayer));
-		activeWorld = worlds["testWorld"];
-		
-		Script::setPlayState(*this);
-		Script::setWorld(*activeWorld);
-		
-		setupKeyBindings();
-		setupGUI();
 		
 		// setup SubStates
 		play.setEventFunc([&](sf::Event& e)
 		{
 			hud.update(e);
+			
+			switch(e.type)
+			{
+				case sf::Event::MouseLeft:
+					if(player)
+						if(player->has<Movable>())
+							player->get<Movable>()->velocity = {0, 0};
+					break;
+				default:
+					break;
+			}
 		});
 		
 		play.setUpdateFunc([&](sf::Time dt)
@@ -88,19 +72,46 @@ namespace swift
 		{
 			window.draw(pauseMenu);
 		});
+	}
+
+	Play::~Play()
+	{
+		for(auto& w : worlds)
+			delete w.second;
+		
+		for(auto& s : scripts)
+		{
+			if(!s.second->save("./data/saves/" + s.first.substr(s.first.find_last_of('/') + 1) + ".script"))
+				log << "[ERROR]: Could not save script: " << s.first << '\n';
+			s.second->reset();
+		}
+	}
+
+	void Play::setup()
+	{
+		window.setKeyRepeatEnabled(false);
+		
+		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets, soundPlayer, musicPlayer));
+		activeWorld = worlds["testWorld"];
+		
+		Script::setPlayState(*this);
+		Script::setWorld(*activeWorld);
+		
+		setupKeyBindings();
+		setupGUI();
 		
 		// set the active state
 		activeState = &play;
 		
 		// setup world
-		bool loadResult = activeWorld->tilemap.loadFile("./data/maps/maze.map");
+		bool loadResult = activeWorld->tilemap.loadFile("./data/maps/maze.tmx");
 		bool textureResult = activeWorld->tilemap.loadTexture(assets.getTexture(activeWorld->tilemap.getTextureFile()));
 		
 		if(!loadResult)
-			log << "[ERROR]: Loading \"./data/maps/maze.map\" failed.\n";
+			log << "[ERROR]: Loading \"./data/maps/maze.tmx\" failed.\n";
 		
 		if(!textureResult)
-			log << "[ERROR]: Setting texture for \"./data/maps/maze.map\" failed.\n";
+			log << "[ERROR]: Setting texture for \"./data/maps/maze.tmx\" failed.\n";
 		
 		// loading fails, so create a player
 		if(!activeWorld->load())

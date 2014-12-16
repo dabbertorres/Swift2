@@ -26,8 +26,8 @@ namespace swift
 			virtual Type finish();
 
 		private:
-			void addTile(const sf::Vector2i& pos);
-			void removeTile(const sf::Vector2i& pos);
+			//void addTile(const sf::Vector2i& pos);
+			//void removeTile(const sf::Vector2i& pos);
 			
 			int mouseToTile(const sf::Vector2i& pos) const;
 			
