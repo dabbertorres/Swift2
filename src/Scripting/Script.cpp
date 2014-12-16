@@ -7,6 +7,8 @@
 
 #include "../World/World.hpp"
 
+#include "../Math/Math.hpp"
+
 #include <tinyxml2.h>
 
 namespace swift
@@ -421,10 +423,7 @@ namespace swift
 	
 	bool Script::isAround(Physical* p, float x, float y, float r)
 	{
-		if(world)
-			return world->distance(p->position, {x, y}) <= r;
-		else
-			return false;
+		return math::distance(p->position, {x, y}) <= r;
 	}
 	
 	std::tuple<int, int> Script::getWorldSize()
