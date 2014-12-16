@@ -18,6 +18,6 @@ namespace swift
 	
 	void Noisy::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		soundFile = variables.at("sound");
+		initMember("sound", variables, soundFile, std::string("./data/sounds/nothing.wav"));
 	}
 }

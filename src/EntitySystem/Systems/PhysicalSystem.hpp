@@ -12,7 +12,7 @@ namespace swift
 	class PhysicalSystem : public System
 	{
 		public:
-			virtual void update(const std::vector<Entity*>& entities, float dt);
+			virtual void update(std::vector<Entity*>& entities, float dt);
 			
 			std::vector<Collision*> getCollisions() const;
 			

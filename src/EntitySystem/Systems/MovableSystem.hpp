@@ -10,7 +10,7 @@ namespace swift
 	class MovableSystem : public System
 	{
 		public:
-			void update(const std::vector<Entity*>& entities, float dt);
+			void update(std::vector<Entity*>& entities, float dt);
 	};
 }
 

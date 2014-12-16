@@ -18,8 +18,10 @@ namespace swift
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
 
 			sf::Vector2f position;
+			unsigned int zIndex;
 			sf::Vector2u size;
 			bool collides;
+			float angle;	// degrees
 	};
 }
 

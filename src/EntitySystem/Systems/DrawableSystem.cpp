@@ -7,25 +7,56 @@
 
 namespace swift
 {
-	void DrawableSystem::update(const std::vector<Entity*>& entities, float /*dt*/)
+	void DrawableSystem::update(std::vector<Entity*>& entities, float /*dt*/)
 	{
 		for(auto& e : entities)
 		{
 			if(e->has<Drawable>() && e->has<Physical>())
 			{
-				e->get<Drawable>()->sprite.setPosition(e->get<Physical>()->position);
+				Physical* phys = e->get<Physical>();
+				Drawable* draw = e->get<Drawable>();
+				
+				draw->sprite.setPosition(std::floor(phys->position.x), std::floor(phys->position.y));
+				
+				draw->sprite.setOrigin(std::floor(phys->size.x / 2.f), std::floor(phys->size.y / 2.f));
+				draw->sprite.setRotation(phys->angle);
+				draw->sprite.setOrigin(0.f, 0.f);
 			}
 		}
 	}
 
-	void DrawableSystem::draw(const std::vector<Entity*>& entities, sf::RenderTarget& target, sf::RenderStates states) const
+	void DrawableSystem::draw(std::vector<Entity*>& entities, sf::RenderTarget& target, sf::RenderStates states) const
 	{
+		std::vector<Entity*> drawables;
+		
 		for(auto& e : entities)
 		{
-			if(e->has<Drawable>())
+			if(e->has<Drawable>() && e->has<Physical>())
+				drawables.push_back(e);
+		}
+		
+		std::sort(drawables.begin(), drawables.end(), [](Entity* one, Entity* two)
+		{
+			Physical* onePhys = one->get<Physical>();
+			Physical* twoPhys = two->get<Physical>();
+			
+			if(onePhys->zIndex < twoPhys->zIndex)
 			{
-				target.draw(e->get<Drawable>()->sprite, states);
+				return true;
 			}
+			else if(onePhys->zIndex == twoPhys->zIndex)
+			{
+				return onePhys->position.x < twoPhys->position.x || onePhys->position.y < twoPhys->position.y;
+			}
+			else
+			{
+				return false;
+			}
+		});
+		
+		for(auto& d : drawables)
+		{
+			target.draw(d->get<Drawable>()->sprite, states);
 		}
 	}
 }

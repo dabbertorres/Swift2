@@ -6,7 +6,7 @@
 
 namespace swift
 {
-	void PhysicalSystem::update(const std::vector<Entity*>& entities, float /*dt*/)
+	void PhysicalSystem::update(std::vector<Entity*>& entities, float /*dt*/)
 	{
 		for(auto& c : collisions)
 			delete c;

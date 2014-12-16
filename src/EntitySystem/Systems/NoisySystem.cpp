@@ -7,7 +7,7 @@ namespace swift
 		    assets(am)
 	{}
 
-	void NoisySystem::update(const std::vector<Entity*>& entities, float)
+	void NoisySystem::update(std::vector<Entity*>& entities, float)
 	{
 		for(auto& e : entities)
 		{

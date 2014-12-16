@@ -28,8 +28,8 @@ namespace swift
 	
 	void Movable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		moveVelocity = std::stof(variables.at("moveVelocity"));
-		velocity.x = std::stof(variables.at("velocityX"));
-		velocity.y = std::stof(variables.at("velocityY"));
+		initMember("moveVelocity", variables, moveVelocity, 0.f);
+		initMember("velocityX", variables, velocity.x, 0.f);
+		initMember("velocityY", variables, velocity.y, 0.f);
 	}
 }

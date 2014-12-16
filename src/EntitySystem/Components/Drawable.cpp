@@ -22,7 +22,10 @@ namespace swift
 	
 	void Drawable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		texture = variables.at("texture");
-		sprite.setScale(std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY")));
+		initMember("texture", variables, texture, std::string("./data/textures/ship.png"));
+		sf::Vector2f scale;
+		initMember("scaleX", variables, scale.x, 0.f);
+		initMember("scaleY", variables, scale.y, 0.f);
+		sprite.setScale(scale);
 	}
 }

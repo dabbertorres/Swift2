@@ -25,6 +25,6 @@ namespace swift
 	
 	void Name::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		name = variables.at("name");
+		initMember("name", variables, name, std::string("null"));
 	}
 }

@@ -5,7 +5,7 @@
 
 namespace swift
 {
-	void MovableSystem::update(const std::vector<Entity*>& entities, float dt)
+	void MovableSystem::update(std::vector<Entity*>& entities, float dt)
 	{
 		for(auto& e : entities)
 		{
