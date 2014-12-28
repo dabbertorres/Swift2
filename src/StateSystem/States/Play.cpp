@@ -13,6 +13,12 @@
 #include "../../SoundSystem/SoundPlayer.hpp"
 #include "../../SoundSystem/MusicPlayer.hpp"
 
+/* EntitySystem headers */
+#include "../../EntitySystem/Components/Pathfinder.hpp"
+
+/* Pathfinding headers */
+#include "../../Pathfinding/Path.hpp"
+
 namespace swift
 {
 	Play::Play(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
@@ -31,7 +37,7 @@ namespace swift
 			
 			switch(e.type)
 			{
-				case sf::Event::MouseLeft:
+				case sf::Event::LostFocus:
 					if(player)
 						if(player->has<Movable>())
 							player->get<Movable>()->velocity = {0, 0};
@@ -304,5 +310,20 @@ namespace swift
 				if(player->has<Movable>())
 					player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
 		}, false);
+		
+		mouse.newBinding("destination", sf::Mouse::Left, [&](const sf::Vector2i& pos)
+		{
+			if(player)
+			{
+				if(player->has<Pathfinder>() && player->has<Physical>())
+				{
+					Physical* phys = player->get<Physical>();
+					log << window.mapPixelToCoords(pos, playView).x << ' ' << window.mapPixelToCoords(pos, playView).y << '\n';
+					Path path(phys->position, window.mapPixelToCoords(pos, playView), phys->size, phys->zIndex, activeWorld->tilemap);
+					
+					player->get<Pathfinder>()->nodes = path.getNodes();
+				}
+			}
+		});
 	}
 }

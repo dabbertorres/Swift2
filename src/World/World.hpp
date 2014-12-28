@@ -18,6 +18,7 @@
 
 #include "../EntitySystem/Systems/DrawableSystem.hpp"
 #include "../EntitySystem/Systems/MovableSystem.hpp"
+#include "../EntitySystem/Systems/PathfinderSystem.hpp"
 #include "../EntitySystem/Systems/PhysicalSystem.hpp"
 #include "../EntitySystem/Systems/NoisySystem.hpp"
 
@@ -66,6 +67,7 @@ namespace swift
 			
 			DrawableSystem drawSystem;
 			MovableSystem moveSystem;
+			PathfinderSystem pathSystem;
 			PhysicalSystem physicalSystem;
 			NoisySystem noisySystem;
 

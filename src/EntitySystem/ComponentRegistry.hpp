@@ -4,6 +4,7 @@
 #include "Component.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Movable.hpp"
+#include "Components/Pathfinder.hpp"
 #include "Components/Physical.hpp"
 #include "Components/Name.hpp"
 #include "Components/Noisy.hpp"
@@ -19,6 +20,8 @@ namespace swift
 					return new Drawable;
 				else if(c == "Movable")
 					return new Movable;
+				else if(c == "Pathfinder")
+					return new Pathfinder;
 				else if(c == "Physical")
 					return new Physical;
 				else if(c == "Name")

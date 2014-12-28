@@ -32,9 +32,34 @@ namespace swift
 	void World::update(float dt)
 	{
 		moveSystem.update(entities, dt);
+		pathSystem.update(entities, dt);
 		physicalSystem.update(entities, dt);
 		drawSystem.update(entities, dt);
 		noisySystem.update(entities, dt);
+		
+		for(auto& e : entities)
+		{
+			if(e->has<Physical>() && e->has<Movable>())
+			{
+				Physical* phys = e->get<Physical>();
+				Movable* mov = e->get<Movable>();
+				
+				const Tile* tile = tilemap.getTile(phys->position, phys->zIndex);
+				
+				// if is nullptr, bad layer or bad position
+				// need to decide if engine should do something in this case. delete the entity?
+				if(tile != nullptr)
+				{
+					if(!tile->isPassable())
+					{
+						// if entity moved onto an impassable tile, move it back
+						phys->position -= mov->velocity * dt;
+					}
+				}
+			}
+		}
+		
+		
 	}
 	
 	/* save file format */
