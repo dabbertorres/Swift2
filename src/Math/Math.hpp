@@ -36,19 +36,28 @@ namespace swift
 		}
 		
 		template<typename T>
-		sf::Vector2<T> normal(const sf::Vector2<T>& vec)
+		sf::Vector2<T> normalY(const sf::Vector2<T>& vec)
 		{
 			sf::Vector2<T> nonNormalized(-vec.y, vec.x);
 			return unit(nonNormalized);
 		}
+		
+		template<typename T>
+		sf::Vector2<T> normalX(const sf::Vector2<T>& vec)
+		{
+			sf::Vector2<T> nonNormalized(vec.y, -vec.x);
+			return unit(nonNormalized);
+		}
 
 		/* distance math */
-		inline float distance(const sf::Vector2f& one, const sf::Vector2f& two)
+		template<typename T>
+		T distance(const sf::Vector2<T>& one, const sf::Vector2<T>& two)
 		{
 			return std::sqrt((two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y));
 		}
 
-		inline float distanceSquared(const sf::Vector2f& one, const sf::Vector2f& two)
+		template<typename T>
+		T distanceSquared(const sf::Vector2<T>& one, const sf::Vector2<T>& two)
 		{
 			return (two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y);
 		}
