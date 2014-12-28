@@ -21,14 +21,12 @@ namespace swift
 			
 			void update(float dt);
 			
-			void setPosition(const sf::Vector2f& pos);
-			
 			void addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int i);
 			
 			unsigned int getNumTiles() const;
 			
-			Tile* getTile(unsigned int t);
-			Tile* getTile(const sf::Vector2f& pos);
+			const Tile* getTile(unsigned int t) const;
+			const Tile* getTile(const sf::Vector2f& pos) const;
 
 		private:
 			void draw(sf::RenderTarget& target, sf::RenderStates states) const;

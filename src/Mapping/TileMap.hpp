@@ -21,6 +21,8 @@ namespace swift
 		public:
 			TileMap();
 			~TileMap();
+			
+			void update(float dt);
 
 			bool loadFile(const std::string& f);
 			bool loadTexture(const sf::Texture& tex);
@@ -29,8 +31,8 @@ namespace swift
 			void setSize(const sf::Vector2u& s);
 			void setTextureFile(const std::string& str);
 
-			Tile* getTile(unsigned int t, unsigned int l);
-			Tile* getTile(const sf::Vector2f& pos, unsigned int l);
+			const Tile* getTile(unsigned int t, unsigned int l) const;
+			const Tile* getTile(const sf::Vector2f& pos, unsigned int l) const;
 			
 			sf::Vector2u getTileSize() const;
 			sf::Vector2u getSize() const;

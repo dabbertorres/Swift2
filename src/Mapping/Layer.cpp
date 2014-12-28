@@ -21,11 +21,6 @@ namespace swift
 			t.update(dt);
 		}
 	}
-			
-	void Layer::setPosition(const sf::Vector2f& pos)
-	{
-		
-	}
 	
 	void Layer::addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int i)
 	{
@@ -37,7 +32,7 @@ namespace swift
 		return tiles.size();
 	}
 	
-	Tile* Layer::getTile(unsigned int t)
+	const Tile* Layer::getTile(unsigned int t) const
 	{
 		if(t < tiles.size())
 			return &tiles[t];
@@ -45,7 +40,7 @@ namespace swift
 			return nullptr;
 	}
 	
-	Tile* Layer::getTile(const sf::Vector2f& pos)
+	const Tile* Layer::getTile(const sf::Vector2f& pos) const
 	{
 		unsigned int tileNum = pos.x + pos.y * size.x;
 		if(tileNum < tiles.size())

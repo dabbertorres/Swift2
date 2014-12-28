@@ -24,6 +24,14 @@ namespace swift
 	{
 		texture = nullptr;
 	}
+	
+	void TileMap::update(float dt)
+	{
+		for(auto& l : layers)
+		{
+			l.update(dt);
+		}
+	}
 
 	bool TileMap::loadFile(const std::string& f)
 	{
@@ -94,14 +102,15 @@ namespace swift
 			layers.emplace_back(sizeTiles, tileSize);
 
 			tinyxml2::XMLElement* data = layer->FirstChildElement("data");
-			tinyxml2::XMLElement* tile = data->FirstChildElement("tile");
-			while(tile != nullptr)
+			std::string mapTiles = data->GetText();
+			std::istringstream iss(mapTiles);
+			std::string tileNum;
+			
+			while(std::getline(iss, tileNum, ','))
 			{
-				unsigned int gid = std::stoi(tile->Attribute("gid")) - 1;	// Tiled stores gids as tileset # + id in a tileset
-																			// since I'm just using 1 tileset... "- 1" makes it easy
+				unsigned int gid = std::stoi(tileNum) - 1;	// Tiled stores gids as tileset # + id in a tileset since I'm just using 1 tileset... "- 1" makes it easy
+				
 				layers.back().addTile(tileTypes[gid].texPos, textureTileSize, tileTypes[gid].passable, gid);
-
-				tile = tile->NextSiblingElement("tile");
 			}
 
 			layer = layer->NextSiblingElement("layer");
@@ -166,7 +175,7 @@ namespace swift
 		textureFile = str;
 	}
 
-	Tile* TileMap::getTile(unsigned int t, unsigned int l)
+	const Tile* TileMap::getTile(unsigned int t, unsigned int l) const
 	{
 		if(l < layers.size() && t < layers[l].getNumTiles())
 			return layers[l].getTile(t);
@@ -174,7 +183,7 @@ namespace swift
 			return nullptr;
 	}
 
-	Tile* TileMap::getTile(const sf::Vector2f& pos, unsigned int l)
+	const Tile* TileMap::getTile(const sf::Vector2f& pos, unsigned int l) const
 	{
 		if(l < layers.size())
 			return layers[l].getTile(pos);
