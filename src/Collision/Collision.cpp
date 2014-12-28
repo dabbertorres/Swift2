@@ -107,7 +107,6 @@ namespace swift
 		float twoDiagAngle = std::atan2(physTwo->size.y, physTwo->size.x) * 180.f / math::PI;
 		
 		// points of the rects clockwise
-		// -std::sin because of the flipped graphical y-axis
 		sf::Vector2f oneVerts[4];
 		oneVerts[0] = physOne->position;
 		oneVerts[1] = physOne->position + sf::Vector2f(physOne->size.x * std::cos(physOne->angle * math::PI / 180.f), physOne->size.x * std::sin(physOne->angle * math::PI / 180.f));
@@ -122,17 +121,17 @@ namespace swift
 		
 		// axes to test from rect 1
 		sf::Vector2f oneAxes[4];
-		oneAxes[0] = math::normal(oneVerts[1] - oneVerts[0]);
-		oneAxes[1] = math::normal(oneVerts[2] - oneVerts[1]);
-		oneAxes[2] = math::normal(oneVerts[3] - oneVerts[2]);
-		oneAxes[3] = math::normal(oneVerts[0] - oneVerts[3]);
+		oneAxes[0] = math::normalY(oneVerts[1] - oneVerts[0]);
+		oneAxes[1] = math::normalY(oneVerts[2] - oneVerts[1]);
+		oneAxes[2] = math::normalY(oneVerts[3] - oneVerts[2]);
+		oneAxes[3] = math::normalY(oneVerts[0] - oneVerts[3]);
 		
 		// axes to test from rect 2
 		sf::Vector2f twoAxes[4];
-		twoAxes[0] = math::normal(twoVerts[1] - twoVerts[0]);
-		twoAxes[1] = math::normal(twoVerts[2] - twoVerts[1]);
-		twoAxes[2] = math::normal(twoVerts[3] - twoVerts[2]);
-		twoAxes[3] = math::normal(twoVerts[0] - twoVerts[3]);
+		twoAxes[0] = math::normalY(twoVerts[1] - twoVerts[0]);
+		twoAxes[1] = math::normalY(twoVerts[2] - twoVerts[1]);
+		twoAxes[2] = math::normalY(twoVerts[3] - twoVerts[2]);
+		twoAxes[3] = math::normalY(twoVerts[0] - twoVerts[3]);
 		
 		// check for overlap between projections onto axes
 		float overlap = -1.f;
