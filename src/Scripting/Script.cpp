@@ -415,8 +415,8 @@ namespace swift
 	
 	Entity* Script::getPlayer()
 	{
-		if(world)
-			return world->getEntity(0);
+		if(play)
+			return play->getPlayer();
 		else
 			return nullptr;
 	}

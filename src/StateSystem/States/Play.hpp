@@ -28,6 +28,8 @@ namespace swift
 			virtual bool switchFrom();
 			virtual Type finish();
 			
+			Entity* getPlayer() const;
+			
 			bool addScript(const std::string& scriptFile);
 			bool removeScript(const std::string& scriptFile);
 

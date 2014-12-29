@@ -50,8 +50,17 @@ namespace swift
 		play.setUpdateFunc([&](sf::Time dt)
 		{
 			activeWorld->update(dt.asSeconds());
-			playView.setCenter({std::floor(player->get<Physical>()->position.x), std::floor(player->get<Physical>()->position.y)});
-			soundPlayer.setListenerPosition({player->get<Physical>()->position.x, player->get<Physical>()->position.y, 0});
+			
+			if(player)
+			{
+				playView.setCenter(std::floor(player->get<Physical>()->position.x), std::floor(player->get<Physical>()->position.y));
+				soundPlayer.setListenerPosition({player->get<Physical>()->position.x, player->get<Physical>()->position.y, 0});
+			}
+			else
+			{
+				playView.setCenter(0, 0);
+				soundPlayer.setListenerPosition({0, 0, 0});
+			}
 		});
 		
 		play.setDrawFunc([&](float)
@@ -119,34 +128,23 @@ namespace swift
 		if(!textureResult)
 			log << "[ERROR]: Setting texture for \"./data/maps/maze.tmx\" failed.\n";
 		
-		// loading fails, so create a player
+		// loading fails, so exit
 		if(!activeWorld->load())
 		{
-			player = activeWorld->addEntity();
-			player->add<Drawable>();
-			Drawable* drawable = player->get<Drawable>();
-			sf::Texture& texture = assets.getTexture("./data/textures/guy.png");
-			drawable->texture = "./data/textures/guy.png";
-			drawable->sprite.setTexture(texture);
-			drawable->sprite.setScale({16.f / texture.getSize().x, 48.f / texture.getSize().y});
-			
-			player->add<Name>();
-			Name* name = player->get<Name>();
-			name->name = "player";
-			
-			player->add<Physical>();
-			Physical* physical = player->get<Physical>();
-			physical->size = {16, 48};
-			physical->position = {window.getSize().x / 2.f, 500};
-			
-			player->add<Movable>();
-			Movable* movable = player->get<Movable>();
-			movable->moveVelocity = 100;
-			movable->velocity = {0, 0};
+			returnType = State::Type::Exit;
 		}
-		// loading suceeds, so get the player
+		// loading suceeds, so find the player
 		else
-			player = activeWorld->getEntities()[0];
+		{
+			for(auto& e : activeWorld->getEntities())
+			{
+				if(e->has<Controllable>())
+				{
+					player = e;
+					break;
+				}
+			}
+		}
 		
 		addScript("./data/scripts/quest.lua");
 	}
@@ -197,6 +195,11 @@ namespace swift
 	State::Type Play::finish()
 	{
 		return returnType;
+	}
+	
+	Entity* Play::getPlayer() const
+	{
+		return player;
 	}
 	
 	bool Play::addScript(const std::string& scriptFile)
@@ -255,60 +258,60 @@ namespace swift
 		keyboard.newBinding("moveUpStart", sf::Keyboard::Up, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {0, -player->get<Movable>()->moveVelocity};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveUp = true;
 		}, true);
 		
 		keyboard.newBinding("moveUpStop", sf::Keyboard::Up, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {0, player->get<Movable>()->moveVelocity};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveUp = false;
 		}, false);
 		
 		// move down press and release
 		keyboard.newBinding("moveDownStart", sf::Keyboard::Down, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {0, player->get<Movable>()->moveVelocity};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveDown = true;
 		}, true);
 		
 		keyboard.newBinding("moveDownStop", sf::Keyboard::Down, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {0, -player->get<Movable>()->moveVelocity};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveDown = false;
 		}, false);
 		
 		// move left press and release
 		keyboard.newBinding("moveLeftStart", sf::Keyboard::Left, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveLeft = true;
 		}, true);
 		
 		keyboard.newBinding("moveLeftStop", sf::Keyboard::Left, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {player->get<Movable>()->moveVelocity, 0};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveLeft = false;
 		}, false);
 		
 		// move right press and release
 		keyboard.newBinding("moveRightStart", sf::Keyboard::Right, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {player->get<Movable>()->moveVelocity, 0};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveRight = true;
 		}, true);
 		
 		keyboard.newBinding("moveRightStop", sf::Keyboard::Right, [&]()
 		{
 			if(player)
-				if(player->has<Movable>())
-					player->get<Movable>()->velocity += {-player->get<Movable>()->moveVelocity, 0};
+				if(player->has<Controllable>())
+					player->get<Controllable>()->moveRight = false;
 		}, false);
 		
 		mouse.newBinding("destination", sf::Mouse::Left, [&](const sf::Vector2i& pos)
@@ -318,7 +321,6 @@ namespace swift
 				if(player->has<Pathfinder>() && player->has<Physical>())
 				{
 					Physical* phys = player->get<Physical>();
-					log << window.mapPixelToCoords(pos, playView).x << ' ' << window.mapPixelToCoords(pos, playView).y << '\n';
 					Path path(phys->position, window.mapPixelToCoords(pos, playView), phys->size, phys->zIndex, activeWorld->tilemap);
 					
 					player->get<Pathfinder>()->nodes = path.getNodes();

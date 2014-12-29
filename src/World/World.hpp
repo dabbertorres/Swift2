@@ -16,6 +16,7 @@
 /* Entity */
 #include "../EntitySystem/Entity.hpp"
 
+#include "../EntitySystem/Systems/ControllableSystem.hpp"
 #include "../EntitySystem/Systems/DrawableSystem.hpp"
 #include "../EntitySystem/Systems/MovableSystem.hpp"
 #include "../EntitySystem/Systems/PathfinderSystem.hpp"
@@ -65,6 +66,7 @@ namespace swift
 			SoundPlayer& soundPlayer;
 			MusicPlayer& musicPlayer;
 			
+			ControllableSystem controlSystem;
 			DrawableSystem drawSystem;
 			MovableSystem moveSystem;
 			PathfinderSystem pathSystem;

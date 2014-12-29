@@ -31,6 +31,7 @@ namespace swift
 	
 	void World::update(float dt)
 	{
+		controlSystem.update(entities, dt);
 		moveSystem.update(entities, dt);
 		pathSystem.update(entities, dt);
 		physicalSystem.update(entities, dt);
