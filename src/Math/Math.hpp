@@ -19,7 +19,12 @@ namespace swift
 		template<typename T>
 		sf::Vector2<T> unit(const sf::Vector2<T>& vec)
 		{
-			return vec / magnitude(vec);
+			T mag = magnitude(vec);
+			
+			if(mag == 0)
+				return {0, 0};
+			
+			return vec / mag;
 		}
 
 		template<typename T>
