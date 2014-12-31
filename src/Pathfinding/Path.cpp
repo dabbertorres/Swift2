@@ -34,25 +34,28 @@ namespace swift
 
 		buildPathMap(center, end, nodes, visited, layer, map);
 
-		nodes = *std::min_element(possiblePaths.begin(), possiblePaths.end(), [](const PathNodes& one, const PathNodes& two)
-		{
-			float oneTotal = 0;
-			for(unsigned int i = 0; i < one.size() - 1; i++)
-			{
-				oneTotal += math::distance(one[i + 1].getPosition(), one[i].getPosition());
-			}
-
-			float twoTotal = 0;
-			for(unsigned int i = 0; i < two.size() - 1; i++)
-			{
-				twoTotal += math::distance(two[i + 1].getPosition(), two[i].getPosition());
-			}
-
-			return oneTotal < twoTotal;
-		});
-
 		if(!pathFound)
 			nodes.clear();
+		else
+		{
+			// find the path with the smallest distance, set the nodes to it
+			nodes = *std::min_element(possiblePaths.begin(), possiblePaths.end(), [](const PathNodes& one, const PathNodes& two)
+			{
+				float oneTotal = 0;
+				for(unsigned int i = 0; i < one.size() - 1; i++)
+				{
+					oneTotal += math::distance(one[i + 1].getPosition(), one[i].getPosition());
+				}
+
+				float twoTotal = 0;
+				for(unsigned int i = 0; i < two.size() - 1; i++)
+				{
+					twoTotal += math::distance(two[i + 1].getPosition(), two[i].getPosition());
+				}
+
+				return oneTotal < twoTotal;
+			});
+		}
 	}
 
 	void Path::buildPathMap(const sf::Vector2f& center, const sf::Vector2f& end, const PathNodes& path, std::vector<sf::Vector2u> visited, unsigned int layer, const TileMap& map)
@@ -62,7 +65,7 @@ namespace swift
 		// check if we've reached the end
 		if(math::distanceSquared(path.back().getPosition(), end) <= tileSize.x * tileSize.x / 2.f)
 		{
-			// if so, set the nodes to the calculated path, signal other calls to stop, and exit!
+			// if so, add path to the list of possible paths and return
 			possiblePaths.push_back(path);
 			pathFound = true;
 			return;
