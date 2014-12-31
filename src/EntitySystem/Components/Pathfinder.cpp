@@ -2,6 +2,11 @@
 
 namespace swift
 {
+	Pathfinder::Pathfinder()
+	:	destination({0, 0}),
+		needsPath(false)
+	{}
+	
 	std::string Pathfinder::getType()
 	{
 		return "Pathfinder";

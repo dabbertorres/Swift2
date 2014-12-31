@@ -5,10 +5,14 @@
 
 namespace swift
 {
+	class World;
+
 	class PathfinderSystem
 	{
 		public:
 			virtual void update(std::vector<Entity*>& entities, float);
+
+			static World* world;
 	};
 }
 

@@ -1,11 +1,15 @@
 #include "PathfinderSystem.hpp"
 
 #include "../Components/Pathfinder.hpp"
+#include "../../World/World.hpp"
+#include "../../Pathfinding/Path.hpp"
 
 #include "../../Math/Math.hpp"
 
 namespace swift
 {
+	World* PathfinderSystem::world = nullptr;
+
 	void PathfinderSystem::update(std::vector<Entity*>& entities, float)
 	{
 		for(auto& e : entities)
@@ -16,16 +20,30 @@ namespace swift
 				Physical* phys = e->get<Physical>();
 				Movable* mov = e->get<Movable>();
 				
-				if(!pf->nodes.empty())
+				if(world)
 				{
-					if(math::distanceSquared(pf->nodes.front(), phys->position) < 4.f)
+					if(pf->needsPath)
 					{
-						pf->nodes.pop_front();
-						
-						if(pf->nodes.empty())	// destination reached!
-							mov->velocity = {0, 0};
-						else
-							mov->velocity = math::unit(pf->nodes.front() - phys->position) * mov->moveVelocity;
+
+						Path path(phys->position, pf->destination, phys->zIndex, world->tilemap);
+
+						pf->nodes = path.getNodes();
+
+						if(!pf->nodes.empty())
+							pf->needsPath = false;
+					}
+
+					if(!pf->nodes.empty())
+					{
+						if(math::distanceSquared(pf->nodes.front().getPosition(), phys->position) <= world->tilemap.getTileSize().x * world->tilemap.getTileSize().x / 16.f)
+						{
+							pf->nodes.pop_front();
+							
+							if(pf->nodes.empty())	// destination reached!
+								mov->velocity = {0, 0};
+							else					// change direction to next node
+								mov->velocity = math::unit(pf->nodes.front().getPosition() - phys->position) * mov->moveVelocity;
+						}
 					}
 				}
 			}

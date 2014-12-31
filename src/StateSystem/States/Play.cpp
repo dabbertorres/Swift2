@@ -106,7 +106,7 @@ namespace swift
 	{
 		window.setKeyRepeatEnabled(false);
 		
-		worlds.emplace("testWorld", new World("testWorld", {800, 600}, assets, soundPlayer, musicPlayer));
+		worlds.emplace("testWorld", new World("testWorld", assets, soundPlayer, musicPlayer));
 		activeWorld = worlds["testWorld"];
 		
 		Script::setPlayState(*this);
@@ -147,6 +147,13 @@ namespace swift
 		}
 		
 		addScript("./data/scripts/quest.lua");
+		
+		// pathfinding test
+		Entity* ship = activeWorld->getEntity(1);
+		Pathfinder* shipPath = ship->get<Pathfinder>();
+		
+		shipPath->needsPath = true;
+		shipPath->destination = player->get<Physical>()->position;
 	}
 
 	void Play::handleEvent(sf::Event& event)
@@ -313,19 +320,5 @@ namespace swift
 				if(player->has<Controllable>())
 					player->get<Controllable>()->moveRight = false;
 		}, false);
-		
-		mouse.newBinding("destination", sf::Mouse::Left, [&](const sf::Vector2i& pos)
-		{
-			if(player)
-			{
-				if(player->has<Pathfinder>() && player->has<Physical>())
-				{
-					Physical* phys = player->get<Physical>();
-					Path path(phys->position, window.mapPixelToCoords(pos, playView), phys->size, phys->zIndex, activeWorld->tilemap);
-					
-					player->get<Pathfinder>()->nodes = path.getNodes();
-				}
-			}
-		});
 	}
 }
