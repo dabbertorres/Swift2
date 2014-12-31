@@ -2,19 +2,16 @@
 
 namespace swift
 {
-	Tile::Tile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int i)
+	Tile::Tile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int z, unsigned int i)
 	:	frameNum(0),
 		passable(p),
 		animated(false),
 		animationTime(0.f),
 		currentTime(0.f),
+		zIndex(z),
 		id(i)
 	{
 		texRects.push_back({static_cast<int>(texPos.x), static_cast<int>(texPos.y), static_cast<int>(texSize.x), static_cast<int>(texSize.y)});
-	}
-
-	Tile::~Tile()
-	{
 	}
 	
 	void Tile::update(float dt)
@@ -55,6 +52,11 @@ namespace swift
 	bool Tile::isPassable() const
 	{
 		return passable;
+	}
+	
+	unsigned int Tile::getZindex() const
+	{
+		return zIndex;
 	}
 	
 	unsigned int Tile::getID() const

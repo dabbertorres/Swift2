@@ -9,10 +9,6 @@ namespace swift
 	{
 		vertices.resize(size.x * size.y * 4);
 	}
-
-	Layer::~Layer()
-	{
-	}
 	
 	void Layer::update(float dt)
 	{
@@ -22,9 +18,9 @@ namespace swift
 		}
 	}
 	
-	void Layer::addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int i)
+	void Layer::addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int z, unsigned int i)
 	{
-		tiles.emplace_back(texPos, texSize, p, i);
+		tiles.emplace_back(texPos, texSize, p, z, i);
 	}
 	
 	unsigned int Layer::getNumTiles() const
@@ -42,11 +38,8 @@ namespace swift
 	
 	const Tile* Layer::getTile(const sf::Vector2f& pos) const
 	{
-		unsigned int tileNum = pos.x + pos.y * size.x;
-		if(tileNum < tiles.size())
-			return &tiles[tileNum];
-		else
-			return nullptr;
+		unsigned int tileNum = static_cast<unsigned int>(pos.x / tileSize.x) + static_cast<unsigned int>(pos.y / tileSize.y) * size.x;
+		return getTile(tileNum);
 	}
 	
 	void Layer::draw(sf::RenderTarget& target, sf::RenderStates states) const

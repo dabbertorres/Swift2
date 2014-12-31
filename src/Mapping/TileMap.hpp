@@ -43,7 +43,8 @@ namespace swift
 			struct TileType
 			{
 				bool passable;
-				//bool animated;
+				unsigned int zIndex;
+				bool animated;
 				sf::Vector2u texPos;
 			};
 

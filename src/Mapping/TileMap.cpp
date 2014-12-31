@@ -87,7 +87,11 @@ namespace swift
 				}
 				else if(property->Attribute("name", "Animated"))
 				{
-					current.passable = property->Attribute("value", "1") ? true : false;
+					current.animated = property->Attribute("value", "1") ? true : false;
+				}
+				else if(property->Attribute("name", "zIndex"))
+				{
+					current.zIndex = property->IntAttribute("value");
 				}
 
 				property = property->NextSiblingElement("property");
@@ -110,7 +114,7 @@ namespace swift
 			{
 				unsigned int gid = std::stoi(tileNum) - 1;	// Tiled stores gids as tileset # + id in a tileset since I'm just using 1 tileset... "- 1" makes it easy
 				
-				layers.back().addTile(tileTypes[gid].texPos, textureTileSize, tileTypes[gid].passable, gid);
+				layers.back().addTile(tileTypes[gid].texPos, textureTileSize, tileTypes[gid].passable, tileTypes[gid].zIndex, gid);
 			}
 
 			layer = layer->NextSiblingElement("layer");

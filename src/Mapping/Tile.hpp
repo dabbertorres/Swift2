@@ -11,8 +11,7 @@ namespace swift
 	class Tile
 	{
 		public:
-			Tile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int i);
-			~Tile();
+			Tile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int z, unsigned int i);
 			
 			void update(float dt);
 			void addFrame(const sf::IntRect& r);
@@ -23,6 +22,8 @@ namespace swift
 			void setAnimationTime(float t);
 			
 			bool isPassable() const;
+			
+			unsigned int getZindex() const;
 			
 			unsigned int getID() const;
 
@@ -35,6 +36,8 @@ namespace swift
 			bool animated;
 			float animationTime;
 			float currentTime;
+			
+			unsigned int zIndex;
 			
 			unsigned int id;
 	};
