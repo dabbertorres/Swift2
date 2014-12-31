@@ -1,5 +1,5 @@
 #include "World.hpp"
-
+#include <iostream>
 #include <cmath>
 #include "../Math/Math.hpp"
 
@@ -8,15 +8,14 @@
 
 namespace swift
 {
-	World::World(const std::string& n, const sf::Vector2i& s, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp)
+	World::World(const std::string& n, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp)
 		:	assets(am),
 			soundPlayer(sp),
 			musicPlayer(mp),
 			noisySystem(soundPlayer, assets),
-			size(s),
 			name(n)
 	{
-		tilemap.setSize(static_cast<sf::Vector2u>(s));
+		PathfinderSystem::world = this;
 	}
 	
 	World::~World()
@@ -38,6 +37,7 @@ namespace swift
 		drawSystem.update(entities, dt);
 		noisySystem.update(entities, dt);
 		
+		// check for collision with tilemap
 		for(auto& e : entities)
 		{
 			if(e->has<Physical>() && e->has<Movable>())
@@ -45,11 +45,12 @@ namespace swift
 				Physical* phys = e->get<Physical>();
 				Movable* mov = e->get<Movable>();
 				
-				const Tile* tile = tilemap.getTile(phys->position, phys->zIndex);
+				// 0 is the bottom layer, where walls are and such
+				const Tile* tile = tilemap.getTile(phys->position, 0);
 				
-				// if is nullptr, bad layer or bad position
-				// need to decide if engine should do something in this case. delete the entity?
-				if(tile != nullptr)
+				// if tile is valid
+				// need to decide if engine should do something if this is not the case. delete the entity?
+				if(tile)
 				{
 					if(!tile->isPassable())
 					{
@@ -60,14 +61,14 @@ namespace swift
 			}
 		}
 		
-		
+		tilemap.update(dt);
 	}
 	
-	/* save file format */
-	/* It is an xml file
+	/* save file format
+	 * It is an xml file
 	 * <world>
 	 * 	<entity>
-	 * 		<component type = "">
+	 * 		<component>
 	 * 			<variable>component data</variable>
 	 * 		</component>
 	 * 	</entity>
@@ -193,11 +194,6 @@ namespace swift
 		drawSystem.draw(entities, target, states);
 	}
 	
-	sf::Vector2i World::getSize() const
-	{
-		return size;
-	}
-	
 	std::string World::getName() const
 	{
 		return name;
@@ -244,7 +240,7 @@ namespace swift
 		std::vector<Entity*> around;
 		
 		// if pos is outside of the world, or the radius is 0 or less, just return an empty vector
-		if(!(0 <= pos.x && pos.x < size.x && 0 <= pos.y && pos.y < size.y) || radius <= 0)
+		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
 			return around;
 		
 		for(auto& e : entities)
@@ -264,7 +260,7 @@ namespace swift
 	{
 		std::vector<unsigned> around;
 		
-		if(!(0 <= pos.x && pos.x < size.x && 0 <= pos.y && pos.y < size.y) || radius <= 0)
+		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
 			return around;
 		
 		for(unsigned i = 0; i < entities.size(); i++)

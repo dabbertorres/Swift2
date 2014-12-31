@@ -33,7 +33,7 @@ namespace swift
 	class World
 	{
 		public:
-			World(const std::string& n, const sf::Vector2i& s, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp);
+			World(const std::string& n, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp);
 			virtual ~World();
 
 			virtual void update(float dt);
@@ -43,8 +43,6 @@ namespace swift
 
 			void drawWorld(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 			void drawEntities(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
-
-			sf::Vector2i getSize() const;
 			
 			std::string getName() const;
 
@@ -72,9 +70,7 @@ namespace swift
 			PathfinderSystem pathSystem;
 			PhysicalSystem physicalSystem;
 			NoisySystem noisySystem;
-
-			sf::Vector2i size;
-
+			
 			std::vector<Entity*> entities;
 
 		private:

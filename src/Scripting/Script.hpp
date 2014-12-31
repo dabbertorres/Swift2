@@ -114,7 +114,6 @@ namespace swift
 			static Entity* getEntity(int e);
 			static Entity* getPlayer();
 			static bool isAround(Physical* p, float x, float y, float r);
-			static std::tuple<int, int> getWorldSize();
 			static std::string getCurrentWorld();
 		
 			// Entity System

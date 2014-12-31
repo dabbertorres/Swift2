@@ -291,7 +291,6 @@ namespace swift
 		luaState["getEntity"] = &getEntity;
 		luaState["getPlayer"] = &getPlayer;
 		luaState["isAround"] = &isAround;
-		luaState["getWorldSize"] = &getWorldSize;
 		luaState["getCurrentWorld"] = &getCurrentWorld;
 		
 		// Entity System
@@ -424,14 +423,6 @@ namespace swift
 	bool Script::isAround(Physical* p, float x, float y, float r)
 	{
 		return math::distance(p->position, {x, y}) <= r;
-	}
-	
-	std::tuple<int, int> Script::getWorldSize()
-	{
-		if(world)
-			return std::make_tuple(world->getSize().x, world->getSize().y);
-		else
-			return std::make_tuple(0, 0);
 	}
 	
 	std::string Script::getCurrentWorld()
