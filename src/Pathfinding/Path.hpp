@@ -27,6 +27,8 @@ namespace swift
 			
 			PathNodes nodes;
 			
+			std::vector<PathNodes> possiblePaths;
+			
 			bool pathFound;
 	};
 }
