@@ -1,5 +1,5 @@
 #include "Physical.hpp"
-
+#include <iostream>
 #include "../Entity.hpp"
 
 namespace swift
@@ -10,9 +10,7 @@ namespace swift
 		size({0, 0}),
 		collides(false),
 		angle(0)
-	{
-		
-	}
+	{}
 	
 	std::string Physical::getType()
 	{

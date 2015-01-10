@@ -32,20 +32,23 @@ namespace swift
 			
 			bool addScript(const std::string& scriptFile);
 			bool removeScript(const std::string& scriptFile);
+			
+			void changeWorld(const std::string& name, const std::string& mapFile);
 
 		private:
+			void setupGUI();
+			void setupKeyBindings();
+			
 			// SubState system
 			SubState* activeState;
 			SubState play;
 			SubState pause;
-			
-			void setupGUI();
-			void setupKeyBindings();
 
 			cstr::Window hud;
 			cstr::Window pauseMenu;
 			
 			sf::View playView;
+			float currentZoom;
 			
 			std::map<std::string, World*> worlds;
 			std::map<std::string, Script*> scripts;

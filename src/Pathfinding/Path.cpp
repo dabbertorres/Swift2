@@ -25,12 +25,12 @@ namespace swift
 		std::vector<sf::Vector2u> visited;
 
 		nodes.push_back(start);
-		visited.push_back( {static_cast<unsigned int>(start.x / tileSize.x), static_cast<unsigned int>(start.y / tileSize.y)});
+		visited.push_back({static_cast<unsigned int>(start.x / tileSize.x), static_cast<unsigned int>(start.y / tileSize.y)});
 
 		sf::Vector2f center = getTileCenter(nodes.back().getPosition(), tileSize);
 
 		nodes.push_back(center);
-		visited.push_back( {static_cast<unsigned int>(center.x / tileSize.x), static_cast<unsigned int>(center.y / tileSize.y)});
+		visited.push_back({static_cast<unsigned int>(center.x / tileSize.x), static_cast<unsigned int>(center.y / tileSize.y)});
 
 		buildPathMap(center, end, nodes, visited, layer, map);
 
@@ -62,8 +62,8 @@ namespace swift
 	{
 		sf::Vector2u tileSize = map.getTileSize();
 
-		// check if we've reached the end
-		if(math::distanceSquared(path.back().getPosition(), end) <= tileSize.x * tileSize.x / 2.f)
+		// check if we've reached the end (in the same tile as the end position
+		if(math::distanceSquared(path.back().getPosition(), getTileCenter(end, tileSize)) <= tileSize.x * tileSize.x / 4.f)
 		{
 			// if so, add path to the list of possible paths and return
 			possiblePaths.push_back(path);
@@ -96,7 +96,7 @@ namespace swift
 		// also, save copying until now. Less copying that way
 		for(auto& n : neighbors)
 		{
-			n.tile = map.getTile(n.position, 0);
+			n.tile = map.getTile(n.position, layer);
 
 			sf::Vector2u tilePos = {static_cast<unsigned int>(n.position.x / tileSize.x), static_cast<unsigned int>(n.position.y / tileSize.y)};
 

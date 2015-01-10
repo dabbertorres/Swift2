@@ -14,6 +14,58 @@ namespace swift
 			Entity()
 			{
 			}
+			
+			Entity(const Entity& other)
+			{
+				*this = other;
+			}
+			
+			Entity& operator=(const Entity& other)
+			{
+				if(other.has<Controllable>())
+				{
+					add<Controllable>();
+					*get<Controllable>() = *other.get<Controllable>();
+				}
+				
+				if(other.has<Drawable>())
+				{
+					add<Drawable>();
+					*get<Drawable>() = *other.get<Drawable>();
+				}
+				
+				if(other.has<Movable>())
+				{
+					add<Movable>();
+					*get<Movable>() = *other.get<Movable>();
+				}
+				
+				if(other.has<Name>())
+				{
+					add<Name>();
+					*get<Name>() = *other.get<Name>();
+				}
+				
+				if(other.has<Noisy>())
+				{
+					add<Noisy>();
+					*get<Noisy>() = *other.get<Noisy>();
+				}
+				
+				if(other.has<Pathfinder>())
+				{
+					add<Pathfinder>();
+					*get<Pathfinder>() = *other.get<Pathfinder>();
+				}
+				
+				if(other.has<Physical>())
+				{
+					add<Physical>();
+					*get<Physical>() = *other.get<Physical>();
+				}
+				
+				return *this;
+			}
 
 			~Entity()
 			{
@@ -88,24 +140,22 @@ namespace swift
 			}
 			
 			template<typename C>
-			C* get()
+			C* get() const
 			{
 				static_assert(std::is_base_of<Component, C>::value, "C must be a child of swift::Component");
 				
 				if(has<C>())
 				{
-					return static_cast<C*>(components[C::getType()]);
+					return static_cast<C*>(components.at(C::getType()));
 				}
 				else
 					return nullptr;
 			}
 			
-			// Must be overridden by a Component for it's own type
-			//template<typename C>
-			Component* get(std::string c)
+			Component* get(std::string c) const
 			{
 				if(has(c))
-					return components[c];
+					return components.at(c);
 				else
 					return nullptr;
 			}
