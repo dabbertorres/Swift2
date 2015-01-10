@@ -20,7 +20,7 @@ namespace swift
 			
 			void update(float dt);
 			
-			void addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int z, unsigned int i);
+			void addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, int i);
 			
 			unsigned int getNumTiles() const;
 			

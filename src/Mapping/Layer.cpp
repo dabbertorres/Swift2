@@ -18,9 +18,9 @@ namespace swift
 		}
 	}
 	
-	void Layer::addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, unsigned int z, unsigned int i)
+	void Layer::addTile(const sf::Vector2u& texPos, const sf::Vector2u& texSize, bool p, int i)
 	{
-		tiles.emplace_back(texPos, texSize, p, z, i);
+		tiles.emplace_back(texPos, texSize, p, i);
 	}
 	
 	unsigned int Layer::getNumTiles() const

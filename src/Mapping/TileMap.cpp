@@ -15,6 +15,7 @@ namespace swift
 		sizeTiles({0, 0}),
 		textureSize({0, 0}),
 		textureTileSize({0, 0}),
+		file(""),
 		textureFile(""),
 		texture(nullptr)
 	{
@@ -35,6 +36,8 @@ namespace swift
 
 	bool TileMap::loadFile(const std::string& f)
 	{
+		file = f;
+		
 		tinyxml2::XMLDocument loadFile;
 		loadFile.LoadFile(f.c_str());
 
@@ -89,10 +92,6 @@ namespace swift
 				{
 					current.animated = property->Attribute("value", "1") ? true : false;
 				}
-				else if(property->Attribute("name", "zIndex"))
-				{
-					current.zIndex = property->IntAttribute("value");
-				}
 
 				property = property->NextSiblingElement("property");
 			}
@@ -112,9 +111,12 @@ namespace swift
 			
 			while(std::getline(iss, tileNum, ','))
 			{
-				unsigned int gid = std::stoi(tileNum) - 1;	// Tiled stores gids as tileset # + id in a tileset since I'm just using 1 tileset... "- 1" makes it easy
+				int gid = std::stoi(tileNum) - 1;	// Tiled stores gids as tileset # + id in a tileset since I'm just using 1 tileset... "- 1" makes it easy
 				
-				layers.back().addTile(tileTypes[gid].texPos, textureTileSize, tileTypes[gid].passable, tileTypes[gid].zIndex, gid);
+				if(gid != -1)
+					layers.back().addTile(tileTypes[gid].texPos, textureTileSize, tileTypes[gid].passable, gid);
+				else	// if no tile goes here
+					layers.back().addTile({0, 0}, {0, 0}, true, -1);
 			}
 
 			layer = layer->NextSiblingElement("layer");
@@ -140,11 +142,20 @@ namespace swift
 					if(i + j * sizeTiles.x >= l.getNumTiles())
 						return false;
 
-					// current tile number
-					int tileNum = l.getTile(i + j * sizeTiles.x)->getID();
-
 					// pointer to quad
 					sf::Vertex* quad = &l.vertices[(i + j * sizeTiles.x) * 4];
+
+					// current tile number
+					int tileNum = l.getTile(i + j * sizeTiles.x)->getID();
+					
+					// if no tile should be displayed here, make it transparent
+					if(tileNum == -1)
+					{
+						quad[0].color = {0, 0, 0, 0};
+						quad[1].color = {0, 0, 0, 0};
+						quad[2].color = {0, 0, 0, 0};
+						quad[3].color = {0, 0, 0, 0};
+					}
 					
 					// define 4 corners
 					quad[0].position = {std::floor(i * static_cast<float>(tileSize.x) * scale.x), std::floor(j * static_cast<float>(tileSize.y) * scale.y)};
@@ -195,19 +206,24 @@ namespace swift
 			return nullptr;
 	}
 
-	sf::Vector2u TileMap::getTileSize() const
+	const sf::Vector2u& TileMap::getTileSize() const
 	{
 		return tileSize;
 	}
 
-	sf::Vector2u TileMap::getSize() const
+	const sf::Vector2u& TileMap::getSize() const
 	{
 		return sizeTiles;
 	}
 
-	std::string TileMap::getTextureFile() const
+	const std::string& TileMap::getTextureFile() const
 	{
 		return textureFile;
+	}
+	
+	const std::string& TileMap::getFile() const
+	{
+		return file;
 	}
 
 	unsigned int TileMap::getNumOfTileTypes() const
