@@ -33,18 +33,18 @@ namespace swift
 	class World
 	{
 		public:
-			World(const std::string& n, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp);
+			World(const std::string& n, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, const std::vector<std::string>& scriptFiles);
 			virtual ~World();
 
 			virtual void update(float dt);
-
-			virtual bool load();
-			virtual bool save();
+			
+			bool addScript(const std::string& scriptFile);
+			bool removeScript(const std::string& scriptFile);
 
 			void drawWorld(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 			void drawEntities(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 			
-			std::string getName() const;
+			const std::string& getName() const;
 
 			Entity* addEntity();
 			bool removeEntity(int e);
@@ -56,6 +56,9 @@ namespace swift
 			const std::vector<unsigned> getEntitiesAroundIDs(const sf::Vector2f& pos, float radius);
 			
 			const std::vector<Collision*> getCollisions() const;
+
+			virtual bool load();
+			virtual bool save();
 
 			TileMap tilemap;
 
@@ -75,6 +78,8 @@ namespace swift
 
 		private:
 			std::string name;
+			
+			std::map<std::string, Script*> scripts;
 	};
 }
 

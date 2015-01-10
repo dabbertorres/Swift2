@@ -100,6 +100,7 @@ namespace lpp
 	
 	void State::reload()
 	{
+		lua_settop(state, 0);
 		lua_close(state);
 		state = luaL_newstate();
 		functions.clear();

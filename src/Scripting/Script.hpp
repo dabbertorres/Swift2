@@ -59,8 +59,8 @@ namespace swift
 
 			void update();
 			
-			bool load(const std::string& file);
-			bool save(const std::string& file);
+			bool load(const std::string& lfile);
+			bool save(const std::string& sfile);
 
 			bool toDelete();
 			
@@ -115,6 +115,10 @@ namespace swift
 			static Entity* getPlayer();
 			static bool isAround(Physical* p, float x, float y, float r);
 			static std::string getCurrentWorld();
+			static bool setCurrentWorld(std::string s, std::string mf);
+			
+			// tilemap
+			static std::tuple<int, int> getTileSize();
 		
 			// Entity System
 			static bool add(Entity* e, std::string c);

@@ -23,7 +23,7 @@ namespace swift
 
 	Script::Script()
 		:	file(""),
-			deleteMe(false)
+		    deleteMe(false)
 	{
 		// We don't want to give the scripts access to os commands or file writing abilities
 		// so we only open the necessary libraries
@@ -52,7 +52,7 @@ namespace swift
 
 		if(!runResult)
 			log << "[ERROR]: " << file << " run: " << luaState.getErrors() << '\n';
-			
+
 		this->file = file;
 
 		return loadResult && runResult;
@@ -60,7 +60,13 @@ namespace swift
 
 	void Script::start()
 	{
+		if(!luaState["Start"])
+			return;
+
 		luaState["Start"]();
+
+		if(!luaState["Done"])
+			return;
 
 		if(static_cast<bool>(luaState["Done"]))
 		{
@@ -70,7 +76,13 @@ namespace swift
 
 	void Script::update()
 	{
+		if(!luaState["Update"])
+			return;
+
 		luaState["Update"]();
+
+		if(!luaState["Done"])
+			return;
 
 		if(static_cast<bool>(luaState["Done"]))
 		{
@@ -78,31 +90,31 @@ namespace swift
 		}
 	}
 
-	bool Script::load(const std::string& file)
+	bool Script::load(const std::string& lfile)
 	{
 		tinyxml2::XMLDocument loadFile;
-		tinyxml2::XMLError result = loadFile.LoadFile(file.c_str());
+		tinyxml2::XMLError result = loadFile.LoadFile(lfile.c_str());
 
 		if(result != tinyxml2::XML_SUCCESS)
 		{
-			log << "Loading script save file \"" << file << "\" failed.\n";
+			log << "[ERROR]: Loading script save file \"" << lfile << "\" failed.\n";
 			return false;
 		}
 
 		tinyxml2::XMLElement* root = loadFile.FirstChildElement("script");
 		if(root == nullptr)
 		{
-			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
+			log << "[WARNING]: Script save file \"" << lfile << "\" does not have a \"script\" root element.\n";
 			return false;
 		}
-		
+
 		int total = 0;
 		tinyxml2::XMLElement* variable = root->FirstChildElement("variable");
 		while(variable != nullptr)
 		{
 			char type = variable->Attribute("type")[0];
 			std::string value = variable->GetText();
-			
+
 			switch(type)
 			{
 				case 'n':	// number
@@ -120,91 +132,105 @@ namespace swift
 				default:
 					break;
 			}
-			
+
 			total++;
 			variable = variable->NextSiblingElement("variable");
 		}
 		
-		luaState.call("Load", total);
+		if(luaState["Load"])
+			luaState.call("Load", total);
+		else
+			log << "[WARNING]: No Load function in script \"" << file << "\"\n";
 
 		return true;
 	}
 
-	bool Script::save(const std::string& file)
+	bool Script::save(const std::string& sfile)
 	{
 		// save all variables to save file
 		tinyxml2::XMLDocument saveFile;
-		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
-		
-		if(result != tinyxml2::XML_SUCCESS)
+		tinyxml2::XMLError result = saveFile.LoadFile(sfile.c_str());
+
+		if(result != tinyxml2::XML_SUCCESS && result != tinyxml2::XML_ERROR_EMPTY_DOCUMENT && result != tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 		{
-			log << "Loading script save file \"" << file << "\" failed.\n";
+			log << "[ERROR]: Loading script save file \"" << sfile << "\" failed.\n";
 			return false;
 		}
 
 		tinyxml2::XMLElement* root = saveFile.FirstChildElement("script");
 		if(root == nullptr)
 		{
-			log << "Script save file \"" << file << "\" does not have a \"script\" root element.\n";
-			return false;
+			log << "[WARNING]: Script save file \"" << sfile << "\" does not have a \"script\" root element.\n";
+			root = saveFile.NewElement("script");
+			saveFile.InsertEndChild(root);
 		}
+		else
+			root->DeleteChildren();
 
-		root->DeleteChildren();
-		
 		luaState.clean();
-		
-		// call save function
-		luaState["Save"]();
-		
-		int totalRets = luaState.getTop();
-		
-		for(int i = 1; i <= totalRets; i++)
+
+		if(luaState["Save"])
 		{
-			tinyxml2::XMLElement* newVariable = saveFile.NewElement("variable");
-			
-			decltype(LUA_TNUMBER) type = luaState[i].getType();
-			
-			switch(type)
+			// call save function
+			luaState["Save"]();
+
+			int totalRets = luaState.getTop();
+
+			for(int i = 1; i <= totalRets; i++)
 			{
-				case LUA_TNONE:
-					log << "[WARNING]: Invalid type on Lua stack\n";
-					newVariable->SetAttribute("type", "0");
-					newVariable->SetText("nil");
-				case LUA_TNUMBER:
-					newVariable->SetAttribute("type", "n");
-					newVariable->SetText(static_cast<float>(luaState[i]));
-					break;
-				case LUA_TBOOLEAN:
-					newVariable->SetAttribute("type", "b");
-					newVariable->SetText(static_cast<bool>(luaState[i]));
-					break;
-				case LUA_TSTRING:
-					newVariable->SetAttribute("type", "s");
-					newVariable->SetText(static_cast<const char*>(luaState[i]));
-					break;
-				default:
-					newVariable->SetAttribute("type", "0");
-					newVariable->SetText("nil");
-					break;
+				tinyxml2::XMLElement* newVariable = saveFile.NewElement("variable");
+
+				auto type = luaState[i].getType();
+
+				switch(type)
+				{
+					case LUA_TNUMBER:
+						newVariable->SetAttribute("type", "n");
+						newVariable->SetText(static_cast<float>(luaState[i]));
+						break;
+					case LUA_TBOOLEAN:
+						newVariable->SetAttribute("type", "b");
+						newVariable->SetText(static_cast<bool>(luaState[i]));
+						break;
+					case LUA_TSTRING:
+					{
+						newVariable->SetAttribute("type", "s");
+						std::string temp = luaState[i];
+						newVariable->SetText(temp.c_str());
+						break;
+					}
+					default:
+						newVariable->SetAttribute("type", "0");
+						newVariable->SetText("nil");
+						break;
+				}
+
+				root->InsertEndChild(newVariable);
 			}
 
-			root->InsertEndChild(newVariable);
+			if(saveFile.SaveFile(sfile.c_str()) != tinyxml2::XML_SUCCESS)
+			{
+				log << "[ERROR]: Saving script save file: " << sfile << " failed at saving.\n";
+				return false;
+			}
+
+			return true;
 		}
-
-		saveFile.SaveFile(file.c_str());
-
-		return true;
+		
+		log << "[INFO]: Script: " << file << " does not have a Save function.\n";
+		
+		return false;
 	}
 
 	bool Script::toDelete()
 	{
 		return deleteMe;
 	}
-	
+
 	void Script::reset()
 	{
 		luaState.reload();
-		
+
 		// We don't want to give the scripts access to os commands or file writing abilities
 		// so we only open the necessary libraries
 		luaState.openLib("base", luaopen_base);
@@ -215,7 +241,7 @@ namespace swift
 		addVariables();
 		addClasses();
 		addFunctions();
-		
+
 		loadFromFile(file);
 	}
 
@@ -253,7 +279,7 @@ namespace swift
 	{
 		world = nullptr;
 	}
-	
+
 	void Script::setPlayState(Play& p)
 	{
 		play = &p;
@@ -279,11 +305,11 @@ namespace swift
 		luaState["getTime"] = &getTime;
 		luaState["doKeypress"] = &doKeypress;
 		luaState["log"] = &logMsg;
-		
+
 		// play
 		luaState["addScript"] = &addScript;
 		luaState["removeScript"] = &removeScript;
-		
+
 		// world
 		luaState["newEntity"] = &newEntity;
 		luaState["removeEntity"] = &removeEntity;
@@ -292,47 +318,51 @@ namespace swift
 		luaState["getPlayer"] = &getPlayer;
 		luaState["isAround"] = &isAround;
 		luaState["getCurrentWorld"] = &getCurrentWorld;
+		luaState["setCurrentWorld"] = &setCurrentWorld;
 		
+		// tilemap
+		luaState["getTileSize"] = &getTileSize;
+
 		// Entity System
 		luaState["add"] = &add;
 		luaState["remove"] = &remove;
 		luaState["has"] = &has;
-		
+
 		// Drawable
 		luaState["getDrawable"] = &getDrawable;
 		luaState["setTexture"] = &setTexture;
 		luaState["setTextureRect"] = &setTextureRect;
 		luaState["getSpriteSize"] = &getSpriteSize;
 		luaState["setScale"] = &setScale;
-		
+
 		// Movable
 		luaState["getMovable"] = &getMovable;
 		luaState["setMoveVelocity"] = &setMoveVelocity;
 		luaState["getVelocity"] = &getVelocity;
-		
+
 		// Physical
 		luaState["getPhysical"] = &getPhysical;
 		luaState["setPosition"] = &setPosition;
 		luaState["getPosition"] = &getPosition;
 		luaState["setSize"] = &setSize;
 		luaState["getSize"] = &getSize;
-		
+
 		// Name
 		luaState["getName"] = &getName;
 		luaState["setName"] = &setName;
 		luaState["getNameVal"] = &getNameVal;
-		
+
 		// Noisy
 		luaState["getNoisy"] = &getNoisy;
 		luaState["setSound"] = &setSound;
 		luaState["getSound"] = &getSound;
-		
+
 		// Settings
 		luaState["getSettingStr"] = &getSettingStr;
 		luaState["getSettingBool"] = &getSettingBool;
 		luaState["getSettingNum"] = &getSettingNum;
 	}
-	
+
 	/* Lua converted functions */
 	// Utility
 	std::tuple<unsigned, unsigned> Script::getWindowSize()
@@ -342,7 +372,7 @@ namespace swift
 		else
 			return std::make_tuple(0u, 0u);
 	}
-	
+
 	float Script::getTime()
 	{
 		if(clock)
@@ -350,13 +380,13 @@ namespace swift
 		else
 			return 0.f;
 	}
-	
+
 	void Script::doKeypress(std::string k)
 	{
 		if(keyboard)
 			keyboard->call(k);
 	}
-	
+
 	void Script::logMsg(std::string m)
 	{
 		log << m << '\n';
@@ -370,7 +400,7 @@ namespace swift
 		else
 			return false;
 	}
-	
+
 	bool Script::removeScript(std::string s)
 	{
 		if(play)
@@ -378,7 +408,7 @@ namespace swift
 		else
 			return false;
 	}
-	
+
 	// World
 	Entity* Script::newEntity()
 	{
@@ -387,7 +417,7 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	bool Script::removeEntity(int e)
 	{
 		if(world)
@@ -395,15 +425,15 @@ namespace swift
 		else
 			return false;
 	}
-	
+
 	std::vector<Entity*> Script::getEntities()
 	{
 		if(world)
 			return world->getEntities();
 		else
-			return std::vector<Entity*>{};
+			return std::vector<Entity*> {};
 	}
-	
+
 	Entity* Script::getEntity(int e)
 	{
 		if(world)
@@ -411,7 +441,7 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	Entity* Script::getPlayer()
 	{
 		if(play)
@@ -419,20 +449,49 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	bool Script::isAround(Physical* p, float x, float y, float r)
 	{
-		return math::distance(p->position, {x, y}) <= r;
+		if(p)
+			return math::distance(p->position, {x, y}) <= r;
+		else
+			return false;
 	}
-	
+
 	std::string Script::getCurrentWorld()
 	{
 		if(world)
-			return world->getName();
+		{
+			std::string name = world->getName();
+			return name;
+		}
 		else
 			return "nil";
 	}
-		
+	
+	bool Script::setCurrentWorld(std::string s, std::string mf)
+	{
+		if(play)
+		{
+			play->changeWorld(s, mf);
+			return true;
+		}
+		else
+			return false;
+	}
+	
+	// tilemap
+	std::tuple<int, int> Script::getTileSize()
+	{
+		if(world)
+		{
+			sf::Vector2u ts = world->tilemap.getTileSize();
+			return std::make_tuple(ts.x, ts.y);
+		}
+		else
+			return std::make_tuple(0, 0);
+	}
+
 	// Entity System
 	bool Script::add(Entity* e, std::string c)
 	{
@@ -441,7 +500,7 @@ namespace swift
 		else
 			return false;
 	}
-	
+
 	bool Script::remove(Entity* e, std::string c)
 	{
 		if(e)
@@ -449,7 +508,7 @@ namespace swift
 		else
 			return false;
 	}
-	
+
 	bool Script::has(Entity* e, std::string c)
 	{
 		if(e)
@@ -466,7 +525,7 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	bool Script::setTexture(Drawable* d, std::string t)
 	{
 		if(d)
@@ -478,13 +537,13 @@ namespace swift
 		else
 			return false;
 	}
-	
+
 	void Script::setTextureRect(Drawable* d, int x, int y, int w, int h)
 	{
 		if(d)
-			d->sprite.setTextureRect({x, y, w, h});
+			d->sprite.setTextureRect( {x, y, w, h});
 	}
-	
+
 	std::tuple<float, float> Script::getSpriteSize(Drawable* d)
 	{
 		if(d)
@@ -492,13 +551,13 @@ namespace swift
 		else
 			return std::make_tuple(0.f, 0.f);
 	}
-	
+
 	void Script::setScale(Drawable* d, float x, float y)
 	{
 		if(d)
-			d->sprite.setScale({x, y});
+			d->sprite.setScale( {x, y});
 	}
-	
+
 	// Movable
 	Movable* Script::getMovable(Entity* e)
 	{
@@ -507,13 +566,13 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	void Script::setMoveVelocity(Movable* m, float v)
 	{
 		if(m)
 			m->moveVelocity = v;
 	}
-	
+
 	std::tuple<float, float> Script::getVelocity(Movable* m)
 	{
 		if(m)
@@ -530,13 +589,13 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	void Script::setPosition(Physical* p, float x, float y)
 	{
 		if(p)
 			p->position = {x, y};
 	}
-	
+
 	std::tuple<float, float> Script::getPosition(Physical* p)
 	{
 		if(p)
@@ -544,13 +603,13 @@ namespace swift
 		else
 			return std::make_tuple(0.f, 0.f);
 	}
-	
+
 	void Script::setSize(Physical* p, unsigned x, unsigned y)
 	{
 		if(p)
 			p->size = {x, y};
 	}
-	
+
 	std::tuple<unsigned, unsigned> Script::getSize(Physical* p)
 	{
 		if(p)
@@ -567,13 +626,13 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	void Script::setName(Name* n, std::string name)
 	{
 		if(n)
 			n->name = name;
 	}
-	
+
 	std::string Script::getNameVal(Name* n)
 	{
 		if(n)
@@ -590,13 +649,13 @@ namespace swift
 		else
 			return nullptr;
 	}
-	
+
 	void Script::setSound(Noisy* n, std::string s)
 	{
 		if(n)
 			n->soundFile = s;
 	}
-	
+
 	std::string Script::getSound(Noisy* n)
 	{
 		if(n)
@@ -604,20 +663,20 @@ namespace swift
 		else
 			return "null";
 	}
-	
+
 	// Settings
 	std::tuple<bool, std::string> Script::getSettingStr(std::string s)
 	{
 		std::string v;
 		return std::make_tuple(settings->get(s, v), v);
 	}
-	
+
 	std::tuple<bool, bool> Script::getSettingBool(std::string s)
 	{
 		bool v;
 		return std::make_tuple(settings->get(s, v), v);
 	}
-	
+
 	std::tuple<bool, float> Script::getSettingNum(std::string s)
 	{
 		float v;

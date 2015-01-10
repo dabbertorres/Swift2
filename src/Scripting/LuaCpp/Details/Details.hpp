@@ -50,7 +50,7 @@ namespace detail
 		return 1;
 	}
 	
-	inline int pushValue(lua_State* state, const std::string& s)
+	inline int pushValue(lua_State* state, const std::string s)
 	{
 		lua_pushlstring(state, s.c_str(), s.size());
 		return 1;
