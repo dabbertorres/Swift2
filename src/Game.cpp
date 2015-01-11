@@ -17,6 +17,8 @@ namespace swift
 			musicLevel(75),
 			ticksPerSecond(tps)
 	{
+		addKeyboardCommands();
+		addConsoleCommands();
 	}
 
 	Game::~Game()
@@ -236,7 +238,7 @@ namespace swift
 			console.activate(!console.isActivated());
 		});
 	}
-			
+	
 	void Game::addConsoleCommands()
 	{
 		// add some console commands

@@ -12,7 +12,7 @@ namespace swift
 		    activated(false)
 	{
 		background.setFillColor(sf::Color(0, 0, 0, 190));
-		background.setOutlineThickness(5);
+		background.setOutlineThickness(2);
 		background.setOutlineColor(sf::Color(60, 60, 60));
 		
 		prompts.emplace_front(promptStr, font, FONT_SIZE);

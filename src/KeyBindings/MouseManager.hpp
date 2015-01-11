@@ -13,9 +13,6 @@ namespace swift
 	class MouseManager
 	{
 		public:
-			MouseManager() {}
-			~MouseManager() {};
-			
 			void newBinding(const std::string& n, sf::Mouse::Button b, std::function<void(const sf::Vector2i&)> f = [](const sf::Vector2i&){return true;}, bool onPress = false)
 			{
 				bindings.emplace(std::make_pair(n, ButtonBinding(b, f, onPress)));
@@ -46,10 +43,6 @@ namespace swift
 						button = b;
 						onPress = p;
 						func = f;
-					}
-
-					~ButtonBinding()
-					{
 					}
 
 					sf::Mouse::Button getButton() const

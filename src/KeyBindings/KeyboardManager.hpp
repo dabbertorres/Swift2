@@ -13,9 +13,6 @@ namespace swift
 	class KeyboardManager
 	{
 		public:
-			KeyboardManager() {};
-			~KeyboardManager() {};
-
 			void newBinding(const std::string& n, sf::Keyboard::Key k, std::function<void()> f = [](){return true;}, bool onPress = false)
 			{
 				bindings.emplace(std::make_pair(n, KeyBinding(k, f, onPress)));
@@ -77,10 +74,6 @@ namespace swift
 						:	key(k),
 							func(f),
 							onPress(p)
-					{
-					}
-
-					~KeyBinding()
 					{
 					}
 

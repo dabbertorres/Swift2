@@ -214,7 +214,7 @@ namespace cstr
 				}
 				
 				frontOfCursor = !frontOfCursor;
-				newCharBounds = text.getFont()->getGlyph(newChar, text.getCharacterSize(), false).bounds;
+				newCharBounds = static_cast<sf::IntRect>(text.getFont()->getGlyph(newChar, text.getCharacterSize(), false).bounds);
 			}
 		}
 	}
