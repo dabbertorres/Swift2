@@ -241,9 +241,9 @@ namespace swift
 				return false;
 			}
 			
-			scripts[file]->load("./data/saves/" + file.substr(file.find_last_of('/') + 1) + ".script");
-			
 			log << "Script:\t" << file << '\n';
+			
+			scripts[file]->load("./data/saves/" + file.substr(file.find_last_of('/') + 1) + ".script");
 		}
 		else if(file.find(".txt") != std::string::npos)
 		{
