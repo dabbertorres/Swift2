@@ -20,10 +20,10 @@ namespace swift
 		sf::Vector2<T> unit(const sf::Vector2<T>& vec)
 		{
 			T mag = magnitude(vec);
-			
+
 			if(mag == 0)
 				return {0, 0};
-			
+
 			return vec / mag;
 		}
 
@@ -39,14 +39,14 @@ namespace swift
 		{
 			return dot(one, unit(two));
 		}
-		
+
 		template<typename T>
 		sf::Vector2<T> normalY(const sf::Vector2<T>& vec)
 		{
 			sf::Vector2<T> nonNormalized(-vec.y, vec.x);
 			return unit(nonNormalized);
 		}
-		
+
 		template<typename T>
 		sf::Vector2<T> normalX(const sf::Vector2<T>& vec)
 		{
@@ -65,6 +65,12 @@ namespace swift
 		T distanceSquared(const sf::Vector2<T>& one, const sf::Vector2<T>& two)
 		{
 			return (two.x - one.x) * (two.x - one.x) + (two.y - one.y) * (two.y - one.y);
+		}
+		
+		template<typename T>
+		T lerp(T p0, T p1, double w)
+		{
+			return (1.f - w) * p0 + w * p1;
 		}
 	}
 }
