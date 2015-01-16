@@ -97,14 +97,18 @@ namespace swift
 
 		if(result != tinyxml2::XML_SUCCESS)
 		{
-			log << "[ERROR]: Loading script save file \"" << lfile << "\" failed.\n";
+			if(result == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
+				log << "[INFO]: Save file \"" << lfile << "\" not found.\n";
+			else
+				log << "[ERROR]: Loading script save file \"" << lfile << "\" failed.\n";
+			
 			return false;
 		}
 
 		tinyxml2::XMLElement* root = loadFile.FirstChildElement("script");
 		if(root == nullptr)
 		{
-			log << "[WARNING]: Script save file \"" << lfile << "\" does not have a \"script\" root element.\n";
+			log << "[ERROR]: Script save file \"" << lfile << "\" does not have a \"script\" root element.\n";
 			return false;
 		}
 
