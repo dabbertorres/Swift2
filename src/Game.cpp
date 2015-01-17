@@ -54,7 +54,7 @@ namespace swift
 	// Such as setting up the scripting virtual machine
 	// and setting game quality settings.
 	// That's about it
-	void Game::start(int c, char** args)
+	/*void Game::start(int c, char** args)
 	{
 		// c is the total arguments
 		// args is the arguments
@@ -73,9 +73,6 @@ namespace swift
 		
 		loadAssets();
 		
-		// make log file a little prettier
-		log << '\n';
-		
 		loadMods();
 		
 		// gotta set this if you want any text to display
@@ -84,7 +81,7 @@ namespace swift
 		initState();
 		
 		initScripting();
-	}
+	}*/
 
 	void Game::gameLoop()
 	{
@@ -224,6 +221,9 @@ namespace swift
 		assets.loadResourceFolder("./data/music");
 		assets.loadResourceFolder("./data/scripts");
 		assets.loadResourceFolder("./data/sounds");
+		
+		// make log file a little prettier
+		log << '\n';
 	}
 	
 	void Game::loadMods()

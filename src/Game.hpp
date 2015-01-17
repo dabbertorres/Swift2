@@ -65,7 +65,7 @@ namespace swift
 			// Let the end user say exactly when they want the engine to commence running,
 			// calling special functions and such outside of the constructor, and setting
 			// launch options
-			virtual void start(int c, char** args);
+			virtual void start(int c, char** args) = 0;
 
 			// For flexibility. Want different kinds of GameLoops? Go crazy!
 			// May want to add arguments of some sort to make that actually correct...
