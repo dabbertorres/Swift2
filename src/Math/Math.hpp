@@ -3,6 +3,8 @@
 
 #include <cmath>
 
+#include <SFML/System/Vector2.hpp>
+
 namespace swift
 {
 	namespace math
