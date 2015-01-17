@@ -101,7 +101,7 @@ namespace swift
 		if(scripts.find(scriptFile) != scripts.end())
 		{
 			if(!scripts[scriptFile]->save("./data/saves/" + scriptFile.substr(scriptFile.find_last_of('/') + 1) + ".script"))
-				log << "[ERROR]: Could not save script: " << scriptFile << "!\n";
+				log << "[WARNING]: Could not save script: " << scriptFile << "!\n";
 			scripts[scriptFile]->reset();
 			scripts.erase(scriptFile);
 			return true;
