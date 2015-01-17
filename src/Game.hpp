@@ -65,7 +65,7 @@ namespace swift
 			// Let the end user say exactly when they want the engine to commence running,
 			// calling special functions and such outside of the constructor, and setting
 			// launch options
-			void start(int c, char** args);
+			virtual void start(int c, char** args);
 
 			// For flexibility. Want different kinds of GameLoops? Go crazy!
 			// May want to add arguments of some sort to make that actually correct...
@@ -75,7 +75,7 @@ namespace swift
 			// gets destroyed
 			void finish();
 
-		private:
+		protected:
 			/* Engine */
 			// Updating game logic, handling input, memory management, etc.
 			// In a separate function to keep GameLoop looking clean and easier
@@ -89,21 +89,42 @@ namespace swift
 			// Same reason as why it has it's own function as Update
 			void draw(float e);
 			
-			void addKeyboardCommands();
+			// figure out settings for window and create it
+			void setupWindow();
 			
-			void addConsoleCommands();
+			// invoke asset loading
+			// by default, loads the following folders:
+			// data/animations
+			// data/fonts
+			// data/music
+			// data/scripts
+			// data/sounds
+			// data/textures
+			virtual void loadAssets();
+			
+			// find and load mods
+			// by default, loads all mods found in:
+			// data/mods
+			virtual void loadMods();
+			
+			// start up the state system
+			void initState();
+			
+			// initialize scripting variables
+			void initScripting();
+			
+			virtual void addKeyboardCommands();
+			
+			virtual void addConsoleCommands();
 			
 			// handles any launch options and sets the respective variables
-			void handleLaunchOps(int c, char** args);
+			virtual void handleLaunchOps(int c, char** args);
 			
 			// opens the settings file and sets the respective variables
-			void loadSettings(const std::string& file);
-
-			/* Engine variables */
-			sf::RenderWindow window;
-			bool running;				// The game is running or not, for continuing/ending the game loop
+			virtual void loadSettings(const std::string& file);
+			
+			bool running;
 			sf::Font defaultFont;
-			std::string title;
 			
 			/* Resources */
 			AssetManager assets;
@@ -113,14 +134,11 @@ namespace swift
 			SoundPlayer soundPlayer;
 			MusicPlayer musicPlayer;
 			
-			/* States */
-			State* currentState;
-			
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
 			
-			/* Debug */
+			/* Something about the console should go here, but I don't know what to put other than "Console". Which seems redundant */
 			Console console;
 
 			/* FPS tracking */
@@ -134,18 +152,25 @@ namespace swift
 			unsigned graphics;		// 0 = Low, 1 = Medium, 2 = High
 			bool smoothing;			// texture smoothing
 			bool fullscreen;
-			bool verticalSync;		// Sir, would you like some Vertical Synchronization with those frames?
+			bool verticalSync;
 			Resolution resolution;
 			unsigned soundLevel;
 			unsigned musicLevel;
 			std::string language;
 
 			// random number generator
-			std::mt19937 randomNumberGenerator;	// Whenever something random is needed, this is all ready!
-
+			std::mt19937 rng;	// Whenever something random is needed, this is all ready!
+			
+	private:
+			/* Engine variables */
+			sf::RenderWindow window;
+			std::string title;
+			
+			/* States */
+			State* currentState;
+			
 			/* timing */
 			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
-			//int framesPerSecond;	// Iterations of the GameLoop.
 			float ticksPerSecond;	// Iterations of Update
 
 			/* Launch Arguments */

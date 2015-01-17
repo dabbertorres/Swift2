@@ -5,20 +5,43 @@
 namespace swift
 {
 	Game::Game(const std::string& t, unsigned tps)
-		:	running(false),
-			title(t),
-			console(500, 200, defaultFont, "$:"),
-			graphics(Quality::Medium),
-			smoothing(true),
-			fullscreen(false),
-			verticalSync(true),
-			resolution({800, 600}),
-			soundLevel(100),
-			musicLevel(75),
-			ticksPerSecond(tps)
+	:	running(false),
+		console(500, 200, defaultFont, "$:"),
+		graphics(Quality::Medium),
+		smoothing(false),
+		fullscreen(false),
+		verticalSync(true),
+		resolution({800, 600}),
+		soundLevel(100),
+		musicLevel(75),
+		title(t),
+		ticksPerSecond(tps)
 	{
 		addKeyboardCommands();
 		addConsoleCommands();
+		
+		window.setVerticalSyncEnabled(verticalSync);
+		window.setKeyRepeatEnabled(false);
+		
+		// get System Info
+		log	<< "OS:\t\t" << getOSName() << '\n'
+			<< "Version:\t" << getOSVersion() << '\n'
+			<< "Arch:\t\t" << getOSArch() << '\n'
+			<< "Total Mem:\t" << getTotalMem() << '\n'
+			<< "CPU:\t\t" << getCPUModel() << '\n'
+			<< "Video Vendor:\t" << getVideoVendor() << '\n'
+			<< "Video Card:\t" << getVideoCard() << '\n'
+			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
+
+		// fps display
+		if(debug)
+		{
+			FPS.setFont(defaultFont);
+			FPS.setScale(0.7, 0.7);
+			FPS.setString("000.000");
+			FPS.setColor(sf::Color::White);
+			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
+		}
 	}
 
 	Game::~Game()
@@ -43,76 +66,30 @@ namespace swift
 		
 		// loads a dictionary
 		dictionary.loadFile("./data/dictionaries/" + language + ".dic");
-
-		// Window set up.
-		if(fullscreen)
-			window.create(sf::VideoMode::getDesktopMode(), title, sf::Style::Fullscreen);
-		else
-			window.create({resolution.x, resolution.y, 32}, title, sf::Style::Titlebar | sf::Style::Close);
 		
-		// get System Info
-		log	<< "OS:\t\t" << getOSName() << '\n'
-			<< "Version:\t" << getOSVersion() << '\n'
-			<< "Arch:\t\t" << getOSArch() << '\n'
-			<< "Total Mem:\t" << getTotalMem() << '\n'
-			<< "CPU:\t\t" << getCPUModel() << '\n'
-			<< "Video Vendor:\t" << getVideoVendor() << '\n'
-			<< "Video Card:\t" << getVideoCard() << '\n'
-			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
+		setupWindow();
 		
-		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);
-		window.setVerticalSyncEnabled(verticalSync);
-		window.setKeyRepeatEnabled(false);
-
-		assets.setSmooth(smoothing);
-		assets.loadResourceFolder("./data/animations");
-		assets.loadResourceFolder("./data/textures");
-		assets.loadResourceFolder("./data/fonts");
-		assets.loadResourceFolder("./data/music");
-		assets.loadResourceFolder("./data/scripts");
-		assets.loadResourceFolder("./data/skeletons");
-		assets.loadResourceFolder("./data/sounds");
+		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);	// need to figure out icon stuff
 		
+		loadAssets();
+		
+		// make log file a little prettier
 		log << '\n';
-
-		mods.loadMods("./data/mods");
-
-		for(auto& m : mods.getMods())
-		{
-			assets.loadMod(m.second.mod);
-		}
 		
+		loadMods();
+		
+		// gotta set this if you want any text to display
 		defaultFont = assets.getFont("./data/fonts/segoeuisl.ttf");
 
-		running = true;
-
-		// fps display
-		if(debug)
-		{
-			FPS.setFont(defaultFont);
-			FPS.setScale(0.7, 0.7);
-			FPS.setString("000.000");
-			FPS.setColor(sf::Color::White);
-			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
-		}
-
-		// setup Script static variables
-		Script::setWindow(window);
-		Script::setAssetManager(assets);
-		Script::setClock(GameTime);
-		Script::setSettings(settings);
-
-		// state setup
-		if(!editor)
-			currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-		else
-			currentState = new Editor(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+		initState();
 		
-		currentState->setup();
+		initScripting();
 	}
 
 	void Game::gameLoop()
 	{
+		running = true;
+		
 		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
 
 		sf::Time currentTime = GameTime.getElapsedTime();
@@ -152,9 +129,6 @@ namespace swift
 
 	void Game::update(sf::Time dt)
 	{
-		if(running)
-			manageStates();
-		
 		sf::Event event;
 		while(window.pollEvent(event) && running)
 		{
@@ -173,7 +147,10 @@ namespace swift
 		}
 		
 		if(running)
+		{
 			currentState->update(dt);
+			manageStates();
+		}
 	}
 
 	void Game::manageStates()
@@ -228,6 +205,58 @@ namespace swift
 			/* display drawing */
 			window.display();
 		}
+	}
+	
+	void Game::setupWindow()
+	{
+		if(fullscreen)
+			window.create(sf::VideoMode::getDesktopMode(), title, sf::Style::Fullscreen);
+		else
+			window.create({resolution.x, resolution.y, 32}, title, sf::Style::Titlebar | sf::Style::Close);
+	}
+	
+	void Game::loadAssets()
+	{
+		assets.setSmooth(smoothing);
+		assets.loadResourceFolder("./data/animations");
+		assets.loadResourceFolder("./data/textures");
+		assets.loadResourceFolder("./data/fonts");
+		assets.loadResourceFolder("./data/music");
+		assets.loadResourceFolder("./data/scripts");
+		assets.loadResourceFolder("./data/sounds");
+	}
+	
+	void Game::loadMods()
+	{
+		// find all mods
+		mods.loadMods("./data/mods");
+
+		// this would be where you normally conditionally load up mods
+		for(auto& m : mods.getMods())
+		{
+			assets.loadMod(m.second.mod);
+		}
+	}
+	
+	void Game::initState()
+	{
+		// state setup
+		if(!editor)
+			currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+		else
+			currentState = new Editor(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+		
+		currentState->setup();
+	}
+			
+	// initialize scripting variables
+	void Game::initScripting()
+	{
+		// setup Script static variables
+		Script::setWindow(window);
+		Script::setAssetManager(assets);
+		Script::setClock(GameTime);
+		Script::setSettings(settings);
 	}
 	
 	void Game::addKeyboardCommands()
