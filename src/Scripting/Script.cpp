@@ -164,7 +164,7 @@ namespace swift
 		tinyxml2::XMLElement* root = saveFile.FirstChildElement("script");
 		if(root == nullptr)
 		{
-			log << "[WARNING]: Script save file \"" << sfile << "\" does not have a \"script\" root element.\n";
+			log << "[INFO]: Script save file \"" << sfile << "\" does not have a \"script\" root element.\n";
 			root = saveFile.NewElement("script");
 			saveFile.InsertEndChild(root);
 		}
