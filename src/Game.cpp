@@ -15,13 +15,13 @@ namespace swift
 		soundLevel(100),
 		musicLevel(75),
 		title(t),
-		ticksPerSecond(tps)
+		currentState(nullptr),
+		ticksPerSecond(tps),
+		editor(false),
+		debug(false)
 	{
 		addKeyboardCommands();
 		addConsoleCommands();
-		
-		window.setVerticalSyncEnabled(verticalSync);
-		window.setKeyRepeatEnabled(false);
 		
 		// get System Info
 		log	<< "OS:\t\t" << getOSName() << '\n'
@@ -32,16 +32,6 @@ namespace swift
 			<< "Video Vendor:\t" << getVideoVendor() << '\n'
 			<< "Video Card:\t" << getVideoCard() << '\n'
 			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
-
-		// fps display
-		if(debug)
-		{
-			FPS.setFont(defaultFont);
-			FPS.setScale(0.7, 0.7);
-			FPS.setString("000.000");
-			FPS.setColor(sf::Color::White);
-			FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
-		}
 	}
 
 	Game::~Game()
@@ -106,6 +96,16 @@ namespace swift
 			window.create(sf::VideoMode::getDesktopMode(), title, sf::Style::Fullscreen);
 		else
 			window.create({resolution.x, resolution.y, 32}, title, sf::Style::Titlebar | sf::Style::Close);
+		
+		window.setVerticalSyncEnabled(verticalSync);
+		window.setKeyRepeatEnabled(false);
+
+		// fps display
+		FPS.setFont(defaultFont);
+		FPS.setScale(0.7, 0.7);
+		FPS.setString("000.000");
+		FPS.setColor(sf::Color::White);
+		FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
 	}
 	
 	void Game::loadAssets()
