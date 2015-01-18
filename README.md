@@ -5,7 +5,7 @@ Game framework powered by SFML, OpenGL, Lua, and tinyxml2
 Create a new class, and publically inherit from swift::Game.
 
 You'll need to call swift::Game's constructor with 2 arguments, the first, the title of your game.
-The second, the engine ticks per second you want your game to run at. 30 seems to be fine.
+The second, the engine ticks per second you want your game to run at. This is essentially the "updates per second".
 
 Then, implement "void start(int c, char** args)" function.
 You'll need to a bunch of functions in it to get started.
