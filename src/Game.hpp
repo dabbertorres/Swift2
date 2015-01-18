@@ -69,6 +69,7 @@ namespace swift
 
 			// For flexibility. Want different kinds of GameLoops? Go crazy!
 			// May want to add arguments of some sort to make that actually correct...
+			template<typename Play, typename MainMenu, typename SettingsMenu>
 			void gameLoop();
 
 			// Clean up, save, close data, etc. Anything that you want deleted before Game
@@ -83,6 +84,7 @@ namespace swift
 			void update(sf::Time dt);
 			
 			// Handle state changes, etc
+			template<typename Play, typename MainMenu, typename SettingsMenu>
 			void manageStates();
 			
 			// Drawing all drawable game objects, backgrounds, etc
@@ -108,6 +110,7 @@ namespace swift
 			virtual void loadMods();
 			
 			// start up the state system
+			template<typename MainMenu>
 			void initState();
 			
 			// initialize scripting variables
@@ -161,7 +164,7 @@ namespace swift
 			// random number generator
 			std::mt19937 rng;	// Whenever something random is needed, this is all ready!
 			
-	private:
+		private:
 			/* Engine variables */
 			sf::RenderWindow window;
 			std::string title;
@@ -177,6 +180,90 @@ namespace swift
 			bool editor;	// for running the map editor - not in use
 			bool debug;		// show debugging/performance info
 	};
+	
+	template<typename Play, typename MainMenu, typename SettingsMenu>
+	void Game::gameLoop()
+	{
+		running = true;
+		
+		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
+
+		sf::Time currentTime = GameTime.getElapsedTime();
+		sf::Time lag = sf::seconds(0);
+
+		while(running)
+		{
+			sf::Time newTime = GameTime.getElapsedTime();
+			sf::Time frameTime = newTime - currentTime;
+
+			if(frameTime > sf::seconds(0.25))
+				frameTime = sf::seconds(0.25);
+
+			currentTime = newTime;
+
+			lag += frameTime;
+
+			while(lag >= dt)
+			{
+				update(dt);
+				manageStates<Play, MainMenu, SettingsMenu>();
+				lag -= dt;
+			}
+
+			draw(lag.asSeconds() / dt.asSeconds());
+			
+			// frames per second measurement
+			if(debug)
+				FPS.setString(std::to_string(1 / frameTime.asSeconds()).substr(0, 7));
+		}
+	}
+	
+	template<typename Play, typename MainMenu, typename SettingsMenu>
+	void Game::manageStates()
+	{
+		if(currentState->switchFrom())
+		{
+			State::Type nextState = currentState->finish();
+			delete currentState;
+			currentState = nullptr;
+
+			switch(nextState)
+			{
+				case State::Type::MainMenu:
+					currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+					break;
+				case State::Type::SettingsMenu:
+					currentState = new SettingsMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+					break;
+				case State::Type::Play:
+					currentState = new Play(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+					break;
+				case State::Type::Exit:
+					running = false;
+					break;
+				default:
+					log << "[ERROR]: State machine error, state not valid\n";
+					running = false;
+					break;
+			}
+			
+			if(running)
+				currentState->setup();
+		}
+	}
+	
+	
+	template<typename MainMenu>
+	void Game::initState()
+	{
+		// state setup
+		if(!editor)
+			currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+		else
+			currentState = new Editor(window, assets, soundPlayer, musicPlayer, settings, dictionary);
+		
+		currentState->setup();
+	}
 }
 
 #endif // GAME_HPP

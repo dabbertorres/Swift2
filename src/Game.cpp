@@ -50,74 +50,6 @@ namespace swift
 			delete currentState;
 	}
 
-	// Do any pre-game data loading
-	// Such as setting up the scripting virtual machine
-	// and setting game quality settings.
-	// That's about it
-	/*void Game::start(int c, char** args)
-	{
-		// c is the total arguments
-		// args is the arguments
-
-		// loads settings from the settings file
-		loadSettings("./data/settings.ini");
-
-		handleLaunchOps(c, args);
-		
-		// loads a dictionary
-		dictionary.loadFile("./data/dictionaries/" + language + ".dic");
-		
-		setupWindow();
-		
-		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);	// need to figure out icon stuff
-		
-		loadAssets();
-		
-		loadMods();
-		
-		// gotta set this if you want any text to display
-		defaultFont = assets.getFont("./data/fonts/segoeuisl.ttf");
-
-		initState();
-		
-		initScripting();
-	}*/
-
-	void Game::gameLoop()
-	{
-		running = true;
-		
-		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
-
-		sf::Time currentTime = GameTime.getElapsedTime();
-		sf::Time lag = sf::seconds(0);
-
-		while(running)
-		{
-			sf::Time newTime = GameTime.getElapsedTime();
-			sf::Time frameTime = newTime - currentTime;
-
-			if(frameTime > sf::seconds(0.25))
-				frameTime = sf::seconds(0.25);
-
-			currentTime = newTime;
-
-			lag += frameTime;
-
-			while(lag >= dt)
-			{
-				update(dt);
-				lag -= dt;
-			}
-
-			draw(lag.asSeconds() / dt.asSeconds());
-			
-			// frames per second measurement
-			if(debug)
-				FPS.setString(std::to_string(1 / frameTime.asSeconds()).substr(0, 7));
-		}
-	}
-
 	// Finish cleaning up memory, close cleanly, etc
 	void Game::finish()
 	{
@@ -144,43 +76,7 @@ namespace swift
 		}
 		
 		if(running)
-		{
 			currentState->update(dt);
-			manageStates();
-		}
-	}
-
-	void Game::manageStates()
-	{
-		if(currentState->switchFrom())
-		{
-			State::Type nextState = currentState->finish();
-			delete currentState;
-			currentState = nullptr;
-
-			switch(nextState)
-			{
-				case State::Type::MainMenu:
-					currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-					break;
-				case State::Type::SettingsMenu:
-					currentState = new SettingsMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-					break;
-				case State::Type::Play:
-					currentState = new Play(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-					break;
-				case State::Type::Exit:
-					running = false;
-					break;
-				default:
-					log << "[ERROR]: State machine error, state not valid\n";
-					running = false;
-					break;
-			}
-			
-			if(running)
-				currentState->setup();
-		}
 	}
 
 	void Game::draw(float e)
@@ -236,17 +132,6 @@ namespace swift
 		{
 			assets.loadMod(m.second.mod);
 		}
-	}
-	
-	void Game::initState()
-	{
-		// state setup
-		if(!editor)
-			currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-		else
-			currentState = new Editor(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-		
-		currentState->setup();
 	}
 			
 	// initialize scripting variables

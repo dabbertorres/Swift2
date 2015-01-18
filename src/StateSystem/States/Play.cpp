@@ -4,13 +4,6 @@
 
 #include "../../ResourceManager/AssetManager.hpp"
 
-/* GUI headers */
-#include "../../GUI/Containers/Column.hpp"
-#include "../../GUI/Containers/Row.hpp"
-#include "../../GUI/Widgets/Label.hpp"
-#include "../../GUI/Widgets/Button.hpp"
-#include "../../GUI/Widgets/Spacer.hpp"
-
 /* SoundSystem headers */
 #include "../../SoundSystem/SoundPlayer.hpp"
 #include "../../SoundSystem/MusicPlayer.hpp"
@@ -23,76 +16,15 @@
 
 namespace swift
 {
-	const float MAX_ZOOM = 2.f;
-	const float MIN_ZOOM = 0.5f;
-
 	Play::Play(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic)
 	:	State(win, am, sp, mp, set, dic),
 	    activeState(nullptr),
-		playView({0, 0, static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
-		currentZoom(1.f),
 		activeWorld(nullptr),
-		player(nullptr)
+		player(nullptr),
+		playView({0, 0, static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
+		currentZoom(1.f)
 	{
 		returnType = State::Type::Play;
-
-		// setup SubStates
-		play.setEventFunc([&](sf::Event& e)
-		{
-			hud.update(e);
-
-			switch(e.type)
-			{
-				case sf::Event::LostFocus:
-					if(player)
-						if(player->has<Movable>())
-							player->get<Movable>()->velocity = {0, 0};
-					break;
-				default:
-					break;
-			}
-		});
-
-		play.setUpdateFunc([&](sf::Time dt)
-		{
-			activeWorld->update(dt.asSeconds());
-
-			if(player)
-			{
-				playView.setCenter(std::floor(player->get<Physical>()->position.x), std::floor(player->get<Physical>()->position.y));
-				soundPlayer.setListenerPosition({player->get<Physical>()->position.x, player->get<Physical>()->position.y, 0});
-			}
-			else
-			{
-				playView.setCenter(0, 0);
-				soundPlayer.setListenerPosition({0, 0, 0});
-			}
-		});
-
-		play.setDrawFunc([&](float)
-		{
-			window.setView(playView);
-			activeWorld->drawWorld(window);
-			activeWorld->drawEntities(window);
-
-			window.setView(window.getDefaultView());
-			window.draw(hud);
-		});
-
-		pause.setEventFunc([&](sf::Event& e)
-		{
-			pauseMenu.update(e);
-		});
-
-		pause.setUpdateFunc([&](sf::Time)
-		{
-			// do nothing
-		});
-
-		pause.setDrawFunc([&](float)
-		{
-			window.draw(pauseMenu);
-		});
 	}
 
 	Play::~Play()
@@ -109,91 +41,6 @@ namespace swift
 
 		for(auto& s : scripts)
 			removeScript(s.first);
-	}
-
-	void Play::setup()
-	{
-		window.setKeyRepeatEnabled(false);
-		
-		std::ifstream fin;
-		
-		std::string worldName;
-		std::string tilemapFile;
-		
-		fin.open("./data/saves/currentWorld");
-		std::getline(fin, worldName);
-		std::getline(fin, tilemapFile);
-		fin.close();
-
-		// create worlds
-		changeWorld(worldName, tilemapFile);
-
-		Script::setPlayState(*this);
-		Script::setWorld(*activeWorld);
-
-		addScript("./data/scripts/worlds.lua");
-
-		setupKeyBindings();
-		setupGUI();
-
-		// set the active state
-		activeState = &play;
-	}
-
-	void Play::handleEvent(sf::Event& event)
-	{
-		if(event.type == sf::Event::MouseWheelMoved)
-		{
-			// a positive event.mouseWheel.delta is into the screen
-			// negative is out
-			float previousZoom = currentZoom;
-			if(event.mouseWheel.delta != 1.f)
-				currentZoom *= 2.f;
-			else
-				currentZoom *= 0.5f;
-
-			if(currentZoom >= MAX_ZOOM)
-				currentZoom = MAX_ZOOM;
-			else if(currentZoom <= MIN_ZOOM)
-				currentZoom = MIN_ZOOM;
-
-			playView.zoom(currentZoom / previousZoom);
-		}
-
-		activeState->handleEvents(event);
-
-		keyboard(event);
-		mouse(event);
-	}
-
-	void Play::update(sf::Time dt)
-	{
-		activeState->update(dt);
-
-		soundPlayer.update();
-		musicPlayer.update();
-
-		std::vector<std::string> doneScripts;
-
-		for(auto& s : scripts)
-		{
-			s.second->update();
-
-			// check if script is done, if so, push it for deletion
-			if(s.second->toDelete())
-				doneScripts.push_back(s.first);
-		}
-
-		// remove all done scripts
-		for(auto& s : doneScripts)
-		{
-			removeScript(s);
-		}
-	}
-
-	void Play::draw(float e)
-	{
-		activeState->draw(e);
 	}
 
 	bool Play::switchFrom()
@@ -300,93 +147,42 @@ namespace swift
 		activeWorld = newWorld;
 		Script::setWorld(*activeWorld);
 	}
-
-	void Play::setupGUI()
+	
+	void Play::loadLastWorld()
 	{
-		// setup pause menu GUI
-		std::string resume = "Resume";
-		dictionary.get("resumeButton", resume);
-		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column( {static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 125}, false));
-		pauseColumn.addWidget(new cstr::Button( {100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
-		{
-			activeState = &play;
-		})).setString(resume, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		std::ifstream fin;
+		
+		std::string worldName;
+		std::string tilemapFile;
+		
+		fin.open("./data/saves/currentWorld");
+		std::getline(fin, worldName);
+		std::getline(fin, tilemapFile);
+		fin.close();
 
-		pauseColumn.addWidget(new cstr::Spacer( {100, 25}));
-
-		std::string mainMenu = "Main Menu";
-		dictionary.get("mainMenuButton", mainMenu);
-		pauseColumn.addWidget(new cstr::Button( {100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
-		{
-			returnType = State::Type::MainMenu;
-		})).setString(mainMenu, assets.getFont("./data/fonts/segoeuisl.ttf"), 20);
+		// create worlds
+		changeWorld(worldName, tilemapFile);
+		
+		Script::setWorld(*activeWorld);
 	}
-
-	void Play::setupKeyBindings()
+	
+	void Play::updateScripts()
 	{
-		keyboard.newBinding("PauseMenu", sf::Keyboard::Escape, [&]()
-		{
-			activeState = (activeState == &pause) ? &play : &pause;
-		}, false);
+		std::vector<std::string> doneScripts;
 
-		// move up press and release
-		keyboard.newBinding("moveUpStart", sf::Keyboard::Up, [&]()
+		for(auto& s : scripts)
 		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveUp = true;
-		}, true);
+			s.second->update();
 
-		keyboard.newBinding("moveUpStop", sf::Keyboard::Up, [&]()
-		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveUp = false;
-		}, false);
+			// check if script is done, if so, push it for deletion
+			if(s.second->toDelete())
+				doneScripts.push_back(s.first);
+		}
 
-		// move down press and release
-		keyboard.newBinding("moveDownStart", sf::Keyboard::Down, [&]()
+		// remove all done scripts
+		for(auto& s : doneScripts)
 		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveDown = true;
-		}, true);
-
-		keyboard.newBinding("moveDownStop", sf::Keyboard::Down, [&]()
-		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveDown = false;
-		}, false);
-
-		// move left press and release
-		keyboard.newBinding("moveLeftStart", sf::Keyboard::Left, [&]()
-		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveLeft = true;
-		}, true);
-
-		keyboard.newBinding("moveLeftStop", sf::Keyboard::Left, [&]()
-		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveLeft = false;
-		}, false);
-
-		// move right press and release
-		keyboard.newBinding("moveRightStart", sf::Keyboard::Right, [&]()
-		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveRight = true;
-		}, true);
-
-		keyboard.newBinding("moveRightStop", sf::Keyboard::Right, [&]()
-		{
-			if(player)
-				if(player->has<Controllable>())
-					player->get<Controllable>()->moveRight = false;
-		}, false);
+			removeScript(s);
+		}
 	}
 }

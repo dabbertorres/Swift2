@@ -13,48 +13,54 @@
 /* World headers */
 #include "../../World/World.hpp"
 
+/* Scripting */
+#include "../../Scripting/Script.hpp"
+
 namespace swift
 {
 	class Play : public State
 	{
 		public:
 			Play(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
-			~Play();
+			virtual ~Play();
 
-			virtual void setup();
-			virtual void handleEvent(sf::Event& event);
-			virtual void update(sf::Time dt);
-			virtual void draw(float e);
-			virtual bool switchFrom();
-			virtual Type finish();
-			
+			virtual void setup() = 0;
+			virtual void handleEvent(sf::Event& event) = 0;
+			virtual void update(sf::Time dt) = 0;
+			virtual void draw(float e) = 0;
+			bool switchFrom();
+			Type finish();
+
 			Entity* getPlayer() const;
-			
+
 			bool addScript(const std::string& scriptFile);
 			bool removeScript(const std::string& scriptFile);
-			
+
 			void changeWorld(const std::string& name, const std::string& mapFile);
 
-		private:
-			void setupGUI();
-			void setupKeyBindings();
+		protected:
+			virtual void setupGUI() = 0;
+			virtual void setupSubStates() = 0;
+			virtual void setupKeyBindings() = 0;
 			
+			void loadLastWorld();
+			void updateScripts();
+
 			// SubState system
 			SubState* activeState;
-			SubState play;
-			SubState pause;
 
 			cstr::Window hud;
 			cstr::Window pauseMenu;
+
+			World* activeWorld;
+			Entity* player;
 			
 			sf::View playView;
 			float currentZoom;
-			
+
+		private:
 			std::map<std::string, World*> worlds;
 			std::map<std::string, Script*> scripts;
-			
-			World* activeWorld;
-			Entity* player;
 	};
 }
 

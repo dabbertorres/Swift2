@@ -16,20 +16,18 @@ namespace swift
 	{
 		public:
 			SettingsMenu(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
-			~SettingsMenu();
+			virtual ~SettingsMenu();
 			
-			virtual void setup();
-			virtual void handleEvent(sf::Event &event);
-			virtual void update(sf::Time dt);
-			virtual void draw(float e);
+			virtual void setup() = 0;
+			virtual void handleEvent(sf::Event &event) = 0;
+			virtual void update(sf::Time dt) = 0;
+			virtual void draw(float e) = 0;
+			
 			virtual bool switchFrom();
-			virtual Type finish();
+			Type finish();
 
-		private:
+		protected:
 			cstr::Window gui;
-			cstr::Button* graphicsButton;
-			cstr::Slider* volumeSlider;
-			cstr::Slider* musicSlider;
 	};
 }
 
