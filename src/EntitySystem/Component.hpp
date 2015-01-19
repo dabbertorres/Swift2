@@ -1,14 +1,12 @@
 #ifndef COMPONENT_HPP
 #define COMPONENT_HPP
 
-#include "../MessageSystem/Observable.hpp"
-
 #include <string>
 #include <map>
 
 namespace swift
 {
-	class Component : public Observable<Component*>
+	class Component
 	{
 		public:
 			virtual ~Component() = default;
