@@ -12,6 +12,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
+#include "../Animation/AnimTexture.hpp"
 #include "../Scripting/Script.hpp"
 
 #include "../Logger/Logger.hpp"
@@ -39,20 +40,18 @@ namespace swift
 			// sets the AssetManager to load textures with smoothing (antialiasing)
 			void setSmooth(bool s);
 			
-			sf::Texture& getTexture(const std::string& n);
-			//Bitmask& getBitmask(const std::string& n);
-			//Skeleton& getSkeleton(const std::string& n);
-			sf::SoundBuffer& getSoundBuffer(const std::string& n);
-			sf::Music& getSong(const std::string& n);
-			sf::Font& getFont(const std::string& n);
-			Script& getScript(const std::string& n);
+			AnimTexture* getAnimTexture(const std::string& n);
+			sf::Texture* getTexture(const std::string& n);
+			sf::SoundBuffer* getSoundBuffer(const std::string& n);
+			sf::Music* getSong(const std::string& n);
+			sf::Font* getFont(const std::string& n);
+			Script* getScript(const std::string& n);
 
 		private:
 			bool loadResource(const std::string& file);
 			
+			std::map<std::string, AnimTexture*> animTextures;
 			std::map<std::string, sf::Texture*> textures;
-			//std::map<std::string, Bitmask*> bitmasks;
-			//std::map<std::string, Skeleton> skeletons;
 			std::map<std::string, sf::SoundBuffer*> soundBuffers;
 			std::map<std::string, sf::Music*> music;
 			std::map<std::string, sf::Font*> fonts;

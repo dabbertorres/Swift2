@@ -10,11 +10,11 @@ namespace swift
 
 	AssetManager::~AssetManager()
 	{
+		for(auto& a : animTextures)
+			delete a.second;
+		
 		for(auto& t : textures)
 			delete t.second;
-		
-		//for(auto& s : skeletons)
-		//	delete s.second;
 		
 		for(auto& s : soundBuffers)
 			delete s.second;
@@ -88,8 +88,26 @@ namespace swift
 
 	void AssetManager::clean()
 	{
+		for(auto& a : animTextures)
+			delete a.second;
+		
+		for(auto& t : textures)
+			delete t.second;
+		
+		for(auto& s : soundBuffers)
+			delete s.second;
+			
+		for(auto& m : music)
+			delete m.second;
+		
+		for(auto& f : fonts)
+			delete f.second;
+		
+		for(auto& s : scripts)
+			delete s.second;
+		
+		animTextures.clear();
 		textures.clear();
-		//skeletons.clear();
 		soundBuffers.clear();
 		music.clear();
 		fonts.clear();
@@ -104,46 +122,87 @@ namespace swift
 			t.second->setSmooth(smooth);
 		}
 	}
+	
+	AnimTexture* AssetManager::getAnimTexture(const std::string& n)
+	{
+		if(animTextures.find(n) != animTextures.end())
+			return animTextures.find(n)->second;
+		else
+			log << "No \"" << n << "\" anim file exists\n";
+		
+		return nullptr;
+	}
 
-	sf::Texture& AssetManager::getTexture(const std::string& n)
+	sf::Texture* AssetManager::getTexture(const std::string& n)
 	{
-		return *textures.find(n)->second;
+		if(textures.find(n) != textures.end())
+			return textures.find(n)->second;
+		else
+			log << "No \"" << n << "\" texture file exists\n";
+		
+		return nullptr;
 	}
 	
-	/*Bitmask& AssetManager::getBitmask(const std::string& n)
+	sf::SoundBuffer* AssetManager::getSoundBuffer(const std::string& n)
 	{
-		return *bitmasks.find(n)->second;
-	}*/
-	
-	/*Skeleton& AssetManager::getSkeleton(const std::string& n)
-	{
-		return *skeletons.find(n)->second;
-	}*/
-	
-	sf::SoundBuffer& AssetManager::getSoundBuffer(const std::string& n)
-	{
-		return *soundBuffers.find(n)->second;
+		if(soundBuffers.find(n) != soundBuffers.end())
+			return soundBuffers.find(n)->second;
+		else
+			log << "No \"" << n << "\" sound buffer file exists\n";
+		
+		return nullptr;
 	}
 	
-	sf::Music& AssetManager::getSong(const std::string& n)
+	sf::Music* AssetManager::getSong(const std::string& n)
 	{
-		return *music.find(n)->second;
+		if(music.find(n) != music.end())
+			return music.find(n)->second;
+		else
+			log << "No \"" << n << "\" music file exists\n";
+		
+		return nullptr;
 	}
 	
-	sf::Font& AssetManager::getFont(const std::string& n)
+	sf::Font* AssetManager::getFont(const std::string& n)
 	{
-		return *fonts.find(n)->second;
+		if(fonts.find(n) != fonts.end())
+			return fonts.find(n)->second;
+		else
+			log << "No \"" << n << "\" font file exists\n";
+		
+		return nullptr;
 	}
 	
-	Script& AssetManager::getScript(const std::string& n)
+	Script* AssetManager::getScript(const std::string& n)
 	{
-		return *scripts.find(n)->second;
+		if(scripts.find(n) != scripts.end())
+			return scripts.find(n)->second;
+		else
+			log << "No \"" << n << "\" script file exists\n";
+		
+		return nullptr;
 	}
 
 	bool AssetManager::loadResource(const std::string& file)
 	{
 		// this if chain checks what folder the file is in
-		if(file.find("/textures/") != std::string::npos)
+		if(file.find("/anims/") != std::string::npos)
+		{
+			animTextures.emplace(file, new AnimTexture());
+			
+			if(!animTextures[file]->loadFromFile(file))
+			{
+				log << "Unable to load " << file << " as an anim\n";
+				
+				delete animTextures[file];
+				
+				animTextures.erase(file);
+				return false;
+			}
+			
+			log << "Anim:\t" << file << '\n';
+		}
+		else if(file.find("/textures/") != std::string::npos)
 		{
 			textures.emplace(file, new sf::Texture());
 
@@ -151,21 +210,15 @@ namespace swift
 			{
 				log << "Unable to load " << file << " as a texture.\n";
 				
-				// delete new'd texture
-				auto it = textures.end();
-				it--;
-				delete it->second;
+				delete textures[file];
 				
 				textures.erase(file);
 				return false;
 			}
+			
 			textures[file]->setSmooth(smooth);
 
 			log << "Texture:\t" << file << '\n';
-		}
-		else if(file.find("/skeletons/") != std::string::npos)
-		{
-			// create a skeleton
 		}
 		else if(file.find("/sounds/") != std::string::npos)
 		{
