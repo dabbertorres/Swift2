@@ -1,5 +1,5 @@
-#ifndef DRAWABLESYSTEM_HPP
-#define DRAWABLESYSTEM_HPP
+#ifndef ANIMATEDSYSTEM_HPP
+#define ANIMATEDSYSTEM_HPP
 
 #include "../System.hpp"
 
@@ -10,7 +10,7 @@
 
 namespace swift
 {
-	class DrawableSystem : public System
+	class AnimatedSystem
 	{
 		public:
 			virtual void update(std::vector<Entity*>& entities, float dt);
@@ -19,4 +19,4 @@ namespace swift
 	};
 }
 
-#endif // DRAWABLESYSTEM_HPP
+#endif // ANIMATEDSYSTEM_HPP

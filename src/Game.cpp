@@ -111,7 +111,7 @@ namespace swift
 	void Game::loadAssets()
 	{
 		assets.setSmooth(smoothing);
-		assets.loadResourceFolder("./data/animations");
+		assets.loadResourceFolder("./data/anims");
 		assets.loadResourceFolder("./data/textures");
 		assets.loadResourceFolder("./data/fonts");
 		assets.loadResourceFolder("./data/music");

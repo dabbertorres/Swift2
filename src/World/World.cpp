@@ -38,8 +38,9 @@ namespace swift
 		moveSystem.update(entities, dt);
 		pathSystem.update(entities, dt);
 		physicalSystem.update(entities, dt);
-		drawSystem.update(entities, dt);
 		noisySystem.update(entities, dt);
+		animSystem.update(entities, dt);
+		drawSystem.update(entities, dt);
 		
 		// check for collision with tilemap
 		for(auto& e : entities)
@@ -88,7 +89,7 @@ namespace swift
 	{
 		if(scripts.find(scriptFile) == scripts.end())
 		{
-			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
+			scripts.emplace(scriptFile, assets.getScript(scriptFile));
 			scripts[scriptFile]->start();
 			return true;
 		}
@@ -115,9 +116,10 @@ namespace swift
 		target.draw(tilemap, states);
 	}
 	
-	void World::drawEntities(sf::RenderTarget& target, sf::RenderStates states)
+	void World::drawEntities(sf::RenderTarget& target, float e, sf::RenderStates states)
 	{
-		drawSystem.draw(entities, target, states);
+		animSystem.draw(entities, e, target, states);
+		drawSystem.draw(entities, e, target, states);
 	}
 	
 	const std::string& World::getName() const
@@ -254,7 +256,7 @@ namespace swift
 				
 				if(componentName == "Drawable")
 				{
-					entity->get<Drawable>()->sprite.setTexture(assets.getTexture(entity->get<Drawable>()->texture));
+					entity->get<Drawable>()->sprite.setTexture(*assets.getTexture(entity->get<Drawable>()->texture));
 				}
 				
 				component = component->NextSiblingElement();

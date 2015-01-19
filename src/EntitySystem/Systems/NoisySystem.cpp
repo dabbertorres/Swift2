@@ -18,7 +18,7 @@ namespace swift
 
 				if(noisy->shouldPlay)
 				{
-					soundPlayer.newSound(assets.getSoundBuffer(noisy->soundFile), {physical->position.x, physical->position.y, 0}, false);
+					soundPlayer.newSound(*assets.getSoundBuffer(noisy->soundFile), {physical->position.x, physical->position.y, 0}, false);
 					noisy->shouldPlay = false;
 				}
 			}

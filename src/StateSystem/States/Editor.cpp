@@ -194,7 +194,7 @@ namespace swift
 	{
 		cstr::Column& mainColumn = pauseMenu.addContainer(new cstr::Column({300, 0, 200, 600}, false));
 		
-		mainColumn.addWidget(new cstr::Label("Swift Editor", assets.getFont("./data/fonts/segoeuisl.ttf"), 60));
+		mainColumn.addWidget(new cstr::Label("Swift Editor", *assets.getFont("./data/fonts/segoeuisl.ttf"), 60));
 		
 		mainColumn.addWidget(new cstr::Spacer({200, 100}));
 		
@@ -202,38 +202,38 @@ namespace swift
 		
 		std::string newStr = "New";
 		dictionary.get("newButton", newStr);
-		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		buttonColumn.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			activeState = &newMap;
-		})).setString(newStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(newStr, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
 		std::string loadStr = "Load";
 		dictionary.get("loadButton", loadStr);
-		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		buttonColumn.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			activeState = &loadMap;
-		})).setString(loadStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(loadStr, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
 		std::string saveStr = "Save";
 		dictionary.get("saveButton", saveStr);
-		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		buttonColumn.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			//if(mapName != "")
 			//	currentMap->saveFile("./data/maps/" + mapName + ".map");
-		})).setString(saveStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(saveStr, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		buttonColumn.addWidget(new cstr::Spacer({100, 25}));
 		
 		std::string exitStr = "Exit";
 		dictionary.get("exitButton", exitStr);
-		buttonColumn.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		buttonColumn.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			done = true;
-		})).setString(exitStr, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(exitStr, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 	}
 	
 	void Editor::setupEditorGUI()
@@ -246,7 +246,7 @@ namespace swift
 		// number of rows
 		unsigned numTileTypes = currentMap->getNumOfTileTypes();
 		sf::Vector2u tileSize = currentMap->getTileSize();
-		sf::Vector2u textureSize = assets.getTexture(currentMap->getTextureFile()).getSize();
+		sf::Vector2u textureSize = assets.getTexture(currentMap->getTextureFile())->getSize();
 		
 		// 4 for rows of 4.
 		for(unsigned i = 0; i < numTileTypes / 4 + numTileTypes % 4; i++)
@@ -257,7 +257,7 @@ namespace swift
 			{
 				sf::Vector2u texturePos = {(i * 4 + j) % (textureSize.x / tileSize.x) * tileSize.x, (i * 4 + j) / (textureSize.x / tileSize.x) * tileSize.y};
 				
-				newRow.addWidget(new cstr::Button({50, 50}, assets.getTexture(currentMap->getTextureFile()), [&, i, j]()
+				newRow.addWidget(new cstr::Button({50, 50}, *assets.getTexture(currentMap->getTextureFile()), [&, i, j]()
 				{
 					tileSelected = i * 4 + j;
 				})).setTextureRect({static_cast<int>(texturePos.x), static_cast<int>(texturePos.y), static_cast<int>(tileSize.x), static_cast<int>(tileSize.y)}, {50, 50});
@@ -276,9 +276,9 @@ namespace swift
 		// map name
 		std::string name = "Name:";
 		dictionary.get("mapNameLabel", name);
-		nameRow.addWidget(new cstr::Label(name, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		nameRow.addWidget(new cstr::Label(name, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		nameRow.addWidget(new cstr::Spacer({20, 30}));
-		cstr::TextBox& mapNameText = nameRow.addWidget(new cstr::TextBox({280, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& mapNameText = nameRow.addWidget(new cstr::TextBox({280, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -287,9 +287,9 @@ namespace swift
 		// texture
 		std::string texture = "Texture:";
 		dictionary.get("textureLabel", texture);
-		textureRow.addWidget(new cstr::Label(texture, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		textureRow.addWidget(new cstr::Label(texture, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		textureRow.addWidget(new cstr::Spacer({10, 30}));
-		cstr::TextBox& textureText = textureRow.addWidget(new cstr::TextBox({280, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& textureText = textureRow.addWidget(new cstr::TextBox({280, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -298,9 +298,9 @@ namespace swift
 		// x size
 		std::string xSize = "X Size:";
 		dictionary.get("xSizeLabel", xSize);
-		xSizeRow.addWidget(new cstr::Label(xSize, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		xSizeRow.addWidget(new cstr::Label(xSize, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		xSizeRow.addWidget(new cstr::Spacer({10, 30}));
-		cstr::TextBox& xSizeText = xSizeRow.addWidget(new cstr::TextBox({280, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& xSizeText = xSizeRow.addWidget(new cstr::TextBox({280, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -309,9 +309,9 @@ namespace swift
 		// y size
 		std::string ySize = "Y Size:";
 		dictionary.get("ySizeLabel", ySize);
-		ySizeRow.addWidget(new cstr::Label(ySize, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		ySizeRow.addWidget(new cstr::Label(ySize, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		ySizeRow.addWidget(new cstr::Spacer({10, 30}));
-		cstr::TextBox& ySizeText = ySizeRow.addWidget(new cstr::TextBox({280, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& ySizeText = ySizeRow.addWidget(new cstr::TextBox({280, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -320,9 +320,9 @@ namespace swift
 		// x tile size
 		std::string xTileSize = "Tile Size X:";
 		dictionary.get("tileSizeXLabel", xTileSize);
-		xTileSizeRow.addWidget(new cstr::Label(xTileSize, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		xTileSizeRow.addWidget(new cstr::Label(xTileSize, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		xTileSizeRow.addWidget(new cstr::Spacer({2, 30}));
-		cstr::TextBox& xTileSizeText = xTileSizeRow.addWidget(new cstr::TextBox({280, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& xTileSizeText = xTileSizeRow.addWidget(new cstr::TextBox({280, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -331,9 +331,9 @@ namespace swift
 		// y tile size
 		std::string yTileSize = "Tile Size Y:";
 		dictionary.get("tileSizeYLabel", yTileSize);
-		yTileSizeRow.addWidget(new cstr::Label(yTileSize, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		yTileSizeRow.addWidget(new cstr::Label(yTileSize, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		yTileSizeRow.addWidget(new cstr::Spacer({2, 30}));
-		cstr::TextBox& yTileSizeText = yTileSizeRow.addWidget(new cstr::TextBox({280, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& yTileSizeText = yTileSizeRow.addWidget(new cstr::TextBox({280, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -342,7 +342,7 @@ namespace swift
 		// start and cancel buttons
 		std::string cancel = "Cancel";
 		dictionary.get("cancelButton", cancel);
-		startCancelRow.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		startCancelRow.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			mapLoaded = false;
 			activeState = &pause;
@@ -352,13 +352,13 @@ namespace swift
 			textureText.clear();
 			xSizeText.clear();
 			ySizeText.clear();
-		})).setString(cancel, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(cancel, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		startCancelRow.addWidget(new cstr::Spacer({200, 50}));
 		
 		std::string start = "Start";
 		dictionary.get("startButton", start);
-		startCancelRow.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		startCancelRow.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			if(mapNameText.getString() != "" && textureText.getString() != "" && xSizeText.getString() != "" && ySizeText.getString() != "")
 			{
@@ -373,7 +373,7 @@ namespace swift
 				
 				// set the texture of the map
 				currentMap->setTextureFile("./data/textures/" + textureText.getString());
-				currentMap->loadTexture(assets.getTexture("./data/textures/" + textureText.getString()));
+				currentMap->loadTexture(*assets.getTexture("./data/textures/" + textureText.getString()));
 				currentMap->setSize({static_cast<unsigned>(std::stoi(xSizeText.getString())), static_cast<unsigned>(std::stoi(ySizeText.getString()))});
 				currentMap->setTileSize({static_cast<unsigned>(std::stoi(xTileSizeText.getString())), static_cast<unsigned>(std::stoi(yTileSizeText.getString()))});
 				
@@ -390,7 +390,7 @@ namespace swift
 				xTileSizeText.clear();
 				yTileSizeText.clear();
 			}
-		})).setString(start, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(start, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 	}
 	
 	void Editor::setupLoadMapGUI()
@@ -401,9 +401,9 @@ namespace swift
 		
 		std::string name = "Name:";
 		dictionary.get("loadMapLabel", name);
-		mapNameRow.addWidget(new cstr::Label(name, assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
+		mapNameRow.addWidget(new cstr::Label(name, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25));
 		mapNameRow.addWidget(new cstr::Spacer({10, 30}));
-		cstr::TextBox& loadMapText = mapNameRow.addWidget(new cstr::TextBox({200, 30}, assets.getFont("./data/fonts/segoeuisl.ttf")));
+		cstr::TextBox& loadMapText = mapNameRow.addWidget(new cstr::TextBox({200, 30}, *assets.getFont("./data/fonts/segoeuisl.ttf")));
 		
 		mainColumn.addWidget(new cstr::Spacer({400, 20}));
 		
@@ -412,20 +412,20 @@ namespace swift
 		// load and cancel buttons
 		std::string cancel = "Cancel";
 		dictionary.get("cancelButton", cancel);
-		loadCancelRow.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		loadCancelRow.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			mapLoaded = false;
 			activeState = &pause;
 			
 			// reset text boxes
 			loadMapText.clear();
-		})).setString(cancel, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(cancel, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 		
 		loadCancelRow.addWidget(new cstr::Spacer({200, 50}));
 		
 		std::string load = "Load";
 		dictionary.get("loadButton", load);
-		loadCancelRow.addWidget(new cstr::Button({100, 50}, assets.getTexture("./data/textures/button.png"), [&]()
+		loadCancelRow.addWidget(new cstr::Button({100, 50}, *assets.getTexture("./data/textures/button.png"), [&]()
 		{
 			mapLoaded = true;
 			activeState = &editor;
@@ -441,10 +441,10 @@ namespace swift
 			
 			// set the texture of the map
 			currentMap->loadFile("./data/maps/" + mapName + ".map");
-			currentMap->loadTexture(assets.getTexture(currentMap->getTextureFile()));
+			currentMap->loadTexture(*assets.getTexture(currentMap->getTextureFile()));
 			
 			setupEditorGUI();
-		})).setString(load, assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
+		})).setString(load, *assets.getFont("./data/fonts/segoeuisl.ttf"), 25);
 	}
 	
 	void Editor::setupKeyBindings()

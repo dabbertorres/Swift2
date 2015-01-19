@@ -25,7 +25,7 @@ namespace swift
 		}
 	}
 
-	void DrawableSystem::draw(std::vector<Entity*>& entities, sf::RenderTarget& target, sf::RenderStates states) const
+	void DrawableSystem::draw(std::vector<Entity*>& entities, float e, sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		std::vector<Entity*> drawables;
 		
@@ -56,6 +56,12 @@ namespace swift
 		
 		for(auto& d : drawables)
 		{
+			/*if(d->has<Movable>())
+			{
+				Movable* m = d->get<Movable>();
+				sf::Sprite* s = &d->get<Drawable>()->sprite;
+				s->setPosition(s->getPosition().x + m->velocity.x * e, s->getPosition().y + m->velocity.y * e);
+			}*/
 			target.draw(d->get<Drawable>()->sprite, states);
 		}
 	}

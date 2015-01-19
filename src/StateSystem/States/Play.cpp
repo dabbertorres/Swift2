@@ -9,6 +9,7 @@
 #include "../../SoundSystem/MusicPlayer.hpp"
 
 /* EntitySystem headers */
+#include "../../EntitySystem/Components/Animated.hpp"
 #include "../../EntitySystem/Components/Pathfinder.hpp"
 
 /* Pathfinding headers */
@@ -62,7 +63,7 @@ namespace swift
 	{
 		if(scripts.find(scriptFile) == scripts.end())
 		{
-			scripts.emplace(scriptFile, &assets.getScript(scriptFile));
+			scripts.emplace(scriptFile, assets.getScript(scriptFile));
 			scripts[scriptFile]->start();
 			return true;
 		}
@@ -75,7 +76,7 @@ namespace swift
 		if(scripts.find(scriptFile) != scripts.end())
 		{
 			if(!scripts[scriptFile]->save("./data/saves/" + scriptFile.substr(scriptFile.find_last_of('/') + 1) + ".script"))
-				log << "[ERROR]: Could not save script: " << scriptFile << "!\n";
+				log << "[WARNING]: Could not save script: " << scriptFile << "!\n";
 			scripts[scriptFile]->reset();
 			scripts.erase(scriptFile);
 			return true;
@@ -91,7 +92,7 @@ namespace swift
 
 		// setup world
 		bool mapResult = newWorld->tilemap.loadFile(mapFile);
-		bool textureResult = newWorld->tilemap.loadTexture(assets.getTexture(newWorld->tilemap.getTextureFile()));
+		bool textureResult = newWorld->tilemap.loadTexture(*assets.getTexture(newWorld->tilemap.getTextureFile()));
 
 		if(!mapResult)
 			log << "[ERROR]: Loading tilemap \"" << mapFile << "\" failed.\n";

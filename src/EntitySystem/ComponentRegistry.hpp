@@ -2,6 +2,7 @@
 #define COMPONENTREGISTRY_HPP
 
 #include "Component.hpp"
+#include "Components/Animated.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Movable.hpp"
@@ -17,7 +18,9 @@ namespace swift
 		public:
 			static Component* get(const std::string& c)
 			{
-				if(c == "Controllable")
+				if(c == "Animated")
+					return new Animated;
+				else if(c == "Controllable")
 					return new Controllable;
 				else if(c == "Drawable")
 					return new Drawable;

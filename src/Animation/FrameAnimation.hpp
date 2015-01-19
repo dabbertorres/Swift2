@@ -11,35 +11,22 @@
 
 namespace swift
 {
-	class FrameAnimation : public sf::Drawable
+	class FrameAnimation
 	{
 		public:
 			FrameAnimation();
-			~FrameAnimation();
 			
-			void update(float dt);
-			void setFrame(unsigned fn);
+			const sf::IntRect& update(float dt);
+			void setFrameNum(unsigned int fn);
+			void addFrame(const sf::IntRect& rect);
+			void setFrames(const std::vector<sf::IntRect>& fs);
 			
-			sf::FloatRect getGlobalBounds() const;
-			
-			void setTexture(const sf::Texture& tex);
 			void setTime(float seconds);
-			void setPosition(sf::Vector2f pos);
 			void setLooping(bool l);
-			void setRotation(float a);
-			void setOrigin(sf::Vector2f o);
-			void setScale(sf::Vector2f s);
-			
-			void addFrame(sf::IntRect rect);
 
 		private:
-			void nextFrame();
-			void draw(sf::RenderTarget& target, sf::RenderStates states) const;
-			
-			sf::Sprite sprite;
-
 			std::vector<sf::IntRect> frames;
-			unsigned frameNum;
+			unsigned int frameNum;
 			
 			float totalTime;	// time the animation lasts
 			float currentTime;	// current time in animation

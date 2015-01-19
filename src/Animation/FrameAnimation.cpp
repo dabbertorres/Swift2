@@ -3,30 +3,40 @@
 namespace swift
 {
 	FrameAnimation::FrameAnimation()
-	{
-		totalTime = 0;
-		currentTime = 0;
-		frameNum = 0;
-		looping = true;
-		done = false;
-	}
+	:	frameNum(0),
+	    totalTime(0),
+	    currentTime(0),
+	    looping(false),
+	    done(false)
+	{}
 
-	FrameAnimation::~FrameAnimation()
-	{
-	}
-
-	void FrameAnimation::update(float dt)
+	const sf::IntRect& FrameAnimation::update(float dt)
 	{
 		currentTime += dt;
 
-		if(dt >= totalTime / frames.size() && (currentTime < totalTime || looping))
-			nextFrame();
+		if(currentTime >= (totalTime / frames.size()) * (frameNum + 1) && (currentTime < totalTime || looping))
+		{
+			if(frames.size() > 0 && !done)
+			{
+				if(frameNum < frames.size() - 1)
+				{
+					frameNum++;
+				}
+				else
+				{
+					frameNum = 0;
+					currentTime = 0;
+				}
+			}
+		}
 
 		if(!looping && currentTime >= totalTime)
 			done = true;
+
+		return frames[frameNum];
 	}
 
-	void FrameAnimation::setFrame(unsigned fn)
+	void FrameAnimation::setFrameNum(unsigned fn)
 	{
 		if(fn < frames.size())
 		{
@@ -34,14 +44,14 @@ namespace swift
 		}
 	}
 
-	sf::FloatRect FrameAnimation::getGlobalBounds() const
+	void FrameAnimation::addFrame(const sf::IntRect& rect)
 	{
-		return sprite.getGlobalBounds();
+		frames.push_back(rect);
 	}
 
-	void FrameAnimation::setTexture(const sf::Texture& tex)
+	void FrameAnimation::setFrames(const std::vector<sf::IntRect>& fs)
 	{
-		sprite.setTexture(tex);
+		frames = fs;
 	}
 
 	void FrameAnimation::setTime(float seconds)
@@ -49,47 +59,8 @@ namespace swift
 		totalTime = seconds;
 	}
 
-	void FrameAnimation::setPosition(sf::Vector2f pos)
-	{
-		sprite.setPosition(pos);
-	}
-
 	void FrameAnimation::setLooping(bool l)
 	{
 		looping = l;
-	}
-
-	void FrameAnimation::setRotation(float a)
-	{
-		sprite.setRotation(a);
-	}
-
-	void FrameAnimation::setOrigin(sf::Vector2f o)
-	{
-		sprite.setOrigin(o);
-	}
-
-	void FrameAnimation::setScale(sf::Vector2f s)
-	{
-		sprite.setScale(s);
-	}
-
-	void FrameAnimation::addFrame(sf::IntRect rect)
-	{
-		frames.push_back(rect);
-	}
-
-	void FrameAnimation::nextFrame()
-	{
-		if(frames.size() > 0 && !done)
-		{
-			frameNum >= frames.size() ? frameNum = 0 : frameNum++;
-			sprite.setTextureRect(frames[frameNum]);
-		}
-	}
-
-	void FrameAnimation::draw(sf::RenderTarget& target, sf::RenderStates states) const
-	{
-		target.draw(sprite, states);
 	}
 }

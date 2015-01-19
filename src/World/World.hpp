@@ -16,6 +16,7 @@
 /* Entity */
 #include "../EntitySystem/Entity.hpp"
 
+#include "../EntitySystem/Systems/AnimatedSystem.hpp"
 #include "../EntitySystem/Systems/ControllableSystem.hpp"
 #include "../EntitySystem/Systems/DrawableSystem.hpp"
 #include "../EntitySystem/Systems/MovableSystem.hpp"
@@ -42,7 +43,7 @@ namespace swift
 			bool removeScript(const std::string& scriptFile);
 
 			void drawWorld(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
-			void drawEntities(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
+			void drawEntities(sf::RenderTarget& target, float e, sf::RenderStates states = sf::RenderStates::Default);
 			
 			const std::string& getName() const;
 
@@ -67,6 +68,7 @@ namespace swift
 			SoundPlayer& soundPlayer;
 			MusicPlayer& musicPlayer;
 			
+			AnimatedSystem animSystem;
 			ControllableSystem controlSystem;
 			DrawableSystem drawSystem;
 			MovableSystem moveSystem;
