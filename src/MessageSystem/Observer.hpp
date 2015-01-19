@@ -13,7 +13,6 @@ namespace swift
 	class Observer
 	{
 		public:
-			
 			void addSubscription(const std::string& s, Observable<T>& o);
 
 			void removeSubscription(const std::string& s);
