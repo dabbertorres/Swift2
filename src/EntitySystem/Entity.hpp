@@ -22,6 +22,12 @@ namespace swift
 			
 			Entity& operator=(const Entity& other)
 			{
+				if(other.has<Animated>())
+				{
+					add<Animated>();
+					*get<Animated>() = *other.get<Animated>();
+				}
+				
 				if(other.has<Controllable>())
 				{
 					add<Controllable>();
@@ -182,30 +188,5 @@ namespace swift
 			std::unordered_map<std::string, Component*> components;
 	};
 }
-
-// Entities can be designed via a simple text file with the following format:
-//	Entity
-//		Component1
-//			type Data
-//		Component2
-//			type Data1
-//			type Data2
-// types =
-// 	s = string
-// 	r = rect
-//	f = float
-//	i = int
-
-/* Example Entity file
- * Entity
- * 	Drawable
- * 		s ./data/textures/guy.png	# texture
- * 		r 0 0 0 0	# texture rect, if all 0s, use size of texture
- * 	Movable
- * 		f 100	# move velocity
- * 	Physical
- * 		i 400	# x position
- * 		i 300	# y position
- */
 
 #endif // ENTITY_HPP
