@@ -22,8 +22,8 @@ namespace swift
 	Play* Script::play = nullptr;
 
 	Script::Script()
-		:	file(""),
-		    deleteMe(false)
+	:	file(""),
+		deleteMe(false)
 	{
 		// We don't want to give the scripts access to os commands or file writing abilities
 		// so we only open the necessary libraries
