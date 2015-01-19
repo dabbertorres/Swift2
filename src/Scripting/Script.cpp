@@ -534,7 +534,7 @@ namespace swift
 	{
 		if(d)
 		{
-			d->sprite.setTexture(assets->getTexture(t));
+			d->sprite.setTexture(*assets->getTexture(t));
 			d->texture = t;
 			return true;
 		}
