@@ -3,6 +3,7 @@
 
 #include "Component.hpp"
 #include "Components/Animated.hpp"
+#include "Components/BatchDrawable.hpp"
 #include "Components/Controllable.hpp"
 #include "Components/Drawable.hpp"
 #include "Components/Movable.hpp"
@@ -20,6 +21,8 @@ namespace swift
 			{
 				if(c == "Animated")
 					return new Animated;
+				else if(c == "BatchDrawable")
+					return new BatchDrawable;
 				else if(c == "Controllable")
 					return new Controllable;
 				else if(c == "Drawable")
