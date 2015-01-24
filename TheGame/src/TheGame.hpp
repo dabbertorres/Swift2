@@ -3,6 +3,8 @@
 
 #include "../src/Game.hpp"
 
+#include "GameAssets.hpp"
+
 namespace tg
 {
 	class TheGame : public swift::Game
@@ -14,8 +16,12 @@ namespace tg
 			virtual void start(int c, char** args);
 
 		private:
+			virtual void loadAssets();
+			virtual void loadMods();
 			virtual void initState();
 			virtual void initScripting();
+
+			GameAssets assets;
 	};
 }
 

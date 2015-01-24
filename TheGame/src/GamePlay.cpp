@@ -22,7 +22,8 @@ namespace tg
 	:	State(win, am, sp, mp, set, dic, sm),
 		activeState(nullptr),
 		activeWorld(nullptr),
-		player(nullptr)
+		player(nullptr),
+		scripts(am)
 	{
 		GameScript::setPlayState(*this);
 		
@@ -61,8 +62,7 @@ namespace tg
 		for(auto& w : worlds)
 			delete w.second;
 
-		for(auto& s : scripts)
-			removeScript(s.first);
+		scripts.removeAll();
 	}
 	
 	void GamePlay::handleEvent(sf::Event& event)
@@ -80,38 +80,12 @@ namespace tg
 		soundPlayer.update();
 		musicPlayer.update();
 		
-		updateScripts();
+		scripts.update();
 	}
 	
 	void GamePlay::draw(float e)
 	{
 		activeState->draw(e);
-	}
-
-	bool GamePlay::addScript(const std::string& scriptFile)
-	{
-		if(scripts.find(scriptFile) == scripts.end())
-		{
-			scripts.emplace(scriptFile, assets.getScript(scriptFile));
-			scripts[scriptFile]->start();
-			return true;
-		}
-		else
-			return false;
-	}
-
-	bool GamePlay::removeScript(const std::string& scriptFile)
-	{
-		if(scripts.find(scriptFile) != scripts.end())
-		{
-			if(!scripts[scriptFile]->save("./data/saves/" + scriptFile.substr(scriptFile.find_last_of('/') + 1) + ".script"))
-				swift::log << "[WARNING]: Could not save script: " << scriptFile << "!\n";
-			scripts[scriptFile]->reset();
-			scripts.erase(scriptFile);
-			return true;
-		}
-		else
-			return false;
 	}
 
 	swift::Entity* GamePlay::getPlayer() const
@@ -197,26 +171,6 @@ namespace tg
 
 		// create worlds
 		changeWorld(worldName, tilemapFile);
-	}
-	
-	void GamePlay::updateScripts()
-	{
-		std::vector<std::string> doneScripts;
-
-		for(auto& s : scripts)
-		{
-			s.second->update();
-
-			// check if script is done, if so, push it for deletion
-			if(s.second->toDelete())
-				doneScripts.push_back(s.first);
-		}
-
-		// remove all done scripts
-		for(auto& s : doneScripts)
-		{
-			removeScript(s);
-		}
 	}
 	
 	void GamePlay::setupGUI()

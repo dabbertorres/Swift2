@@ -54,10 +54,7 @@ namespace swift
 		if(!luaState["Done"])
 			return;
 
-		if(static_cast<bool>(luaState["Done"]))
-		{
-			deleteMe = true;
-		}
+		deleteMe = luaState["Done"];
 	}
 
 	void Script::update()
@@ -70,10 +67,7 @@ namespace swift
 		if(!luaState["Done"])
 			return;
 
-		if(static_cast<bool>(luaState["Done"]))
-		{
-			deleteMe = true;
-		}
+		deleteMe = luaState["Done"];
 	}
 
 	bool Script::load(const std::string& lfile)

@@ -1,9 +1,10 @@
 #ifndef GAMESCRIPT_HPP
 #define GAMESCRIPT_HPP
 
-#include "../../src/Scripting/Script.hpp"
+#include "../src/Scripting/ScriptManager.hpp"
+#include "../src/Scripting/Script.hpp"
 
-#include "../../src/Logger/Logger.hpp"
+#include "../src/Logger/Logger.hpp"
 
 #include "GamePlay.hpp"
 
@@ -27,6 +28,7 @@ namespace tg
 			static void setWorld(swift::World& w);
 			static void setWorld(std::nullptr_t);
 			static void setPlayState(GamePlay& p);
+			static void setScriptManager(swift::ScriptManager& sm);
 			
 			// get world pointer for comparison
 			static const swift::World* getWorld();
@@ -40,6 +42,7 @@ namespace tg
 			static swift::KeyboardManager* keyboard;
 			static swift::World* world;
 			static GamePlay* play;
+			static swift::ScriptManager* scripts;
 			
 			/* Lua converted functions */
 			// Utility
@@ -48,9 +51,11 @@ namespace tg
 			static void doKeypress(std::string k);
 			static void logMsg(std::string m);
 			
-			// World
+			// Scripting
 			static bool addScript(std::string s);
 			static bool removeScript(std::string s);
+			
+			// World
 			static swift::Entity* newEntity();
 			static bool removeEntity(int e);
 			static std::vector<swift::Entity*> getEntities();

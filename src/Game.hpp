@@ -82,19 +82,10 @@ namespace swift
 			void setupWindow();
 			
 			// invoke asset loading
-			// by default, loads the following folders:
-			// data/animations
-			// data/fonts
-			// data/music
-			// data/scripts
-			// data/sounds
-			// data/textures
-			virtual void loadAssets();
+			virtual void loadAssets() = 0;
 			
 			// find and load mods
-			// by default, loads all mods found in:
-			// data/mods
-			virtual void loadMods();
+			virtual void loadMods() = 0;
 			
 			// start up the state system
 			virtual void initState() = 0;
@@ -116,7 +107,6 @@ namespace swift
 			sf::Font defaultFont;
 			
 			/* Resources */
-			AssetManager assets;
 			ModManager mods;
 			
 			/* Sound */

@@ -11,6 +11,7 @@
 #include "../src/World/World.hpp"
 
 /* Scripting */
+#include "../src/Scripting/ScriptManager.hpp"
 #include "../src/Scripting/Script.hpp"
 
 namespace tg
@@ -25,17 +26,12 @@ namespace tg
 			virtual void update(sf::Time dt);
 			virtual void draw(float e);
 
-			bool addScript(const std::string& scriptFile);
-			bool removeScript(const std::string& scriptFile);
-
 			swift::Entity* getPlayer() const;
 
 			void changeWorld(const std::string& name, const std::string& mapFile);
 
 		private:
 			void loadLastWorld();
-			
-			void updateScripts();
 			
 			void setupGUI();
 			void setupSubStates();
@@ -55,8 +51,9 @@ namespace tg
 			sf::View playView;
 			float currentZoom;
 			
+			swift::ScriptManager scripts;
+			
 			std::map<std::string, swift::World*> worlds;
-			std::map<std::string, swift::Script*> scripts;
 	};
 }
 

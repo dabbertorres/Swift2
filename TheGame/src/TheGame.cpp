@@ -44,6 +44,32 @@ namespace tg
 		initScripting();
 	}
 	
+	void TheGame::loadAssets()
+	{
+		assets.setSmooth(smoothing);
+		assets.loadResourceFolder("./data/anims");
+		assets.loadResourceFolder("./data/textures");
+		assets.loadResourceFolder("./data/fonts");
+		assets.loadResourceFolder("./data/music");
+		assets.loadResourceFolder("./data/scripts");
+		assets.loadResourceFolder("./data/sounds");
+		
+		// make log file a little prettier
+		swift::log << '\n';
+	}
+	
+	void TheGame::loadMods()
+	{
+		// find all mods
+		mods.loadMods("./data/mods");
+
+		// this would be where you normally conditionally load up mods
+		for(auto& m : mods.getMods())
+		{
+			assets.loadMod(m.second.mod);
+		}
+	}
+	
 	void TheGame::initState()
 	{
 		// state setup

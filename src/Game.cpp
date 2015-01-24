@@ -147,32 +147,6 @@ namespace swift
 		FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
 	}
 	
-	void Game::loadAssets()
-	{
-		assets.setSmooth(smoothing);
-		assets.loadResourceFolder("./data/anims");
-		assets.loadResourceFolder("./data/textures");
-		assets.loadResourceFolder("./data/fonts");
-		assets.loadResourceFolder("./data/music");
-		assets.loadResourceFolder("./data/scripts");
-		assets.loadResourceFolder("./data/sounds");
-		
-		// make log file a little prettier
-		log << '\n';
-	}
-	
-	void Game::loadMods()
-	{
-		// find all mods
-		mods.loadMods("./data/mods");
-
-		// this would be where you normally conditionally load up mods
-		for(auto& m : mods.getMods())
-		{
-			assets.loadMod(m.second.mod);
-		}
-	}
-	
 	void Game::addKeyboardCommands()
 	{
 		// add some default keybindings
