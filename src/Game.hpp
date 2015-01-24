@@ -5,18 +5,12 @@
  * 
  **/
 
-#define VERSION "0.6.0-10262014"
-#define AUTHOR "Alec Iverson"
-
 #ifndef GAME_HPP
 #define GAME_HPP
 
 /* State System */
 #include "StateSystem/State.hpp"
-#include "StateSystem/States/Editor.hpp"
-#include "StateSystem/States/Play.hpp"
-#include "StateSystem/States/MainMenu.hpp"
-#include "StateSystem/States/SettingsMenu.hpp"
+#include "StateSystem/StateMachine.hpp"
 
 /* Input headers */
 #include "KeyBindings/KeyboardManager.hpp"
@@ -35,20 +29,21 @@
 #include "SoundSystem/SoundPlayer.hpp"
 #include "SoundSystem/MusicPlayer.hpp"
 
+#include <queue>
+
 namespace swift
 {	
 	namespace Quality
 	{
-		const unsigned Low = 0;
-		const unsigned Medium = 1;
-		const unsigned High = 2;
+		const unsigned int Low = 0;
+		const unsigned int Medium = 1;
+		const unsigned int High = 2;
 	};
 	
-	// Easy collection of data
 	struct Resolution
 	{
-		unsigned x;
-		unsigned y;
+		unsigned int x;
+		unsigned int y;
 	};
 
 	class Game
@@ -60,32 +55,24 @@ namespace swift
 			// t = title of the window/game,
 			// tps = engine ticks per second
 			Game(const std::string& t, unsigned tps);
-			~Game();
+			virtual ~Game();
 
 			// Let the end user say exactly when they want the engine to commence running,
 			// calling special functions and such outside of the constructor, and setting
 			// launch options
 			virtual void start(int c, char** args) = 0;
 
-			// For flexibility. Want different kinds of GameLoops? Go crazy!
-			// May want to add arguments of some sort to make that actually correct...
-			template<typename Play, typename MainMenu, typename SettingsMenu>
+			// the thing that makes the game actually run!
 			void gameLoop();
 
-			// Clean up, save, close data, etc. Anything that you want deleted before Game
-			// gets destroyed
-			void finish();
-
 		protected:
-			/* Engine */
 			// Updating game logic, handling input, memory management, etc.
 			// In a separate function to keep GameLoop looking clean and easier
 			// to comprehend
 			void update(sf::Time dt);
 			
 			// Handle state changes, etc
-			template<typename Play, typename MainMenu, typename SettingsMenu>
-			void manageStates();
+			virtual void manageStates();
 			
 			// Drawing all drawable game objects, backgrounds, etc
 			// Same reason as why it has it's own function as Update
@@ -110,11 +97,10 @@ namespace swift
 			virtual void loadMods();
 			
 			// start up the state system
-			template<typename MainMenu>
-			void initState();
+			virtual void initState() = 0;
 			
 			// initialize scripting variables
-			void initScripting();
+			virtual void initScripting() = 0;
 			
 			virtual void addKeyboardCommands();
 			
@@ -152,118 +138,31 @@ namespace swift
 			Settings controls;
 			Settings dictionary;
 			
-			unsigned graphics;		// 0 = Low, 1 = Medium, 2 = High
+			unsigned int graphics;		// 0 = Low, 1 = Medium, 2 = High
 			bool smoothing;			// texture smoothing
 			bool fullscreen;
 			bool verticalSync;
 			Resolution resolution;
-			unsigned soundLevel;
-			unsigned musicLevel;
+			unsigned int soundLevel;
+			unsigned int musicLevel;
 			std::string language;
 
 			// random number generator
 			std::mt19937 rng;	// Whenever something random is needed, this is all ready!
 			
-		private:
-			/* Engine variables */
 			sf::RenderWindow window;
+			StateMachine states;
+			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
+			
+		private:
 			std::string title;
 			
-			/* States */
-			State* currentState;
-			
-			/* timing */
-			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
 			float ticksPerSecond;	// Iterations of Update
 
 			/* Launch Arguments */
 			bool editor;	// for running the map editor - not in use
 			bool debug;		// show debugging/performance info
 	};
-	
-	template<typename Play, typename MainMenu, typename SettingsMenu>
-	void Game::gameLoop()
-	{
-		running = true;
-		
-		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
-
-		sf::Time currentTime = GameTime.getElapsedTime();
-		sf::Time lag = sf::seconds(0);
-
-		while(running)
-		{
-			sf::Time newTime = GameTime.getElapsedTime();
-			sf::Time frameTime = newTime - currentTime;
-
-			if(frameTime > sf::seconds(0.25))
-				frameTime = sf::seconds(0.25);
-
-			currentTime = newTime;
-
-			lag += frameTime;
-
-			while(lag >= dt)
-			{
-				update(dt);
-				manageStates<Play, MainMenu, SettingsMenu>();
-				lag -= dt;
-			}
-
-			draw(lag.asSeconds() / dt.asSeconds());
-			
-			// frames per second measurement
-			if(debug)
-				FPS.setString(std::to_string(1 / frameTime.asSeconds()).substr(0, 7));
-		}
-	}
-	
-	template<typename Play, typename MainMenu, typename SettingsMenu>
-	void Game::manageStates()
-	{
-		if(currentState->switchFrom())
-		{
-			State::Type nextState = currentState->finish();
-			delete currentState;
-			currentState = nullptr;
-
-			switch(nextState)
-			{
-				case State::Type::MainMenu:
-					currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-					break;
-				case State::Type::SettingsMenu:
-					currentState = new SettingsMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-					break;
-				case State::Type::Play:
-					currentState = new Play(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-					break;
-				case State::Type::Exit:
-					running = false;
-					break;
-				default:
-					log << "[ERROR]: State machine error, state not valid\n";
-					running = false;
-					break;
-			}
-			
-			if(running)
-				currentState->setup();
-		}
-	}
-	
-	
-	template<typename MainMenu>
-	void Game::initState()
-	{
-		// state setup
-		if(!editor)
-			currentState = new MainMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-		else
-			currentState = new Editor(window, assets, soundPlayer, musicPlayer, settings, dictionary);
-		
-		currentState->setup();
-	}
 }
 
 #endif // GAME_HPP

@@ -15,7 +15,6 @@ namespace swift
 		soundLevel(100),
 		musicLevel(75),
 		title(t),
-		currentState(nullptr),
 		ticksPerSecond(tps),
 		editor(false),
 		debug(false)
@@ -36,14 +35,43 @@ namespace swift
 
 	Game::~Game()
 	{
-		if(currentState)
-			delete currentState;
-	}
-
-	// Finish cleaning up memory, close cleanly, etc
-	void Game::finish()
-	{
 		window.close();
+	}
+	
+	void Game::gameLoop()
+	{
+		running = true;
+		
+		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
+
+		sf::Time currentTime = GameTime.getElapsedTime();
+		sf::Time lag = sf::seconds(0);
+
+		while(running)
+		{
+			sf::Time newTime = GameTime.getElapsedTime();
+			sf::Time frameTime = newTime - currentTime;
+
+			if(frameTime > sf::seconds(0.25))
+				frameTime = sf::seconds(0.25);
+
+			currentTime = newTime;
+
+			lag += frameTime;
+
+			while(lag >= dt)
+			{
+				manageStates();
+				update(dt);
+				lag -= dt;
+			}
+
+			draw(lag.asSeconds() / dt.asSeconds());
+			
+			// frames per second measurement
+			if(debug)
+				FPS.setString(std::to_string(1 / frameTime.asSeconds()).substr(0, 7));
+		}
 	}
 
 	void Game::update(sf::Time dt)
@@ -62,11 +90,22 @@ namespace swift
 				running = false;
 			
 			if(running)
-				currentState->handleEvent(event);
+				states.read()->handleEvent(event);
 		}
 		
 		if(running)
-			currentState->update(dt);
+			states.read()->update(dt);
+	}
+	
+	void Game::manageStates()
+	{
+		if(states.read()->switchFrom())
+		{
+			states.pop();
+
+			if(states.empty())
+				running = false;
+		}
 	}
 
 	void Game::draw(float e)
@@ -77,7 +116,7 @@ namespace swift
 			window.clear();
 
 			/* state drawing */
-			currentState->draw(e);
+			states.read()->draw(e);
 			
 			/* other drawing */
 			window.draw(console);
@@ -132,16 +171,6 @@ namespace swift
 		{
 			assets.loadMod(m.second.mod);
 		}
-	}
-			
-	// initialize scripting variables
-	void Game::initScripting()
-	{
-		// setup Script static variables
-		Script::setWindow(window);
-		Script::setAssetManager(assets);
-		Script::setClock(GameTime);
-		Script::setSettings(settings);
 	}
 	
 	void Game::addKeyboardCommands()

@@ -3,6 +3,8 @@
 
 #include <SFML/Graphics/RenderWindow.hpp>
 
+#include "StateMachine.hpp"
+
 /* Input headers */
 #include "../KeyBindings/KeyboardManager.hpp"
 #include "../KeyBindings/MouseManager.hpp"
@@ -17,23 +19,13 @@ namespace swift
 	class State
 	{
 		public:
-			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
+			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic, StateMachine& sm);
 			virtual ~State();
 			
-			enum class Type
-			{
-				MainMenu = 0,
-				SettingsMenu,
-				Play,
-				Exit
-			};
-			
-			virtual void setup() = 0;
 			virtual void handleEvent(sf::Event &event) = 0;
 			virtual void update(sf::Time dt) = 0;
 			virtual void draw(float e) = 0;
-			virtual bool switchFrom() = 0;
-			virtual Type finish() = 0;
+			virtual bool switchFrom();
 
 		protected:
 			/* Environment */
@@ -43,12 +35,13 @@ namespace swift
 			MusicPlayer& musicPlayer;
 			Settings& settings;
 			Settings& dictionary;
+			StateMachine& states;
 			
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
 			
-			Type returnType;
+			bool shouldReturn;
 	};
 }
 
