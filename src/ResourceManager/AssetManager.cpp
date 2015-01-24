@@ -91,6 +91,9 @@ namespace swift
 		for(auto& a : animTextures)
 			delete a.second;
 		
+		for(auto& b : batches)
+			delete b.second;
+		
 		for(auto& t : textures)
 			delete t.second;
 		
@@ -107,6 +110,7 @@ namespace swift
 			delete s.second;
 		
 		animTextures.clear();
+		batches.clear();
 		textures.clear();
 		soundBuffers.clear();
 		music.clear();
@@ -123,12 +127,40 @@ namespace swift
 		}
 	}
 	
+	bool AssetManager::newSpriteBatch(const std::string& t, unsigned int s)
+	{
+		if(batches.find(t) == batches.end())
+		{
+			sf::Texture* texture = getTexture(t);
+			
+			if(texture)
+			{
+				batches[t] = new SpriteBatch(*texture, s);
+				return true;
+			}
+			else
+				return false;
+		}
+		else
+			return false;
+	}
+	
 	AnimTexture* AssetManager::getAnimTexture(const std::string& n)
 	{
 		if(animTextures.find(n) != animTextures.end())
 			return animTextures.find(n)->second;
 		else
 			log << "No \"" << n << "\" anim file exists\n";
+		
+		return nullptr;
+	}
+	
+	SpriteBatch* AssetManager::getBatch(const std::string& n)
+	{
+		if(batches.find(n) != batches.end())
+			return batches.find(n)->second;
+		else
+			log << "No\"" << n << "\" batch exists\n";
 		
 		return nullptr;
 	}
@@ -277,7 +309,7 @@ namespace swift
 
 			log << "Font:\t" << file << '\n';
 		}
-		else if(file.find("/scripts/") != std::string::npos)
+		/*else if(file.find("/scripts/") != std::string::npos)
 		{
 			scripts.emplace(file, new Script());
 			
@@ -297,7 +329,7 @@ namespace swift
 			log << "Script:\t" << file << '\n';
 			
 			scripts[file]->load("./data/saves/" + file.substr(file.find_last_of('/') + 1) + ".script");
-		}
+		}*/
 		else if(file.find(".txt") != std::string::npos)
 		{
 			// ignore *.txt files, but don't throw a warning/error

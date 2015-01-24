@@ -12,6 +12,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
+#include "../BatchDrawing/SpriteBatch.hpp"
 #include "../Animation/AnimTexture.hpp"
 #include "../Scripting/Script.hpp"
 
@@ -40,7 +41,11 @@ namespace swift
 			// sets the AssetManager to load textures with smoothing (antialiasing)
 			void setSmooth(bool s);
 			
+			// make a SpriteBatch out of a texture, given a size
+			bool newSpriteBatch(const std::string& t, unsigned int s);
+			
 			AnimTexture* getAnimTexture(const std::string& n);
+			SpriteBatch* getBatch(const std::string& n);
 			sf::Texture* getTexture(const std::string& n);
 			sf::SoundBuffer* getSoundBuffer(const std::string& n);
 			sf::Music* getSong(const std::string& n);
@@ -51,6 +56,7 @@ namespace swift
 			bool loadResource(const std::string& file);
 			
 			std::map<std::string, AnimTexture*> animTextures;
+			std::map<std::string, SpriteBatch*> batches;
 			std::map<std::string, sf::Texture*> textures;
 			std::map<std::string, sf::SoundBuffer*> soundBuffers;
 			std::map<std::string, sf::Music*> music;
