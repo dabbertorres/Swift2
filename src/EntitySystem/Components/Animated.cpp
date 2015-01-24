@@ -4,8 +4,25 @@ namespace swift
 {
 	Animated::Animated()
 	:	animTex(nullptr),
-		currentAnim("")
+		currentAnim(""),
+		previousAnim("")
 	{}
+	
+	void Animated::setAnimation(const std::string& anim)
+	{
+		if(anims.find(anim) == anims.end())
+			return;
+		
+		previousAnim = currentAnim;
+		currentAnim = anim;
+	}
+	
+	void Animated::revertAnimation()
+	{
+		std::string temp = currentAnim;
+		currentAnim = previousAnim;
+		previousAnim = temp;
+	}
 	
 	std::string Animated::getType()
 	{

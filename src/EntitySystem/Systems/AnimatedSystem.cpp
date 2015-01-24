@@ -22,7 +22,7 @@ namespace swift
 		}
 	}
 
-	void AnimatedSystem::draw(std::vector<Entity*>& entities, float e, sf::RenderTarget& target, sf::RenderStates states) const
+	void AnimatedSystem::draw(std::vector<Entity*>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		std::vector<Entity*> animateds;
 		

@@ -14,6 +14,10 @@ namespace swift
 	{
 		public:
 			Animated();
+			
+			void setAnimation(const std::string& anim);
+			void revertAnimation();
+			
 			static std::string getType();
 			
 			virtual std::map<std::string, std::string> serialize() const;
@@ -23,6 +27,7 @@ namespace swift
 			AnimTexture* animTex;
 			std::map<std::string, FrameAnimation> anims;
 			std::string currentAnim;
+			std::string previousAnim;
 			std::string animationFile;
 	};
 }

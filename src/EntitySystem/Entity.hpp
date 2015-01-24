@@ -28,6 +28,12 @@ namespace swift
 					*get<Animated>() = *other.get<Animated>();
 				}
 				
+				if(other.has<BatchDrawable>())
+				{
+					add<BatchDrawable>();
+					*get<BatchDrawable>() = *other.get<BatchDrawable>();
+				}
+				
 				if(other.has<Controllable>())
 				{
 					add<Controllable>();

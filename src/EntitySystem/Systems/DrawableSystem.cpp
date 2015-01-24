@@ -25,7 +25,7 @@ namespace swift
 		}
 	}
 
-	void DrawableSystem::draw(std::vector<Entity*>& entities, float e, sf::RenderTarget& target, sf::RenderStates states) const
+	void DrawableSystem::draw(std::vector<Entity*>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		std::vector<Entity*> drawables;
 		
