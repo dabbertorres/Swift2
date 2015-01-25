@@ -4,11 +4,14 @@
 #include "../src/StateSystem/State.hpp"
 #include "../src/StateSystem/SubState.hpp"
 
+#include "../../src/SoundSystem/MusicPlayer.hpp"
+#include "../../src/SoundSystem/SoundPlayer.hpp"
+
 /* GUI headers */
 #include "../src/GUI/Window.hpp"
 
 /* World headers */
-#include "../src/World/World.hpp"
+#include "GameWorld.hpp"
 
 /* Scripting */
 #include "../src/Scripting/ScriptManager.hpp"
@@ -33,6 +36,9 @@ namespace tg
 		private:
 			void loadLastWorld();
 			
+			bool loadWorld(swift::World& world);
+			bool saveWorld(swift::World& world);
+			
 			void setupGUI();
 			void setupSubStates();
 			void setupKeyBindings();
@@ -53,7 +59,7 @@ namespace tg
 			
 			swift::ScriptManager scripts;
 			
-			std::map<std::string, swift::World*> worlds;
+			std::map<std::string, GameWorld*> worlds;
 	};
 }
 

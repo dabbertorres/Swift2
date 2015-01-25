@@ -4,6 +4,8 @@
 
 #include "GameScript.hpp"
 
+#include "../../src/ResourceManager/AssetManager.hpp"
+
 #include "../src/Logger/Logger.hpp"
 
 /* GUI headers */
@@ -12,6 +14,8 @@
 #include "../src/GUI/Widgets/Label.hpp"
 #include "../src/GUI/Widgets/Button.hpp"
 #include "../src/GUI/Widgets/Spacer.hpp"
+
+#include <tinyxml2.h>
 
 namespace tg
 {
@@ -23,6 +27,7 @@ namespace tg
 		activeState(nullptr),
 		activeWorld(nullptr),
 		player(nullptr),
+		playView({0, 0}, {static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
 		scripts(am)
 	{
 		GameScript::setPlayState(*this);
@@ -60,7 +65,10 @@ namespace tg
 		fout.close();
 		
 		for(auto& w : worlds)
+		{
+			saveWorld(*w.second);
 			delete w.second;
+		}
 
 		scripts.removeAll();
 	}
@@ -90,13 +98,13 @@ namespace tg
 
 	swift::Entity* GamePlay::getPlayer() const
 	{
-		return player;
+		return activeWorld->getPlayer();
 	}
 
 	void GamePlay::changeWorld(const std::string& name, const std::string& mapFile)
 	{
-		worlds.emplace(name, new swift::World(name, assets, soundPlayer, musicPlayer, {}));
-		swift::World* newWorld = worlds[name];
+		worlds.emplace(name, new GameWorld(name, assets));
+		GameWorld* newWorld = worlds[name];
 
 		// setup world
 		bool mapResult = newWorld->tilemap.loadFile(mapFile);
@@ -119,38 +127,28 @@ namespace tg
 		{
 			// copy over play from current world to new world
 			swift::Entity* newPlayer = newWorld->addEntity();
-			*newPlayer = *player;
+			*newPlayer = *activeWorld->getPlayer();
 			player = newPlayer;
 
 			activeWorld->removeEntity(0);	// delete player from current world
 
 			// delete old world
 			std::string oldWorld = activeWorld->getName();
+			saveWorld(*activeWorld);
 			delete activeWorld;
 			worlds.erase(oldWorld);
 
 			// load the world's save file
-			bool loadResult = newWorld->load();
-			
-			if(!loadResult)
+			if(!loadWorld(*newWorld))
 				swift::log << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
 		}
 		else
 		{
 			// load the world's save file
-			bool loadResult = newWorld->load();
-			
-			if(!loadResult)
+			if(!loadWorld(*newWorld))
 				swift::log << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
 			
-			for(auto& e : newWorld->getEntities())
-			{
-				if(e->has<swift::Controllable>())
-				{
-					player = e;
-					break;
-				}
-			}
+			player = newWorld->getPlayer();
 		}
 
 		activeWorld = newWorld;
@@ -171,6 +169,113 @@ namespace tg
 
 		// create worlds
 		changeWorld(worldName, tilemapFile);
+	}
+	
+	bool GamePlay::loadWorld(swift::World& world)
+	{
+		std::string file = "./data/saves/" + world.getName() + ".world";
+		
+		tinyxml2::XMLDocument loadFile;
+		loadFile.LoadFile(file.c_str());
+		
+		if(loadFile.Error())
+		{
+			swift::log << "[ERROR] Loading world save file \"" << file << "\" failed.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* worldRoot = loadFile.FirstChildElement("world");
+		if(worldRoot == nullptr)
+		{
+			swift::log << "[WARNING] World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* entityElement = worldRoot->FirstChildElement("entity");
+		while(entityElement != nullptr)
+		{
+			swift::Entity* entity = world.addEntity();
+			
+			tinyxml2::XMLElement* component = entityElement->FirstChildElement();
+			while(component != nullptr)
+			{
+				std::string componentName = component->Value();
+				entity->add(componentName);
+				
+				std::map<std::string, std::string> variables;
+				tinyxml2::XMLElement* variableElement = component->FirstChildElement();
+				while(variableElement != nullptr)
+				{
+					// make sure the strings aren't empty...
+					if(std::string(variableElement->Value()).size() > 0 && std::string(variableElement->GetText()).size() > 0)
+						variables.emplace(variableElement->Value(), variableElement->GetText());
+					variableElement = variableElement->NextSiblingElement();
+				}
+				
+				// get component and add to it
+				entity->get(componentName)->unserialize(variables);
+				
+				if(componentName == "Drawable")
+				{
+					entity->get<swift::Drawable>()->sprite.setTexture(*assets.getTexture(entity->get<swift::Drawable>()->texture));
+				}
+				
+				component = component->NextSiblingElement();
+			}
+			
+			entityElement = entityElement->NextSiblingElement("entity");
+		}
+		
+		return true;
+	}
+	
+	bool GamePlay::saveWorld(swift::World& world)
+	{
+		std::string file = "./data/saves/" + world.getName() + ".world";
+		
+		tinyxml2::XMLDocument saveFile;
+		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
+
+		if(result != tinyxml2::XML_SUCCESS && result != tinyxml2::XML_ERROR_EMPTY_DOCUMENT && result != tinyxml2::XML_ERROR_FILE_NOT_FOUND)
+		{
+			swift::log << "[ERROR]: Saving world save file \"" << file << "\" failed.\n";
+			return false;
+		}
+		
+		tinyxml2::XMLElement* root = saveFile.FirstChildElement("world");
+		if(root == nullptr)
+		{
+			swift::log << "[WARNING]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			root = saveFile.NewElement("world");
+			saveFile.InsertFirstChild(root);
+		}
+		else
+			root->DeleteChildren();
+		
+		for(auto& e : world.getEntities())
+		{
+			tinyxml2::XMLElement* entity = saveFile.NewElement("entity");
+			
+			for(auto& c : e->getComponents())
+			{
+				tinyxml2::XMLElement* component = saveFile.NewElement(c.first.c_str());
+				
+				for(auto& v : c.second->serialize())
+				{
+					tinyxml2::XMLElement* variable = saveFile.NewElement(v.first.c_str());
+					variable->SetText(v.second.c_str());
+					component->InsertEndChild(variable);
+				}
+				
+				entity->InsertEndChild(component);
+			}
+			
+			root->InsertEndChild(entity);
+		}
+		
+		saveFile.SaveFile(file.c_str());
+		
+		return true;
 	}
 	
 	void GamePlay::setupGUI()
@@ -233,8 +338,7 @@ namespace tg
 		play.setDrawFunc([&](float e)
 		{
 			window.setView(playView);
-			activeWorld->drawWorld(window);
-			activeWorld->drawEntities(window, e);
+			activeWorld->draw(window, e);
 
 			window.setView(window.getDefaultView());
 			window.draw(hud);

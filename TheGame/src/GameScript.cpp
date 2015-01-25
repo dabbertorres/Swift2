@@ -2,6 +2,8 @@
 
 #include "../../src/Math/Math.hpp"
 
+#include "../../src/ResourceManager/AssetManager.hpp"
+
 namespace tg
 {
 	sf::RenderWindow* GameScript::window = nullptr;
@@ -211,7 +213,9 @@ namespace tg
 	std::vector<swift::Entity*> GameScript::getEntities()
 	{
 		if(world)
+		{
 			return world->getEntities();
+		}
 		else
 			return std::vector<swift::Entity*> {};
 	}
