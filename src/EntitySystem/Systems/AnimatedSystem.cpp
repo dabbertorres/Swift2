@@ -2,14 +2,14 @@
 
 namespace swift
 {
-	void AnimatedSystem::update(std::vector<Entity*>& entities, float dt)
+	void AnimatedSystem::update(const std::vector<Entity>& entities, float dt)
 	{
 		for(auto& e : entities)
 		{
-			if(e->has<Animated>() && e->has<Physical>())
+			if(e.has<Animated>() && e.has<Physical>())
 			{
-				Physical* phys = e->get<Physical>();
-				Animated* anim = e->get<Animated>();
+				Physical* phys = e.get<Physical>();
+				Animated* anim = e.get<Animated>();
 
 				anim->sprite.setPosition(std::floor(phys->position.x), std::floor(phys->position.y));
 
@@ -22,17 +22,17 @@ namespace swift
 		}
 	}
 
-	void AnimatedSystem::draw(std::vector<Entity*>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
+	void AnimatedSystem::draw(const std::vector<Entity>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		std::vector<Entity*> animateds;
+		std::vector<const Entity*> animateds;
 		
 		for(auto& e : entities)
 		{
-			if(e->has<Animated>() && e->has<Physical>())
-				animateds.push_back(e);
+			if(e.has<Animated>() && e.has<Physical>())
+				animateds.push_back(&e);
 		}
 		
-		std::sort(animateds.begin(), animateds.end(), [](Entity* one, Entity* two)
+		std::sort(animateds.begin(), animateds.end(), [](const Entity* one, const Entity* two)
 		{
 			Physical* onePhys = one->get<Physical>();
 			Physical* twoPhys = two->get<Physical>();

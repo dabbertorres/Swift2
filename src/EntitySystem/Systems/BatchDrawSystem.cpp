@@ -9,14 +9,14 @@
 
 namespace swift
 {
-	void BatchDrawSystem::update(std::vector<Entity*>& entities, float)
+	void BatchDrawSystem::update(const std::vector<Entity>& entities, float)
 	{
 		for(auto& e : entities)
 		{
-			if(e->has<BatchDrawable>() && e->has<Physical>())
+			if(e.has<BatchDrawable>() && e.has<Physical>())
 			{
-				Physical* phys = e->get<Physical>();
-				BatchDrawable* draw = e->get<BatchDrawable>();
+				Physical* phys = e.get<Physical>();
+				BatchDrawable* draw = e.get<BatchDrawable>();
 				
 				draw->sprite.setPosition({std::floor(phys->position.x), std::floor(phys->position.y)});
 				
@@ -27,14 +27,14 @@ namespace swift
 		}
 	}
 
-	void BatchDrawSystem::draw(std::vector<Entity*>& entities, float, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const
+	void BatchDrawSystem::draw(const std::vector<Entity>& entities, float, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const
 	{
 		std::unordered_set<std::string> batches;
 		
 		for(auto& e : entities)
 		{
-			if(e->has<BatchDrawable>())
-				batches.insert(e->get<BatchDrawable>()->batch);
+			if(e.has<BatchDrawable>())
+				batches.insert(e.get<BatchDrawable>()->batch);
 		}
 		
 		for(auto& b : batches)

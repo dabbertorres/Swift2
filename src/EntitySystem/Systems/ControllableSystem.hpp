@@ -8,7 +8,7 @@ namespace swift
 	class ControllableSystem : public swift::System
 	{
 		public:
-			virtual void update(std::vector<Entity*>& entities, float dt);
+			virtual void update(const std::vector<Entity>& entities, float dt);
 	};
 }
 

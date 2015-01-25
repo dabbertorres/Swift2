@@ -11,9 +11,9 @@ namespace swift
 	class Entity
 	{
 		public:
-			Entity()
-			{
-			}
+			Entity(unsigned int i)
+			:	id(i)
+			{}
 			
 			Entity(const Entity& other)
 			{
@@ -189,9 +189,15 @@ namespace swift
 			{
 				return components;
 			}
+			
+			unsigned int getID() const
+			{
+				return id;
+			}
 
 		private:
 			std::unordered_map<std::string, Component*> components;
+			unsigned int id;
 	};
 }
 

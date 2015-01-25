@@ -7,14 +7,14 @@
 
 namespace swift
 {
-	void DrawableSystem::update(std::vector<Entity*>& entities, float /*dt*/)
+	void DrawableSystem::update(const std::vector<Entity>& entities, float /*dt*/)
 	{
 		for(auto& e : entities)
 		{
-			if(e->has<Drawable>() && e->has<Physical>())
+			if(e.has<Drawable>() && e.has<Physical>())
 			{
-				Physical* phys = e->get<Physical>();
-				Drawable* draw = e->get<Drawable>();
+				Physical* phys = e.get<Physical>();
+				Drawable* draw = e.get<Drawable>();
 				
 				draw->sprite.setPosition(std::floor(phys->position.x), std::floor(phys->position.y));
 				
@@ -25,17 +25,17 @@ namespace swift
 		}
 	}
 
-	void DrawableSystem::draw(std::vector<Entity*>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
+	void DrawableSystem::draw(const std::vector<Entity>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		std::vector<Entity*> drawables;
+		std::vector<const Entity*> drawables;
 		
 		for(auto& e : entities)
 		{
-			if(e->has<Drawable>() && e->has<Physical>())
-				drawables.push_back(e);
+			if(e.has<Drawable>() && e.has<Physical>())
+				drawables.push_back(&e);
 		}
 		
-		std::sort(drawables.begin(), drawables.end(), [](Entity* one, Entity* two)
+		std::sort(drawables.begin(), drawables.end(), [](const Entity* one, const Entity* two)
 		{
 			Physical* onePhys = one->get<Physical>();
 			Physical* twoPhys = two->get<Physical>();

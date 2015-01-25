@@ -15,9 +15,9 @@ namespace swift
 	class BatchDrawSystem : public System
 	{
 		public:
-			virtual void update(std::vector<Entity*>& entities, float dt);
+			virtual void update(const std::vector<Entity>& entities, float dt);
 			
-			virtual void draw(std::vector<Entity*>& entities, float e, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const;
+			virtual void draw(const std::vector<Entity>& entities, float e, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const;
 	};
 }
 
