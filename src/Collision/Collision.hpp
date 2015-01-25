@@ -10,10 +10,10 @@ namespace swift
 	class Collision
 	{
 		public:
-			Collision(Entity& f, Entity& s);
+			Collision(const Entity& f, const Entity& s);
 			
-			Entity& getFirstEntity() const;
-			Entity& getSecondEntity() const;
+			const Entity& getFirstEntity() const;
+			const Entity& getSecondEntity() const;
 			
 			const sf::Vector2f& getPosition() const;
 			
@@ -27,8 +27,8 @@ namespace swift
 			
 			static sf::Vector2f scaledDiffVector(const sf::Vector2f& oneVec, const sf::Vector2f& twoVec, float scale);
 			
-			Entity& one;
-			Entity& two;
+			const Entity& one;
+			const Entity& two;
 			sf::Vector2f position;
 			
 			bool result;

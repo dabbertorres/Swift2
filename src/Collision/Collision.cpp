@@ -10,7 +10,7 @@
 
 namespace swift
 {
-	Collision::Collision(Entity& f, Entity& s)
+	Collision::Collision(const Entity& f, const Entity& s)
 	:	one(f),
 		two(s),
 		position({-1.f, -1.f}),
@@ -19,12 +19,12 @@ namespace swift
 		result = handle();
 	}
 
-	Entity& Collision::getFirstEntity() const
+	const Entity& Collision::getFirstEntity() const
 	{
 		return one;
 	}
 	
-	Entity& Collision::getSecondEntity() const
+	const Entity& Collision::getSecondEntity() const
 	{
 		return two;
 	}
@@ -179,7 +179,6 @@ namespace swift
 		else
 		{
 			Physical* movable = one.has<Movable>() ? one.get<Physical>() : two.get<Physical>();
-			Physical* stuck = one.has<Movable>() ? two.get<Physical>() : one.get<Physical>();
 			
 			movable->position -= (smallestAxis * overlap);
 		}
