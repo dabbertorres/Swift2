@@ -321,9 +321,9 @@ namespace swift
 		return true;
 	}
 
-	bool AssetManager::loadScript(const std::string& file)
+	bool AssetManager::loadScript(const std::string&)
 	{
-		
+		return false;
 	}
 
 	bool AssetManager::loadResource(const std::string& file)
