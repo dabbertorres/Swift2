@@ -4,9 +4,9 @@ namespace swift
 {
 	Mod::Mod()
 	{
-		
+
 	}
-	
+
 	Mod::Mod(const std::string& n, const std::string& v, const std::string& a)
 	{
 		name = n;
@@ -47,12 +47,12 @@ namespace swift
 	{
 		return files;
 	}
-	
+
 	void Mod::setName(const std::string& n)
 	{
 		name = n;
 	}
-	
+
 	void Mod::setVersion(const std::string& v)
 	{
 		version = v;
@@ -63,7 +63,7 @@ namespace swift
 		author = a;
 	}
 
-	void Mod::setDescription(const std::string d)
+	void Mod::setDescription(const std::string& d)
 	{
 		description = d;
 	}

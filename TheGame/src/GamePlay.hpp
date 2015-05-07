@@ -22,9 +22,10 @@ namespace tg
 	class GamePlay : public swift::State
 	{
 		public:
-			GamePlay(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm);
+			GamePlay(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic,
+			         swift::StateMachine& sm, const std::string& rp);
 			~GamePlay();
-			
+
 			virtual void handleEvent(sf::Event& event);
 			virtual void update(sf::Time dt);
 			virtual void draw(float e);
@@ -35,10 +36,10 @@ namespace tg
 
 		private:
 			void loadLastWorld();
-			
+
 			bool loadWorld(swift::World& world);
 			bool saveWorld(swift::World& world);
-			
+
 			void setupGUI();
 			void setupSubStates();
 			void setupKeyBindings();
@@ -53,12 +54,12 @@ namespace tg
 
 			swift::World* activeWorld;
 			swift::Entity* player;
-			
+
 			sf::View playView;
 			float currentZoom;
-			
+
 			swift::ScriptManager scripts;
-			
+
 			std::map<std::string, GameWorld*> worlds;
 	};
 }

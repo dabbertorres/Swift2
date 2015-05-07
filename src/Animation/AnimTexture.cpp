@@ -62,7 +62,7 @@ namespace swift
 					
 					param = param->NextSiblingElement();
 				}
-				
+				log << frameRect.left << ' ' << frameRect.top << ' ' << frameRect.width << ' ' << frameRect.height << '\n';
 				animations[animName].addFrame(frameRect);
 				
 				frame = frame->NextSiblingElement("frame");

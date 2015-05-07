@@ -2,7 +2,7 @@
  *	Swift Engine
  *
  *	A 2D game engine aiming for speed and reliability.
- * 
+ *
  **/
 
 #ifndef GAME_HPP
@@ -18,7 +18,6 @@
 
 /* Utility headers */
 #include "Console/Console.hpp"
-#include "Logger/Logger.hpp"
 #include "Settings/Settings.hpp"
 
 /* Resource headers */
@@ -29,17 +28,15 @@
 #include "SoundSystem/SoundPlayer.hpp"
 #include "SoundSystem/MusicPlayer.hpp"
 
-#include <queue>
-
 namespace swift
-{	
+{
 	namespace Quality
 	{
 		const unsigned int Low = 0;
 		const unsigned int Medium = 1;
 		const unsigned int High = 2;
 	};
-	
+
 	struct Resolution
 	{
 		unsigned int x;
@@ -65,69 +62,71 @@ namespace swift
 			// the thing that makes the game actually run!
 			void gameLoop();
 
+			const std::string& getResourcePath() const;
+
 		protected:
 			// Updating game logic, handling input, memory management, etc.
 			// In a separate function to keep GameLoop looking clean and easier
 			// to comprehend
 			void update(sf::Time dt);
-			
+
 			// Handle state changes, etc
 			virtual void manageStates();
-			
+
 			// Drawing all drawable game objects, backgrounds, etc
 			// Same reason as why it has it's own function as Update
 			void draw(float e);
-			
+
 			// figure out settings for window and create it
 			void setupWindow();
-			
+
 			// invoke asset loading
 			virtual void loadAssets() = 0;
-			
+
 			// find and load mods
 			virtual void loadMods() = 0;
-			
+
 			// start up the state system
 			virtual void initState() = 0;
-			
+
 			// initialize scripting variables
 			virtual void initScripting() = 0;
-			
+
 			virtual void addKeyboardCommands();
-			
+
 			virtual void addConsoleCommands();
-			
+
 			// handles any launch options and sets the respective variables
 			virtual void handleLaunchOps(int c, char** args);
-			
+
 			// opens the settings file and sets the respective variables
 			virtual void loadSettings(const std::string& file);
-			
+
 			bool running;
 			sf::Font defaultFont;
-			
+
 			/* Resources */
 			ModManager mods;
-			
+
 			/* Sound */
 			SoundPlayer soundPlayer;
 			MusicPlayer musicPlayer;
-			
+
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
-			
+
 			/* Something about the console should go here, but I don't know what to put other than "Console". Which seems redundant */
 			Console console;
 
 			/* FPS tracking */
 			sf::Text FPS;
-			
+
 			/* Settings */
 			Settings settings;
 			Settings controls;
 			Settings dictionary;
-			
+
 			unsigned int graphics;		// 0 = Low, 1 = Medium, 2 = High
 			bool smoothing;			// texture smoothing
 			bool fullscreen;
@@ -139,14 +138,16 @@ namespace swift
 
 			// random number generator
 			std::mt19937 rng;	// Whenever something random is needed, this is all ready!
-			
+
 			sf::RenderWindow window;
 			StateMachine states;
 			sf::Clock GameTime;		// Game loop timing. Starts once Game::Start() is called.
-			
+
 		private:
 			std::string title;
-			
+
+			std::string path;
+
 			float ticksPerSecond;	// Iterations of Update
 
 			/* Launch Arguments */

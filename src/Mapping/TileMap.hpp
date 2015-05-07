@@ -21,7 +21,7 @@ namespace swift
 		public:
 			TileMap();
 			~TileMap();
-			
+
 			void update(float dt);
 
 			bool loadFile(const std::string& f);
@@ -33,13 +33,13 @@ namespace swift
 
 			const Tile* getTile(unsigned int t, unsigned int l) const;
 			const Tile* getTile(const sf::Vector2f& pos, unsigned int l) const;
-			
+
 			const sf::Vector2u& getTileSize() const;
 			const sf::Vector2u& getSize() const;
-			
+
 			const std::string& getTextureFile() const;
 			const std::string& getFile() const;
-			
+
 			unsigned int getNumOfTileTypes() const;
 
 		private:
@@ -61,7 +61,8 @@ namespace swift
 			sf::Vector2u sizeTiles;
 			sf::Vector2u textureSize;
 			sf::Vector2u textureTileSize;
-			
+			unsigned int tileSpacing;
+
 			std::string file;
 			std::string textureFile;
 

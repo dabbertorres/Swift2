@@ -17,6 +17,7 @@ namespace swift
 			
 			void setAnimation(const std::string& anim);
 			void revertAnimation();
+			bool createAnimations();
 			
 			static std::string getType();
 			

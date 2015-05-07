@@ -2,46 +2,58 @@
 
 #include "SystemInfo/SystemInfo.hpp"
 
+#include <unistd.h>
+#include <limits.h>
+
 namespace swift
 {
 	Game::Game(const std::string& t, unsigned tps)
-	:	running(false),
-		console(500, 200, defaultFont, "$:"),
-		graphics(Quality::Medium),
-		smoothing(false),
-		fullscreen(false),
-		verticalSync(true),
-		resolution({800, 600}),
-		soundLevel(100),
-		musicLevel(75),
-		title(t),
-		ticksPerSecond(tps),
-		editor(false),
-		debug(false)
+		:	running(false),
+		    console(500, 200, defaultFont, "$:"),
+		    graphics(Quality::Medium),
+		    smoothing(false),
+		    fullscreen(false),
+		    verticalSync(true),
+		resolution( {800, 600}),
+	soundLevel(100),
+	musicLevel(75),
+	title(t),
+	ticksPerSecond(tps),
+	editor(false),
+	debug(false)
 	{
 		addKeyboardCommands();
 		addConsoleCommands();
-		
+
 		// get System Info
 		log	<< "OS:\t\t" << getOSName() << '\n'
-			<< "Version:\t" << getOSVersion() << '\n'
-			<< "Arch:\t\t" << getOSArch() << '\n'
-			<< "Total Mem:\t" << getTotalMem() << '\n'
-			<< "CPU:\t\t" << getCPUModel() << '\n'
-			<< "Video Vendor:\t" << getVideoVendor() << '\n'
-			<< "Video Card:\t" << getVideoCard() << '\n'
-			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
+		<< "Version:\t" << getOSVersion() << '\n'
+		<< "Arch:\t\t" << getOSArch() << '\n'
+		<< "Total Mem:\t" << getTotalMem() << '\n'
+		<< "CPU:\t\t" << getCPUModel() << '\n'
+		<< "Video Vendor:\t" << getVideoVendor() << '\n'
+		<< "Video Card:\t" << getVideoCard() << '\n'
+		<< "Video Driver:\t" << getVideoDriver() << "\n\n";
+
+		char buffer[PATH_MAX];
+
+		readlink("/proc/self/exe", buffer, PATH_MAX);
+
+		path = buffer;
+		path = path.substr(0, path.find_last_of('/') + 1);
+
+		Script::setResourcePath(path);
 	}
 
 	Game::~Game()
 	{
 		window.close();
 	}
-	
+
 	void Game::gameLoop()
 	{
 		running = true;
-		
+
 		const sf::Time dt = sf::seconds(1.f / ticksPerSecond);
 
 		sf::Time currentTime = GameTime.getElapsedTime();
@@ -53,7 +65,9 @@ namespace swift
 			sf::Time frameTime = newTime - currentTime;
 
 			if(frameTime > sf::seconds(0.25))
+			{
 				frameTime = sf::seconds(0.25);
+			}
 
 			currentTime = newTime;
 
@@ -67,16 +81,24 @@ namespace swift
 			}
 
 			draw(lag.asSeconds() / dt.asSeconds());
-			
+
 			// frames per second measurement
 			if(debug)
+			{
 				FPS.setString(std::to_string(1 / frameTime.asSeconds()).substr(0, 7));
+			}
 		}
+	}
+
+	const std::string& Game::getResourcePath() const
+	{
+		return path;
 	}
 
 	void Game::update(sf::Time dt)
 	{
 		sf::Event event;
+
 		while(window.pollEvent(event) && running)
 		{
 			keyboard(event);
@@ -84,19 +106,27 @@ namespace swift
 
 			// avoid having the console type the key that toggles it
 			if(event.type == sf::Event::TextEntered && event.text.unicode != '\\')
+			{
 				console.update(event);
+			}
 
 			if(event.type == sf::Event::Closed)
+			{
 				running = false;
-			
+			}
+
 			if(running)
+			{
 				states.read()->handleEvent(event);
+			}
 		}
-		
+
 		if(running)
+		{
 			states.read()->update(dt);
+		}
 	}
-	
+
 	void Game::manageStates()
 	{
 		if(states.read()->switchFrom())
@@ -104,7 +134,9 @@ namespace swift
 			states.pop();
 
 			if(states.empty())
+			{
 				running = false;
+			}
 		}
 	}
 
@@ -117,25 +149,29 @@ namespace swift
 
 			/* state drawing */
 			states.read()->draw(e);
-			
+
 			/* other drawing */
 			window.draw(console);
-			
+
 			if(debug)
+			{
 				window.draw(FPS);
+			}
 
 			/* display drawing */
 			window.display();
 		}
 	}
-	
+
 	void Game::setupWindow()
 	{
 		if(fullscreen)
+		{
 			window.create(sf::VideoMode::getDesktopMode(), title, sf::Style::Fullscreen);
+		}
 		else
-			window.create({resolution.x, resolution.y, 32}, title, sf::Style::Titlebar | sf::Style::Close);
-		
+			window.create( {resolution.x, resolution.y, 32}, title, sf::Style::Titlebar | sf::Style::Close);
+
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
 
@@ -146,7 +182,7 @@ namespace swift
 		FPS.setColor(sf::Color::White);
 		FPS.setPosition(window.getSize().x - (FPS.getGlobalBounds().width + 10), 10);
 	}
-	
+
 	void Game::addKeyboardCommands()
 	{
 		// add some default keybindings
@@ -155,7 +191,7 @@ namespace swift
 			console.activate(!console.isActivated());
 		});
 	}
-	
+
 	void Game::addConsoleCommands()
 	{
 		// add some console commands
@@ -164,7 +200,7 @@ namespace swift
 			console << "\nHello to you too!";
 			return 0;
 		});
-		
+
 		console.addCommand("fps", [&](ArgVec /*args*/)
 		{
 			console << "\n" << FPS.getString();
@@ -187,6 +223,7 @@ namespace swift
 
 		// loop through options
 		int arg = 1;	// we skip arg 0 because arg 0 is the executable
+
 		while(arg < c)
 		{
 			if(args[arg] == std::string("editor"))
@@ -212,12 +249,15 @@ namespace swift
 				log << "Supported Fullscreen Video Modes:\n";
 
 				std::vector<sf::VideoMode> modes = sf::VideoMode::getFullscreenModes();
+
 				for(std::size_t i = 0; i < modes.size(); ++i)
 				{
 					sf::VideoMode mode = modes[i];
-					log << "Mode #" << i << ": " << mode.width << "x" << mode.height << " - " << mode.bitsPerPixel << " bpp\n";
+					log << "Mode #" << i << ": " << mode.width << "x" << mode.height << " - " << mode.bitsPerPixel <<
+					" bpp\n";
 					// ex: "Mode #0: 1920x1080 - 32 bbp"
 				}
+
 				log << '\n';
 			}
 			else
@@ -228,12 +268,14 @@ namespace swift
 			arg++;
 		}
 	}
-	
+
 	void Game::loadSettings(const std::string& file)
 	{
 		// settings file settings
 		if(!settings.loadFile(file))
+		{
 			log << "Could not open settings file, default settings will be used\n";
+		}
 
 		settings.get("fullscreen", fullscreen);
 		settings.get("vsync", verticalSync);

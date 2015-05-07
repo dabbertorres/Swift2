@@ -22,10 +22,24 @@ namespace swift
 				
 				if(world)
 				{
+					sf::Vector2u tileSize = world->tilemap.getTileSize();
+					
 					if(pf->needsPath)
 					{
-
-						Path path(phys->position, pf->destination, phys->zIndex, world->tilemap);
+						Path::NodesMap nodes;
+						
+						// build path map
+						for(int i = 0; world->tilemap.getTile(i, 0) != nullptr; i++)
+						{
+							for(int j = 0; world->tilemap.getTile(i, j) != nullptr; j++)
+							{
+								nodes[i][j] = world->tilemap.getTile(i, j)->isPassable();
+							}
+						}
+						
+						sf::Vector2u nodeStart = {static_cast<unsigned int>(phys->position.x / tileSize.x), static_cast<unsigned int>(phys->position.y / tileSize.y)};
+						sf::Vector2u nodeEnd = {static_cast<unsigned int>(pf->destination.x / tileSize.x), static_cast<unsigned int>(pf->destination.y / tileSize.y)};
+						Path path(nodeStart, nodeEnd, nodes);
 
 						pf->nodes = path.getNodes();
 
@@ -35,14 +49,15 @@ namespace swift
 
 					if(!pf->nodes.empty())
 					{
-						if(math::distanceSquared(pf->nodes.front().getPosition(), phys->position) <= world->tilemap.getTileSize().x * world->tilemap.getTileSize().x / 16.f)
+						sf::Vector2f worldPos = {static_cast<float>(pf->nodes.front().getPosition().x) * tileSize.x, static_cast<float>(pf->nodes.front().getPosition().y) * tileSize.y};
+						if(math::distanceSquared(worldPos, phys->position) <= world->tilemap.getTileSize().x * world->tilemap.getTileSize().x / 16.f)
 						{
 							pf->nodes.pop_front();
 							
 							if(pf->nodes.empty())	// destination reached!
 								mov->velocity = {0, 0};
 							else					// change direction to next node
-								mov->velocity = math::unit(pf->nodes.front().getPosition() - phys->position) * mov->moveVelocity;
+								mov->velocity = math::unit(worldPos - phys->position) * mov->moveVelocity;
 						}
 					}
 				}

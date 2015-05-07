@@ -22,6 +22,7 @@ namespace tg
 	
 	void GameWorld::draw(sf::RenderTarget& target, float e, sf::RenderStates states)
 	{
+		target.draw(tilemap, states);
 		animSystem.draw(entities, e, target, states);
 		drawSystem.draw(entities, e, target, states);
 		batchSystem.draw(entities, e, target, states, assets);

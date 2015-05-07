@@ -15,14 +15,15 @@ namespace swift
 	class Settings;
 	class SoundPlayer;
 	class MusicPlayer;
-	
+
 	class State
 	{
 		public:
-			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic, StateMachine& sm);
+			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic, StateMachine& sm,
+			      const std::string& rp);
 			virtual ~State();
-			
-			virtual void handleEvent(sf::Event &event) = 0;
+
+			virtual void handleEvent(sf::Event& event) = 0;
 			virtual void update(sf::Time dt) = 0;
 			virtual void draw(float e) = 0;
 			virtual bool switchFrom();
@@ -36,11 +37,13 @@ namespace swift
 			Settings& settings;
 			Settings& dictionary;
 			StateMachine& states;
-			
+
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
-			
+
+			const std::string resPath;
+
 			bool shouldReturn;
 	};
 }

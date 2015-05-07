@@ -17,12 +17,18 @@ namespace swift
 			FrameAnimation();
 			
 			const sf::IntRect& update(float dt);
+			
+			void play();
+			void stop();
+			
 			void setFrameNum(unsigned int fn);
 			void addFrame(const sf::IntRect& rect);
 			void setFrames(const std::vector<sf::IntRect>& fs);
 			
 			void setTime(float seconds);
 			void setLooping(bool l);
+			
+			bool isPlaying() const;
 
 		private:
 			std::vector<sf::IntRect> frames;
@@ -33,6 +39,7 @@ namespace swift
 			
 			bool looping;
 			bool done;	// set to true if animation is non-looping and is done
+			bool playing;
 	};
 }
 

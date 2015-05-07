@@ -29,7 +29,7 @@ namespace swift
 			void setName(const std::string& n);
 			void setVersion(const std::string& v);
 			void setAuthor(const std::string& a);
-			void setDescription(const std::string d);
+			void setDescription(const std::string& d);
 
 			bool operator ==(const Mod& other) const;
 			bool operator !=(const Mod& other) const;

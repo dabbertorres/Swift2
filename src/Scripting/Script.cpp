@@ -11,9 +11,11 @@
 
 namespace swift
 {
+	std::string Script::resPath = "";
+
 	Script::Script()
-	:	file(""),
-		deleteMe(false)
+		:	file(""),
+		    deleteMe(false)
 	{
 		// We don't want to give the scripts access to os commands or file writing abilities
 		// so we only open the necessary libraries
@@ -21,6 +23,8 @@ namespace swift
 		luaState.openLib("math", luaopen_math);
 		luaState.openLib("string", luaopen_string);
 		luaState.openLib("table", luaopen_table);
+
+		luaState["getResourcePath"] = &getResourcePath;
 	}
 
 	Script::~Script()
@@ -32,12 +36,16 @@ namespace swift
 		bool loadResult = luaState.loadFile(file) == LUA_OK;
 
 		if(!loadResult)
+		{
 			log << "[ERROR]: " << file << " load: " << luaState.getErrors() << '\n';
+		}
 
 		bool runResult = luaState.run() == LUA_OK;
 
 		if(!runResult)
+		{
 			log << "[ERROR]: " << file << " run: " << luaState.getErrors() << '\n';
+		}
 
 		this->file = file;
 
@@ -47,12 +55,16 @@ namespace swift
 	void Script::start()
 	{
 		if(!luaState["Start"])
+		{
 			return;
+		}
 
 		luaState["Start"]();
 
 		if(!luaState["Done"])
+		{
 			return;
+		}
 
 		deleteMe = luaState["Done"];
 	}
@@ -60,12 +72,16 @@ namespace swift
 	void Script::update()
 	{
 		if(!luaState["Update"])
+		{
 			return;
+		}
 
 		luaState["Update"]();
 
 		if(!luaState["Done"])
+		{
 			return;
+		}
 
 		deleteMe = luaState["Done"];
 	}
@@ -78,14 +94,19 @@ namespace swift
 		if(result != tinyxml2::XML_SUCCESS)
 		{
 			if(result == tinyxml2::XML_ERROR_FILE_NOT_FOUND)
+			{
 				log << "[INFO]: Save file \"" << lfile << "\" not found.\n";
+			}
 			else
+			{
 				log << "[ERROR]: Loading script save file \"" << lfile << "\" failed.\n";
-			
+			}
+
 			return false;
 		}
 
 		tinyxml2::XMLElement* root = loadFile.FirstChildElement("script");
+
 		if(root == nullptr)
 		{
 			log << "[ERROR]: Script save file \"" << lfile << "\" does not have a \"script\" root element.\n";
@@ -94,6 +115,7 @@ namespace swift
 
 		int total = 0;
 		tinyxml2::XMLElement* variable = root->FirstChildElement("variable");
+
 		while(variable != nullptr)
 		{
 			char type = variable->Attribute("type")[0];
@@ -104,15 +126,19 @@ namespace swift
 				case 'n':	// number
 					luaState.push(std::stod(value));
 					break;
+
 				case 'b':	// bool
 					luaState.push(value != "0");
 					break;
+
 				case 's':	// string
 					luaState.push(value);
 					break;
+
 				case '0':	// nil
 					luaState.push(nullptr);
 					break;
+
 				default:
 					break;
 			}
@@ -120,11 +146,15 @@ namespace swift
 			total++;
 			variable = variable->NextSiblingElement("variable");
 		}
-		
+
 		if(luaState["Load"])
+		{
 			luaState.call("Load", total);
+		}
 		else
+		{
 			log << "[WARNING]: No Load function in script \"" << file << "\"\n";
+		}
 
 		return true;
 	}
@@ -142,6 +172,7 @@ namespace swift
 		}
 
 		tinyxml2::XMLElement* root = saveFile.FirstChildElement("script");
+
 		if(root == nullptr)
 		{
 			log << "[INFO]: Script save file \"" << sfile << "\" does not have a \"script\" root element.\n";
@@ -149,7 +180,9 @@ namespace swift
 			saveFile.InsertEndChild(root);
 		}
 		else
+		{
 			root->DeleteChildren();
+		}
 
 		luaState.clean();
 
@@ -172,10 +205,12 @@ namespace swift
 						newVariable->SetAttribute("type", "n");
 						newVariable->SetText(static_cast<float>(luaState[i]));
 						break;
+
 					case LUA_TBOOLEAN:
 						newVariable->SetAttribute("type", "b");
 						newVariable->SetText(static_cast<bool>(luaState[i]));
 						break;
+
 					case LUA_TSTRING:
 					{
 						newVariable->SetAttribute("type", "s");
@@ -183,6 +218,7 @@ namespace swift
 						newVariable->SetText(temp.c_str());
 						break;
 					}
+
 					default:
 						newVariable->SetAttribute("type", "0");
 						newVariable->SetText("nil");
@@ -200,9 +236,9 @@ namespace swift
 
 			return true;
 		}
-		
+
 		log << "[INFO]: Script: " << file << " does not have a Save function.\n";
-		
+
 		return false;
 	}
 
@@ -227,5 +263,15 @@ namespace swift
 		addFunctions();
 
 		loadFromFile(file);
+	}
+
+	void Script::setResourcePath(const std::string& rp)
+	{
+		resPath = rp;
+	}
+
+	std::string Script::getResourcePath()
+	{
+		return resPath;
 	}
 }

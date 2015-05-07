@@ -44,36 +44,41 @@ namespace swift
 	class AssetManager;
 	class World;
 	class Play;
-	
+
 	class Script
 	{
 		public:
 			Script();
 			virtual ~Script();
-			
+
 			bool loadFromFile(const std::string& file);
 
 			void start();
 
 			void update();
-			
+
 			bool load(const std::string& lfile);
 			bool save(const std::string& sfile);
 
 			bool toDelete();
-			
+
 			void reset();
+
+			static void setResourcePath(const std::string& rp);
 
 		protected:
 			virtual void addVariables() = 0;
 			virtual void addClasses() = 0;
 			virtual void addFunctions() = 0;
-		
+
 			lpp::State luaState;
-			
+
 		private:
 			std::string file;
 			bool deleteMe;
+
+			static std::string resPath;
+			static std::string getResourcePath();
 	};
 }
 
