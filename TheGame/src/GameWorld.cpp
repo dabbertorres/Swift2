@@ -5,8 +5,7 @@ namespace tg
 	GameWorld::GameWorld(const std::string& n, swift::AssetManager& am)
 	:	World(n),
 		assets(am)
-	{
-	}
+	{}
 	
 	void GameWorld::update(float dt)
 	{
