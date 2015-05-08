@@ -11,16 +11,25 @@ namespace swift
 		entities.reserve(128);
 	}
 	
-	Entity* World::addEntity()
+	void World::createEntity(unsigned int id, std::underlying_type<Component::Type>::type t)
 	{
-		unsigned oldSize = entities.size();
+		using uType = std::underlying_type<Component::Type>::type;
 		
-		entities.emplace_back(entities.size() - 1);
+		entities.emplace_back(id);
+		uType max = static_cast<uType>(Component::Type::MAX);
 		
-		return entities.size() > oldSize ? &entities[entities.size() - 1] : nullptr;
+		for(uType i = 0; i < max; i++)
+		{
+			uType sel = 1 << i;
+			
+			if(t & sel)
+			{
+				
+			}
+		}
 	}
 	
-	bool World::removeEntity(int e)
+	bool World::destroyEntity(int e)
 	{
 		// if e is positive, check if is greater than last entity
 		// if e is negative, check if it refers to entity less than 0
@@ -32,77 +41,33 @@ namespace swift
 		return true;
 	}
 	
-	Entity* World::getEntity(int e)
+	unsigned int World::getPlayer() const
 	{
-		// if e is positive, check if is greater than last entity
-		// if e is negative, check if it refers to entity less than 0
-		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
-			return nullptr;
-			
-		return &entities[(e >= 0 ? 0 : entities.size()) + e];
+		return player;
 	}
 	
-	Entity* World::getPlayer()
+	const std::vector<unsigned int>& World::getEntities() const
 	{
-		for(auto& e : entities)
-		{
-			if(e.has<Controllable>())
-				return &e;
-		}
-		
-		return nullptr;
+		return entities;
 	}
 	
-	std::vector<Entity*> World::getEntities()
+	std::vector<unsigned int> World::getEntitiesAround(const sf::Vector2f& pos, float radius) const
 	{
-		std::vector<Entity*> entityPtrs;
-		
-		for(auto& e : entities)
-		{
-			entityPtrs.push_back(&e);
-		}
-		
-		return entityPtrs;
-	}
-	
-	std::vector<Entity*> World::getEntitiesAround(const sf::Vector2f& pos, float radius)
-	{
-		std::vector<Entity*> around;
+		std::vector<unsigned int> around;
 		
 		// if pos is outside of the world, or the radius is 0 or less, just return an empty vector
 		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
 			return around;
 		
-		for(auto& e : entities)
+		/*for(auto& id : entities)
 		{
-			if(e.has<Physical>())
+			if(physicalSystem.has(id))
 			{
-				Physical* p = e.get<Physical>();
-				if(math::distance(p->position, pos) <= radius)
-					around.push_back(&e);
+				Physical& p = physicalSystem.get(id);
+				if(math::distance(p.position, pos) <= radius)
+					around.push_back(id);
 			}
-		}
-		
-		return around;
-	}
-	
-	std::vector<unsigned> World::getEntitiesAroundIDs(const sf::Vector2f& pos, float radius)
-	{
-		std::vector<unsigned> around;
-		
-		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
-			return around;
-		
-		for(unsigned i = 0; i < entities.size(); i++)
-		{
-			if(entities[i].has<Physical>())
-			{
-				Physical* p = entities[i].get<Physical>();
-				
-				if(math::distance(p->position, pos) <= radius)
-					around.push_back(i);
-			}
-		}
+		}*/
 		
 		return around;
 	}

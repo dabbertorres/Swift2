@@ -7,10 +7,14 @@
 
 namespace swift
 {
+	class Physical;
+	
 	class Movable : public Component
 	{
 		public:
-			Movable();
+			Movable(unsigned int id, Physical& p);
+			
+			Physical& getPhysical() const;
 			
 			static std::string getType();
 			
@@ -19,6 +23,9 @@ namespace swift
 			
 			float moveVelocity;
 			sf::Vector2f velocity;
+			
+		private:
+			Physical& physical;
 	};
 }
 

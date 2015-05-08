@@ -2,12 +2,19 @@
 
 namespace swift
 {
-	Controllable::Controllable()
-	:	moveLeft(false),
+	Controllable::Controllable(unsigned int id, Movable& m)
+	:	Component(id),
+		moveLeft(false),
 		moveRight(false),
 		moveUp(false),
-		moveDown(false)
+		moveDown(false),
+		movable(m)
 	{}
+			
+	Movable& Controllable::getMovable() const
+	{
+		return movable;
+	}
 	
 	std::string Controllable::getType()
 	{

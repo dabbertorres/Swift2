@@ -10,7 +10,7 @@ namespace swift
 	class Name : public Component
 	{
 		public:
-			Name();
+			Name(unsigned int id);
 			
 			static std::string getType();
 			

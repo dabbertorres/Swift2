@@ -1,11 +1,10 @@
 #include "Physical.hpp"
-#include <iostream>
-#include "../Entity.hpp"
 
 namespace swift
 {
-	Physical::Physical()
-	:	position({0, 0}),
+	Physical::Physical(unsigned int id)
+	:	Component(id),
+		position({0, 0}),
 		zIndex(1),
 		size({0, 0}),
 		collides(false),

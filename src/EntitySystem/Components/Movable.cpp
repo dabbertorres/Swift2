@@ -1,13 +1,17 @@
 #include "Movable.hpp"
 
-#include "../Entity.hpp"
-
 namespace swift
 {
-	Movable::Movable()
-		:	moveVelocity(0),
-			velocity(0, 0)
+	Movable::Movable(unsigned int id, Physical& p)
+	:	Component(id),
+		moveVelocity(0),
+		velocity(0, 0),
+		physical(p)
+	{}
+	
+	Physical& Movable::getPhysical() const
 	{
+		return physical;
 	}
 	
 	std::string Movable::getType()

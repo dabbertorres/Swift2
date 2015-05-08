@@ -7,9 +7,15 @@
 
 namespace swift
 {
+	class Physical;
+	
 	class BatchDrawable : public Component
 	{
 		public:
+			BatchDrawable(unsigned int id, const Physical& p);
+			
+			const Physical& getPhysical() const;
+			
 			static std::string getType();
 			
 			virtual std::map<std::string, std::string> serialize() const;
@@ -18,6 +24,9 @@ namespace swift
 			Sprite sprite;
 			std::string texture;
 			std::string batch;
+			
+		private:
+			const Physical& physical;
 	};
 }
 

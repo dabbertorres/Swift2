@@ -1,9 +1,17 @@
 #include "Drawable.hpp"
 
-#include "../Entity.hpp"
-
 namespace swift
 {
+	Drawable::Drawable(unsigned int id, const Physical& p)
+	:	Component(id),
+		physical(p)
+	{}
+	
+	const Physical& Drawable::getPhysical() const
+	{
+		return physical;
+	}
+			
 	std::string Drawable::getType()
 	{
 		return "Drawable";

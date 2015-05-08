@@ -2,10 +2,12 @@
 
 namespace swift
 {
-	Animated::Animated()
-	:	animTex(nullptr),
+	Animated::Animated(unsigned int id, const Physical& p)
+	:	Component(id),
+		animTex(nullptr),
 	    currentAnim(""),
-	    previousAnim("")
+	    previousAnim(""),
+		physical(p)
 	{}
 
 	void Animated::setAnimation(const std::string& anim)
@@ -39,6 +41,11 @@ namespace swift
 		}
 		else
 			return false;
+	}
+	
+	const Physical& Animated::getPhysical() const
+	{
+		return physical;
 	}
 
 	std::string Animated::getType()

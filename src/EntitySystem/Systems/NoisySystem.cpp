@@ -1,27 +1,30 @@
 #include "NoisySystem.hpp"
 
+#include "../Components/Physical.hpp"
+
 namespace swift
 {
-	NoisySystem::NoisySystem(SoundPlayer& sp, AssetManager& am)
-	:	soundPlayer(sp),
-	    assets(am)
-	{}
-
-	void NoisySystem::update(const std::vector<Entity>& entities, float)
+	void NoisySystem::update(float)
 	{
-		for(auto& e : entities)
+		for(auto& c : components)
 		{
-			if(e.has<Noisy>() && e.has<Physical>())
-			{
-				Noisy* noisy = e.get<Noisy>();
-				Physical* physical = e.get<Physical>();
+			const Physical& phys = c.getPhysical();
 
-				if(noisy->shouldPlay)
-				{
-					soundPlayer.newSound(*assets.getSoundBuffer(noisy->soundFile), {physical->position.x, physical->position.y, 0}, false);
-					noisy->shouldPlay = false;
-				}
+			if(c.shouldPlay)
+			{
+				soundPlayer->newSound(*assets->getSoundBuffer(c.soundFile), {phys.position.x, phys.position.y, 0}, false);
+				c.shouldPlay = false;
 			}
 		}
+	}
+	
+	void NoisySystem::setSoundPlayer(SoundPlayer& sp)
+	{
+		soundPlayer = &sp;
+	}
+	
+	void NoisySystem::setAssetManager(AssetManager& am)
+	{
+		assets = &am;
 	}
 }

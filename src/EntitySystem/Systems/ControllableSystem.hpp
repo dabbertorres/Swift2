@@ -1,14 +1,16 @@
 #ifndef CONTROLLABLESYSTEM_HPP
 #define CONTROLLABLESYSTEM_HPP
 
-#include "../System.hpp" // Base class: swift::System
+#include "../System.hpp"
+
+#include "../Components/Controllable.hpp"
 
 namespace swift
 {
-	class ControllableSystem : public swift::System
+	class ControllableSystem : public System<Controllable>
 	{
 		public:
-			virtual void update(const std::vector<Entity>& entities, float dt);
+			virtual void update(float dt);
 	};
 }
 

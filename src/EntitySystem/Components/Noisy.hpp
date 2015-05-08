@@ -1,15 +1,21 @@
 #ifndef NOISY_HPP
 #define NOISY_HPP
 
-#include "../Component.hpp" // Base class: swift::Component
+#include "../Component.hpp"
 
 #include <string>
 
 namespace swift
 {
+	class Physical;
+	
 	class Noisy : public Component
 	{
 		public:
+			Noisy(unsigned int id, const Physical& p);
+			
+			const Physical& getPhysical() const;
+			
 			static std::string getType();
 			
 			virtual std::map<std::string,std::string> serialize() const;
@@ -17,6 +23,9 @@ namespace swift
 
 			std::string soundFile;
 			bool shouldPlay;
+
+		private:
+			const Physical& physical;
 	};
 }
 

@@ -10,7 +10,7 @@ namespace swift
 	class Physical : public Component
 	{
 		public:
-			Physical();
+			Physical(unsigned int id);
 
 			static std::string getType();
 			

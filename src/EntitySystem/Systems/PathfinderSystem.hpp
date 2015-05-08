@@ -3,14 +3,16 @@
 
 #include "../System.hpp"
 
+#include "../Components/Pathfinder.hpp"
+
 namespace swift
 {
 	class World;
 
-	class PathfinderSystem
+	class PathfinderSystem : public System<Pathfinder>
 	{
 		public:
-			virtual void update(const std::vector<Entity>& entities, float);
+			virtual void update(float dt);
 
 			static World* world;
 	};

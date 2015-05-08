@@ -15,9 +15,6 @@
 
 #include "../KeyBindings/KeyboardManager.hpp"
 
-/* EntitySystem */
-#include "../EntitySystem/Entity.hpp"
-
 /*
  * Each Script object expects two functions to exist in the
  * Lua script:

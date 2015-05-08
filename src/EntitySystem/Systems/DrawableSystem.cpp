@@ -7,35 +7,23 @@
 
 namespace swift
 {
-	void DrawableSystem::update(const std::vector<Entity>& entities, float /*dt*/)
+	void DrawableSystem::update(float)
 	{
-		for(auto& e : entities)
+		for(auto& c : components)
 		{
-			if(e.has<Drawable>() && e.has<Physical>())
-			{
-				Physical* phys = e.get<Physical>();
-				Drawable* draw = e.get<Drawable>();
-				
-				draw->sprite.setPosition(std::floor(phys->position.x), std::floor(phys->position.y));
-				
-				draw->sprite.setOrigin(std::floor(phys->size.x / 2.f), std::floor(phys->size.y / 2.f));
-				draw->sprite.setRotation(phys->angle);
-				draw->sprite.setOrigin(0.f, 0.f);
-			}
+			const Physical& phys = c.getPhysical();
+			
+			c.sprite.setPosition(std::floor(phys.position.x), std::floor(phys.position.y));
+			
+			c.sprite.setOrigin(std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f));
+			c.sprite.setRotation(phys.angle);
+			c.sprite.setOrigin(0.f, 0.f);
 		}
 	}
 
-	void DrawableSystem::draw(const std::vector<Entity>& entities, float, sf::RenderTarget& target, sf::RenderStates states) const
+	void DrawableSystem::draw(float, sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		std::vector<const Entity*> drawables;
-		
-		for(auto& e : entities)
-		{
-			if(e.has<Drawable>() && e.has<Physical>())
-				drawables.push_back(&e);
-		}
-		
-		std::sort(drawables.begin(), drawables.end(), [](const Entity* one, const Entity* two)
+		/*std::sort(drawables.begin(), drawables.end(), [](const Entity* one, const Entity* two)
 		{
 			Physical* onePhys = one->get<Physical>();
 			Physical* twoPhys = two->get<Physical>();
@@ -52,17 +40,11 @@ namespace swift
 			{
 				return false;
 			}
-		});
+		});*/
 		
-		for(auto& d : drawables)
+		for(auto& c : components)
 		{
-			/*if(d->has<Movable>())
-			{
-				Movable* m = d->get<Movable>();
-				sf::Sprite* s = &d->get<Drawable>()->sprite;
-				s->setPosition(s->getPosition().x + m->velocity.x * e, s->getPosition().y + m->velocity.y * e);
-			}*/
-			target.draw(d->get<Drawable>()->sprite, states);
+			target.draw(c.sprite, states);
 		}
 	}
 }

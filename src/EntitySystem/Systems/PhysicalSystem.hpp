@@ -3,6 +3,8 @@
 
 #include "../System.hpp"
 
+#include "../Components/Physical.hpp"
+
 #include "../../Collision/Collision.hpp"
 
 #include <vector>
@@ -11,10 +13,10 @@ namespace swift
 {
 	class Collision;
 	
-	class PhysicalSystem : public System
+	class PhysicalSystem : public System<Physical>
 	{
 		public:
-			virtual void update(const std::vector<Entity>& entities, float dt);
+			virtual void update(float dt);
 			
 			const std::vector<Collision>& getCollisions() const;
 			

@@ -3,21 +3,27 @@
 
 #include "../System.hpp"
 
-#include "../Entity.hpp"
+#include "../Components/BatchDrawable.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
+
+#include <unordered_set>
 
 namespace swift
 {
 	class AssetManager;
 	
-	class BatchDrawSystem : public System
+	class BatchDrawSystem : public System<BatchDrawable>
 	{
 		public:
-			virtual void update(const std::vector<Entity>& entities, float dt);
+			virtual void update(float dt);
 			
-			virtual void draw(const std::vector<Entity>& entities, float e, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const;
+			virtual void draw(float e, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const;
+		
+		private:
+			virtual void addImpl(const BatchDrawable& c);
+			std::unordered_set<std::string> batches;
 	};
 }
 

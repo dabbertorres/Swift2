@@ -2,6 +2,16 @@
 
 namespace swift
 {
+	Noisy::Noisy(unsigned int id, const Physical& p)
+	:	Component(id),
+		physical(p)
+	{}
+	
+	const Physical& Noisy::getPhysical() const
+	{
+		return physical;
+	}
+	
 	std::string Noisy::getType()
 	{
 		return "Noisy";

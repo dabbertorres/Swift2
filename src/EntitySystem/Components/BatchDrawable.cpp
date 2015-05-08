@@ -2,6 +2,16 @@
 
 namespace swift
 {
+	BatchDrawable::BatchDrawable(unsigned int id, const Physical& p)
+	:	Component(id),
+		physical(p)
+	{}
+	
+	const Physical& BatchDrawable::getPhysical() const
+	{
+		return physical;
+	}
+	
 	std::string BatchDrawable::getType()
 	{
 		return "BatchDrawable";

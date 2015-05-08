@@ -2,10 +2,23 @@
 
 namespace swift
 {
-	Pathfinder::Pathfinder()
-	:	destination({0, 0}),
-		needsPath(false)
+	Pathfinder::Pathfinder(unsigned int id, const Physical& p, Movable& m)
+	:	Component(id),
+		destination({0, 0}),
+		needsPath(false),
+		physical(p),
+		movable(m)
 	{}
+	
+	const Physical& Pathfinder::getPhysical() const
+	{
+		return physical;
+	}
+	
+	Movable& Pathfinder::getMovable() const
+	{
+		return movable;
+	}
 	
 	std::string Pathfinder::getType()
 	{

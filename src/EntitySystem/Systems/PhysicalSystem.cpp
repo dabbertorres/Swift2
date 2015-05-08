@@ -4,24 +4,21 @@
 
 namespace swift
 {
-	void PhysicalSystem::update(const std::vector<Entity>& entities, float /*dt*/)
+	void PhysicalSystem::update(float /*dt*/)
 	{
 		collisions.clear();
 		
-		for(auto& e1 : entities)
+		for(auto& c1 : components)
 		{
-			for(auto& e2 : entities)
+			for(auto& c2 : components)
 			{
-				if(&e1 != &e2)
+				if(c1.ID() != c2.ID())
 				{
-					if(e1.has<Physical>() && e2.has<Physical>())
-					{
-						collisions.emplace_back(e1, e2);
+					collisions.emplace_back(c1, c2);
 						
-						if(!collisions.back().getResult())
-						{
-							collisions.pop_back();
-						}
+					if(!collisions.back().getResult())
+					{
+						collisions.pop_back();
 					}
 				}
 			}

@@ -1,11 +1,10 @@
 #include "Name.hpp"
 
-#include "../Entity.hpp"
-
 namespace swift
 {
-	Name::Name()
-		:	name("")
+	Name::Name(unsigned int id)
+	:	Component(id),
+		name("")
 	{
 	}
 	

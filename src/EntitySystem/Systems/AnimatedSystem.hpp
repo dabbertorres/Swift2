@@ -3,19 +3,19 @@
 
 #include "../System.hpp"
 
-#include "../Entity.hpp"
+#include "../Components/Animated.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
 namespace swift
 {
-	class AnimatedSystem : public System
+	class AnimatedSystem : public System<Animated>
 	{
 		public:
-			virtual void update(const std::vector<Entity>& entities, float dt);
+			virtual void update(float dt);
 			
-			virtual void draw(const std::vector<Entity>& entities, float e, sf::RenderTarget& target, sf::RenderStates states) const;
+			virtual void draw(float e, sf::RenderTarget& target, sf::RenderStates states) const;
 	};
 }
 

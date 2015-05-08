@@ -3,14 +3,14 @@
 
 #include "../System.hpp"
 
-#include "../Entity.hpp"
+#include "../Components/Movable.hpp"
 
 namespace swift
 {
-	class MovableSystem : public System
+	class MovableSystem : public System<Movable>
 	{
 		public:
-			void update(const std::vector<Entity>& entities, float dt);
+			virtual void update(float dt);
 	};
 }
 

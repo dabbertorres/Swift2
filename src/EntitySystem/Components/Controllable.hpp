@@ -5,10 +5,14 @@
 
 namespace swift
 {
+	class Movable;
+	
 	class Controllable : public swift::Component
 	{
 		public:
-			Controllable();
+			Controllable(unsigned int id, Movable& m);
+			
+			Movable& getMovable() const;
 			
 			static std::string getType();
 			
@@ -20,6 +24,9 @@ namespace swift
 			bool moveRight;
 			bool moveUp;
 			bool moveDown;
+			
+		private:
+			Movable& movable;
 	};
 }
 

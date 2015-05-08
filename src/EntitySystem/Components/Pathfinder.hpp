@@ -8,10 +8,16 @@
 
 namespace swift
 {
+	class Physical;
+	class Movable;
+	
 	class Pathfinder : public Component
 	{
 		public:
-			Pathfinder();
+			Pathfinder(unsigned int id, const Physical& p, Movable& m);
+			
+			const Physical& getPhysical() const;
+			Movable& getMovable() const;
 
 			static std::string getType();
 
@@ -21,6 +27,10 @@ namespace swift
 			Path::PathNodes nodes;
 			sf::Vector2f destination;
 			bool needsPath;
+			
+		private:
+			const Physical& physical;
+			Movable& movable;
 	};
 }
 
