@@ -16,6 +16,8 @@ namespace swift
 	{
 		public:
 			Animated(unsigned int id, const Physical& p);
+			
+			Animated& operator=(Animated&& other);
 
 			void setAnimation(const std::string& anim);
 			void revertAnimation();

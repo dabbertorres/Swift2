@@ -6,8 +6,6 @@
 #include <utility>
 #include <string>
 
-#include <dirent.h>
-
 #include <SFML/Graphics/Texture.hpp>
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>

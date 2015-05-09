@@ -48,7 +48,6 @@ namespace tg
 		luaState["newEntity"] = &newEntity;
 		luaState["removeEntity"] = &removeEntity;
 		luaState["getEntities"] = &getEntities;
-		luaState["getEntity"] = &getEntity;
 		luaState["getPlayer"] = &getPlayer;
 		luaState["isAround"] = &isAround;
 		luaState["getCurrentWorld"] = &getCurrentWorld;
@@ -212,15 +211,15 @@ namespace tg
 	}
 
 	// World
-	swift::Entity* GameScript::newEntity()
+	unsigned int GameScript::newEntity()
 	{
 		if(world)
 		{
-			return world->addEntity();
+			return world->createEntity();
 		}
 		else
 		{
-			return nullptr;
+			return 0;
 		}
 	}
 
@@ -228,7 +227,7 @@ namespace tg
 	{
 		if(world)
 		{
-			return world->removeEntity(e);
+			return world->destroyEntity(e);
 		}
 		else
 		{
@@ -236,29 +235,17 @@ namespace tg
 		}
 	}
 
-	std::vector<swift::Entity*> GameScript::getEntities()
+	std::vector<unsigned int> GameScript::getEntities()
 	{
 		if(world)
 		{
 			return world->getEntities();
 		}
 		else
-			return std::vector<swift::Entity*> {};
+			return std::vector<unsigned int> {};
 	}
 
-	swift::Entity* GameScript::getEntity(int e)
-	{
-		if(world)
-		{
-			return world->getEntity(e);
-		}
-		else
-		{
-			return nullptr;
-		}
-	}
-
-	swift::Entity* GameScript::getPlayer()
+	unsigned int GameScript::getPlayer()
 	{
 		if(play)
 		{
@@ -266,7 +253,7 @@ namespace tg
 		}
 		else
 		{
-			return nullptr;
+			return 0;
 		}
 	}
 
@@ -321,11 +308,11 @@ namespace tg
 	}
 
 	// Entity System
-	bool GameScript::add(swift::Entity* e, std::string c)
+	bool GameScript::add(unsigned int id, std::string c)
 	{
-		if(e)
+		if(id)
 		{
-			return e->add(c);
+			return true;
 		}
 		else
 		{
@@ -333,11 +320,11 @@ namespace tg
 		}
 	}
 
-	bool GameScript::remove(swift::Entity* e, std::string c)
+	bool GameScript::remove(unsigned int id, std::string c)
 	{
-		if(e)
+		if(id)
 		{
-			return e->remove(c);
+			return true;
 		}
 		else
 		{
@@ -345,11 +332,11 @@ namespace tg
 		}
 	}
 
-	bool GameScript::has(swift::Entity* e, std::string c)
+	bool GameScript::has(unsigned int id, std::string c)
 	{
-		if(e)
+		if(id)
 		{
-			return e->has(c);
+			return true;
 		}
 		else
 		{
@@ -358,11 +345,11 @@ namespace tg
 	}
 
 	// Drawable
-	swift::Drawable* GameScript::getDrawable(swift::Entity* e)
+	swift::Drawable* GameScript::getDrawable(unsigned int id)
 	{
-		if(e && e->has<swift::Drawable>())
+		if(id)
 		{
-			return e->get<swift::Drawable>();
+			return nullptr;
 		}
 		else
 		{
@@ -409,11 +396,11 @@ namespace tg
 	}
 
 	// Movable
-	swift::Movable* GameScript::getMovable(swift::Entity* e)
+	swift::Movable* GameScript::getMovable(unsigned int id)
 	{
-		if(e && e->has<swift::Movable>())
+		if(id)
 		{
-			return e->get<swift::Movable>();
+			return nullptr;
 		}
 		else
 		{
@@ -442,11 +429,11 @@ namespace tg
 	}
 
 	// Physical
-	swift::Physical* GameScript::getPhysical(swift::Entity* e)
+	swift::Physical* GameScript::getPhysical(unsigned int id)
 	{
-		if(e && e->has<swift::Physical>())
+		if(id)
 		{
-			return e->get<swift::Physical>();
+			return nullptr;
 		}
 		else
 		{
@@ -491,11 +478,11 @@ namespace tg
 	}
 
 	// Name
-	swift::Name* GameScript::getName(swift::Entity* e)
+	swift::Name* GameScript::getName(unsigned int id)
 	{
-		if(e && e->has<swift::Name>())
+		if(id)
 		{
-			return e->get<swift::Name>();
+			return nullptr;
 		}
 		else
 		{
@@ -524,11 +511,11 @@ namespace tg
 	}
 
 	// Noisy
-	swift::Noisy* GameScript::getNoisy(swift::Entity* e)
+	swift::Noisy* GameScript::getNoisy(unsigned int id)
 	{
-		if(e && e->has<swift::Noisy>())
+		if(id)
 		{
-			return e->get<swift::Noisy>();
+			return nullptr;
 		}
 		else
 		{

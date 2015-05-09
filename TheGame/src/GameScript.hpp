@@ -56,11 +56,10 @@ namespace tg
 			static bool removeScript(std::string s);
 
 			// World
-			static swift::Entity* newEntity();
+			static unsigned int newEntity();
 			static bool removeEntity(int e);
-			static std::vector<swift::Entity*> getEntities();
-			static swift::Entity* getEntity(int e);
-			static swift::Entity* getPlayer();
+			static std::vector<unsigned int> getEntities();
+			static unsigned int getPlayer();
 			static bool isAround(swift::Physical* p, float x, float y, float r);
 			static std::string getCurrentWorld();
 			static bool setCurrentWorld(std::string s, std::string mf);
@@ -69,36 +68,36 @@ namespace tg
 			static std::tuple<int, int> getTileSize();
 
 			// Entity System
-			static bool add(swift::Entity* e, std::string c);
-			static bool remove(swift::Entity* e, std::string c);
-			static bool has(swift::Entity* e, std::string c);
+			static bool add(unsigned int id, std::string c);
+			static bool remove(unsigned int id, std::string c);
+			static bool has(unsigned int id, std::string c);
 
 			// Drawable
-			static swift::Drawable* getDrawable(swift::Entity* e);
+			static swift::Drawable* getDrawable(unsigned int id);
 			static bool setTexture(swift::Drawable* d, std::string t);
 			static void setTextureRect(swift::Drawable* d, int x, int y, int w, int h);
 			static std::tuple<float, float> getSpriteSize(swift::Drawable* d);
 			static void setScale(swift::Drawable* d, float x, float y);
 
 			// Movable
-			static swift::Movable* getMovable(swift::Entity* e);
+			static swift::Movable* getMovable(unsigned int id);
 			static void setMoveVelocity(swift::Movable* m, float v);
 			static std::tuple<float, float> getVelocity(swift::Movable* m);
 
 			// Physical
-			static swift::Physical* getPhysical(swift::Entity* e);
+			static swift::Physical* getPhysical(unsigned int id);
 			static void setPosition(swift::Physical* p, float x, float y);
 			static std::tuple<float, float> getPosition(swift::Physical* p);
 			static void setSize(swift::Physical* p, unsigned x, unsigned y);
 			static std::tuple<unsigned, unsigned> getSize(swift::Physical* p);
 
 			// Name
-			static swift::Name* getName(swift::Entity* e);
+			static swift::Name* getName(unsigned int id);
 			static void setName(swift::Name* n, std::string name);
 			static std::string getNameVal(swift::Name* n);
 
 			// Noisy
-			static swift::Noisy* getNoisy(swift::Entity* e);
+			static swift::Noisy* getNoisy(unsigned int id);
 			static void setSound(swift::Noisy* n, std::string s);
 			static std::string getSound(swift::Noisy* n);
 

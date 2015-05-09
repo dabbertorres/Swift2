@@ -1,5 +1,7 @@
 #include "Movable.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
 	Movable::Movable(unsigned int id, Physical& p)
@@ -8,6 +10,24 @@ namespace swift
 		velocity(0, 0),
 		physical(p)
 	{}
+	
+	Movable& Movable::operator=(const Movable& other)
+	{
+		moveVelocity = other.moveVelocity;
+		velocity = other.velocity;
+		physical = other.physical;
+		
+		return *this;
+	}
+	
+	Movable& Movable::operator=(Movable&& other)
+	{
+		moveVelocity = other.moveVelocity;
+		velocity = other.velocity;
+		physical = other.physical;
+		
+		return *this;
+	}
 	
 	Physical& Movable::getPhysical() const
 	{

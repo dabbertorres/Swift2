@@ -11,22 +11,22 @@ namespace swift
 		entities.reserve(128);
 	}
 	
-	void World::createEntity(unsigned int id, std::underlying_type<Component::Type>::type t)
+	World::~World()
 	{
-		using uType = std::underlying_type<Component::Type>::type;
+		for(auto& s : systems)
+		{
+			delete s;
+		}
+	}
+	
+	unsigned int World::createEntity(unsigned int id)
+	{
+		if(id == 0)
+			//id =	// generate a random id
 		
 		entities.emplace_back(id);
-		uType max = static_cast<uType>(Component::Type::MAX);
 		
-		for(uType i = 0; i < max; i++)
-		{
-			uType sel = 1 << i;
-			
-			if(t & sel)
-			{
-				
-			}
-		}
+		return id;
 	}
 	
 	bool World::destroyEntity(int e)
@@ -36,7 +36,13 @@ namespace swift
 		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
 			return false;
 		
+		unsigned int id = entities[e];
 		entities.erase((e >= 0 ? entities.begin() : entities.end()) + e);
+		
+		for(auto& s : systems)
+		{
+			s->remove(id);
+		}
 		
 		return true;
 	}

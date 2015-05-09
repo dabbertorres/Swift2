@@ -14,6 +14,8 @@ namespace swift
 		public:
 			BatchDrawable(unsigned int id, const Physical& p);
 			
+			BatchDrawable& operator=(BatchDrawable&& other);
+			
 			const Physical& getPhysical() const;
 			
 			static std::string getType();

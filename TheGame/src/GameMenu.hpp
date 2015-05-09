@@ -12,7 +12,7 @@ namespace tg
 	{
 		public:
 			GameMenu(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic,
-			         swift::StateMachine& sm, const std::string& rp);
+			         swift::StateMachine& sm);
 			~GameMenu();
 
 			virtual void handleEvent(sf::Event& event);

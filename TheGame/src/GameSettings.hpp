@@ -14,7 +14,7 @@ namespace tg
 	{
 		public:
 			GameSettings(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-			             swift::Settings& dic, swift::StateMachine& sm, const std::string& rs);
+			             swift::Settings& dic, swift::StateMachine& sm);
 
 			virtual void handleEvent(sf::Event& event);
 			virtual void update(sf::Time dt);

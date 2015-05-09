@@ -12,6 +12,8 @@ namespace swift
 		public:
 			Controllable(unsigned int id, Movable& m);
 			
+			Controllable& operator=(Controllable&& other);
+			
 			Movable& getMovable() const;
 			
 			static std::string getType();

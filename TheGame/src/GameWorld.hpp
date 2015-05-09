@@ -8,6 +8,7 @@
 #include "../../src/EntitySystem/Systems/ControllableSystem.hpp"
 #include "../../src/EntitySystem/Systems/DrawableSystem.hpp"
 #include "../../src/EntitySystem/Systems/MovableSystem.hpp"
+#include "../../src/EntitySystem/Systems/NameSystem.hpp"
 #include "../../src/EntitySystem/Systems/NoisySystem.hpp"
 #include "../../src/EntitySystem/Systems/PathfinderSystem.hpp"
 #include "../../src/EntitySystem/Systems/PhysicalSystem.hpp"
@@ -23,15 +24,18 @@ namespace tg
 			virtual void draw(sf::RenderTarget& target, float e, sf::RenderStates states = sf::RenderStates::Default);
 
 		private:
-			swift::AnimatedSystem animSystem;
-			swift::BatchDrawSystem batchSystem;
-			swift::ControllableSystem controlSystem;
-			swift::DrawableSystem drawSystem;
-			swift::MovableSystem moveSystem;
-			swift::PathfinderSystem pathSystem;
-			swift::PhysicalSystem physicalSystem;
-			
 			swift::AssetManager& assets;
+			
+			// list of systems declared on the stack
+			swift::AnimatedSystem animatedSys;
+			swift::BatchDrawSystem batchDrawSys;
+			swift::ControllableSystem controlSys;
+			swift::DrawableSystem drawSys;
+			swift::MovableSystem moveSys;
+			swift::NameSystem nameSys;
+			swift::NoisySystem noisySys;
+			swift::PathfinderSystem pathSys;
+			swift::PhysicalSystem physicalSys;
 	};
 }
 

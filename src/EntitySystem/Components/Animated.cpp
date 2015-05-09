@@ -1,5 +1,7 @@
 #include "Animated.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
 	Animated::Animated(unsigned int id, const Physical& p)
@@ -10,6 +12,19 @@ namespace swift
 		physical(p)
 	{}
 
+	Animated& Animated::operator=(Animated&& other)
+	{
+		sprite = other.sprite;
+		animTex = other.animTex;
+		anims = other.anims;
+		currentAnim = other.currentAnim;
+		previousAnim = other.previousAnim;
+		animationFile = other.animationFile;
+		const_cast<Physical&>(physical) = other.physical;
+		
+		return *this;
+	}
+			
 	void Animated::setAnimation(const std::string& anim)
 	{
 		if(anims.find(anim) == anims.end())

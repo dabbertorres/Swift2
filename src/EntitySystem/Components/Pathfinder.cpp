@@ -1,5 +1,8 @@
 #include "Pathfinder.hpp"
 
+#include "Physical.hpp"
+#include "Movable.hpp"
+
 namespace swift
 {
 	Pathfinder::Pathfinder(unsigned int id, const Physical& p, Movable& m)
@@ -9,6 +12,17 @@ namespace swift
 		physical(p),
 		movable(m)
 	{}
+	
+	Pathfinder& Pathfinder::operator=(Pathfinder&& other)
+	{
+		nodes = other.nodes;
+		destination = other.destination;
+		needsPath = other.needsPath;
+		const_cast<Physical&>(physical) = other.physical;
+		movable = other.movable;
+		
+		return *this;
+	}
 	
 	const Physical& Pathfinder::getPhysical() const
 	{

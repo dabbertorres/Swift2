@@ -2,45 +2,45 @@
 
 #include "SystemInfo/SystemInfo.hpp"
 
-#include <unistd.h>
+#ifdef __linux__
+	#include <unistd.h>
+#elif _WIN32
+	#include <windows.h>
+#endif
+
 #include <limits.h>
 
 namespace swift
 {
 	Game::Game(const std::string& t, unsigned tps)
-		:	running(false),
-		    console(500, 200, defaultFont, "$:"),
-		    graphics(Quality::Medium),
-		    smoothing(false),
-		    fullscreen(false),
-		    verticalSync(true),
+	:	running(false),
+		console(500, 200, defaultFont, "$:"),
+		graphics(Quality::Medium),
+		smoothing(false),
+		fullscreen(false),
+		verticalSync(true),
 		resolution( {800, 600}),
-	soundLevel(100),
-	musicLevel(75),
-	title(t),
-	ticksPerSecond(tps),
-	editor(false),
-	debug(false)
+		soundLevel(100),
+		musicLevel(75),
+		title(t),
+		ticksPerSecond(tps),
+		editor(false),
+		debug(false)
 	{
 		addKeyboardCommands();
 		addConsoleCommands();
 
 		// get System Info
 		log	<< "OS:\t\t" << getOSName() << '\n'
-		<< "Version:\t" << getOSVersion() << '\n'
-		<< "Arch:\t\t" << getOSArch() << '\n'
-		<< "Total Mem:\t" << getTotalMem() << '\n'
-		<< "CPU:\t\t" << getCPUModel() << '\n'
-		<< "Video Vendor:\t" << getVideoVendor() << '\n'
-		<< "Video Card:\t" << getVideoCard() << '\n'
-		<< "Video Driver:\t" << getVideoDriver() << "\n\n";
-
-		char buffer[PATH_MAX];
-
-		readlink("/proc/self/exe", buffer, PATH_MAX);
-
-		path = buffer;
-		path = path.substr(0, path.find_last_of('/') + 1);
+			<< "Version:\t" << getOSVersion() << '\n'
+			<< "Arch:\t\t" << getOSArch() << '\n'
+			<< "Total Mem:\t" << getTotalMem() << '\n'
+			<< "CPU:\t\t" << getCPUModel() << '\n'
+			<< "Video Vendor:\t" << getVideoVendor() << '\n'
+			<< "Video Card:\t" << getVideoCard() << '\n'
+			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
+		
+		getResourcePath();
 
 		Script::setResourcePath(path);
 	}
@@ -90,12 +90,27 @@ namespace swift
 		}
 	}
 
-	const std::string& Game::getResourcePath() const
+	const std::string& Game::getResourcePath()
 	{
+		if(path.empty())
+		{
+			char buffer[PATH_MAX];
+
+			#ifdef __linux__
+				readlink("/proc/self/exe", buffer, PATH_MAX);
+			#elif _WIN32
+				GetModuleFileName(NULL, buffer, PATH_MAX);
+			#endif
+
+			path = buffer;
+			path = path.substr(0, path.find_last_of('/') + 1);
+			path += "../data/";
+		}
+
 		return path;
 	}
 
-	void Game::update(sf::Time dt)
+	void Game::update(const sf::Time& dt)
 	{
 		sf::Event event;
 
@@ -253,8 +268,7 @@ namespace swift
 				for(std::size_t i = 0; i < modes.size(); ++i)
 				{
 					sf::VideoMode mode = modes[i];
-					log << "Mode #" << i << ": " << mode.width << "x" << mode.height << " - " << mode.bitsPerPixel <<
-					" bpp\n";
+					log << "Mode #" << i << ": " << mode.width << "x" << mode.height << " - " << mode.bitsPerPixel << " bpp\n";
 					// ex: "Mode #0: 1920x1080 - 32 bbp"
 				}
 

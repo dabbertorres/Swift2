@@ -23,13 +23,12 @@ namespace tg
 	const float MIN_ZOOM = 0.5f;
 
 	GamePlay::GamePlay(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-	                   swift::Settings& dic, swift::StateMachine& sm, const std::string& rp)
-		:	State(win, am, sp, mp, set, dic, sm, rp),
-		    activeState(nullptr),
-		    activeWorld(nullptr),
-		    player(nullptr),
-		playView( {0, 0}, {static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
-	scripts(am)
+	                   swift::Settings& dic, swift::StateMachine& sm)
+	:	State(win, am, sp, mp, set, dic, sm),
+		activeState(nullptr),
+		activeWorld(nullptr),
+		playView({0, 0}, {static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
+		scripts(am)
 	{
 		GameScript::setPlayState(*this);
 
@@ -48,13 +47,6 @@ namespace tg
 
 	GamePlay::~GamePlay()
 	{
-		std::ofstream fout;
-
-		fout.open(resPath + "../data/saves/currentWorld");
-		fout << activeWorld->getName() << '\n';
-		fout << activeWorld->tilemap.getFile() << '\n';
-		fout.close();
-
 		for(auto & w : worlds)
 		{
 			saveWorld(*w.second);
@@ -92,7 +84,7 @@ namespace tg
 		activeState->draw(e);
 	}
 
-	swift::Entity* GamePlay::getPlayer() const
+	unsigned int GamePlay::getPlayer() const
 	{
 		return activeWorld->getPlayer();
 	}
@@ -126,12 +118,11 @@ namespace tg
 		// get the player
 		if(activeWorld)
 		{
-			// copy over play from current world to new world
-			swift::Entity* newPlayer = newWorld->addEntity();
-			*newPlayer = *activeWorld->getPlayer();
-			player = newPlayer;
-
-			activeWorld->removeEntity(0);	// delete player from current world
+			// copy over player from current world to new world
+			unsigned int oldPlayer = activeWorld->getPlayer();
+			newWorld->createEntity(oldPlayer);
+			
+			// create and copy components from oldPlayer to new Player
 
 			// delete old world
 			std::string oldWorld = activeWorld->getName();
@@ -152,8 +143,6 @@ namespace tg
 			{
 				swift::log << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
 			}
-
-			player = newWorld->getPlayer();
 		}
 
 		activeWorld = newWorld;
@@ -162,28 +151,7 @@ namespace tg
 
 	void GamePlay::loadLastWorld()
 	{
-		std::ifstream fin;
-
-		std::string worldName;
-		std::string tilemapFile;
-
-		fin.open(resPath + "../data/saves/currentWorld");
-
-		if(fin.good())
-		{
-			std::getline(fin, worldName);
-			std::getline(fin, tilemapFile);
-
-			// create world
-			changeWorld(worldName, tilemapFile);
-		}
-		else
-		{
-			swift::log << "[WARNING]: No current world set!\n";
-			changeWorld("simple", resPath + "../data/maps/simple.tmx");
-		}
-
-		fin.close();
+		//changeWorld(worldName, tilemapFile);
 	}
 
 	bool GamePlay::loadWorld(swift::World& world)
@@ -211,14 +179,14 @@ namespace tg
 
 		while(entityElement != nullptr)
 		{
-			swift::Entity* entity = world.addEntity();
+			unsigned int entity = world.createEntity();
 
 			tinyxml2::XMLElement* component = entityElement->FirstChildElement();
 
 			while(component != nullptr)
 			{
 				std::string componentName = component->Value();
-				entity->add(componentName);
+				//entity->add(componentName);
 
 				std::map<std::string, std::string> variables;
 				tinyxml2::XMLElement* variableElement = component->FirstChildElement();
@@ -235,22 +203,22 @@ namespace tg
 				}
 
 				// get component and add to it
-				entity->get(componentName)->unserialize(variables);
+				//entity->get(componentName)->unserialize(variables);
 
 				if(componentName == "Drawable")
 				{
-					swift::Drawable* draw = entity->get<swift::Drawable>();
-					draw->sprite.setTexture(*assets.getTexture(draw->texture));
+					/*swift::Drawable* draw = entity->get<swift::Drawable>();
+					draw->sprite.setTexture(*assets.getTexture(draw->texture));*/
 				}
 				else if(componentName == "Animated")
 				{
-					swift::Animated* anim = entity->get<swift::Animated>();
+					/*swift::Animated* anim = entity->get<swift::Animated>();
 					anim->animTex = assets.getAnimTexture(anim->animationFile);
 					anim->createAnimations();
 					anim->sprite.setTexture(*assets.getTexture(anim->animTex->getTextureFile()));
 					anim->currentAnim = "Idle";
 					anim->previousAnim = "Idle";
-					anim->setAnimation("Idle");
+					anim->setAnimation("Idle");*/
 				}
 
 				component = component->NextSiblingElement();
@@ -292,7 +260,7 @@ namespace tg
 		{
 			tinyxml2::XMLElement* entity = saveFile.NewElement("entity");
 
-			for(auto & c : e->getComponents())
+			/*for(auto & c : e->getComponents())
 			{
 				tinyxml2::XMLElement* component = saveFile.NewElement(c.first.c_str());
 
@@ -304,7 +272,7 @@ namespace tg
 				}
 
 				entity->InsertEndChild(component);
-			}
+			}*/
 
 			root->InsertEndChild(entity);
 		}
@@ -347,7 +315,7 @@ namespace tg
 		pauseColumn.addWidget(new cstr::Button( {100, 50}, *buttonTexture, [&]()
 		{
 			shouldReturn = true;
-			states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states, resPath));
+			states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
 		})).setString(mainMenu, *font, 20);
 	}
 
@@ -361,9 +329,9 @@ namespace tg
 			switch(e.type)
 			{
 				case sf::Event::LostFocus:
-					if(player)
+					/*if(player)
 						if(player->has<swift::Movable>())
-							player->get<swift::Movable>()->velocity = {0, 0};
+							player->get<swift::Movable>()->velocity = {0, 0};*/
 
 					break;
 
@@ -376,7 +344,7 @@ namespace tg
 		{
 			activeWorld->update(dt.asSeconds());
 
-			if(player)
+			/*if(player)
 			{
 				playView.setCenter(std::floor(player->get<swift::Physical>()->position.x), std::floor(player->get<swift::Physical>()->position.y));
 				soundPlayer.setListenerPosition( {player->get<swift::Physical>()->position.x, player->get<swift::Physical>()->position.y, 0});
@@ -392,7 +360,7 @@ namespace tg
 			{
 				playView.setCenter(0, 0);
 				soundPlayer.setListenerPosition( {0, 0, 0});
-			}
+			}*/
 		});
 
 		play.setDrawFunc([&](float e)
@@ -430,7 +398,7 @@ namespace tg
 		// move up press and release
 		keyboard.newBinding("moveUpStart", sf::Keyboard::Up, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -441,12 +409,12 @@ namespace tg
 				{
 					player->get<swift::Animated>()->setAnimation("WalkVert");
 				}
-			}
+			}*/
 		}, true);
 
 		keyboard.newBinding("moveUpStop", sf::Keyboard::Up, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -457,13 +425,13 @@ namespace tg
 				{
 					player->get<swift::Animated>()->revertAnimation();
 				}
-			}
+			}*/
 		}, false);
 
 		// move down press and release
 		keyboard.newBinding("moveDownStart", sf::Keyboard::Down, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -474,13 +442,12 @@ namespace tg
 				{
 					player->get<swift::Animated>()->setAnimation("WalkVert");
 				}
-			}
-
+			}*/
 		}, true);
 
 		keyboard.newBinding("moveDownStop", sf::Keyboard::Down, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -491,13 +458,13 @@ namespace tg
 				{
 					player->get<swift::Animated>()->revertAnimation();
 				}
-			}
+			}*/
 		}, false);
 
 		// move left press and release
 		keyboard.newBinding("moveLeftStart", sf::Keyboard::Left, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -508,12 +475,12 @@ namespace tg
 				{
 					player->get<swift::Animated>()->setAnimation("WalkLeft");
 				}
-			}
+			}*/
 		}, true);
 
 		keyboard.newBinding("moveLeftStop", sf::Keyboard::Left, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -524,13 +491,13 @@ namespace tg
 				{
 					player->get<swift::Animated>()->revertAnimation();
 				}
-			}
+			}*/
 		}, false);
 
 		// move right press and release
 		keyboard.newBinding("moveRightStart", sf::Keyboard::Right, [&]()
 		{
-			if(player)
+		/*	if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -541,12 +508,12 @@ namespace tg
 				{
 					player->get<swift::Animated>()->setAnimation("WalkRight");
 				}
-			}
+			}*/
 		}, true);
 
 		keyboard.newBinding("moveRightStop", sf::Keyboard::Right, [&]()
 		{
-			if(player)
+			/*if(player)
 			{
 				if(player->has<swift::Controllable>())
 				{
@@ -557,7 +524,7 @@ namespace tg
 				{
 					player->get<swift::Animated>()->revertAnimation();
 				}
-			}
+			}*/
 		}, false);
 	}
 }

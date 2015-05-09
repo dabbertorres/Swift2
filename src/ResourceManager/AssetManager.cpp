@@ -1,5 +1,7 @@
 #include "AssetManager.hpp"
 
+#include <dirent.h>
+
 namespace swift
 {
 	AssetManager::AssetManager()
@@ -57,12 +59,6 @@ namespace swift
 
 		while((entry = readdir(dir)))
 		{
-			if(entry == nullptr)
-			{
-				log << "Unable to read resource folder: " << folder << "\n";
-				return false;
-			}
-
 			// if the entry is a directory, but is not the current or parent directory
 			if(entry->d_type == DT_DIR && !(std::string(entry->d_name).compare(".") == 0 || std::string(entry->d_name).compare("..") == 0))
 			{

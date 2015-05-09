@@ -14,6 +14,8 @@ namespace swift
 		public:
 			Drawable(unsigned int id, const Physical& p);
 			
+			Drawable& operator=(Drawable&& other);
+			
 			const Physical& getPhysical() const;
 			
 			static std::string getType();

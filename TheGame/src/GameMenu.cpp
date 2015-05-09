@@ -21,8 +21,8 @@
 namespace tg
 {
 	GameMenu::GameMenu(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-	                   swift::Settings& dic, swift::StateMachine& sm, const std::string& rp)
-		:	State(win, am, sp, mp, set, dic, sm, rp)
+	                   swift::Settings& dic, swift::StateMachine& sm)
+		:	State(win, am, sp, mp, set, dic, sm)
 	{
 		window.setKeyRepeatEnabled(true);
 
@@ -85,7 +85,7 @@ namespace tg
 		buttonColumn.addWidget(new cstr::Button( {100, 50}, *buttonTexture, [&]()
 		{
 			shouldReturn = true;
-			states.push(new GamePlay(window, assets, soundPlayer, musicPlayer, settings, dictionary, states, resPath));
+			states.push(new GamePlay(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
 		})).setString(start, *font, 25);
 
 		buttonColumn.addWidget(new cstr::Spacer( {100, 25}));
@@ -95,7 +95,7 @@ namespace tg
 		buttonColumn.addWidget(new cstr::Button( {100, 50}, *buttonTexture, [&]()
 		{
 			shouldReturn = true;
-			states.push(new GameSettings(window, assets, soundPlayer, musicPlayer, settings, dictionary, states, resPath));
+			states.push(new GameSettings(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
 		})).setString(settingsStr, *font, 25);
 
 		buttonColumn.addWidget(new cstr::Spacer( {100, 25}));

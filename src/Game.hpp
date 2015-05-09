@@ -5,8 +5,8 @@
  *
  **/
 
-#ifndef GAME_HPP
-#define GAME_HPP
+#ifndef SWIFT_GAME_HPP
+#define SWIFT_GAME_HPP
 
 /* State System */
 #include "StateSystem/State.hpp"
@@ -62,13 +62,13 @@ namespace swift
 			// the thing that makes the game actually run!
 			void gameLoop();
 
-			const std::string& getResourcePath() const;
+			const std::string& getResourcePath();
 
 		protected:
 			// Updating game logic, handling input, memory management, etc.
 			// In a separate function to keep GameLoop looking clean and easier
 			// to comprehend
-			void update(sf::Time dt);
+			void update(const sf::Time& dt);
 
 			// Handle state changes, etc
 			virtual void manageStates();
@@ -156,4 +156,4 @@ namespace swift
 	};
 }
 
-#endif // GAME_HPP
+#endif // SWIFT_GAME_HPP

@@ -14,6 +14,16 @@ namespace swift
 			private:
 				using Keys = typename std::unordered_map<K, typename std::vector<V>::iterator>;
 				using Data = typename std::vector<V>;
+				
+				friend bool operator==(const AssocMap<K, V>& lhs, const AssocMap<K, V>& rhs)
+				{
+					return lhs.keys == rhs.keys && lhs.data == rhs.data;
+				}
+				
+				friend bool operator!=(const AssocMap<K, V>& lhs, const AssocMap<K, V>& rhs)
+				{
+					return !(lhs == rhs);
+				}
 			
 			public:
 				AssocMap() = default;
@@ -45,11 +55,14 @@ namespace swift
 
 				data_const_iterator data_cbegin() const noexcept;
 				data_const_iterator data_cend() const noexcept;
-				
-				data_iterator (&begin)() = data_begin;
-				data_iterator (&end)() = data_end;
-				data_const_iterator (&cbegin)() = data_cbegin;
-				data_const_iterator (&cend)() = data_cend;
+		
+				// function aliases for supporting the range-based for loop
+				inline data_iterator begin() noexcept;
+				inline data_const_iterator begin() const noexcept;
+				inline data_iterator end() noexcept;
+				inline data_const_iterator end() const noexcept;
+				inline data_const_iterator cbegin() const noexcept;
+				inline data_const_iterator cend() const noexcept;
 
 				/* capacity */
 				bool empty() const noexcept;
@@ -80,12 +93,6 @@ namespace swift
 				Data data;
 				Keys keys;
 		};
-
-		template<typename K, typename V>
-		bool operator==(const AssocMap<K, V>& lhs, const AssocMap<K, V>& rhs);
-
-		template<typename K, typename V>
-		bool operator!=(const AssocMap<K, V>& lhs, const AssocMap<K, V>& rhs);
 
 		/* implementation */
 		template<typename K, typename V>
@@ -165,6 +172,43 @@ namespace swift
 		typename AssocMap<K, V>::data_const_iterator AssocMap<K, V>::data_cend() const noexcept
 		{
 			return data.cend();
+		}
+		
+		// function aliases for supporting the range-based for loop
+		template<typename K, typename V>
+		inline typename AssocMap<K, V>::data_iterator AssocMap<K, V>::begin() noexcept
+		{
+			return data_begin();
+		}
+		
+		template<typename K, typename V>
+		inline typename AssocMap<K, V>::data_const_iterator AssocMap<K, V>::begin() const noexcept
+		{
+			return data_cbegin();
+		}
+		
+		template<typename K, typename V>
+		inline typename AssocMap<K, V>::data_iterator AssocMap<K, V>::end() noexcept
+		{
+			return data_end();
+		}
+		
+		template<typename K, typename V>
+		inline typename AssocMap<K, V>::data_const_iterator AssocMap<K, V>::end() const noexcept
+		{
+			return data_end();
+		}
+		
+		template<typename K, typename V>
+		inline typename AssocMap<K, V>::data_const_iterator AssocMap<K, V>::cbegin() const noexcept
+		{
+			return data_cbegin();
+		}
+		
+		template<typename K, typename V>
+		inline typename AssocMap<K, V>::data_const_iterator AssocMap<K, V>::cend() const noexcept
+		{
+			return data_cend();
 		}
 
 		template<typename K, typename V>

@@ -1,5 +1,7 @@
 #include "BatchDrawable.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
 	BatchDrawable::BatchDrawable(unsigned int id, const Physical& p)
@@ -7,6 +9,16 @@ namespace swift
 		physical(p)
 	{}
 	
+	BatchDrawable& BatchDrawable::operator=(BatchDrawable&& other)
+	{
+		sprite = other.sprite;
+		texture = other.texture;
+		batch = other.texture;
+		const_cast<Physical&>(physical) = other.physical;
+		
+		return *this;
+	}
+			
 	const Physical& BatchDrawable::getPhysical() const
 	{
 		return physical;

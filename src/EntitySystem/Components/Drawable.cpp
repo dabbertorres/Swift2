@@ -1,11 +1,22 @@
 #include "Drawable.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
 	Drawable::Drawable(unsigned int id, const Physical& p)
 	:	Component(id),
 		physical(p)
 	{}
+			
+	Drawable& Drawable::operator=(Drawable&& other)
+	{
+		sprite = other.sprite;
+		texture = other.texture;
+		const_cast<Physical&>(physical) = other.physical;
+		
+		return *this;
+	}
 	
 	const Physical& Drawable::getPhysical() const
 	{

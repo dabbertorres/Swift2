@@ -16,6 +16,8 @@ namespace swift
 		public:
 			Pathfinder(unsigned int id, const Physical& p, Movable& m);
 			
+			Pathfinder& operator=(Pathfinder&& other);
+			
 			const Physical& getPhysical() const;
 			Movable& getMovable() const;
 

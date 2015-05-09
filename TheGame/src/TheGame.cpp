@@ -7,8 +7,8 @@
 namespace tg
 {
 	TheGame::TheGame()
-		:	Game("TheGame", 60),
-		    assets(getResourcePath())
+	:	Game("TheGame", 60),
+		assets(getResourcePath())
 	{
 	}
 
@@ -22,12 +22,12 @@ namespace tg
 		// args is the arguments
 
 		// loads settings from the settings file
-		loadSettings(getResourcePath() + "../data/settings.ini");
+		loadSettings(getResourcePath() + "settings.ini");
 
 		handleLaunchOps(c, args);
 
 		// loads a dictionary
-		dictionary.loadFile(getResourcePath() + "../data/dictionaries/" + language + ".dic");
+		dictionary.loadFile(getResourcePath() + "dictionaries/" + language + ".dic");
 
 		loadAssets();
 
@@ -48,21 +48,21 @@ namespace tg
 	void TheGame::loadAssets()
 	{
 		assets.setSmooth(smoothing);
-		assets.loadResourceFolder(getResourcePath() + "../data/anims");
-		assets.loadResourceFolder(getResourcePath() + "../data/textures");
-		assets.loadResourceFolder(getResourcePath() + "../data/fonts");
-		assets.loadResourceFolder(getResourcePath() + "../data/music");
-		assets.loadResourceFolder(getResourcePath() + "../data/scripts");
-		assets.loadResourceFolder(getResourcePath() + "../data/sounds");
+		assets.loadResourceFolder(getResourcePath() + "anims/");
+		assets.loadResourceFolder(getResourcePath() + "textures/");
+		assets.loadResourceFolder(getResourcePath() + "fonts/");
+		assets.loadResourceFolder(getResourcePath() + "music/");
+		assets.loadResourceFolder(getResourcePath() + "scripts/");
+		assets.loadResourceFolder(getResourcePath() + "sounds/");
 
 		// make log file a little prettier
 		swift::log << '\n';
 	}
-
+	
 	void TheGame::loadMods()
 	{
 		// find all mods
-		mods.loadMods(getResourcePath() + "../data/mods");
+		mods.loadMods(getResourcePath() + "mods/");
 
 		// this would be where you normally conditionally load up mods
 		for(auto & m : mods.getMods())
@@ -70,11 +70,11 @@ namespace tg
 			assets.loadMod(m.second.mod);
 		}
 	}
-
+	
 	void TheGame::initState()
 	{
 		// state setup
-		states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states, getResourcePath()));
+		states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
 	}
 
 	void TheGame::initScripting()

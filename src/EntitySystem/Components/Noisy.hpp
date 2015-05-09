@@ -14,6 +14,8 @@ namespace swift
 		public:
 			Noisy(unsigned int id, const Physical& p);
 			
+			Noisy& operator=(Noisy&& other);
+			
 			const Physical& getPhysical() const;
 			
 			static std::string getType();

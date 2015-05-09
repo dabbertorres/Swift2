@@ -4,6 +4,9 @@
 
 namespace swift
 {
+	SoundPlayer* NoisySystem::soundPlayer = nullptr;
+	AssetManager* NoisySystem::assets = nullptr;
+	
 	void NoisySystem::update(float)
 	{
 		for(auto& c : components)

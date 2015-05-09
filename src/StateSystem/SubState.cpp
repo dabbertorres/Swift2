@@ -3,20 +3,16 @@
 namespace swift
 {
 	SubState::SubState()
-		:	eventFunc([](sf::Event&) {}),
-	updateFunc([](sf::Time) {}),
-	drawFunc([](float) {})
+	:	eventFunc([](sf::Event&) {}),
+		updateFunc([](sf::Time) {}),
+		drawFunc([](float) {})
 	{
 	}
 
 	SubState::SubState(const std::function<void(sf::Event&)>& e, const std::function<void(sf::Time)>& u, const std::function<void(float e)>& d)
-		:	eventFunc(e),
-		    updateFunc(u),
-		    drawFunc(d)
-	{
-	}
-
-	SubState::~SubState()
+	:	eventFunc(e),
+		updateFunc(u),
+		drawFunc(d)
 	{
 	}
 

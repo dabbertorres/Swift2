@@ -1,11 +1,22 @@
 #include "Noisy.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
 	Noisy::Noisy(unsigned int id, const Physical& p)
 	:	Component(id),
 		physical(p)
 	{}
+	
+	Noisy& Noisy::operator=(Noisy&& other)
+	{
+		soundFile = other.soundFile;
+		shouldPlay = other.shouldPlay;
+		const_cast<Physical&>(physical) = other.physical;
+		
+		return *this;
+	}
 	
 	const Physical& Noisy::getPhysical() const
 	{

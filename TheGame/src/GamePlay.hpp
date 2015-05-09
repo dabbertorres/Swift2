@@ -23,14 +23,14 @@ namespace tg
 	{
 		public:
 			GamePlay(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic,
-			         swift::StateMachine& sm, const std::string& rp);
+			         swift::StateMachine& sm);
 			~GamePlay();
 
 			virtual void handleEvent(sf::Event& event);
 			virtual void update(sf::Time dt);
 			virtual void draw(float e);
 
-			swift::Entity* getPlayer() const;
+			unsigned int getPlayer() const;
 
 			void changeWorld(const std::string& name, const std::string& mapFile);
 
@@ -53,7 +53,6 @@ namespace tg
 			cstr::Window pauseMenu;
 
 			swift::World* activeWorld;
-			swift::Entity* player;
 
 			sf::View playView;
 			float currentZoom;

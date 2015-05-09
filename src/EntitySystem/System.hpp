@@ -10,13 +10,17 @@ namespace swift
 	class BaseSystem
 	{
 		public:
+			virtual ~BaseSystem() = default;
 			virtual void update(float dt) = 0;
+			virtual void remove(unsigned int id) = 0;
 	};
 
 	template<typename C, typename std::enable_if<std::is_base_of<Component, C>::value>::type* = nullptr>
 	class System : public BaseSystem
 	{
 		public:
+			virtual ~System() = default;
+			
 			virtual void update(float dt) = 0;
 			
 			unsigned int size() const
@@ -46,7 +50,7 @@ namespace swift
 			void remove(unsigned int id)
 			{
 				removeImpl(id);
-				components.erase(components.begin() + id);
+				components.erase(id);
 			}
 			
 			void clear()

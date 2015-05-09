@@ -42,11 +42,11 @@ namespace swift
 			unsigned int id;
 	};
 	
-	Component::Component(unsigned int i)
+	inline Component::Component(unsigned int i)
 	:	id(i)
 	{}
 	
-	unsigned int Component::ID() const
+	inline unsigned int Component::ID() const
 	{
 		return id;
 	}
@@ -115,6 +115,20 @@ namespace swift
 			var = def;
 		}
 	}
+}
+
+// implementation of std::hash for Component:Type enum class.
+// Allowing it to be used in unordered_maps and such.
+namespace std
+{
+	template<>
+	struct hash<swift::Component::Type>
+	{
+		std::size_t operator()(const swift::Component::Type& t) const
+		{
+			return std::hash<std::underlying_type<swift::Component::Type>::type>()(static_cast<std::underlying_type<swift::Component::Type>::type>(t));
+		}
+	};
 }
 
 #endif // COMPONENT_HPP

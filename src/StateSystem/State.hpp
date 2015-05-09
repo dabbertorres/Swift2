@@ -19,8 +19,7 @@ namespace swift
 	class State
 	{
 		public:
-			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic, StateMachine& sm,
-			      const std::string& rp);
+			State(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic, StateMachine& sm);
 			virtual ~State();
 
 			virtual void handleEvent(sf::Event& event) = 0;
@@ -41,8 +40,6 @@ namespace swift
 			/* Input */
 			KeyboardManager keyboard;
 			MouseManager mouse;
-
-			const std::string resPath;
 
 			bool shouldReturn;
 	};

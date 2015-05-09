@@ -1,5 +1,7 @@
 #include "Controllable.hpp"
 
+#include "Movable.hpp"
+
 namespace swift
 {
 	Controllable::Controllable(unsigned int id, Movable& m)
@@ -10,6 +12,17 @@ namespace swift
 		moveDown(false),
 		movable(m)
 	{}
+	
+	Controllable& Controllable::operator=(Controllable&& other)
+	{
+		moveLeft = other.moveLeft;
+		moveRight = other.moveRight;
+		moveUp = other.moveUp;
+		moveDown = other.moveDown;
+		movable = other.movable;
+		
+		return *this;
+	}
 			
 	Movable& Controllable::getMovable() const
 	{

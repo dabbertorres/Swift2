@@ -9,6 +9,7 @@
 #include "../Mapping/TileMap.hpp"
 
 #include "../EntitySystem/System.hpp"
+#include "../EntitySystem/SystemMap.hpp"
 #include "../EntitySystem/Component.hpp"
 
 namespace swift
@@ -17,12 +18,12 @@ namespace swift
 	{
 		public:
 			World(const std::string& n);
-			virtual ~World() = default;
+			virtual ~World();
 
 			virtual void update(float dt) = 0;
 			virtual void draw(sf::RenderTarget& target, float e, sf::RenderStates states = sf::RenderStates::Default) = 0;
 
-			void createEntity(unsigned int id, std::underlying_type<Component::Type>::type t);
+			unsigned int createEntity(unsigned int id = 0);
 			
 			bool destroyEntity(int e);
 
@@ -38,6 +39,7 @@ namespace swift
 
 		protected:
 			std::vector<unsigned int> entities;
+			SystemMap systems;
 			unsigned int player;
 
 		private:

@@ -14,6 +14,9 @@ namespace swift
 		public:
 			Movable(unsigned int id, Physical& p);
 			
+			Movable& operator=(const Movable& other);
+			Movable& operator=(Movable&& other);
+			
 			Physical& getPhysical() const;
 			
 			static std::string getType();

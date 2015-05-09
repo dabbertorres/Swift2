@@ -12,6 +12,8 @@
 
 namespace swift
 {
+	const MovableSystem* Collision::movables = nullptr;
+	
 	Collision::Collision(Physical& o, Physical& t)
 	:	one(o),
 		two(t),
