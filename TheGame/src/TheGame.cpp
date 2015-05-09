@@ -48,12 +48,7 @@ namespace tg
 	void TheGame::loadAssets()
 	{
 		assets.setSmooth(smoothing);
-		assets.loadResourceFolder(getResourcePath() + "anims/");
-		assets.loadResourceFolder(getResourcePath() + "textures/");
-		assets.loadResourceFolder(getResourcePath() + "fonts/");
-		assets.loadResourceFolder(getResourcePath() + "music/");
-		assets.loadResourceFolder(getResourcePath() + "scripts/");
-		assets.loadResourceFolder(getResourcePath() + "sounds/");
+		assets.loadResourceFolder(getResourcePath());
 
 		// make log file a little prettier
 		swift::log << '\n';
@@ -62,12 +57,12 @@ namespace tg
 	void TheGame::loadMods()
 	{
 		// find all mods
-		mods.loadMods(getResourcePath() + "mods/");
+		mods.loadMods(getResourcePath() + "../mods/");
 
 		// this would be where you normally conditionally load up mods
 		for(auto & m : mods.getMods())
 		{
-			assets.loadMod(m.second.mod);
+			assets.loadMod(m.second);
 		}
 	}
 	

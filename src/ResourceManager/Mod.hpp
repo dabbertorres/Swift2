@@ -14,9 +14,9 @@ namespace swift
 	class Mod
 	{
 		public:
-			Mod();
-			Mod(const std::string& n, const std::string& v, const std::string& a);
-			~Mod();
+			Mod() = default;
+			Mod(const std::string& n, const std::string& v, const std::string& a, const std::string& d);
+			~Mod() = default;
 
 			void addFile(const std::string& f);
 
@@ -25,14 +25,18 @@ namespace swift
 			const std::string& getAuthor() const;
 			const std::string& getDescription() const;
 			const std::vector<std::string>& getFiles() const;
+			
+			bool isActive() const;
 
 			void setName(const std::string& n);
 			void setVersion(const std::string& v);
 			void setAuthor(const std::string& a);
 			void setDescription(const std::string& d);
+			
+			void setActive(bool a);
 
-			bool operator ==(const Mod& other) const;
-			bool operator !=(const Mod& other) const;
+			friend bool operator ==(const Mod& lhs, const Mod& rhs);
+			friend bool operator !=(const Mod& lhs, const Mod& rhs);
 
 		private:
 			std::string name;
@@ -41,6 +45,8 @@ namespace swift
 			std::string description;
 
 			std::vector<std::string> files;
+			
+			bool active;
 	};
 }
 

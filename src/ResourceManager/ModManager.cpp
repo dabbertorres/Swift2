@@ -5,14 +5,6 @@
 
 namespace swift
 {
-	ModManager::ModManager()
-	{
-	}
-
-	ModManager::~ModManager()
-	{
-	}
-
 	bool ModManager::loadMods(const std::string& f)
 	{
 		DIR* dir = nullptr;
@@ -38,7 +30,6 @@ namespace swift
 			// if the entry is a directory, but is not the current or parent directory
 			if(entry->d_type == DT_DIR && !(std::string(entry->d_name).compare(".") == 0 || std::string(entry->d_name).compare("..") == 0))
 			{
-				std::ifstream fin;
 				std::string name;
 				std::string version;
 				std::string author;
@@ -58,17 +49,13 @@ namespace swift
 					continue;
 				}
 				
-				mods.emplace(name, ModPair());
-				mods[name].mod.setName(name);
-				mods[name].mod.setVersion(version);
-				mods[name].mod.setAuthor(author);
-				mods[name].mod.setDescription(description);
+				mods.emplace(name, Mod(name, version, author, description));
 				
 				log << "\nLoading mod: " << name << '\n';
-				log << "Version: " << version << '\n';
-				log << "By: " << author << '\n';
-				log << description << '\n';
-				loadMod(f + '/' + std::string(entry->d_name), mods[name].mod);
+				log << "\tVersion: " << version << '\n';
+				log << "\tBy: " << author << '\n';
+				log << '\t' << description << '\n';
+				loadMod(f + '/' + std::string(entry->d_name), mods[name]);
 			}
 		}
 
@@ -77,12 +64,12 @@ namespace swift
 		return true;
 	}
 
-	const std::map<std::string, ModManager::ModPair>& ModManager::getMods() const
+	const std::map<std::string, Mod>& ModManager::getMods() const
 	{
 		return mods;
 	}
 	
-	std::map<std::string, ModManager::ModPair>::iterator ModManager::getMod(const std::string& n)
+	std::map<std::string, Mod>::iterator ModManager::getMod(const std::string& n)
 	{
 		return mods.find(n);
 	}

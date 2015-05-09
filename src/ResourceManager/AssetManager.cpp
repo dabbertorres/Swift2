@@ -78,21 +78,16 @@ namespace swift
 
 	bool AssetManager::loadMod(const Mod& mod)
 	{
-		bool returnVar = true;
-
 		for(auto & f : mod.getFiles())
 		{
-			bool temp = true;
-			temp = loadResource(f);
-
-			if(temp == false)
+			if(!loadResource(f))
 			{
 				log << "ERROR: In " << mod.getName() << ", could not load " << f << '\n';
-				returnVar = false;
+				return false;
 			}
 		}
 
-		return returnVar;
+		return true;
 	}
 
 	void AssetManager::clean()

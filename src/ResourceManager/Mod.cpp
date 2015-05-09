@@ -2,21 +2,13 @@
 
 namespace swift
 {
-	Mod::Mod()
-	{
-
-	}
-
-	Mod::Mod(const std::string& n, const std::string& v, const std::string& a)
-	{
-		name = n;
-		version = v;
-		author = a;
-	}
-
-	Mod::~Mod()
-	{
-	}
+	Mod::Mod(const std::string& n, const std::string& v, const std::string& a, const std::string& d)
+	:	name(n),
+		version(v),
+		author(a),
+		description(d),
+		active(false)
+	{}
 
 	void Mod::addFile(const std::string& f)
 	{
@@ -47,6 +39,11 @@ namespace swift
 	{
 		return files;
 	}
+	
+	bool Mod::isActive() const
+	{
+		return active;
+	}
 
 	void Mod::setName(const std::string& n)
 	{
@@ -67,14 +64,19 @@ namespace swift
 	{
 		description = d;
 	}
-
-	bool Mod::operator ==(const Mod& other) const
+	
+	void Mod::setActive(bool a)
 	{
-		return name == other.name && version == other.version && author == other.author;
+		active = a;
 	}
 
-	bool Mod::operator !=(const Mod& other) const
+	bool operator ==(const Mod& lhs, const Mod& rhs)
 	{
-		return !(*this == other);
+		return lhs.name == rhs.name && lhs.version == rhs.version && lhs.author == rhs.author;
+	}
+
+	bool operator !=(const Mod& lhs, const Mod& rhs)
+	{
+		return !(lhs == rhs);
 	}
 }

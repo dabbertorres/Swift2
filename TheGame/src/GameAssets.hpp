@@ -9,9 +9,9 @@ namespace tg
 	{
 		public:
 			GameAssets(const std::string& rp);
-			~GameAssets();
+			~GameAssets() = default;
 
-		protected:
+		private:
 			virtual bool loadScript(const std::string& file);
 
 			std::string resPath;
