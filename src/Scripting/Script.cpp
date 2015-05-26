@@ -14,40 +14,54 @@ namespace swift
 	std::string Script::resPath = "";
 
 	Script::Script()
-		:	file(""),
-		    deleteMe(false)
+	:	file(""),
+		deleteMe(false)
 	{
 		// We don't want to give the scripts access to os commands or file writing abilities
-		// so we only open the necessary libraries
+		// so we open all libraries but "io", "os", "package", and "debug"
 		luaState.openLib("base", luaopen_base);
-		luaState.openLib("math", luaopen_math);
+		luaState.openLib("coroutine", luaopen_coroutine);
 		luaState.openLib("string", luaopen_string);
 		luaState.openLib("table", luaopen_table);
-
+		luaState.openLib("math", luaopen_math);
+		luaState.openLib("bit32", luaopen_bit32);
+		
 		luaState["getResourcePath"] = &getResourcePath;
+		
+		// components table
+		luaState["Components"]["Animated"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Animated);
+		luaState["Components"]["BatchDrawable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::BatchDrawable);
+		luaState["Components"]["Controllable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Controllable);
+		luaState["Components"]["Drawable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Drawable);
+		luaState["Components"]["Movable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Movable);
+		luaState["Components"]["Name"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Name);
+		luaState["Components"]["Noisy"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Noisy);
+		luaState["Components"]["Pathfinder"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Pathfinder);
+		luaState["Components"]["Physical"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Animated);
 	}
 
-	Script::~Script()
+	bool Script::loadFromFile(const std::string& lfile)
 	{
-	}
-
-	bool Script::loadFromFile(const std::string& file)
-	{
-		bool loadResult = luaState.loadFile(file) == LUA_OK;
+		// load engine variables to Lua
+		addVariables();
+		addClasses();
+		addFunctions();
+		
+		bool loadResult = luaState.loadFile(lfile) == LUA_OK;
 
 		if(!loadResult)
 		{
-			log << "[ERROR]: " << file << " load: " << luaState.getErrors() << '\n';
+			log << "[ERROR]: Script: " << lfile << " - load: " << luaState.getErrors() << '\n';
 		}
 
 		bool runResult = luaState.run() == LUA_OK;
 
 		if(!runResult)
 		{
-			log << "[ERROR]: " << file << " run: " << luaState.getErrors() << '\n';
+			log << "[ERROR]: Script: " << lfile << " - run: " << luaState.getErrors() << '\n';
 		}
 
-		this->file = file;
+		file = lfile;
 
 		return loadResult && runResult;
 	}
@@ -88,7 +102,7 @@ namespace swift
 
 	bool Script::load(const std::string& lfile)
 	{
-		tinyxml2::XMLDocument loadFile;
+		/*tinyxml2::XMLDocument loadFile;
 		tinyxml2::XMLError result = loadFile.LoadFile(lfile.c_str());
 
 		if(result != tinyxml2::XML_SUCCESS)
@@ -120,7 +134,7 @@ namespace swift
 		{
 			char type = variable->Attribute("type")[0];
 			std::string value = variable->GetText();
-
+			
 			switch(type)
 			{
 				case 'n':	// number
@@ -154,7 +168,7 @@ namespace swift
 		else
 		{
 			log << "[WARNING]: No Load function in script \"" << file << "\"\n";
-		}
+		}*/
 
 		return true;
 	}
@@ -162,7 +176,7 @@ namespace swift
 	bool Script::save(const std::string& sfile)
 	{
 		// save all variables to save file
-		tinyxml2::XMLDocument saveFile;
+		/*tinyxml2::XMLDocument saveFile;
 		tinyxml2::XMLError result = saveFile.LoadFile(sfile.c_str());
 
 		if(result != tinyxml2::XML_SUCCESS && result != tinyxml2::XML_ERROR_EMPTY_DOCUMENT && result != tinyxml2::XML_ERROR_FILE_NOT_FOUND)
@@ -236,10 +250,12 @@ namespace swift
 
 			return true;
 		}
+		else
+		{
+			log << "[INFO]: Script: " << file << " does not have a Save function.\n";
 
-		log << "[INFO]: Script: " << file << " does not have a Save function.\n";
-
-		return false;
+			return false;
+		}*/
 	}
 
 	bool Script::toDelete()
@@ -252,11 +268,13 @@ namespace swift
 		luaState.reload();
 
 		// We don't want to give the scripts access to os commands or file writing abilities
-		// so we only open the necessary libraries
+		// so we open all libraries but "io", "os", "package", and "debug"
 		luaState.openLib("base", luaopen_base);
-		luaState.openLib("math", luaopen_math);
+		luaState.openLib("coroutine", luaopen_coroutine);
 		luaState.openLib("string", luaopen_string);
 		luaState.openLib("table", luaopen_table);
+		luaState.openLib("math", luaopen_math);
+		luaState.openLib("bit32", luaopen_bit32);
 
 		addVariables();
 		addClasses();
@@ -269,7 +287,12 @@ namespace swift
 	{
 		resPath = rp;
 	}
-
+	
+	const std::string& Script::getFile() const
+	{
+		return file;
+	}
+	
 	std::string Script::getResourcePath()
 	{
 		return resPath;

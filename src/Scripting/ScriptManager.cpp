@@ -6,12 +6,7 @@ namespace swift
 {
 	ScriptManager::ScriptManager(AssetManager& am)
 	:	assets(am)
-	{
-	}
-
-	ScriptManager::~ScriptManager()
-	{
-	}
+	{}
 	
 	void ScriptManager::update()
 	{
@@ -39,6 +34,7 @@ namespace swift
 		{
 			scripts.emplace(scriptFile, assets.getScript(scriptFile));
 			scripts[scriptFile]->start();
+			
 			return true;
 		}
 		else
@@ -50,7 +46,10 @@ namespace swift
 		if(scripts.find(scriptFile) != scripts.end())
 		{
 			if(!scripts[scriptFile]->save("./data/saves/" + scriptFile.substr(scriptFile.find_last_of('/') + 1) + ".script"))
-				swift::log << "[WARNING]: Could not save script: " << scriptFile << "!\n";
+			{
+				log << "[WARNING]: Could not save script: " << scriptFile << "!\n";
+			}
+			
 			scripts[scriptFile]->reset();
 			scripts.erase(scriptFile);
 			return true;
@@ -64,7 +63,9 @@ namespace swift
 		for(auto& s : scripts)
 		{
 			if(!s.second->save("./data/saves/" + s.first.substr(s.first.find_last_of('/') + 1) + ".script"))
-				swift::log << "[WARNING]: Could not save script: " << s.first << "!\n";
+			{
+				log << "[WARNING]: Could not save script: " << s.first << "!\n";
+			}
 			
 			s.second->reset();
 		}

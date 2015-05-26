@@ -9,11 +9,19 @@ namespace swift
 		physical(p)
 	{}
 	
+	BatchDrawable::BatchDrawable(const BatchDrawable& other)
+	:	Component(other.ID()),
+		sprite(other.sprite),
+		texture(other.texture),
+		batch(other.batch),
+		physical(other.physical)
+	{}
+	
 	BatchDrawable& BatchDrawable::operator=(BatchDrawable&& other)
 	{
 		sprite = other.sprite;
 		texture = other.texture;
-		batch = other.texture;
+		batch = other.batch;
 		const_cast<Physical&>(physical) = other.physical;
 		
 		return *this;
@@ -24,9 +32,9 @@ namespace swift
 		return physical;
 	}
 	
-	std::string BatchDrawable::getType()
+	Component::Type BatchDrawable::type()
 	{
-		return "BatchDrawable";
+		return Component::Type::BatchDrawable;
 	}
 	
 	std::map<std::string, std::string> BatchDrawable::serialize() const
@@ -38,16 +46,13 @@ namespace swift
 		variables.emplace("scaleY", std::to_string(sprite.getScale().y));
 		variables.emplace("batch", batch);
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void BatchDrawable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("texture", variables, texture, std::string("./data/textures/ship.png"));
-		sf::Vector2f scale;
-		initMember("scaleX", variables, scale.x, 0.f);
-		initMember("scaleY", variables, scale.y, 0.f);
-		sprite.setScale(scale);
-		initMember("batch", variables, batch, std::string(""));
+		texture = variables.at("texture");
+		sprite.setScale({std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY"))});
+		batch = variables.at("batch");
 	}
 }

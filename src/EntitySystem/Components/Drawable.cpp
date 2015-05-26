@@ -8,6 +8,13 @@ namespace swift
 	:	Component(id),
 		physical(p)
 	{}
+	
+	Drawable::Drawable(const Drawable& other)
+	:	Component(other.ID()),
+		sprite(other.sprite),
+		texture(other.texture),
+		physical(other.physical)
+	{}
 			
 	Drawable& Drawable::operator=(Drawable&& other)
 	{
@@ -23,9 +30,9 @@ namespace swift
 		return physical;
 	}
 			
-	std::string Drawable::getType()
+	Component::Type Drawable::type()
 	{
-		return "Drawable";
+		return Component::Type::Drawable;
 	}
 	
 	std::map<std::string, std::string> Drawable::serialize() const
@@ -41,10 +48,8 @@ namespace swift
 	
 	void Drawable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("texture", variables, texture, std::string("./data/textures/ship.png"));
-		sf::Vector2f scale;
-		initMember("scaleX", variables, scale.x, 0.f);
-		initMember("scaleY", variables, scale.y, 0.f);
-		sprite.setScale(scale);
+		texture = variables.at("texture");
+		
+		sprite.setScale(std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY")));
 	}
 }

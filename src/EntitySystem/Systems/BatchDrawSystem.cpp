@@ -7,6 +7,10 @@
 
 namespace swift
 {
+	BatchDrawSystem::BatchDrawSystem(unsigned int res)
+	:	System<BatchDrawable>(res)
+	{}
+	
 	void BatchDrawSystem::update(float)
 	{
 		for(auto& c : components)
@@ -21,7 +25,7 @@ namespace swift
 		}
 	}
 
-	void BatchDrawSystem::draw(float, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const
+	void BatchDrawSystem::draw(sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const
 	{
 		for(auto& b : batches)
 		{

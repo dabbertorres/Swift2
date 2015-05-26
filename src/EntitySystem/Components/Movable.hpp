@@ -14,12 +14,14 @@ namespace swift
 		public:
 			Movable(unsigned int id, Physical& p);
 			
+			Movable(const Movable& other);
+			
 			Movable& operator=(const Movable& other);
 			Movable& operator=(Movable&& other);
 			
 			Physical& getPhysical() const;
 			
-			static std::string getType();
+			static Component::Type type();
 			
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);

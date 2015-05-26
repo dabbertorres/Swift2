@@ -21,16 +21,32 @@ namespace swift
 	class SystemMap
 	{
 		private:
-		using Map = util::AssocMap<Component::Type, BaseSystem*>;
+			using Map = util::AssocMap<Component::Type, BaseSystem*>;
 		
 		public:
-			// adding a specialization for each System enables a sort of "compile-time" switch statement.
-			template<typename T>
-			T& get();
+			template<typename T = Component, typename std::enable_if<std::is_base_of<Component, T>::value>::type* = nullptr>
+			System<T>* get()
+			{
+				if(systems.find(T::type()) != systems.key_end())
+				{
+					return static_cast<System<T>*>(systems[T::type()]);
+				}
+				else
+				{
+					return nullptr;
+				}
+			}
 			
 			BaseSystem* get(Component::Type t)
 			{
-				return systems[t];
+				if(systems.find(t) != systems.key_end())
+				{
+					return systems[t];
+				}
+				else
+				{
+					return nullptr;
+				}
 			}
 			
 			void add(Component::Type t, BaseSystem* sys)
@@ -62,60 +78,6 @@ namespace swift
 		private:
 			Map systems;
 	};
-	
-	template<>
-	inline AnimatedSystem& SystemMap::get<AnimatedSystem>()
-	{
-		return static_cast<AnimatedSystem&>(*systems[Component::Type::Animated]);
-	}
-	
-	template<>
-	inline BatchDrawSystem& SystemMap::get<BatchDrawSystem>()
-	{
-		return static_cast<BatchDrawSystem&>(*systems[Component::Type::BatchDrawable]);
-	}
-	
-	template<>
-	inline ControllableSystem& SystemMap::get<ControllableSystem>()
-	{
-		return static_cast<ControllableSystem&>(*systems[Component::Type::Controllable]);
-	}
-	
-	template<>
-	inline DrawableSystem& SystemMap::get<DrawableSystem>()
-	{
-		return static_cast<DrawableSystem&>(*systems[Component::Type::Drawable]);
-	}
-	
-	template<>
-	inline MovableSystem& SystemMap::get<MovableSystem>()
-	{
-		return static_cast<MovableSystem&>(*systems[Component::Type::Movable]);
-	}
-	
-	template<>
-	inline NameSystem& SystemMap::get<NameSystem>()
-	{
-		return static_cast<NameSystem&>(*systems[Component::Type::Name]);
-	}
-	
-	template<>
-	inline NoisySystem& SystemMap::get<NoisySystem>()
-	{
-		return static_cast<NoisySystem&>(*systems[Component::Type::Noisy]);
-	}
-	
-	template<>
-	inline PathfinderSystem& SystemMap::get<PathfinderSystem>()
-	{
-		return static_cast<PathfinderSystem&>(*systems[Component::Type::Pathfinder]);
-	}
-	
-	template<>
-	inline PhysicalSystem& SystemMap::get<PhysicalSystem>()
-	{
-		return static_cast<PhysicalSystem&>(*systems[Component::Type::Physical]);
-	}
 }
 
 #endif	// SWIFT_SYSTEM_MAP_HPP

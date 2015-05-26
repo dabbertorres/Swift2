@@ -17,9 +17,12 @@ namespace swift
 	class BatchDrawSystem : public System<BatchDrawable>
 	{
 		public:
+			BatchDrawSystem() = default;
+			BatchDrawSystem(unsigned int res);
+			
 			virtual void update(float dt);
 			
-			virtual void draw(float e, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const;
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const;
 		
 		private:
 			virtual void addImpl(const BatchDrawable& c);

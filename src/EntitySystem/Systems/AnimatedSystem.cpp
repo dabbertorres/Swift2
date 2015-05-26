@@ -4,6 +4,10 @@
 
 namespace swift
 {
+	AnimatedSystem::AnimatedSystem(unsigned int res)
+	:	System<Animated>(res)
+	{}
+	
 	void AnimatedSystem::update(float dt)
 	{
 		for(auto& c : components)
@@ -20,7 +24,7 @@ namespace swift
 		}
 	}
 
-	void AnimatedSystem::draw(float, sf::RenderTarget& target, sf::RenderStates states) const
+	void AnimatedSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		/*std::sort(animateds.begin(), animateds.end(), [](const Entity* one, const Entity* two)
 		{

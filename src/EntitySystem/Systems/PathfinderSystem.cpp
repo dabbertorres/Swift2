@@ -12,13 +12,17 @@
 namespace swift
 {
 	World* PathfinderSystem::world = nullptr;
-
+	
+	PathfinderSystem::PathfinderSystem(unsigned int res)
+	:	System<Pathfinder>(res)
+	{}
+		
 	void PathfinderSystem::update(float)
 	{
 		for(auto& c : components)
 		{
-			const Physical& phys = c.getPhysical();
 			Movable& mov = c.getMovable();
+			const Physical& phys = mov.getPhysical();
 			
 			if(world)
 			{

@@ -7,6 +7,10 @@
 
 namespace swift
 {
+	DrawableSystem::DrawableSystem(unsigned int res)
+	:	System<Drawable>(res)
+	{}
+	
 	void DrawableSystem::update(float)
 	{
 		for(auto& c : components)
@@ -21,7 +25,7 @@ namespace swift
 		}
 	}
 
-	void DrawableSystem::draw(float, sf::RenderTarget& target, sf::RenderStates states) const
+	void DrawableSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		/*std::sort(drawables.begin(), drawables.end(), [](const Entity* one, const Entity* two)
 		{

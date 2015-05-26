@@ -12,11 +12,13 @@ namespace swift
 		public:
 			Controllable(unsigned int id, Movable& m);
 			
+			Controllable(const Controllable& other);
+			
 			Controllable& operator=(Controllable&& other);
 			
 			Movable& getMovable() const;
 			
-			static std::string getType();
+			static Component::Type type();
 			
 			virtual std::map<std::string,std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);

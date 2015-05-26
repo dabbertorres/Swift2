@@ -5,12 +5,19 @@
 
 namespace swift
 {
-	Pathfinder::Pathfinder(unsigned int id, const Physical& p, Movable& m)
+	Pathfinder::Pathfinder(unsigned int id, Movable& m)
 	:	Component(id),
 		destination({0, 0}),
 		needsPath(false),
-		physical(p),
 		movable(m)
+	{}
+	
+	Pathfinder::Pathfinder(const Pathfinder& other)
+	:	Component(other.ID()),
+		nodes(other.nodes),
+		destination(other.destination),
+		needsPath(other.needsPath),
+		movable(other.movable)
 	{}
 	
 	Pathfinder& Pathfinder::operator=(Pathfinder&& other)
@@ -18,15 +25,9 @@ namespace swift
 		nodes = other.nodes;
 		destination = other.destination;
 		needsPath = other.needsPath;
-		const_cast<Physical&>(physical) = other.physical;
 		movable = other.movable;
 		
 		return *this;
-	}
-	
-	const Physical& Pathfinder::getPhysical() const
-	{
-		return physical;
 	}
 	
 	Movable& Pathfinder::getMovable() const
@@ -34,18 +35,25 @@ namespace swift
 		return movable;
 	}
 	
-	std::string Pathfinder::getType()
+	Component::Type Pathfinder::type()
 	{
-		return "Pathfinder";
+		return Component::Type::Pathfinder;
 	}
 	
 	std::map<std::string, std::string> Pathfinder::serialize() const
 	{
-		return std::map<std::string, std::string>();
+		std::map<std::string, std::string> variables;
+		
+		variables.emplace("destinationX", std::to_string(destination.x));
+		variables.emplace("destinationY", std::to_string(destination.y));
+		variables.emplace("needsPath", needsPath ? "true" : "false");
+		
+		return variables;
 	}
 	
-	void Pathfinder::unserialize(const std::map<std::string, std::string>&)
+	void Pathfinder::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		
+		destination = {std::stof(variables.at("destinationX")), std::stof(variables.at("destinationY"))};
+		needsPath = variables.at("needsPath") == "true";
 	}
 }

@@ -10,6 +10,9 @@ namespace swift
 	class NameSystem : public System<Name>
 	{
 		public:
+			NameSystem() = default;
+			NameSystem(unsigned int res);
+			
 			virtual void update(float dt);
 
 	};

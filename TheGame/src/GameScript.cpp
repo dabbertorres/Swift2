@@ -29,7 +29,7 @@ namespace tg
 
 	void GameScript::addClasses()
 	{
-
+		luaState["World"].setClass<GameWorld, const std::string&, GameAssets&>("createEntity", &GameWorld::createEntity, "destroyEntity", &GameWorld::destroyEntity, "getPlayer", &GameWorld::getPlayer);
 	}
 
 	void GameScript::addFunctions()
@@ -37,7 +37,6 @@ namespace tg
 		// utility functions
 		luaState["getWindowSize"] = &getWindowSize;
 		luaState["getTime"] = &getTime;
-		luaState["doKeypress"] = &doKeypress;
 		luaState["log"] = &logMsg;
 
 		// play
@@ -172,14 +171,6 @@ namespace tg
 		}
 	}
 
-	void GameScript::doKeypress(std::string k)
-	{
-		if(keyboard)
-		{
-			keyboard->call(k);
-		}
-	}
-
 	void GameScript::logMsg(std::string m)
 	{
 		swift::log << m << '\n';
@@ -211,15 +202,15 @@ namespace tg
 	}
 
 	// World
-	unsigned int GameScript::newEntity()
+	bool GameScript::newEntity(unsigned int e)
 	{
 		if(world)
 		{
-			return world->createEntity();
+			return world->createEntity(e);
 		}
 		else
 		{
-			return 0;
+			return false;
 		}
 	}
 

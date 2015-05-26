@@ -12,7 +12,8 @@ namespace swift
 		class AssocMap
 		{
 			private:
-				using Keys = typename std::unordered_map<K, typename std::vector<V>::iterator>;
+				// K -> position in Data from beginning
+				using Keys = typename std::unordered_map<K, std::size_t>;
 				using Data = typename std::vector<V>;
 				
 				friend bool operator==(const AssocMap<K, V>& lhs, const AssocMap<K, V>& rhs)
@@ -82,7 +83,7 @@ namespace swift
 
 				/* modifiers */
 				template<typename... Args>
-				std::pair<V&, bool> emplace(const K& k, Args&&... args);
+				std::pair<data_iterator, bool> emplace(const K& k, Args&&... args);
 
 				std::size_t erase(const K& k);
 				iterator erase(const_iterator position);
@@ -239,25 +240,25 @@ namespace swift
 		template<typename K, typename V>
 		V& AssocMap<K, V>::operator[](const K& k)
 		{
-			return *keys[k];
+			return data[keys[k]];
 		}
 
 		template<typename K, typename V>
 		V& AssocMap<K, V>::operator[](K&& k)
 		{
-			return *keys[k];
+			return data[keys[k]];
 		}
 
 		template<typename K, typename V>
 		V& AssocMap<K, V>::at(const K& k)
 		{
-			return *keys.at(k);
+			return data.at(keys.at(k));
 		}
 
 		template<typename K, typename V>
 		const V& AssocMap<K, V>::at(const K& k) const
 		{
-			return *keys.at(k);
+			return data.at(keys.at(k));
 		}
 
 		template<typename K, typename V>
@@ -274,36 +275,40 @@ namespace swift
 
 		template<typename K, typename V>
 		template<typename... Args>
-		std::pair<V&, bool> AssocMap<K, V>::emplace(const K& k, Args&&... args)
+		std::pair<typename AssocMap<K, V>::data_iterator, bool> AssocMap<K, V>::emplace(const K& k, Args&&... args)
 		{
 			data.emplace_back(std::forward<Args>(args)...);
+			auto pos = data.size() - 1;
 			auto lastIt = data.end() - 1;
-			auto result = keys.emplace(k, lastIt);
+			auto result = keys.emplace(k, pos);
 			
 			if(!result.second)
+			{
 				data.erase(lastIt);
-				
-			return {data.back(), result.second};
+				return {data.end(), false};
+			}
+			
+			return {lastIt, true};
 		}
 		
 		template<typename K, typename V>
 		std::size_t AssocMap<K, V>::erase(const K& k)
 		{
-			data.erase(keys.at(k));
+			data.erase(data.begin() + keys.at(k));
 			return keys.erase(k);
 		}
 		
 		template<typename K, typename V>
 		typename AssocMap<K, V>::iterator AssocMap<K, V>::erase(typename AssocMap<K, V>::const_iterator position)
 		{
-			data.erase(keys.at(position));
+			data.erase(data.begin() + keys.at(position));
 			return keys.erase(position);
 		}
 		
 		template<typename K, typename V>
 		typename AssocMap<K, V>::iterator AssocMap<K, V>::erase(typename AssocMap<K, V>::const_iterator first, typename AssocMap<K, V>::const_iterator last)
 		{
-			data.erase(keys.at(first), keys.at(last));
+			data.erase(data.begin() + keys.at(first), data.begin() + keys.at(last));
 			return keys.erase(first, last);
 		}
 		

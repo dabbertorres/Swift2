@@ -14,14 +14,15 @@ namespace swift
 	class Pathfinder : public Component
 	{
 		public:
-			Pathfinder(unsigned int id, const Physical& p, Movable& m);
+			Pathfinder(unsigned int id, Movable& m);
+			
+			Pathfinder(const Pathfinder& other);
 			
 			Pathfinder& operator=(Pathfinder&& other);
 			
-			const Physical& getPhysical() const;
 			Movable& getMovable() const;
 
-			static std::string getType();
+			static Component::Type type();
 
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
@@ -31,7 +32,6 @@ namespace swift
 			bool needsPath;
 			
 		private:
-			const Physical& physical;
 			Movable& movable;
 	};
 }

@@ -9,102 +9,59 @@
 	#include <sys/stat.h>
 #elif _WIN32
 	#include <windows.h>
+#else
+	#error "Unsupported operating system!"
 #endif
 
 #include "../Logger/Logger.hpp"
-#include "Save.hpp"
 
 namespace swift
 {
 	constexpr char SAVE_PATH[] = "saves/";
 	std::string SaveManager::resPath = "";
 	
-	Save SaveManager::newSave(std::string dir, bool force)
+	bool SaveManager::doesSaveExist(const std::string& saveDir)
 	{
 		if(resPath.empty())
-			return Save("");
-			
-		// make it a dir if it isn't
-		if(dir.back() != '/')
-			dir += '/';
-		
-		if(doesSaveExist(dir))
 		{
-			if(force)
-			{
-				// delete old save
-				deleteSave(dir);
-			}
-			else
-			{
-				return Save("");
-			}
-		}
-		
-		// prepend the full path
-		dir = resPath + SAVE_PATH + dir;
-		
-#ifdef __linux__
-		if(mkdir(dir.c_str(), 0700) != 0)
-#elif _WIN32
-		if(CreateDirectory(dir.c_str(), NULL))
-#endif
-		{
-			// make lastWorld file in new save dir
-			std::ofstream fout;
-			
-			fout.open(dir + "lastWorld");
-			
-			if(fout.good())
-			{
-				return Save(dir);
-			}
-			
-			return Save("");
-		}
-		
-		return Save("");
-	}
-	
-	bool SaveManager::doesSaveExist(std::string s)
-	{
-		if(resPath.empty())
 			return false;
+		}
 		
 		// make it a dir if it isn't
-		if(s.back() != '/')
-			s += '/';
-		
 		// prepend the full path
-		s = resPath + SAVE_PATH + s;
+		std::string path = fixPath(saveDir);
 		
 #ifdef __linux__
 		struct stat st;	// dummy required for stat function
 		
 		// does save dir exist?
-		if(stat(s.c_str(), &st) == 0)
+		if(stat(path.c_str(), &st) == 0)
 		{
 			// does 'lastWorld' file in save dir exist?
-			s += "lastWorld";
-			return stat(s.c_str(), &st) == 0;
+			path += "lastWorld";
+			return stat(path.c_str(), &st) == 0;
 		}
 #elif _WIN32
-		auto ftyp = GetFileAttributes(s.c_str());
+		auto ftyp = GetFileAttributes(path.c_str());
 		
 		// error out
 		if(ftyp == INVALID_FILE_ATTRIBUTES)
+		{
 			return false;
+		}
 		
 		// is it a dir?
 		if(ftyp & FILE_ATTRIBUTE_DIRECTORY)
 		{
 			// check the file
-			s += "lastWorld";
-			ftyp = GetFileAttributes(s.c_str());
+			path += "lastWorld";
+			ftyp = GetFileAttributes(path.c_str());
 			
 			// error out
 			if(ftyp == INVALID_FILE_ATTRIBUTES)
+			{
 				return false;
+			}
 			
 			// success?
 			return ftyp & FILE_ATTRIBUTE_NORMAL;
@@ -114,41 +71,63 @@ namespace swift
 		return false;
 	}
 	
-	bool SaveManager::save(const Save& save)
+	Save SaveManager::newSave(const std::string& saveDir, bool force)
 	{
 		if(resPath.empty())
-			return false;
-		
-		if(!writeLastWorld(save))
-			return false;
-	}
-	
-	Save SaveManager::load(const std::string& dir)
-	{
-		if(resPath.empty())
+		{
 			return Save("");
+		}
 		
-		Save save(dir);
+		if(doesSaveExist(saveDir))
+		{
+			if(force)
+			{
+				// delete old save
+				deleteSave(saveDir);
+			}
+			else
+			{
+				return Save("");
+			}
+		}
 		
-		if(!readLastWorld(save))
+		// make it a dir if it isn't
+		std::string path = fixPath(saveDir);
+		
+#ifdef __linux__
+		if(mkdir(path.c_str(), 0700) != 0)
+#elif _WIN32
+		if(CreateDirectory(path.c_str(), NULL))
+#endif
+		{
+			// make lastWorld file in new save dir
+			std::ofstream fout;
+			
+			fout.open(path + "lastWorld");
+			
+			if(fout.good())
+			{
+				return Save(saveDir);
+			}
+			
 			return Save("");
+		}
+		
+		return Save("");
 	}
 	
-	void SaveManager::setResourcePath(const std::string& rp)
+	bool SaveManager::deleteSave(const std::string& saveDir)
 	{
-		resPath = rp;
-	}
-	
-	bool SaveManager::deleteSave(const std::string& dirStr)
-	{
+		std::string path = fixPath(saveDir);
+		
 		DIR* dir = nullptr;
 		struct dirent* entry = nullptr;
 
-		dir = opendir(dirStr.c_str());
+		dir = opendir(path.c_str());
 
 		if(dir == nullptr)
 		{
-			log << "Unable to delete save: " << dirStr << "\n";
+			log << "Unable to delete save: " << saveDir << "\n";
 			return false;
 		}
 		
@@ -158,15 +137,16 @@ namespace swift
 			// if the entry is a directory, but is not the current or parent directory
 			if(entry->d_type == DT_DIR && !(std::string(entry->d_name).compare(".") == 0 || std::string(entry->d_name).compare("..") == 0))
 			{
-				deleteSave(dirStr + std::string(entry->d_name));	// recursive on child directory
+				deleteSave(path + std::string(entry->d_name));	// recursive on child directory
 			}
 			// entry is a file
 			else if(entry->d_type == DT_REG)
 			{
+				std::string fullPath = path + entry->d_name;
 #ifdef __linux__
-				unlink(entry->d_name);
+				unlink(fullPath.c_str());
 #elif _WIN32
-				DeleteFile(entry->d_name);
+				DeleteFile(fullPath.c_str());
 #endif
 			}
 		}
@@ -175,11 +155,70 @@ namespace swift
 		
 		// finally, delete the now empty dir
 #ifdef __linux__
-		rmdir(dirStr.c_str());
+		rmdir(path.c_str());
 #elif _WIN32
-		RemoveDirectory(entry->d_name);
+		RemoveDirectory(path.c_str());
 #endif
 		
+		return true;
+	}
+	
+	bool SaveManager::save(const Save& save)
+	{
+		if(resPath.empty() || !writeLastWorld(save))
+		{
+			return false;
+		}
+		
+		// save worlds
+		
+		
+		return true;
+	}
+	
+	Save SaveManager::load(const std::string& saveDir)
+	{
+		if(resPath.empty())
+		{
+			return Save("");
+		}
+		
+		Save save(saveDir);
+		
+		if(!readLastWorld(save))
+		{
+			return Save("");
+		}
+		
+		// load last world
+		// maybe load all world save files?
+		
+		
+		return save;
+	}
+	
+	void SaveManager::setResourcePath(const std::string& rp)
+	{
+		resPath = rp;
+	}
+	
+	bool SaveManager::loadWorldSave(const std::string& wf, Save& save)
+	{
+		return true;
+	}
+	
+	bool SaveManager::loadScriptSave(const std::string& sf, Save& save)
+	{
+		return true;
+	}
+	
+	bool SaveManager::saveWorldSave(const std::string& wf, const Save& save)
+	{
+		return true;
+	}
+	
+	bool SaveManager::saveScriptSave(const std::string& sf, const Save& save)
+	{
 		return true;
 	}
 	
@@ -187,10 +226,14 @@ namespace swift
 	{
 		std::ifstream fin;
 		
-		fin.open(resPath + SAVE_PATH + save.getName() + "/lastWorld");
+		std::string path = fixPath(save.getName());
+		
+		fin.open(path + "lastWorld");
 		
 		if(fin.bad())
+		{
 			return false;
+		}
 		
 		std::string worldName = "";
 		
@@ -207,13 +250,29 @@ namespace swift
 	{	
 		std::ofstream fout;
 		
-		fout.open(resPath + SAVE_PATH + save.getName() + "/lastWorld");
+		std::string path = fixPath(save.getName());
+		
+		fout.open(path + "lastWorld");
 		
 		if(fout.bad())
+		{
 			return false;
+		}
 		
 		fout << "name=" << save.getLastWorld();
 		
 		return true;
+	}
+	
+	std::string SaveManager::fixPath(const std::string& path)
+	{
+		if(path.back() != '/')
+		{
+			return resPath + SAVE_PATH + path + '/';
+		}
+		else
+		{
+			return resPath + SAVE_PATH + path;
+		}
 	}
 }

@@ -10,6 +10,9 @@ namespace swift
 	class ControllableSystem : public System<Controllable>
 	{
 		public:
+			ControllableSystem() = default;
+			ControllableSystem(unsigned int res);
+			
 			virtual void update(float dt);
 	};
 }

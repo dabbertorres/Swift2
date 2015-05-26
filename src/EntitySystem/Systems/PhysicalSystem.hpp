@@ -16,6 +16,9 @@ namespace swift
 	class PhysicalSystem : public System<Physical>
 	{
 		public:
+			PhysicalSystem() = default;
+			PhysicalSystem(unsigned int res);
+			
 			virtual void update(float dt);
 			
 			const std::vector<Collision>& getCollisions() const;

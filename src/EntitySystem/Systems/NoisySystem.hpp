@@ -13,6 +13,9 @@ namespace swift
 	class NoisySystem : public System<Noisy>
 	{
 		public:
+			NoisySystem() = default;
+			NoisySystem(unsigned int res);
+			
 			virtual void update(float dt);
 			
 			static void setSoundPlayer(SoundPlayer& sp);

@@ -10,6 +10,9 @@ namespace swift
 	class MovableSystem : public System<Movable>
 	{
 		public:
+			MovableSystem() = default;
+			MovableSystem(unsigned int res);
+			
 			virtual void update(float dt);
 	};
 }

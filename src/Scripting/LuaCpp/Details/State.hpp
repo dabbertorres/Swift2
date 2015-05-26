@@ -7,7 +7,7 @@
 
 #include "Selection.hpp"
 
-namespace lpp
+namespace lna
 {
 	class State
 	{
@@ -27,16 +27,16 @@ namespace lpp
 			// Returns an error code if an error occurs (ex: syntax error)
 			// the error is then pushed onto the stack, from where it can be
 			// popped and read with getErrors()
-			auto loadFile(const std::string& f) -> decltype(LUA_OK);
+			decltype(LUA_OK) loadFile(const std::string& f);
 			
 			// run the file.
 			// Returns an error code if an error occurs
 			// the error is then pushed onto the stack, from where it can be
 			// popped and read with getErrors()
-			auto run() -> decltype(LUA_OK);
+			decltype(LUA_OK) run();
 			
 			// add Lua libraries to the lua_State
-			void openLib(const std::string& name, lua_CFunction open);
+			void openLib(const std::string& name, const lua_CFunction& open);
 			
 			// select a global variable
 			Selection operator[](const std::string& name);
@@ -45,17 +45,10 @@ namespace lpp
 			Selection operator[](int idx);
 			
 			// get the number of elements on the stack
-			unsigned int getTop() const;
-			
-			// directly push a value onto the stack
-			template<typename T>
-			void push(T v);
-			
-			// call a function with a number of pushed args
-			void call(const std::string& func, int nargs);
+			int getTop() const;
 			
 			// run a string of Lua code
-			auto operator()(const std::string& name) -> decltype(LUA_OK);
+			decltype(LUA_OK) operator()(const std::string& name);
 			
 			// pull from the stack an error message and return it (if one exists)
 			std::string getErrors() const;
@@ -71,15 +64,101 @@ namespace lpp
 		private:
 			lua_State* state;
 			
-			using FunctionsMap = std::unordered_map<std::string, std::unique_ptr<BaseCppFunction>>;
-			
-			FunctionsMap functions;
+			Functions functions;
 	};
 	
-	template<typename T>
-	void State::push(T v)
+	inline State::State()
 	{
-		detail::pushValue(state, v);
+		state = luaL_newstate();
+	}
+
+	inline State::~State()
+	{
+		lua_settop(state, 0);
+		lua_close(state);
+	}
+	
+	inline decltype(LUA_OK) State::loadFile(const std::string& f)
+	{
+		return luaL_loadfile(state, f.c_str());
+	}
+	
+	inline decltype(LUA_OK) State::run()
+	{
+		return lua_pcall(state, 0, 0, 0);
+	}
+	
+	inline void State::openLib(const std::string& name, const lua_CFunction& open)
+	{
+#if LUA_VERSION_NUM >= 502
+		luaL_requiref(state, name.c_str(), open, 1);
+#else
+		lua_pushcfunction(state, open);
+		lua_pcall(state, 0, 0, 0);
+#endif
+		clean();
+	}
+	
+	inline Selection State::operator[](const std::string& name)
+	{
+		return Selection(state, name, functions);
+	}
+	
+	inline Selection State::operator[](int idx)
+	{
+		int top = lua_gettop(state);
+		
+		if(top != 0 && std::abs(idx) <= top)
+			return Selection(state, "", functions, idx);
+		else
+		{
+			luaL_error(state, "Stack is empty!");
+			return Selection(state, "", functions, 0);
+		}
+	}
+	
+	inline int State::getTop() const
+	{
+		return lua_gettop(state);
+	}
+	
+	inline decltype(LUA_OK) State::operator()(const std::string& name)
+	{
+		luaL_loadstring(state, name.c_str());
+		return lua_pcall(state, 0, 0, 0);
+	}
+	
+	inline std::string State::getErrors() const
+	{
+		std::string msg = "";
+		
+		if(!lua_isnone(state, -1))
+		{
+			std::size_t size;
+			const char* buff = luaL_checklstring(state, -1, &size);
+			msg = {buff, size};
+		}
+		
+		lua_pop(state, 1);
+		return msg;
+	}
+	
+	inline State::operator lua_State*() const
+	{
+		return state;
+	}
+	
+	inline void State::reload()
+	{
+		clean();
+		lua_close(state);
+		state = luaL_newstate();
+		functions.clear();
+	}
+	
+	inline void State::clean()
+	{
+		lua_settop(state, 0);
 	}
 }
 

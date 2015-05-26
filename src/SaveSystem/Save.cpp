@@ -32,8 +32,28 @@ namespace swift
 		return lastWorld;
 	}
 	
+	const Save::ScriptSaves& Save::getScriptSaves() const
+	{
+		return scripts;
+	}
+	
+	const Save::WorldSaves& Save::getWorldSaves() const
+	{
+		return worlds;
+	}
+	
 	void Save::setLastWorld(const std::string& worldName)
 	{
 		lastWorld = worldName;
+	}
+	
+	void Save::addScript(Script& script)
+	{
+		scripts.emplace_back(script);
+	}
+	
+	void Save::addWorld(const World& world)
+	{
+		worlds.emplace_back(world);
 	}
 }

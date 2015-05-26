@@ -14,11 +14,13 @@ namespace swift
 		public:
 			Noisy(unsigned int id, const Physical& p);
 			
+			Noisy(const Noisy& other);
+			
 			Noisy& operator=(Noisy&& other);
 			
 			const Physical& getPhysical() const;
 			
-			static std::string getType();
+			static Component::Type type();
 			
 			virtual std::map<std::string,std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);

@@ -21,8 +21,9 @@ namespace tg
 			GameWorld(const std::string& n, swift::AssetManager& am);
 
 			virtual void update(float dt);
-			virtual void draw(sf::RenderTarget& target, float e, sf::RenderStates states = sf::RenderStates::Default);
-
+			
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
+			
 		private:
 			swift::AssetManager& assets;
 			

@@ -3,7 +3,7 @@
 namespace tg
 {
 	GameWorld::GameWorld(const std::string& n, swift::AssetManager& am)
-	:	World(n),
+	:	World(n, 512),
 		assets(am)
 	{
 		systems.add(swift::Component::Type::Animated, &animatedSys);
@@ -24,12 +24,12 @@ namespace tg
 		}
 	}
 	
-	void GameWorld::draw(sf::RenderTarget& target, float e, sf::RenderStates states)
+	void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states)
 	{
 		target.draw(tilemap, states);
 		
-		systems.get<swift::BatchDrawSystem>().draw(e, target, states, assets);
-		systems.get<swift::DrawableSystem>().draw(e, target, states);
-		systems.get<swift::AnimatedSystem>().draw(e, target, states);
+		static_cast<swift::BatchDrawSystem*>(systems.get<swift::BatchDrawable>())->draw(target, states, assets);
+		static_cast<swift::DrawableSystem*>(systems.get<swift::Drawable>())->draw(target, states);
+		static_cast<swift::AnimatedSystem*>(systems.get<swift::Animated>())->draw(target, states);
 	}
 }

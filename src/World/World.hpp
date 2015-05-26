@@ -3,8 +3,12 @@
 
 #include <string>
 #include <vector>
-#include <map>
-//#include "../Utility/AssocMap.hpp"
+
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
+
+#include "../Utility/AssocMap.hpp"
 
 #include "../Mapping/TileMap.hpp"
 
@@ -17,29 +21,30 @@ namespace swift
 	class World
 	{
 		public:
-			World(const std::string& n);
+			World(const std::string& n, unsigned int res);
 			virtual ~World();
 
 			virtual void update(float dt) = 0;
-			virtual void draw(sf::RenderTarget& target, float e, sf::RenderStates states = sf::RenderStates::Default) = 0;
 
-			unsigned int createEntity(unsigned int id = 0);
-			
-			bool destroyEntity(int e);
+			bool createEntity(unsigned int id);
+			bool destroyEntity(unsigned int id);
 
 			unsigned int getPlayer() const;
-			
 			const std::vector<unsigned int>& getEntities() const;
-
 			std::vector<unsigned int> getEntitiesAround(const sf::Vector2f& pos, float radius) const;
-
 			const std::string& getName() const;
+			
+			const SystemMap& getSystems() const;
+			SystemMap& getSystems();
+			
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) = 0;
 
 			TileMap tilemap;
 
 		protected:
 			std::vector<unsigned int> entities;
 			SystemMap systems;
+			
 			unsigned int player;
 
 		private:

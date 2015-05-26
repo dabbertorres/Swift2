@@ -8,9 +8,9 @@ namespace swift
 	{
 	}
 	
-	std::string Name::getType()
+	Component::Type Name::type()
 	{
-		return "Name";
+		return Component::Type::Name;
 	}
 	
 	std::map<std::string, std::string> Name::serialize() const
@@ -24,6 +24,6 @@ namespace swift
 	
 	void Name::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("name", variables, name, std::string("null"));
+		name = variables.at("name");
 	}
 }

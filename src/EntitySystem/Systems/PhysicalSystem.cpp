@@ -4,6 +4,10 @@
 
 namespace swift
 {
+	PhysicalSystem::PhysicalSystem(unsigned int res)
+	:	System<Physical>(res)
+	{}
+			
 	void PhysicalSystem::update(float /*dt*/)
 	{
 		collisions.clear();

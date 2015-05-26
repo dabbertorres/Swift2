@@ -48,7 +48,6 @@ namespace tg
 			// Utility
 			static std::tuple<unsigned, unsigned> getWindowSize();
 			static float getTime();
-			static void doKeypress(std::string k);
 			static void logMsg(std::string m);
 
 			// Scripting
@@ -56,7 +55,7 @@ namespace tg
 			static bool removeScript(std::string s);
 
 			// World
-			static unsigned int newEntity();
+			static bool newEntity(unsigned int e);
 			static bool removeEntity(int e);
 			static std::vector<unsigned int> getEntities();
 			static unsigned int getPlayer();

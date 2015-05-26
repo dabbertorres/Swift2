@@ -12,7 +12,7 @@ namespace swift
 		public:
 			Name(unsigned int id);
 			
-			static std::string getType();
+			static Component::Type type();
 			
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);

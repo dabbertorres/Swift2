@@ -6,6 +6,10 @@
 
 namespace swift
 {
+	ControllableSystem::ControllableSystem(unsigned int res)
+	:	System<Controllable>(res)
+	{}
+	
 	void ControllableSystem::update(float)
 	{
 		for(auto& c : components)

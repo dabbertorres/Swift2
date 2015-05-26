@@ -10,7 +10,7 @@ namespace swift
 	namespace math
 	{
 		constexpr float PI = 3.14159265359;
-
+		
 		/* vector math */
 		template<typename T>
 		T magnitude(const sf::Vector2<T>& vec)
@@ -24,8 +24,10 @@ namespace swift
 			T mag = magnitude(vec);
 
 			if(mag == 0)
+			{
 				return {0, 0};
-
+			}
+			
 			return vec / mag;
 		}
 

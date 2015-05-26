@@ -11,9 +11,18 @@ namespace swift
 		angle(0)
 	{}
 	
-	std::string Physical::getType()
+	Physical::Physical(const Physical& other)
+	:	Component(other.ID()),
+		position(other.position),
+		zIndex(other.zIndex),
+		size(other.size),
+		collides(other.collides),
+		angle(other.angle)
+	{}
+	
+	Component::Type Physical::type()
 	{
-		return "Physical";
+		return Component::Type::Physical;
 	}
 	
 	std::map<std::string, std::string> Physical::serialize() const
@@ -33,12 +42,10 @@ namespace swift
 	
 	void Physical::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("positionX", variables, position.x, 0.f);
-		initMember("positionY", variables, position.y, 0.f);
-		initMember("zIndex", variables, zIndex, 0u);
-		initMember("sizeX", variables, size.x, 0u);
-		initMember("sizeY", variables, size.y, 0u);
-		initMember("collides", variables, collides, false);
-		initMember("angle", variables, angle, 0.f);
+		position = {std::stof(variables.at("positionX")), std::stof(variables.at("positionY"))};
+		zIndex = std::stoi(variables.at("zIndex"));
+		size = {static_cast<unsigned int>(std::stoul(variables.at("sizeX"))), static_cast<unsigned int>(std::stoul(variables.at("sizeY")))};
+		collides = variables.at("collides") == "true";
+		angle = std::stof(variables.at("angle"));
 	}
 }

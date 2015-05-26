@@ -12,6 +12,9 @@ namespace swift
 	class PathfinderSystem : public System<Pathfinder>
 	{
 		public:
+			PathfinderSystem() = default;
+			PathfinderSystem(unsigned int res);
+			
 			virtual void update(float dt);
 
 			static World* world;

@@ -15,7 +15,7 @@ namespace swift
 	{
 		public:
 			ScriptManager(AssetManager& am);
-			~ScriptManager();
+			~ScriptManager() = default;
 
 			void update();
 

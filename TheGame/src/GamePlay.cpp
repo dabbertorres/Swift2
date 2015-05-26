@@ -179,7 +179,7 @@ namespace tg
 
 		while(entityElement != nullptr)
 		{
-			unsigned int entity = world.createEntity();
+			//unsigned int entity = world.createEntity(0);
 
 			tinyxml2::XMLElement* component = entityElement->FirstChildElement();
 
@@ -256,11 +256,11 @@ namespace tg
 			root->DeleteChildren();
 		}
 
-		for(auto & e : world.getEntities())
+		/*for(auto & e : world.getEntities())
 		{
 			tinyxml2::XMLElement* entity = saveFile.NewElement("entity");
 
-			/*for(auto & c : e->getComponents())
+			for(auto & c : e->getComponents())
 			{
 				tinyxml2::XMLElement* component = saveFile.NewElement(c.first.c_str());
 
@@ -272,10 +272,10 @@ namespace tg
 				}
 
 				entity->InsertEndChild(component);
-			}*/
+			}
 
 			root->InsertEndChild(entity);
-		}
+		}*/
 
 		saveFile.SaveFile(file.c_str());
 
@@ -363,10 +363,10 @@ namespace tg
 			}*/
 		});
 
-		play.setDrawFunc([&](float e)
+		play.setDrawFunc([&](float)
 		{
 			window.setView(playView);
-			activeWorld->draw(window, e);
+			activeWorld->draw(window);
 
 			window.setView(window.getDefaultView());
 			window.draw(hud);

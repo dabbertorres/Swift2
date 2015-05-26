@@ -9,6 +9,13 @@ namespace swift
 		physical(p)
 	{}
 	
+	Noisy::Noisy(const Noisy& other)
+	:	Component(other.ID()),
+		soundFile(other.soundFile),
+		shouldPlay(other.shouldPlay),
+		physical(other.physical)
+	{}
+	
 	Noisy& Noisy::operator=(Noisy&& other)
 	{
 		soundFile = other.soundFile;
@@ -23,9 +30,9 @@ namespace swift
 		return physical;
 	}
 	
-	std::string Noisy::getType()
+	Component::Type Noisy::type()
 	{
-		return "Noisy";
+		return Component::Type::Noisy;
 	}
 	
 	std::map<std::string,std::string> Noisy::serialize() const
@@ -39,6 +46,6 @@ namespace swift
 	
 	void Noisy::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("sound", variables, soundFile, std::string("./data/sounds/nothing.wav"));
+		soundFile = variables.at("sound");
 	}
 }

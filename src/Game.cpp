@@ -63,25 +63,25 @@ namespace swift
 		{
 			sf::Time newTime = GameTime.getElapsedTime();
 			sf::Time frameTime = newTime - currentTime;
-
+			
 			if(frameTime > sf::seconds(0.25))
 			{
 				frameTime = sf::seconds(0.25);
 			}
-
+			
 			currentTime = newTime;
-
+			
 			lag += frameTime;
-
+			
 			while(lag >= dt)
 			{
 				manageStates();
 				update(dt);
 				lag -= dt;
 			}
-
+			
 			draw(lag.asSeconds() / dt.asSeconds());
-
+			
 			// frames per second measurement
 			if(debug)
 			{
@@ -89,7 +89,7 @@ namespace swift
 			}
 		}
 	}
-
+	
 	const std::string& Game::getResourcePath()
 	{
 		if(path.empty())

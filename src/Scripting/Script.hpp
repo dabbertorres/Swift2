@@ -44,11 +44,13 @@ namespace swift
 
 	class Script
 	{
+		friend class ScriptSave;
+		
 		public:
 			Script();
-			virtual ~Script();
+			virtual ~Script() = default;
 
-			bool loadFromFile(const std::string& file);
+			bool loadFromFile(const std::string& lfile);
 
 			void start();
 
@@ -60,6 +62,8 @@ namespace swift
 			bool toDelete();
 
 			void reset();
+			
+			const std::string& getFile() const;
 
 			static void setResourcePath(const std::string& rp);
 
@@ -68,7 +72,7 @@ namespace swift
 			virtual void addClasses() = 0;
 			virtual void addFunctions() = 0;
 
-			lpp::State luaState;
+			lna::State luaState;
 
 		private:
 			std::string file;

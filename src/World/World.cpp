@@ -1,14 +1,19 @@
 #include "World.hpp"
 
 #include <cmath>
+
+#include <chrono>
+#include <random>
+
 #include "../Math/Math.hpp"
+#include "../Math/Random.hpp"
 
 namespace swift
 {
-	World::World(const std::string& n)
+	World::World(const std::string& n, unsigned int res)
 	:	name(n)
 	{
-		entities.reserve(128);
+		entities.reserve(res);
 	}
 	
 	World::~World()
@@ -19,30 +24,38 @@ namespace swift
 		}
 	}
 	
-	unsigned int World::createEntity(unsigned int id)
+	bool World::createEntity(unsigned int id)
 	{
-		if(id == 0)
-			//id =	// generate a random id
+		if(entities.size() == entities.capacity())
+		{
+			return false;
+		}
+		
+		if(std::find(entities.begin(), entities.end(), id) != entities.end())
+		{
+			return false;
+		}
 		
 		entities.emplace_back(id);
 		
-		return id;
+		return true;
 	}
 	
-	bool World::destroyEntity(int e)
+	bool World::destroyEntity(unsigned int id)
 	{
-		// if e is positive, check if is greater than last entity
-		// if e is negative, check if it refers to entity less than 0
-		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
-			return false;
+		auto erase = std::find(entities.begin(), entities.end(), id);
 		
-		unsigned int id = entities[e];
-		entities.erase((e >= 0 ? entities.begin() : entities.end()) + e);
+		if(erase == entities.end())
+		{
+			return false;
+		}
 		
 		for(auto& s : systems)
 		{
 			s->remove(id);
 		}
+		
+		entities.erase(erase);
 		
 		return true;
 	}
@@ -81,5 +94,15 @@ namespace swift
 	const std::string& World::getName() const
 	{
 		return name;
+	}
+	
+	const SystemMap& World::getSystems() const
+	{
+		return systems;
+	}
+	
+	SystemMap& World::getSystems()
+	{
+		return systems;
 	}
 }

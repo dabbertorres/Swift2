@@ -17,6 +17,8 @@ namespace swift
 		public:
 			Animated(unsigned int id, const Physical& p);
 			
+			Animated(const Animated& other);
+			
 			Animated& operator=(Animated&& other);
 
 			void setAnimation(const std::string& anim);
@@ -25,7 +27,7 @@ namespace swift
 			
 			const Physical& getPhysical() const;
 
-			static std::string getType();
+			static Component::Type type();
 
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);

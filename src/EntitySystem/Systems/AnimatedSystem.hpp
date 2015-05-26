@@ -13,9 +13,12 @@ namespace swift
 	class AnimatedSystem : public System<Animated>
 	{
 		public:
+			AnimatedSystem() = default;
+			AnimatedSystem(unsigned int res);
+			
 			virtual void update(float dt);
 			
-			virtual void draw(float e, sf::RenderTarget& target, sf::RenderStates states) const;
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 	};
 }
 

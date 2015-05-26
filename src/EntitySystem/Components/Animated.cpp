@@ -11,7 +11,18 @@ namespace swift
 	    previousAnim(""),
 		physical(p)
 	{}
-
+	
+	Animated::Animated(const Animated& other)
+	:	Component(other.ID()),
+		sprite(other.sprite),
+		animTex(other.animTex),
+		anims(other.anims),
+		currentAnim(other.currentAnim),
+		previousAnim(other.previousAnim),
+		animationFile(other.animationFile),
+		physical(other.physical)
+	{}
+	
 	Animated& Animated::operator=(Animated&& other)
 	{
 		sprite = other.sprite;
@@ -63,9 +74,9 @@ namespace swift
 		return physical;
 	}
 
-	std::string Animated::getType()
+	Component::Type Animated::type()
 	{
-		return "Animated";
+		return Component::Type::Animated;
 	}
 
 	std::map<std::string, std::string> Animated::serialize() const
@@ -76,16 +87,13 @@ namespace swift
 		variables.emplace("scaleY", std::to_string(sprite.getScale().y));
 		variables.emplace("animation", animationFile);
 
-		return std::move(variables);
+		return variables;
 	}
 
 	void Animated::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		sf::Vector2f scale;
-		initMember("scaleX", variables, scale.x, 0.f);
-		initMember("scaleY", variables, scale.y, 0.f);
-		sprite.setScale(scale);
-
-		initMember("animation", variables, animationFile, std::string("./data/anims/man.anim"));
+		sprite.setScale(std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY")));
+		
+		animationFile = variables.at("animation");
 	}
 }

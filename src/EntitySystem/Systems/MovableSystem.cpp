@@ -4,6 +4,10 @@
 
 namespace swift
 {
+	MovableSystem::MovableSystem(unsigned int res)
+	:	System<Movable>(res)
+	{}
+	
 	void MovableSystem::update(float dt)
 	{
 		for(auto& c : components)

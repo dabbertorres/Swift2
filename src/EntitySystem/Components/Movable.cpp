@@ -11,6 +11,13 @@ namespace swift
 		physical(p)
 	{}
 	
+	Movable::Movable(const Movable& other)
+	:	Component(other.ID()),
+		moveVelocity(other.moveVelocity),
+		velocity(other.velocity),
+		physical(other.physical)
+	{}
+	
 	Movable& Movable::operator=(const Movable& other)
 	{
 		moveVelocity = other.moveVelocity;
@@ -34,9 +41,9 @@ namespace swift
 		return physical;
 	}
 	
-	std::string Movable::getType()
+	Component::Type Movable::type()
 	{
-		return "Movable";
+		return Component::Type::Movable;
 	}
 	
 	std::map<std::string, std::string> Movable::serialize() const
@@ -52,8 +59,7 @@ namespace swift
 	
 	void Movable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("moveVelocity", variables, moveVelocity, 0.f);
-		initMember("velocityX", variables, velocity.x, 0.f);
-		initMember("velocityY", variables, velocity.y, 0.f);
+		moveVelocity = std::stof(variables.at("moveVelocity"));
+		velocity = {std::stof(variables.at("velocityX")), std::stof(variables.at("velocityY"))};
 	}
 }
