@@ -66,7 +66,7 @@ namespace swift
 			// vertices of a disprismatotesseractihexadecachoron from the center,
 			// skewed so that the tetrahedral and cubic facets can be inscribed inside
 			// spheres of the same radius.
-			static constexpr std::array<char, 16 * 16> gradients4D =
+			static constexpr std::array<char, 256> gradients4D =
 			{
 				3,  1,  1,  1,      1,  3,  1,  1,      1,  1,  3,  1,      1,  1,  1,  3,
 				-3,  1,  1,  1,     -1,  3,  1,  1,     -1,  1,  3,  1,     -1,  1,  1,  3,

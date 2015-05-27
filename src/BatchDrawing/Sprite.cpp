@@ -1,58 +1,37 @@
 #include "Sprite.hpp"
 
+#include "../Math/Math.hpp"
+
+#include "SpriteBatch.hpp"
+
 namespace swift
 {
-	Sprite::Sprite()
-	:	vertices({nullptr}),
+	Sprite::Sprite(SpriteBatch* b, const std::array<std::size_t, 4>& verts)
+	:	vertices(verts),
 		origin(0, 0),
 	    scaleFactor(1, 1),
-	    angle(0)
+	    angle(0),
+		batch(b)
+	{}
+	
+	Sprite::Sprite()
+	:	vertices({0}),
+		origin(0, 0),
+		scaleFactor(1, 1),
+		angle(0),
+		batch(nullptr)
 	{}
 
 	Sprite::~Sprite()
 	{
-		for(auto& v : vertices)
-		{
-			v->color = {0, 0, 0, 0};
-			v->position = {0, 0};
-		}
-	}
-
-	bool Sprite::setBatch(SpriteBatch& batch)
-	{
-		vertices = batch.addSprite();
-
-		if(vertices[0] == nullptr)
-			return false;
-
-		sf::Vector2u texSize = batch.getTextureSize();
-
-		vertices[0]->position = {0, 0};
-		vertices[1]->position = {static_cast<float>(texSize.x), 0};
-		vertices[2]->position = static_cast<sf::Vector2f>(texSize);
-		vertices[3]->position = {0, static_cast<float>(texSize.y)};
-		
-		return true;
-	}
-	
-	bool Sprite::setBatch(SpriteBatch& batch, const sf::IntRect& texRect)
-	{
-		if(!setBatch(batch))
-			return false;
-		
-		vertices[0]->texCoords = {static_cast<float>(texRect.left), static_cast<float>(texRect.top)};
-		vertices[1]->texCoords = {static_cast<float>(texRect.left) + static_cast<float>(texRect.width), static_cast<float>(texRect.top)};
-		vertices[2]->texCoords = {static_cast<float>(texRect.left) + static_cast<float>(texRect.width), static_cast<float>(texRect.top) + static_cast<float>(texRect.height)};
-		vertices[3]->texCoords = {static_cast<float>(texRect.left), static_cast<float>(texRect.top) + static_cast<float>(texRect.height)};
-		
-		return true;
+		batch->remove(vertices);
 	}
 
 	void Sprite::move(const sf::Vector2f& offset)
 	{
-		for(auto & v : vertices)
+		for(auto& v : vertices)
 		{
-			v->position += offset;
+			batch->getVertex(v)->position += offset;
 		}
 	}
 
@@ -65,22 +44,22 @@ namespace swift
 
 	void Sprite::scale(const sf::Vector2f& factor)
 	{
-		setScale( {scaleFactor.x * factor.x, scaleFactor.y * factor.y});
+		setScale({scaleFactor.x * factor.x, scaleFactor.y * factor.y});
 	}
 
 	sf::IntRect Sprite::getTextureRect() const
 	{
-		return {static_cast<sf::Vector2i>(vertices[0]->texCoords), static_cast<sf::Vector2i>(vertices[2]->texCoords - vertices[0]->texCoords)};
+		return {static_cast<sf::Vector2i>(batch->getVertex(vertices[0])->texCoords), static_cast<sf::Vector2i>(batch->getVertex(vertices[3])->texCoords) - static_cast<sf::Vector2i>(batch->getVertex(vertices[0])->texCoords)};
 	}
 
 	sf::Color Sprite::getColor() const
 	{
-		return vertices[0]->color;
+		return batch->getVertex(vertices[0])->color;
 	}
 
 	sf::Vector2f Sprite::getPosition() const
 	{
-		return vertices[0]->position + origin;
+		return batch->getVertex(vertices[0])->position + origin;
 	}
 
 	float Sprite::getRotation() const
@@ -100,76 +79,74 @@ namespace swift
 
 	sf::FloatRect Sprite::getLocalBounds() const
 	{
-		return {vertices[0]->texCoords + origin, vertices[2]->texCoords - vertices[0]->texCoords};
+		return {batch->getVertex(vertices[0])->texCoords + origin, batch->getVertex(vertices[2])->texCoords - batch->getVertex(vertices[0])->texCoords};
 	}
 
 	sf::FloatRect Sprite::getGlobalBounds() const
 	{
-		return {vertices[0]->position + origin, vertices[2]->position - vertices[0]->position};
+		return {batch->getVertex(vertices[0])->position + origin, batch->getVertex(vertices[2])->position - batch->getVertex(vertices[0])->position};
 	}
 
 
 	void Sprite::setTextureRect(const sf::IntRect& texRect)
 	{
-		vertices[0]->texCoords = {static_cast<float>(texRect.left), static_cast<float>(texRect.top)};
-		vertices[1]->texCoords = {static_cast<float>(texRect.left) + static_cast<float>(texRect.width), static_cast<float>(texRect.top)};
-		vertices[2]->texCoords = {static_cast<float>(texRect.left) + static_cast<float>(texRect.width), static_cast<float>(texRect.top) + static_cast<float>(texRect.height)};
-		vertices[3]->texCoords = {static_cast<float>(texRect.left), static_cast<float>(texRect.top) + static_cast<float>(texRect.height)};
+		batch->getVertex(vertices[0])->texCoords = {static_cast<float>(texRect.left), static_cast<float>(texRect.top)};
+		batch->getVertex(vertices[1])->texCoords = {static_cast<float>(texRect.left) + static_cast<float>(texRect.width), static_cast<float>(texRect.top)};
+		batch->getVertex(vertices[2])->texCoords = {static_cast<float>(texRect.left) + static_cast<float>(texRect.width), static_cast<float>(texRect.top) + static_cast<float>(texRect.height)};
+		batch->getVertex(vertices[3])->texCoords = {static_cast<float>(texRect.left), static_cast<float>(texRect.top) + static_cast<float>(texRect.height)};
 	}
 
 	void Sprite::setColor(const sf::Color& color)
 	{
 		for(auto& v : vertices)
-			v->color = color;
+			batch->getVertex(v)->color = color;
 	}
 
 	void Sprite::setPosition(const sf::Vector2f& pos)
 	{
-		sf::Vector2f topLeft = vertices[0]->position;
+		sf::Vector2f topLeft = batch->getVertex(vertices[0])->position;
 
 		for(auto& v : vertices)
-			v->position = pos + v->position - topLeft - origin;
+		{
+			sf::Vertex* ver = batch->getVertex(v);
+			ver->position = pos + ver->position - topLeft - origin;
+		}
 	}
 
 	void Sprite::setRotation(float a)
 	{
 		angle = a;
-
-		if(angle < 0)
-			angle += 360 * (static_cast<int>(angle) / 360);
-		else if(angle > 360)
-			angle -= 360 * (static_cast<int>(angle) / 360);
+		
+		// normalize angle to 0..360
+		angle = math::normalizeWrap(angle, 0.f, 360.f);
 
 		constexpr float PI = 3.14159265359;
 
-		// get the local coordinates
-		std::array<sf::Vector2f, 4> verts;
-		for(int i = 0; i < 4; i++)
-			verts[i] = vertices[i]->position - vertices[0]->position - origin;
-
-		std::array<sf::Vector2f, 4> newVerts;
-		for(int i = 0; i < 4; i++)
+		sf::Vector2f topLeft = batch->getVertex(vertices[0])->position;
+		
+		for(auto& v : vertices)
 		{
-			newVerts[i] = {	verts[i].x * std::cos(angle * PI / 180.f) - verts[i].y * std::sin(angle * PI / 180.f),
-			                verts[i].x * std::sin(angle * PI / 180.f) + verts[i].y * std::cos(angle * PI / 180.f)
-			              };
-			newVerts[i] += origin + vertices[0]->position;
+			sf::Vertex* ver = batch->getVertex(v);
+			
+			sf::Vector2f local = ver->position - topLeft - origin;
+			
+			ver->position = {local.x * std::cos(angle * PI / 180.f) - local.y * std::sin(angle * PI / 180.f),
+			                local.x * std::sin(angle * PI / 180.f) + local.y * std::cos(angle * PI / 180.f)};
+							
+			ver->position += origin + topLeft;
 		}
-
-		for(int i = 3; i >= 0; i--)
-			vertices[i]->position = newVerts[i];
 	}
 
 	void Sprite::setScale(const sf::Vector2f& scale)
 	{
-		sf::Vector2f topLeft = vertices[0]->position;
+		sf::Vector2f topLeft = batch->getVertex(vertices[0])->position;
 
-		for(auto & v : vertices)
+		for(auto& v : vertices)
 		{
-			sf::Vector2f dist = v->position - topLeft - origin;
+			sf::Vector2f dist = batch->getVertex(v)->position - topLeft - origin;
 			dist.x *= scale.x / scaleFactor.x;
 			dist.y *= scale.y / scaleFactor.y;
-			v->position = dist + topLeft + origin;
+			batch->getVertex(v)->position = dist + topLeft + origin;
 		}
 
 		origin.x *= scale.x / scaleFactor.x;

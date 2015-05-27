@@ -4,7 +4,7 @@ namespace swift
 {
 	constexpr std::array<char, 16> OpenSimplexNoise::gradients2D;
 	constexpr std::array<char, 72> OpenSimplexNoise::gradients3D;
-	constexpr std::array<char, 16 * 16> OpenSimplexNoise::gradients4D;
+	constexpr std::array<char, 256> OpenSimplexNoise::gradients4D;
 
 	OpenSimplexNoise::OpenSimplexNoise(unsigned long int seed)
 	{
@@ -120,7 +120,7 @@ namespace swift
 				xsv_ext = xsb + 1;
 				ysv_ext = ysb + 1;
 				dx_ext = dx0 - 1 - 2 * SQUISH_2D;
-				dy_ext + dy0 - 1 - 2 * SQUISH_2D;
+				dy_ext = dy0 - 1 - 2 * SQUISH_2D;
 			}
 		}
 		else	// we're inside the triangle (2-Simplex) at (1, 1)
@@ -178,15 +178,15 @@ namespace swift
 		return value / NORM_2D;
 	}
 	
-	double OpenSimplexNoise::evaluate(double x, double y, double z)
-	{
-		
-	}
-	
-	double OpenSimplexNoise::evaluate(double x, double y, double z, double t)
-	{
-		
-	}
+//	double OpenSimplexNoise::evaluate(double x, double y, double z)
+//	{
+//		
+//	}
+//	
+//	double OpenSimplexNoise::evaluate(double x, double y, double z, double t)
+//	{
+//		
+//	}
 	
 	double OpenSimplexNoise::extrapolate(int xsb, int ysb, double dx, double dy)
 	{
@@ -194,13 +194,13 @@ namespace swift
 		return gradients2D[index] * dx + gradients2D[index + 1] * dy;
 	}
 	
-	double OpenSimplexNoise::extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz)
-	{
-		
-	}
-	
-	double OpenSimplexNoise::extrapolate(int xsb, int ysb, int zsb, int tsb, double dx, double dy, double dz, double dt)
-	{
-		
-	}
+//	double OpenSimplexNoise::extrapolate(int xsb, int ysb, int zsb, double dx, double dy, double dz)
+//	{
+//		
+//	}
+//	
+//	double OpenSimplexNoise::extrapolate(int xsb, int ysb, int zsb, int tsb, double dx, double dy, double dz, double dt)
+//	{
+//		
+//	}
 }

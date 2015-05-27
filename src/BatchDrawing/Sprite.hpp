@@ -3,19 +3,24 @@
 
 #include <SFML/System/Vector2.hpp>
 #include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/Color.hpp>
 
-#include "SpriteBatch.hpp"
+#include <array>
 
 namespace swift
 {
+	class SpriteBatch;
+	
 	class Sprite
 	{
+		friend class SpriteBatch;
+		
+		private:
+			Sprite(SpriteBatch* b, const std::array<std::size_t, 4>& verts);
+			
 		public:
 			Sprite();
 			~Sprite();
-			
-			bool setBatch(SpriteBatch& batch);
-			bool setBatch(SpriteBatch& batch, const sf::IntRect& texRect);
 
 			void move(const sf::Vector2f& offset);
 			void rotate(float a);
@@ -39,10 +44,13 @@ namespace swift
 			void setOrigin(const sf::Vector2f& o);
 
 		private:
-			std::array<sf::Vertex*, 4> vertices;
+			std::array<std::size_t, 4> vertices;
+			
 			sf::Vector2f origin;
 			sf::Vector2f scaleFactor;
 			float angle;
+			
+			SpriteBatch* batch;
 	};
 }
 

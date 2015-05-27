@@ -13,7 +13,7 @@ namespace swift
 	{
 		auto& systems = w.getSystems();
 		
-		// doing Physical first since it's what other Components depend on most
+		// doing Physical first since it's what most other Components depend on
 		System<Physical>* physSys = systems.get<Physical>();
 		for(auto& c : components[Component::Type::Physical])
 		{

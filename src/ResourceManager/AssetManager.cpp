@@ -154,7 +154,7 @@ namespace swift
 
 			if(texture)
 			{
-				batches[t] = new SpriteBatch(*texture, s);
+				batches[t] = new SpriteBatch(*texture);
 				return true;
 			}
 			else

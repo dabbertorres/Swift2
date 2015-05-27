@@ -2,62 +2,64 @@
 
 namespace swift
 {
-	SpriteBatch::SpriteBatch(const sf::Texture& tex, unsigned int s)
-	:	vertices(s * 4),
-		texture(tex),
-	    spriteNum(0)
-	{
-		sf::Vector2f texSize = static_cast<sf::Vector2f>(texture.getSize());
-		for(auto i = 0u; i < vertices.size(); i += 4)
-		{
-			vertices[i].texCoords = {0, 0};
-			vertices[i + 1].texCoords = {texSize.x, 0};
-			vertices[i + 2].texCoords = texSize;
-			vertices[i + 3].texCoords = {0, texSize.y};
-			notUsed.push(i);
-		}
-	}
-	
-	void SpriteBatch::update()
-	{
-		for(auto i = 0u; i < vertices.size(); i += 4)
-		{
-			if(vertices[i].color.a == 0)	// if vertex is transparent, it's not being used
-				notUsed.push(i);
-		}
-	}
+	SpriteBatch::SpriteBatch(const sf::Texture& tex)
+	:	texture(tex)
+	{}
 	
 	const std::vector<sf::Vertex>& SpriteBatch::getVertices() const
 	{
 		return vertices;
 	}
 
-	std::array<sf::Vertex*, 4> SpriteBatch::addSprite()
+	Sprite SpriteBatch::addSprite(const sf::FloatRect& texRect)
 	{
-		if((spriteNum + 1) * 4 <= vertices.size())
+		std::array<std::size_t, 4> verts;
+		
+		for(auto& v : verts)
 		{
-			unsigned int s = spriteNum * 4;
-			spriteNum++;
-			return {&vertices[s], &vertices[s + 1], &vertices[s + 2], &vertices[s + 3]};
+			vertices.emplace_back();
+			v = vertices.size() - 1;
 		}
-		else if(!notUsed.empty())	// if we have vertices we can reuse...
+		
+		if(texRect != sf::FloatRect{-1, -1, -1, -1})
 		{
-			unsigned int reuse = notUsed.front();
-			notUsed.pop();
-			return {&vertices[reuse], &vertices[reuse + 1], &vertices[reuse + 2], &vertices[reuse + 3]};
+			vertices[vertices.size() - 4].texCoords = {texRect.left, texRect.top};
+			vertices[vertices.size() - 3].texCoords = {texRect.left + texRect.width, texRect.top};
+			vertices[vertices.size() - 2].texCoords = {texRect.left + texRect.width, texRect.top + texRect.height};
+			vertices[vertices.size() - 1].texCoords = {texRect.left, texRect.top + texRect.height};
 		}
 		else
-			return {nullptr};
+		{
+			vertices[vertices.size() - 4].texCoords = {0, 0};
+			vertices[vertices.size() - 3].texCoords = {0 + static_cast<float>(texture.getSize().x), 0};
+			vertices[vertices.size() - 2].texCoords = {0 + static_cast<float>(texture.getSize().x), 0 + static_cast<float>(texture.getSize().y)};
+			vertices[vertices.size() - 1].texCoords = {0, 0 + static_cast<float>(texture.getSize().y)};
+		}
+		
+		return {this, verts};
 	}
 	
 	sf::Vector2u SpriteBatch::getTextureSize() const
 	{
 		return texture.getSize();
 	}
+	
+	sf::Vertex* SpriteBatch::getVertex(std::size_t i)
+	{
+		if(i < vertices.size())
+			return &vertices[i];
+		else
+			return nullptr;
+	}
+	
+	void SpriteBatch::remove(const std::array<std::size_t, 4>& verts)
+	{
+		vertices.erase(vertices.begin() + verts[0], vertices.begin() + verts[3]);
+	}
 
 	void SpriteBatch::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		states.texture = &texture;
-		target.draw(vertices.data(), spriteNum * 4, sf::Quads, states);
+		target.draw(vertices.data(), vertices.size(), sf::Quads, states);
 	}
 }

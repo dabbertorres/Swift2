@@ -9,30 +9,30 @@
 #include <SFML/Graphics/RenderStates.hpp>
 
 #include <array>
-#include <queue>
 #include <vector>
+
+#include "Sprite.hpp"
 
 namespace swift
 {
 	class SpriteBatch : public sf::Drawable
 	{
 		public:
-			SpriteBatch(const sf::Texture& tex, unsigned int s);
-			
-			void update();
+			SpriteBatch(const sf::Texture& tex);
 			
 			const std::vector<sf::Vertex>& getVertices() const;
 
-			std::array<sf::Vertex*, 4> addSprite();
+			Sprite addSprite(const sf::FloatRect& texRect = {-1, -1, -1, -1});
 			sf::Vector2u getTextureSize() const;
+			
+			sf::Vertex* getVertex(std::size_t i);
+			void remove(const std::array<std::size_t, 4>& verts);
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
 
 			std::vector<sf::Vertex> vertices;
 			const sf::Texture& texture;
-			unsigned int spriteNum;
-			std::queue<unsigned int> notUsed;	// for checking which vertices are not in use, for reusing them
 	};
 }
 
