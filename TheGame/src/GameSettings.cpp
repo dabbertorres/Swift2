@@ -2,27 +2,26 @@
 
 #include "GameMenu.hpp"
 
-#include "../src/ResourceManager/AssetManager.hpp"
+#include "ResourceManager/AssetManager.hpp"
 
 /* SoundSystem headers */
-#include "../src/SoundSystem/SoundPlayer.hpp"
-#include "../src/SoundSystem/MusicPlayer.hpp"
+#include "SoundSystem/SoundPlayer.hpp"
+#include "SoundSystem/MusicPlayer.hpp"
 
 /* GUI headers */
-#include "../src/GUI/Containers/Column.hpp"
-#include "../src/GUI/Containers/Row.hpp"
-#include "../src/GUI/Widgets/Label.hpp"
-#include "../src/GUI/Widgets/Button.hpp"
-#include "../src/GUI/Widgets/Spacer.hpp"
-#include "../src/GUI/Widgets/Slider.hpp"
-#include "../src/GUI/Widgets/Toggle.hpp"
-#include "../src/GUI/Widgets/TextBox.hpp"
+#include "GUI/Containers/Column.hpp"
+#include "GUI/Containers/Row.hpp"
+#include "GUI/Widgets/Label.hpp"
+#include "GUI/Widgets/Button.hpp"
+#include "GUI/Widgets/Spacer.hpp"
+#include "GUI/Widgets/Slider.hpp"
+#include "GUI/Widgets/Toggle.hpp"
+#include "GUI/Widgets/TextBox.hpp"
 
 namespace tg
 {
-	GameSettings::GameSettings(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-	                           swift::Settings& dic, swift::StateMachine& sm)
-	:	State(win, am, sp, mp, set, dic, sm),
+	GameSettings::GameSettings(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm)
+	:	GameState(win, am, sp, mp, set, dic, sm),
 		graphicsButton(nullptr),
 		volumeSlider(nullptr),
 		musicSlider(nullptr)
@@ -31,15 +30,15 @@ namespace tg
 
 		setupGUI();
 	}
-
-	void GameSettings::handleEvent(sf::Event& event)
+	
+	void GameSettings::handleEvent(const sf::Event& event)
 	{
 		gui.update(event);
 		keyboard(event);
 		mouse(event);
 	}
-
-	void GameSettings::update(sf::Time)
+	
+	void GameSettings::update(const sf::Time&)
 	{
 		int sound = volumeSlider->getValue() * 100;
 		settings.set("sound", sound);
@@ -53,12 +52,12 @@ namespace tg
 		soundPlayer.update();
 		musicPlayer.update();
 	}
-
-	void GameSettings::draw(float)
+	
+	void GameSettings::draw()
 	{
 		window.draw(gui);
 	}
-
+	
 	void GameSettings::setupGUI()
 	{
 		cstr::Column& settingsColumn = gui.addContainer(new cstr::Column({50, 25, 700, 550}, false));

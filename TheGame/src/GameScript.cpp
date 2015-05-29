@@ -7,7 +7,7 @@
 namespace tg
 {
 	sf::RenderWindow* GameScript::window = nullptr;
-	swift::AssetManager* GameScript::assets = nullptr;
+	GameAssets* GameScript::assets = nullptr;
 	sf::Clock* GameScript::clock = nullptr;
 	swift::Settings* GameScript::settings = nullptr;
 	swift::KeyboardManager* GameScript::keyboard = nullptr;
@@ -29,7 +29,9 @@ namespace tg
 
 	void GameScript::addClasses()
 	{
-		luaState["World"].setClass<GameWorld, const std::string&, GameAssets&>("createEntity", &GameWorld::createEntity, "destroyEntity", &GameWorld::destroyEntity, "getPlayer", &GameWorld::getPlayer);
+		luaState["World"].setClass<GameWorld>(	"createEntity", static_cast<bool (GameWorld::*)(unsigned int)>(&GameWorld::createEntity), 
+												"destroyEntity", static_cast<bool (GameWorld::*)(unsigned int)>(&GameWorld::destroyEntity), 
+												"getPlayer", static_cast<unsigned int (GameWorld::*)() const>(&GameWorld::getPlayer));
 	}
 
 	void GameScript::addFunctions()
@@ -100,7 +102,7 @@ namespace tg
 		window = &win;
 	}
 
-	void GameScript::setAssetManager(swift::AssetManager& am)
+	void GameScript::setAssetManager(GameAssets& am)
 	{
 		assets = &am;
 	}

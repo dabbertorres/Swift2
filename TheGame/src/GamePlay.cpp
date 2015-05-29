@@ -4,16 +4,13 @@
 
 #include "GameScript.hpp"
 
-#include "../../src/ResourceManager/AssetManager.hpp"
+#include "Logger/Logger.hpp"
 
-#include "../src/Logger/Logger.hpp"
-
-/* GUI headers */
-#include "../src/GUI/Containers/Column.hpp"
-#include "../src/GUI/Containers/Row.hpp"
-#include "../src/GUI/Widgets/Label.hpp"
-#include "../src/GUI/Widgets/Button.hpp"
-#include "../src/GUI/Widgets/Spacer.hpp"
+#include "GUI/Containers/Column.hpp"
+#include "GUI/Containers/Row.hpp"
+#include "GUI/Widgets/Label.hpp"
+#include "GUI/Widgets/Button.hpp"
+#include "GUI/Widgets/Spacer.hpp"
 
 #include <tinyxml2.h>
 
@@ -22,9 +19,9 @@ namespace tg
 	const float MAX_ZOOM = 2.f;
 	const float MIN_ZOOM = 0.5f;
 
-	GamePlay::GamePlay(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
+	GamePlay::GamePlay(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
 	                   swift::Settings& dic, swift::StateMachine& sm)
-	:	State(win, am, sp, mp, set, dic, sm),
+	:	GameState(win, am, sp, mp, set, dic, sm),
 		activeState(nullptr),
 		activeWorld(nullptr),
 		playView({0, 0}, {static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
@@ -56,7 +53,7 @@ namespace tg
 		scripts.removeAll();
 	}
 
-	void GamePlay::handleEvent(sf::Event& event)
+	void GamePlay::handleEvent(const sf::Event& event)
 	{
 		if(event.type == sf::Event::Resized)
 		{
@@ -69,7 +66,7 @@ namespace tg
 		mouse(event);
 	}
 
-	void GamePlay::update(sf::Time dt)
+	void GamePlay::update(const sf::Time& dt)
 	{
 		activeState->update(dt);
 
@@ -79,9 +76,9 @@ namespace tg
 		scripts.update();
 	}
 
-	void GamePlay::draw(float e)
+	void GamePlay::draw()
 	{
-		activeState->draw(e);
+		activeState->draw();
 	}
 
 	unsigned int GamePlay::getPlayer() const
@@ -91,7 +88,7 @@ namespace tg
 
 	void GamePlay::changeWorld(const std::string& name, const std::string& mapFile)
 	{
-		worlds.emplace(name, new GameWorld(name, assets));
+		worlds.emplace(name, new GameWorld(name, &assets));
 		GameWorld* newWorld = worlds[name];
 
 		// setup world
@@ -322,7 +319,7 @@ namespace tg
 	void GamePlay::setupSubStates()
 	{
 		// setup SubStates
-		play.setEventFunc([&](sf::Event & e)
+		play.setEventFunc([&](const sf::Event& e)
 		{
 			hud.update(e);
 
@@ -340,7 +337,7 @@ namespace tg
 			}
 		});
 
-		play.setUpdateFunc([&](sf::Time dt)
+		play.setUpdateFunc([&](const sf::Time& dt)
 		{
 			activeWorld->update(dt.asSeconds());
 
@@ -363,7 +360,7 @@ namespace tg
 			}*/
 		});
 
-		play.setDrawFunc([&](float)
+		play.setDrawFunc([&]()
 		{
 			window.setView(playView);
 			activeWorld->draw(window);
@@ -372,17 +369,12 @@ namespace tg
 			window.draw(hud);
 		});
 
-		pause.setEventFunc([&](sf::Event & e)
+		pause.setEventFunc([&](const sf::Event& e)
 		{
 			pauseMenu.update(e);
 		});
 
-		pause.setUpdateFunc([&](sf::Time)
-		{
-			// do nothing
-		});
-
-		pause.setDrawFunc([&](float)
+		pause.setDrawFunc([&]()
 		{
 			window.draw(pauseMenu);
 		});

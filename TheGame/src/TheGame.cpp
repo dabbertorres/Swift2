@@ -6,78 +6,99 @@
 
 namespace tg
 {
-	TheGame::TheGame()
+	TheGame::TheGame(int c, char** args)
 	:	Game("TheGame", 60),
-		assets(getResourcePath())
+		assets(getResourcePath()),
+		soundLevel(100),
+		musicLevel(75),
+		language("en")
 	{
-	}
-
-	TheGame::~TheGame()
-	{
-	}
-
-	void TheGame::start(int c, char** args)
-	{
-		// c is the total arguments
-		// args is the arguments
-
 		// loads settings from the settings file
-		loadSettings(getResourcePath() + "settings.ini");
-
-		handleLaunchOps(c, args);
-
+		loadSettings(getResourcePath() / "settings.ini");
+		
 		// loads a dictionary
-		dictionary.loadFile(getResourcePath() + "dictionaries/" + language + ".dic");
-
+		dictionary.loadFile(getResourcePath() / "dictionaries/" + language + ".dic");
+		
 		loadAssets();
-
-		loadMods();
-
+		
 		// gotta set this if you want any text to display
 		defaultFont = *assets.getFont("segoeuisl.ttf");
-
-		setupWindow();
-
+		
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);	// need to figure out icon stuff
-
+		
 		initState();
-
+		
 		initScripting();
 	}
+	
+	void TheGame::gameHandleEvents(const sf::Event& event)
+	{
+		states.read()->handleEvent(event);
+	}
+	
+	void TheGame::gameUpdate(const sf::Time& dt)
+	{
+		states.read()->update(dt);
+	}
+	
+	void TheGame::manageStates()
+	{
+		if(states.read()->switchFrom())
+		{
+			states.pop();
 
+			if(states.empty())
+			{
+				running = false;
+			}
+		}
+	}
+	
+	void TheGame::gameDraw()
+	{
+		states.read()->draw();
+	}
+	
+	bool TheGame::loadSettings(const gfs::Path& file)
+	{
+		// settings file settings
+		if(!file || !gameSettings.loadFile(file))
+		{
+			swift::log << "Could not open settings file, default settings will be used\n";
+			return false;
+		}
+
+		gameSettings.get("fullscreen", fullscreen);
+		gameSettings.get("vsync", verticalSync);
+		gameSettings.get("res.x", resolution.x);
+		gameSettings.get("res.y", resolution.y);
+		gameSettings.get("sound", soundLevel);
+		gameSettings.get("music", musicLevel);
+		gameSettings.get("lang", language);
+		
+		return true;
+	}
+	
 	void TheGame::loadAssets()
 	{
-		assets.setSmooth(smoothing);
 		assets.loadResourceFolder(getResourcePath());
+		assets.loadMods(getResourcePath() / "../mods");
 
 		// make log file a little prettier
 		swift::log << '\n';
 	}
 	
-	void TheGame::loadMods()
-	{
-		// find all mods
-		mods.loadMods(getResourcePath() + "../mods/");
-
-		// this would be where you normally conditionally load up mods
-		for(auto & m : mods.getMods())
-		{
-			assets.loadMod(m.second);
-		}
-	}
-	
 	void TheGame::initState()
 	{
-		// state setup
-		states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
+		states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, gameSettings, dictionary, states));
 	}
-
+	
 	void TheGame::initScripting()
 	{
+		GameScript::setResourcePath(getResourcePath());
 		GameScript::setAssetManager(assets);
-		GameScript::setClock(GameTime);
+		GameScript::setClock(gameTime);
 		GameScript::setWindow(window);
-		GameScript::setSettings(settings);
-		GameScript::setKeyboard(keyboard);
+		GameScript::setSettings(gameSettings);
 	}
 }

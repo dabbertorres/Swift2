@@ -13,19 +13,21 @@
 #include "../../src/EntitySystem/Systems/PathfinderSystem.hpp"
 #include "../../src/EntitySystem/Systems/PhysicalSystem.hpp"
 
+#include "GameAssets.hpp"
+
 namespace tg
 {
 	class GameWorld : public swift::World
 	{
 		public:
-			GameWorld(const std::string& n, swift::AssetManager& am);
+			GameWorld(const std::string& n, GameAssets* am);
 
 			virtual void update(float dt);
 			
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default);
 			
 		private:
-			swift::AssetManager& assets;
+			GameAssets* assets;
 			
 			// list of systems declared on the stack
 			swift::AnimatedSystem animatedSys;

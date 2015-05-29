@@ -1,52 +1,39 @@
 #include "GameMenu.hpp"
 
-#include "../src/ResourceManager/AssetManager.hpp"
-
-/* SoundSystem headers */
-#include "../src/SoundSystem/SoundPlayer.hpp"
-#include "../src/SoundSystem/MusicPlayer.hpp"
-
 /* GUI headers */
-#include "../src/GUI/Containers/Column.hpp"
-#include "../src/GUI/Containers/Row.hpp"
-#include "../src/GUI/Widgets/Label.hpp"
-#include "../src/GUI/Widgets/Button.hpp"
-#include "../src/GUI/Widgets/Spacer.hpp"
-
-#include "../src/Settings/Settings.hpp"
+#include "GUI/Containers/Column.hpp"
+#include "GUI/Containers/Row.hpp"
+#include "GUI/Widgets/Label.hpp"
+#include "GUI/Widgets/Button.hpp"
+#include "GUI/Widgets/Spacer.hpp"
 
 #include "GamePlay.hpp"
 #include "GameSettings.hpp"
 
 namespace tg
 {
-	GameMenu::GameMenu(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-	                   swift::Settings& dic, swift::StateMachine& sm)
-		:	State(win, am, sp, mp, set, dic, sm)
+	GameMenu::GameMenu(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm)
+		:	GameState(win, am, sp, mp, set, dic, sm)
 	{
 		window.setKeyRepeatEnabled(true);
 
 		setupGUI();
 	}
 
-	GameMenu::~GameMenu()
-	{
-	}
-
-	void GameMenu::handleEvent(sf::Event& event)
+	void GameMenu::handleEvent(const sf::Event& event)
 	{
 		gui.update(event);
 		keyboard(event);
 		mouse(event);
 	}
-
-	void GameMenu::update(sf::Time /*dt*/)
+	
+	void GameMenu::update(const sf::Time&)
 	{
 		soundPlayer.update();
 		musicPlayer.update();
 	}
 
-	void GameMenu::draw(float /*e*/)
+	void GameMenu::draw()
 	{
 		window.draw(gui);
 	}

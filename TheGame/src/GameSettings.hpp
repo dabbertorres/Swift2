@@ -1,24 +1,26 @@
 #ifndef GAMESETTINGS_HPP
 #define GAMESETTINGS_HPP
 
-#include "../src/StateSystem/State.hpp"
+#include "GameState.hpp"
+
+#include "KeyBindings/KeyboardManager.hpp"
+#include "KeyBindings/MouseManager.hpp"
 
 /* GUI headers */
-#include "../src/GUI/Window.hpp"
-#include "../src/GUI/Widgets/Button.hpp"
-#include "../src/GUI/Widgets/Slider.hpp"
+#include "GUI/Window.hpp"
+#include "GUI/Widgets/Button.hpp"
+#include "GUI/Widgets/Slider.hpp"
 
 namespace tg
 {
-	class GameSettings : public swift::State
+	class GameSettings : public GameState
 	{
 		public:
-			GameSettings(sf::RenderWindow& win, swift::AssetManager& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-			             swift::Settings& dic, swift::StateMachine& sm);
+			GameSettings(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm);
 
-			virtual void handleEvent(sf::Event& event);
-			virtual void update(sf::Time dt);
-			virtual void draw(float e);
+			virtual void handleEvent(const sf::Event& event);
+			virtual void update(const sf::Time& dt);
+			virtual void draw();
 
 		private:
 			void setupGUI();
@@ -28,6 +30,9 @@ namespace tg
 			cstr::Button* graphicsButton;
 			cstr::Slider* volumeSlider;
 			cstr::Slider* musicSlider;
+			
+			swift::KeyboardManager keyboard;
+			swift::MouseManager mouse;
 	};
 }
 

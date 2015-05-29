@@ -6,8 +6,7 @@ namespace tg
 {
 	GameAssets::GameAssets(const std::string& rp)
 	:	resPath(rp)
-	{
-	}
+	{}
 
 	bool GameAssets::loadScript(const std::string& file)
 	{

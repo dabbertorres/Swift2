@@ -7,6 +7,7 @@
 #include "../src/Logger/Logger.hpp"
 
 #include "GamePlay.hpp"
+#include "GameAssets.hpp"
 
 namespace tg
 {
@@ -21,7 +22,7 @@ namespace tg
 
 			// setters for variables that Lua has access to
 			static void setWindow(sf::RenderWindow& win);
-			static void setAssetManager(swift::AssetManager& am);
+			static void setAssetManager(GameAssets& am);
 			static void setClock(sf::Clock& c);
 			static void setSettings(swift::Settings& s);
 			static void setKeyboard(swift::KeyboardManager& k);
@@ -36,7 +37,7 @@ namespace tg
 		private:
 			// Variables that need to be accessed by Lua
 			static sf::RenderWindow* window;
-			static swift::AssetManager* assets;
+			static GameAssets* assets;
 			static sf::Clock* clock;
 			static swift::Settings* settings;
 			static swift::KeyboardManager* keyboard;

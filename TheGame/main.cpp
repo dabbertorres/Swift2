@@ -1,16 +1,10 @@
 #include "src/TheGame.hpp"
 
-#include "src/GamePlay.hpp"
-#include "src/GameMenu.hpp"
-#include "src/GameSettings.hpp"
-
-int main(int argc, char **argv)
+int main(int argc, char** argv)
 {
-	tg::TheGame game;
+	tg::TheGame game(argc, argv);
 	
-	game.start(argc, argv);
-	
-	game.gameLoop();
+	game.start();
 	
 	return 0;
 }
