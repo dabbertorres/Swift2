@@ -1,5 +1,5 @@
-#ifndef SELECTION_HPP
-#define SELECTION_HPP
+#ifndef LNA_SELECTION_HPP
+#define LNA_SELECTION_HPP
 
 #include <string>
 #include <functional>
@@ -85,7 +85,7 @@ namespace lna
 		Class<T>(state, name, std::tuple<Args...>{}, functions, funcs...);
 	}
 	
-	decltype(LUA_TNUMBER) Selection::getType() const
+	inline decltype(LUA_TNUMBER) Selection::getType() const
 	{
 		return lua_type(state, index);
 	}
@@ -272,4 +272,4 @@ namespace lna
 	{}
 }
 
-#endif // SELECTION_HPP
+#endif // LNA_SELECTION_HPP

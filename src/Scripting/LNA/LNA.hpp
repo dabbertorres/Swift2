@@ -1,5 +1,5 @@
-#ifndef LUA_CPP_HPP
-#define LUA_CPP_HPP
+#ifndef LNA_HPP
+#define LNA_HPP
 
 #include "Details/State.hpp"
 
@@ -26,4 +26,4 @@ namespace lna
 	}
 }
 
-#endif // LUA_CPP_HPP
+#endif // LNA_HPP

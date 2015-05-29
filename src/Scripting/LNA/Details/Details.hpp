@@ -51,6 +51,12 @@ namespace lna
 			return 1;
 		}
 
+		inline int pushValue(lua_State* state, unsigned int u)
+		{
+			lua_pushinteger(state, u);
+			return 1;
+		}
+
 		inline int pushValue(lua_State* state, lua_Number n)
 		{
 			lua_pushnumber(state, n);
@@ -190,6 +196,11 @@ namespace lna
 		inline int checkGet(id<int>, lua_State* state, int idx = -1)
 		{
 			return luaL_checkinteger(state, idx);
+		}
+
+		inline unsigned int checkGet(id<unsigned int>, lua_State* state, int idx = -1)
+		{
+			return static_cast<unsigned int>(luaL_checkinteger(state, idx));
 		}
 
 		inline lua_Number checkGet(id<lua_Number>, lua_State* state, int idx = -1)

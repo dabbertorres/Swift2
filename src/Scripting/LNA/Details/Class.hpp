@@ -14,8 +14,17 @@ namespace lna
 	class Class
 	{
 		public:
+			// general constructor version
 			template<typename... CstrArgs, typename... Mems>
 			Class(lua_State* s, const std::string& n, std::tuple<CstrArgs...>, Functions& fmap, Mems... mems);
+			
+			// empty constructor version
+			template<typename... Mems>
+			Class(lua_State* s, const std::string& n, std::tuple<CppClass>, Functions& fmap, Mems... mems);
+			
+			// no constructor version
+			template<typename... Mems>
+			Class(lua_State* s, const std::string& n, std::tuple<>, Functions& fmap, Mems... mems);
 			
 			static void copy(void* addrNew, const CppClass& other);
 			
@@ -81,7 +90,76 @@ namespace lna
 		lua_pushstring(state, "__call");
 		lua_pushcfunction(state, &newInstance<CstrArgs...>);
 		lua_rawset(state, -3);
+			
+		// assigning the __index metamethod of the metatable to the metatable
+		lua_pushstring(state, "__index");
+		lua_pushvalue(state, -2);			// put another copy of the metatable on the stack
+		lua_rawset(state, -3);
 		
+		// add all members
+		addMembers(mems...);
+		
+		// set the metatable of our class' metatable to className_meta
+#if LUA_VERSION_NUM >= 502
+		luaL_setmetatable(s, className.c_str());
+#else
+		luaL_getmetatable(s, className.c_str());
+		lua_setmetatable(s, -2);
+#endif
+		
+		// gives Lua access to the table
+		lua_setglobal(state, className.c_str());
+		
+		valid = true;		// let it be known this class exists in Lua!
+	}
+	
+	template<typename CppClass>
+	template<typename... Mems>
+	Class<CppClass>::Class(lua_State* s, const std::string& n, std::tuple<CppClass>, Functions& fmap, Mems... mems)
+	{
+		className = n;
+		functions = &fmap;
+		
+		// create the metatable for our class
+		luaL_newmetatable(state, className.c_str());
+		
+		// create Lua's constructor for this class
+		lua_pushstring(state, "__call");
+		lua_pushcfunction(state, &newInstance<>);
+		lua_rawset(state, -3);
+			
+		// assigning the __index metamethod of the metatable to the metatable
+		lua_pushstring(state, "__index");
+		lua_pushvalue(state, -2);			// put another copy of the metatable on the stack
+		lua_rawset(state, -3);
+		
+		// add all members
+		addMembers(mems...);
+		
+		// set the metatable of our class' metatable to className_meta
+#if LUA_VERSION_NUM >= 502
+		luaL_setmetatable(s, className.c_str());
+#else
+		luaL_getmetatable(s, className.c_str());
+		lua_setmetatable(s, -2);
+#endif
+		
+		// gives Lua access to the table
+		lua_setglobal(state, className.c_str());
+		
+		valid = true;		// let it be known this class exists in Lua!
+	}
+	
+	template<typename CppClass>
+	template<typename... Mems>
+	Class<CppClass>::Class(lua_State* s, const std::string& n, std::tuple<>, Functions& fmap, Mems... mems)
+	{
+		className = n;
+		functions = &fmap;
+		
+		// create the metatable for our class
+		luaL_newmetatable(state, className.c_str());
+			
 		// assigning the __index metamethod of the metatable to the metatable
 		lua_pushstring(state, "__index");
 		lua_pushvalue(state, -2);			// put another copy of the metatable on the stack

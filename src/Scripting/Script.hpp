@@ -5,7 +5,7 @@
  * Lua is expected to be compiled with float as lua_number!!!
  */
 
-#include "LuaCpp/LuaCpp.hpp"
+#include "LNA/LNA.hpp"
 
 #include <string>
 
