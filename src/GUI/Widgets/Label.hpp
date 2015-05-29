@@ -12,18 +12,18 @@ namespace cstr
 	{
 		public:
 			Label(const std::string& str, const sf::Font& f, unsigned ts = 0);
-			~Label();
+			~Label() = default;
 			
-			virtual void update(sf::Event& event);
+			virtual void update(const sf::Event& event);
 
 			virtual sf::FloatRect getGlobalBounds() const;
 			
 			void setString(const std::string& str, unsigned ts = 0);
 			const std::string& getString() const;
 			
-			virtual void setPosition(sf::Vector2i pos);
+			virtual void setPosition(const sf::Vector2i& pos);
 			
-			virtual void setSize(sf::Vector2u size);
+			virtual void setSize(const sf::Vector2u& size);
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

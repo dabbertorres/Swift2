@@ -14,7 +14,7 @@ namespace cstr
 			delete c;
 	}
 	
-	void Window::update(sf::Event& event)
+	void Window::update(const sf::Event& event)
 	{
 		for(auto& c : containers)
 		{

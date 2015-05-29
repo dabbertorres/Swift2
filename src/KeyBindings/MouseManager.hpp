@@ -23,7 +23,7 @@ namespace swift
 				bindings.at(k).call(pos);
 			}
 
-			bool operator()(sf::Event& e)
+			bool operator()(const sf::Event& e)
 			{
 				for(auto &b : bindings)
 				{
@@ -50,12 +50,12 @@ namespace swift
 						return button;
 					}
 
-					bool operator()(sf::Event& e)
+					bool operator()(const sf::Event& e)
 					{
 						return ((e.type == sf::Event::MouseButtonPressed && onPress) || (e.type == sf::Event::MouseButtonReleased && !onPress)) && e.mouseButton.button == button;
 					}
 
-					bool call(sf::Vector2i pos)
+					bool call(const sf::Vector2i& pos)
 					{
 						if(!func)
 							return false;
@@ -74,7 +74,6 @@ namespace swift
 			};
 
 			std::map<std::string, ButtonBinding> bindings;
-
 	};
 }
 

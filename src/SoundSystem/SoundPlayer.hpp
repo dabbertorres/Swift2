@@ -1,5 +1,5 @@
-#ifndef SOUNDPLAYER_HPP
-#define SOUNDPLAYER_HPP
+#ifndef SWIFT_SOUNDPLAYER_HPP
+#define SWIFT_SOUNDPLAYER_HPP
 
 #include "SoundsLimit.hpp"
 
@@ -32,4 +32,4 @@ namespace swift
 	};
 }
 
-#endif // SOUNDPLAYER_HPP
+#endif // SWIFT_SOUNDPLAYER_HPP

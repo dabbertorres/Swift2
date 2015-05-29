@@ -7,8 +7,13 @@
 
 namespace swift
 {
-	BatchDrawSystem::BatchDrawSystem(unsigned int res)
-	:	System<BatchDrawable>(res)
+	BatchDrawSystem::BatchDrawSystem(AssetManager* am)
+	:	assets(am)
+	{}
+	
+	BatchDrawSystem::BatchDrawSystem(AssetManager* am, unsigned int res)
+	:	System<BatchDrawable>(res),
+		assets(am)
 	{}
 	
 	void BatchDrawSystem::update(float)
@@ -24,17 +29,20 @@ namespace swift
 			c.sprite.setOrigin({0.f, 0.f});
 		}
 	}
-
-	void BatchDrawSystem::draw(sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const
+	
+	void BatchDrawSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
 		for(auto& b : batches)
 		{
-			target.draw(*assets.getBatch(b), states);
+			target.draw(*b, states);
 		}
 	}
 	
 	void BatchDrawSystem::addImpl(const BatchDrawable& c)
 	{
-		batches.insert(c.batch);
+		if(assets)
+		{
+			batches.insert(assets->getBatch(c.batch));
+		}
 	}
 }

@@ -2,7 +2,7 @@
 
 #include <tinyxml2.h>
 
-#include "../Logger/Logger.hpp"
+#include "Logger/Logger.hpp"
 
 namespace swift
 {
@@ -10,7 +10,7 @@ namespace swift
 	:	textureFile(""),
 		file("")
 	{}
-
+	
 	bool AnimTexture::loadFromFile(const std::string& f)
 	{
 		file = f;

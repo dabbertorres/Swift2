@@ -3,7 +3,7 @@
 namespace swift
 {
 	SoundPlayer::SoundPlayer()
-		:	volume(100)
+	:	volume(100)
 	{
 	}
 

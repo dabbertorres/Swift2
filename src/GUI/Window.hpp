@@ -23,7 +23,7 @@ namespace cstr
 			Window();
 			~Window();
 			
-			void update(sf::Event& event);
+			void update(const sf::Event& event);
 			
 			void setTextSize(unsigned s);
 			

@@ -14,18 +14,18 @@ namespace cstr
 	class Toggle : public Widget
 	{
 		public:
-			Toggle(sf::Vector2u size, const sf::Texture& tex, const sf::IntRect& on, const sf::IntRect& off, bool s, std::function<void(bool s)> c);
-			~Toggle();
+			Toggle(const sf::Vector2u& size, const sf::Texture& tex, const sf::IntRect& on, const sf::IntRect& off, bool s, std::function<void(bool s)> c);
+			~Toggle() = default;
 			
 			bool getState() const;
 
-			virtual void update(sf::Event& event);
+			virtual void update(const sf::Event& event);
 
 			virtual sf::FloatRect getGlobalBounds() const;
 
-			virtual void setPosition(sf::Vector2i pos);
+			virtual void setPosition(const sf::Vector2i& pos);
 
-			virtual void setSize(sf::Vector2u size);
+			virtual void setSize(const sf::Vector2u& size);
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

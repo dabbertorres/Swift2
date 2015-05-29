@@ -3,45 +3,43 @@
 namespace swift
 {
 	SubState::SubState()
-	:	eventFunc([](sf::Event&) {}),
-		updateFunc([](sf::Time) {}),
-		drawFunc([](float) {})
-	{
-	}
+	:	eventFunc({}),
+		updateFunc({}),
+		drawFunc({})
+	{}
 
-	SubState::SubState(const std::function<void(sf::Event&)>& e, const std::function<void(sf::Time)>& u, const std::function<void(float e)>& d)
+	SubState::SubState(const EventHandler& e, const Updater& u, const Drawer& d)
 	:	eventFunc(e),
 		updateFunc(u),
 		drawFunc(d)
-	{
-	}
+	{}
 
-	void SubState::handleEvents(sf::Event& e)
+	void SubState::handleEvents(const sf::Event& e)
 	{
 		eventFunc(e);
 	}
 
-	void SubState::update(sf::Time dt)
+	void SubState::update(const sf::Time& dt)
 	{
 		updateFunc(dt);
 	}
 
-	void SubState::draw(float e)
+	void SubState::draw()
 	{
-		drawFunc(e);
+		drawFunc();
 	}
 
-	void SubState::setEventFunc(const std::function<void(sf::Event&)>& e)
+	void SubState::setEventFunc(const EventHandler& e)
 	{
 		eventFunc = e;
 	}
 
-	void SubState::setUpdateFunc(const std::function<void(sf::Time)>& u)
+	void SubState::setUpdateFunc(const Updater& u)
 	{
 		updateFunc = u;
 	}
 
-	void SubState::setDrawFunc(const std::function<void(float e)>& d)
+	void SubState::setDrawFunc(const Drawer& d)
 	{
 		drawFunc = d;
 	}

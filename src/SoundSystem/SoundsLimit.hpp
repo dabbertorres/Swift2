@@ -6,7 +6,7 @@ namespace swift
 	class SoundsLimit
 	{
 		protected:
-			SoundsLimit();
+			SoundsLimit() = default;
 			
 			static unsigned total;
 			static const unsigned limit;

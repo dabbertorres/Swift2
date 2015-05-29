@@ -12,16 +12,16 @@ namespace cstr
 	class TextBox : public Widget
 	{
 		public:
-			TextBox(sf::Vector2u size, sf::Font& f, const std::string& d = "");
-			~TextBox();
+			TextBox(const sf::Vector2u& size, sf::Font& f, const std::string& d = "");
+			~TextBox() = default;
 
-			virtual void update(sf::Event& event);
+			virtual void update(const sf::Event& event);
 			
 			virtual sf::FloatRect getGlobalBounds() const;
 
-			virtual void setPosition(sf::Vector2i pos);
+			virtual void setPosition(const sf::Vector2i& pos);
 
-			virtual void setSize(sf::Vector2u size);
+			virtual void setSize(const sf::Vector2u& size);
 			
 			const std::string& getString() const;
 			
