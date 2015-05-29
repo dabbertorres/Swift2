@@ -2,19 +2,24 @@
 
 namespace swift
 {
-	Mod::Mod(const std::string& n, const std::string& v, const std::string& a, const std::string& d)
-	:	name(n),
+	Mod::Mod(const gfs::Path& p)
+	:	folder(p),
+		name(folder.name()),
+		version("0.0"),
+		author("unknown"),
+		description("unknown"),
+		active(false)
+	{}
+	
+	Mod::Mod(const gfs::Path& p, const std::string& n, const std::string& v, const std::string& a, const std::string& d)
+	:	folder(p),
+		name(n),
 		version(v),
 		author(a),
 		description(d),
 		active(false)
 	{}
-
-	void Mod::addFile(const std::string& f)
-	{
-		files.push_back(f);
-	}
-
+	
 	const std::string& Mod::getName() const
 	{
 		return name;
@@ -34,10 +39,10 @@ namespace swift
 	{
 		return description;
 	}
-
-	const std::vector<std::string>& Mod::getFiles() const
+	
+	const gfs::Path& Mod::getFolder() const
 	{
-		return files;
+		return folder;
 	}
 	
 	bool Mod::isActive() const
@@ -70,12 +75,12 @@ namespace swift
 		active = a;
 	}
 
-	bool operator ==(const Mod& lhs, const Mod& rhs)
+	bool operator==(const Mod& lhs, const Mod& rhs)
 	{
-		return lhs.name == rhs.name && lhs.version == rhs.version && lhs.author == rhs.author;
+		return lhs.name == rhs.name && lhs.version == rhs.version && lhs.author == rhs.author && lhs.folder == rhs.folder;
 	}
 
-	bool operator !=(const Mod& lhs, const Mod& rhs)
+	bool operator!=(const Mod& lhs, const Mod& rhs)
 	{
 		return !(lhs == rhs);
 	}

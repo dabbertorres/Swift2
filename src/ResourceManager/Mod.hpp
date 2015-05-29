@@ -1,30 +1,30 @@
-#ifndef MOD_HPP
-#define MOD_HPP
+#ifndef SWIFT_MOD_HPP
+#define SWIFT_MOD_HPP
 
 /*
- * Mod objects should not hold actual data. They should only hold strings of filenames
- * and the mod's info.txt
+ * Mod objects do not hold actual data. They only hold information and their path
  */
 
 #include <string>
-#include <vector>
+
+#include "FileSystem/gfs.hpp"
 
 namespace swift
 {
 	class Mod
 	{
 		public:
-			Mod() = default;
-			Mod(const std::string& n, const std::string& v, const std::string& a, const std::string& d);
+			Mod(const gfs::Path& p);
+			Mod(const gfs::Path& p, const std::string& n, const std::string& v, const std::string& a, const std::string& d);
 			~Mod() = default;
 
-			void addFile(const std::string& f);
+			void addFile(const gfs::Path& f);
 
 			const std::string& getName() const;
 			const std::string& getVersion() const;
 			const std::string& getAuthor() const;
 			const std::string& getDescription() const;
-			const std::vector<std::string>& getFiles() const;
+			const gfs::Path& getFolder() const;
 			
 			bool isActive() const;
 
@@ -35,19 +35,19 @@ namespace swift
 			
 			void setActive(bool a);
 
-			friend bool operator ==(const Mod& lhs, const Mod& rhs);
-			friend bool operator !=(const Mod& lhs, const Mod& rhs);
+			friend bool operator==(const Mod& lhs, const Mod& rhs);
+			friend bool operator!=(const Mod& lhs, const Mod& rhs);
 
 		private:
+			gfs::Path folder;
+			
 			std::string name;
 			std::string version;
 			std::string author;
 			std::string description;
-
-			std::vector<std::string> files;
 			
 			bool active;
 	};
 }
 
-#endif // MOD_HPP
+#endif // SWIFT_MOD_HPP
