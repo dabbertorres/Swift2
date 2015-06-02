@@ -1,23 +1,42 @@
 #include "TheGame.hpp"
 
 #include "GameMenu.hpp"
-#include "GameSettings.hpp"
+#include "GameSettingsMenu.hpp"
 #include "GameScript.hpp"
+
+#include "SystemInfo/SystemInfo.hpp"
+
+#include "Logger/Logger.hpp"
 
 namespace tg
 {
-	TheGame::TheGame(int c, char** args)
+	TheGame::TheGame(int argc, char** argv)
 	:	Game("TheGame", 60),
 		assets(getResourcePath()),
 		soundLevel(100),
 		musicLevel(75),
 		language("en")
 	{
+		// init Logger first
+		swift::Logger::setFile(getResourcePath() / "TheGame.log");
+		
+		// get System Info
+		swift::Logger::get()	<< "OS:\t\t" << swift::getOSName() << '\n'
+								<< "Version:\t" << swift::getOSVersion() << '\n'
+								<< "Arch:\t\t" << swift::getOSArch() << '\n'
+								<< "Total Mem:\t" << swift::getTotalMem() << '\n'
+								<< "CPU:\t\t" << swift::getCPUModel() << '\n'
+								<< "Video Vendor:\t" << swift::getVideoVendor() << '\n'
+								<< "Video Card:\t" << swift::getVideoCard() << '\n'
+								<< "Video Driver:\t" << swift::getVideoDriver() << "\n\n";
+		
 		// loads settings from the settings file
 		loadSettings(getResourcePath() / "settings.ini");
 		
+		handleArgs(argc, argv);
+		
 		// loads a dictionary
-		dictionary.loadFile(getResourcePath() / "dictionaries/" + language + ".dic");
+		dictionary.loadFile(getResourcePath() / ("dict/" + language + ".dic"));
 		
 		loadAssets();
 		
@@ -64,7 +83,7 @@ namespace tg
 		// settings file settings
 		if(!file || !gameSettings.loadFile(file))
 		{
-			swift::log << "Could not open settings file, default settings will be used\n";
+			swift::Logger::get() << "Could not open settings file, default settings will be used\n";
 			return false;
 		}
 
@@ -81,11 +100,23 @@ namespace tg
 	
 	void TheGame::loadAssets()
 	{
-		assets.loadResourceFolder(getResourcePath());
+		assets.loadResourceFolder(getResourcePath() / "anims");
+		assets.loadResourceFolder(getResourcePath() / "dict");
+		assets.loadResourceFolder(getResourcePath() / "fonts");
+		//assets.loadResourceFolder(getResourcePath() / "maps");
+		assets.loadResourceFolder(getResourcePath() / "music");
+		assets.loadResourceFolder(getResourcePath() / "scripts");
+		assets.loadResourceFolder(getResourcePath() / "sounds");
+		assets.loadResourceFolder(getResourcePath() / "textures");
 		assets.loadMods(getResourcePath() / "../mods");
 
 		// make log file a little prettier
-		swift::log << '\n';
+		swift::Logger::get() << '\n';
+	}
+	
+	void TheGame::handleArgs(int argc, char** argv)
+	{
+		std::vector<std::string> args(argv + 1, argv + argc);
 	}
 	
 	void TheGame::initState()

@@ -52,7 +52,7 @@ namespace swift
 		if(data.find(setting) != data.end())
 		{
 			std::string val = data.at(setting);
-			value = val == "true" || val != "0";
+			value = (val == "true" || val == "1");
 			return true;
 		}
 		
@@ -106,6 +106,8 @@ namespace swift
 		{
 			data.emplace(setting, value);
 		}
+		
+		changed = true;
 	}
 
 	template<>
@@ -119,6 +121,8 @@ namespace swift
 		{
 			data.emplace(setting, value ? "true" : "false");
 		}
+		
+		changed = true;
 	}
 
 	template<>
@@ -132,6 +136,8 @@ namespace swift
 		{
 			data.emplace(setting, std::to_string(value));
 		}
+		
+		changed = true;
 	}
 
 	template<>
@@ -145,6 +151,8 @@ namespace swift
 		{
 			data.emplace(setting, std::to_string(value));
 		}
+		
+		changed = true;
 	}
 
 	template<>
@@ -158,23 +166,24 @@ namespace swift
 		{
 			data.emplace(setting, std::to_string(value));
 		}
+		
+		changed = true;
 	}
 
 	bool Settings::read()
 	{
-		std::string fileStr = file;
-		std::ifstream fin(fileStr);
+		std::ifstream fin(file);
 
 		if(!fin)
 		{
-			log << "Error: Unable to open settings file: \"" << file << "\" for reading.\n";
+			Logger::get() << "[ERROR]: Unable to open settings file: \"" << file << "\" for reading.\n";
 			return false;
 		}
 		
-		std::string line;
-		std::string setting;
-		std::string value;
-
+		std::string line = "";
+		std::string setting = "";
+		std::string value = "";
+		
 		while(std::getline(fin, line))
 		{
 			// skip empty lines and comments (lines starting with '#')
@@ -184,18 +193,36 @@ namespace swift
 				
 				std::string dump;
 				
-				ss >> setting;
-				ss >> dump;
-				ss >> value;
+				ss >> setting >> dump;
+				
+				std::string temp = "";
+				std::getline(ss, temp);	// get rest of line
+				
+				// add characters until we reach a newline or a comment
+				std::size_t i = 0;
+				while(i < temp.size() && temp[i] != '\n' && temp[i] != '#')
+				{
+					value += temp[i];
+					++i;
+				}
+				
+				// strip leading and trailing spaces
+				while(value.front() == ' ')
+					value.erase(value.begin());
+				
+				while(value.back() == ' ')
+					value.erase(value.end() - 1);
 			}
-			else if(!line.empty())
+			else	// save comments and empty lines for writing later
 			{
-				// save comments for writing later
 				setting = line;
-				value = "";
 			}
 			
 			data.emplace(setting, value);
+			
+			// empty the strings
+			setting.clear();
+			value.clear();
 		}
 		
 		return true;
@@ -203,18 +230,17 @@ namespace swift
 	
 	bool Settings::write() const
 	{
-		std::string fileStr = file;
-		std::ofstream fout(fileStr);
+		std::ofstream fout(file);
 		
 		if(!fout)
 		{
-			log << "Error: Unable to open settings file: \"" << file << "\" for writing.\n";
+			Logger::get() << "[ERROR]: Unable to open settings file: \"" << file << "\" for writing.\n";
 			return false;
 		}
 		
 		for(auto& sv : data)
 		{
-			if(sv.first[0] == '#')
+			if(sv.first.empty() || sv.first[0] == '#')
 			{
 				fout << sv.first << '\n';
 			}

@@ -47,8 +47,8 @@ namespace gfs
 	
 	// returns a bool on success of copying the src Path to the dest Path
 	// first case modifies the dest Path on success
-//	bool copy(const Path& src, Path& dest);
-//	bool copy(const Path& src, const Path& dest);
+	bool copy(const Path& src, Path& dest);
+	bool copy(const Path& src, const Path& dest);
 	
 	// returns a bool on success of moving the src Path to the dest Path
 	// first case modifies the given Paths on success

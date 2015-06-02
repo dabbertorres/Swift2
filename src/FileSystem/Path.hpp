@@ -11,7 +11,7 @@ namespace gfs
 		friend bool makeDir(Path& path);
 		friend bool makeFile(Path& path);
 		friend bool remove(Path& path);
-//		friend bool copy(const Path& src, Path& dest);
+		friend bool copy(const Path& src, Path& dest);
 		friend bool move(Path& src, Path& dest);
 		
 		public:
@@ -57,7 +57,7 @@ namespace gfs
 			std::chrono::system_clock::time_point lastAccess() const;	// implementation required
 			std::chrono::system_clock::time_point lastModify() const;	// implementation required
 			
-			unsigned long int fileSize() const;							// implementation required
+			unsigned long long int fileSize() const;					// implementation required
 			
 			Path parent() const;
 			std::string filename() const;
@@ -66,7 +66,6 @@ namespace gfs
 			
 			/* casts */
 			operator std::string() const;
-			operator const char*() const;
 			
 			// returns true if the Path exists
 			operator bool() const;

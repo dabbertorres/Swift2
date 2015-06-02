@@ -46,7 +46,7 @@ namespace gfs
 			return {};
 	}
 	
-	unsigned long int Path::fileSize() const
+	unsigned long long int Path::fileSize() const
 	{
 		struct stat st;
 		
@@ -89,19 +89,20 @@ namespace gfs
 					path.typeVal = Type::Unknown;
 					break;
 			}
-			
-			path.permissionsVal += st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
+
+			if(!path.permissionsVal)
+				path.permissionsVal += st.st_mode & (S_IRWXU | S_IRWXG | S_IRWXO);
 			
 			if(path.typeVal != Type::SymLink || resolveSymLink)
 			{
 				// get absolute path
 				char buf[PATH_MAX];
 				
-				if(realpath(path, buf) != nullptr)
+				if(realpath(path.pathStr.c_str(), buf) != nullptr)
 					path.pathStr = buf;
 			}
 			
-			if(path.typeVal == Type::Directory && path.pathStr.back() != '/')
+			if(path.typeVal == Type::Directory)
 				path.pathStr += "/";
 	
 			path.existsVal = true;

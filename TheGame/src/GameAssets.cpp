@@ -16,7 +16,7 @@ namespace tg
 
 		if(!scripts[fileName]->loadFromFile(file))
 		{
-			swift::log << "Unable to load " << file << " as a script.\n";
+			swift::Logger::get() << "Unable to load " << file << " as a script.\n";
 
 			// delete new script
 			delete scripts[fileName];
@@ -25,7 +25,7 @@ namespace tg
 			return false;
 		}
 
-		swift::log << "Script:\t" << fileName << '\n';
+		swift::Logger::get() << "Script:\t" << fileName << '\n';
 
 		scripts[fileName]->load(resPath + "saves/" + fileName + ".script");
 

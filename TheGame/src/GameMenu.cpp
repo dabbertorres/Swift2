@@ -8,7 +8,7 @@
 #include "GUI/Widgets/Spacer.hpp"
 
 #include "GamePlay.hpp"
-#include "GameSettings.hpp"
+#include "GameSettingsMenu.hpp"
 
 namespace tg
 {
@@ -45,13 +45,13 @@ namespace tg
 
 		if(!font)
 		{
-			swift::log << "[ERROR]: Could not find segoeuisl.ttf!\n";
+			swift::Logger::get() << "[ERROR]: Could not find segoeuisl.ttf!\n";
 			return;
 		}
 
 		if(!buttonTexture)
 		{
-			swift::log << "[ERROR]: Could not find button.png!\n";
+			swift::Logger::get() << "[ERROR]: Could not find button.png!\n";
 			return;
 		}
 

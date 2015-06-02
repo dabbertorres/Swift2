@@ -26,6 +26,7 @@ namespace swift
 	class Game
 	{
 		public:
+			// l = Logger
 			// t = title of the window/game,
 			// tps = engine ticks per second
 			Game(const std::string& t, unsigned tps);
@@ -34,6 +35,8 @@ namespace swift
 			// Let the user choose when to start
 			// creates the window, and then starts "gameLoop"
 			void start();
+			
+			void setTitle(const std::string& t);
 			
 			const gfs::Path& getResourcePath();
 			

@@ -20,14 +20,14 @@ namespace swift
 		
 		if(loadFile.Error())
 		{
-			log << "[ERROR] Loading animation file \"" << file << "\" failed.\n";
+			Logger::get() << "[ERROR] Loading animation file \"" << file << "\" failed.\n";
 			return false;
 		}
 
 		tinyxml2::XMLElement* animRoot = loadFile.FirstChildElement("animated");
 		if(animRoot == nullptr)
 		{
-			log << "[WARNING] Animation file \"" << file << "\" does not have a \"animated\" root element.\n";
+			Logger::get() << "[WARNING] Animation file \"" << file << "\" does not have a \"animated\" root element.\n";
 			return false;
 		}
 		
@@ -58,11 +58,12 @@ namespace swift
 					else if(name == "h")
 						frameRect.height = std::stoi(param->GetText());
 					else
-						log << "[INFO]: Unknown paramater: \"" << name << "\" in anim file: " << file << '\n';
+						Logger::get() << "[INFO]: Unknown paramater: \"" << name << "\" in anim file: " << file << '\n';
 					
 					param = param->NextSiblingElement();
 				}
-				log << frameRect.left << ' ' << frameRect.top << ' ' << frameRect.width << ' ' << frameRect.height << '\n';
+				
+				Logger::get() << frameRect.left << ' ' << frameRect.top << ' ' << frameRect.width << ' ' << frameRect.height << '\n';
 				animations[animName].addFrame(frameRect);
 				
 				frame = frame->NextSiblingElement("frame");

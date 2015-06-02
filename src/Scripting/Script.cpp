@@ -51,14 +51,14 @@ namespace swift
 
 		if(!loadResult)
 		{
-			log << "[ERROR]: Script: " << lfile << " - load: " << luaState.getErrors() << '\n';
+			Logger::get() << "[ERROR]: Script: " << lfile << " - load: " << luaState.getErrors() << '\n';
 		}
 
 		bool runResult = luaState.run() == LUA_OK;
 
 		if(!runResult)
 		{
-			log << "[ERROR]: Script: " << lfile << " - run: " << luaState.getErrors() << '\n';
+			Logger::get() << "[ERROR]: Script: " << lfile << " - run: " << luaState.getErrors() << '\n';
 		}
 
 		file = lfile;

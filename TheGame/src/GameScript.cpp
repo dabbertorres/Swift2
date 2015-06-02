@@ -175,7 +175,7 @@ namespace tg
 
 	void GameScript::logMsg(std::string m)
 	{
-		swift::log << m << '\n';
+		swift::Logger::get() << m << '\n';
 	}
 
 	// Play

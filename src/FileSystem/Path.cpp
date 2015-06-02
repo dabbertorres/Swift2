@@ -19,7 +19,7 @@ std::string normalizePath(const std::string& path)
 void fixUserHome(std::string& path)
 {
 	if(path.front() == '~')
-		path.replace(0, 1, static_cast<const char*>(gfs::userHome()));
+		path.replace(0, 1, gfs::userHome());
 }
 
 namespace gfs
@@ -160,15 +160,10 @@ namespace gfs
 		
 		return "";
 	}
-	
+
 	Path::operator std::string() const
 	{
 		return pathStr;
-	}
-
-	Path::operator const char*() const
-	{
-		return pathStr.c_str();
 	}
 	
 	Path::operator bool() const

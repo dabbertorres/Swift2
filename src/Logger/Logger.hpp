@@ -2,26 +2,31 @@
 #define LOGGER_HPP
 
 #include <fstream>
-#include <string>
 
-#include <SFML/System/Err.hpp>
+#include "FileSystem/gfs.hpp"
 
 namespace swift
 {
 	class Logger
 	{
 		public:
-			explicit Logger(const std::string& header, const std::string& logFile = "../data/swift.log");
+			template<typename T>
+			Logger& operator<<(const T& t);
+			
+			static Logger& get();
+			
+			static bool setFile(const gfs::Path& path);
+
+		private:
+			Logger();
 			~Logger();
 
 			// Make it Non Copyable
 			Logger(const Logger&) = delete;
 			Logger& operator=(const Logger&) = delete;
-
-			template<typename T>
-			Logger& operator<<(const T& t);
-
-		private:
+			
+			static Logger self;
+			
 			std::ofstream fout;
 
 			unsigned int warnings;
@@ -31,12 +36,13 @@ namespace swift
 	template<typename T>
 	Logger& Logger::operator<<(const T& t)
 	{
-		fout << t;
-
+		if(fout)
+		{
+			fout << t;
+		}
+		
 		return *this;
 	}
-
-	extern Logger log;
 }
 
 #endif // LOGGER_HPP

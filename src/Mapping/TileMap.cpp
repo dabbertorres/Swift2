@@ -10,17 +10,16 @@
 namespace swift
 {
 	TileMap::TileMap()
-		:	tileSize( {0, 0}),
-	  sizePixels( {0, 0}),
-	  sizeTiles( {0, 0}),
-	  textureSize( {0, 0}),
-	  textureTileSize( {0, 0}),
-	  tileSpacing(0),
-	  file(""),
-	  textureFile(""),
-	  texture(nullptr)
-	{
-	}
+	:	tileSize( {0, 0}),
+		sizePixels( {0, 0}),
+		sizeTiles( {0, 0}),
+		textureSize( {0, 0}),
+		textureTileSize( {0, 0}),
+		tileSpacing(0),
+		file(""),
+		textureFile(""),
+		texture(nullptr)
+	{}
 
 	TileMap::~TileMap()
 	{
@@ -44,7 +43,7 @@ namespace swift
 
 		if(loadFile.Error())
 		{
-			log << "[ERROR] Loading world save file \"" << f << "\" failed.\n";
+			Logger::get() << "[ERROR] Loading world save file \"" << f << "\" failed.\n";
 			return false;
 		}
 
@@ -52,7 +51,7 @@ namespace swift
 
 		if(mapRoot == nullptr)
 		{
-			log << "[WARNING] World save file \"" << f << "\" does not have a \"map\" root element.\n";
+			Logger::get() << "[WARNING] World save file \"" << f << "\" does not have a \"map\" root element.\n";
 			return false;
 		}
 

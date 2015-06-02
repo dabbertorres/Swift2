@@ -97,12 +97,12 @@ namespace tg
 
 		if(!mapResult)
 		{
-			swift::log << "[ERROR]: Loading tilemap \"" << mapFile << "\" failed.\n";
+			swift::Logger::get() << "[ERROR]: Loading tilemap \"" << mapFile << "\" failed.\n";
 		}
 
 		if(!textureResult)
 		{
-			swift::log << "[ERROR]: Setting texture for \"" << mapFile << "\" failed.\n";
+			swift::Logger::get() << "[ERROR]: Setting texture for \"" << mapFile << "\" failed.\n";
 		}
 
 		if(!mapResult || !textureResult)
@@ -130,7 +130,7 @@ namespace tg
 			// load the world's save file
 			if(!loadWorld(*newWorld))
 			{
-				swift::log << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
+				swift::Logger::get() << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
 			}
 		}
 		else
@@ -138,7 +138,7 @@ namespace tg
 			// load the world's save file
 			if(!loadWorld(*newWorld))
 			{
-				swift::log << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
+				swift::Logger::get() << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
 			}
 		}
 
@@ -160,7 +160,7 @@ namespace tg
 
 		if(loadFile.Error())
 		{
-			swift::log << "[ERROR]: Loading world save file \"" << file << "\" failed.\n";
+			swift::Logger::get() << "[ERROR]: Loading world save file \"" << file << "\" failed.\n";
 			return false;
 		}
 
@@ -168,7 +168,7 @@ namespace tg
 
 		if(worldRoot == nullptr)
 		{
-			swift::log << "[ERROR]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			swift::Logger::get() << "[ERROR]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
 			return false;
 		}
 
@@ -236,7 +236,7 @@ namespace tg
 
 		if(result != tinyxml2::XML_SUCCESS && result != tinyxml2::XML_ERROR_EMPTY_DOCUMENT && result != tinyxml2::XML_ERROR_FILE_NOT_FOUND)
 		{
-			swift::log << "[ERROR]: Saving world save file \"" << file << "\" failed.\n";
+			swift::Logger::get() << "[ERROR]: Saving world save file \"" << file << "\" failed.\n";
 			return false;
 		}
 
@@ -244,7 +244,7 @@ namespace tg
 
 		if(root == nullptr)
 		{
-			swift::log << "[WARNING]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
+			swift::Logger::get() << "[WARNING]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
 			root = saveFile.NewElement("world");
 			saveFile.InsertFirstChild(root);
 		}
@@ -286,13 +286,13 @@ namespace tg
 
 		if(!font)
 		{
-			swift::log << "[ERROR]: Could not find segoeuisl.ttf!\n";
+			swift::Logger::get() << "[ERROR]: Could not find segoeuisl.ttf!\n";
 			return;
 		}
 
 		if(!buttonTexture)
 		{
-			swift::log << "[ERROR]: Could not find button.png!\n";
+			swift::Logger::get() << "[ERROR]: Could not find button.png!\n";
 			return;
 		}
 

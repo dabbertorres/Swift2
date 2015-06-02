@@ -47,7 +47,7 @@ namespace swift
 		{
 			if(!scripts[scriptFile]->save("./data/saves/" + scriptFile.substr(scriptFile.find_last_of('/') + 1) + ".script"))
 			{
-				log << "[WARNING]: Could not save script: " << scriptFile << "!\n";
+				Logger::get() << "[WARNING]: Could not save script: " << scriptFile << "!\n";
 			}
 			
 			scripts[scriptFile]->reset();
@@ -64,7 +64,7 @@ namespace swift
 		{
 			if(!s.second->save("./data/saves/" + s.first.substr(s.first.find_last_of('/') + 1) + ".script"))
 			{
-				log << "[WARNING]: Could not save script: " << s.first << "!\n";
+				Logger::get() << "[WARNING]: Could not save script: " << s.first << "!\n";
 			}
 			
 			s.second->reset();

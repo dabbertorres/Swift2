@@ -1,5 +1,7 @@
 #include "AssetManager.hpp"
 
+#include <SFML/System/Err.hpp>
+
 namespace swift
 {
 	AssetManager::AssetManager()
@@ -17,7 +19,7 @@ namespace swift
 	{
 		if(!folder)
 		{
-			log << "[ERROR]: Could not read folder: \"" << folder << "\"\n";
+			Logger::get() << "[ERROR]: Could not read folder: \"" << folder << "\"\n";
 			return false;
 		}
 
@@ -42,7 +44,7 @@ namespace swift
 	{
 		if(!modsFolder)
 		{
-			log << "[ERROR]: Could not read mods folder: \"" << modsFolder << "\"\n";
+			Logger::get() << "[ERROR]: Could not read mods folder: \"" << modsFolder << "\"\n";
 			return false;
 		}
 		
@@ -75,16 +77,16 @@ namespace swift
 				
 				if(!nameError || !versionError || !authorError || !descriptionError)
 				{
-					log << "[WARNING]: Ill formed info.txt for mod \"" << m.name() << "\", not loading.\n";
+					Logger::get() << "[WARNING]: Ill formed info.txt for mod \"" << m.name() << "\", not loading.\n";
 					continue;
 				}
 				
 				mods.emplace(name, Mod{m, name, version, author, description});
 				
-				log << "\nLoading mod: " << name << '\n';
-				log << "\tVersion: " << version << '\n';
-				log << "\tBy: " << author << '\n';
-				log << '\t' << description << '\n';
+				Logger::get() << "\nLoading mod: " << name << '\n';
+				Logger::get() << "\tVersion: " << version << '\n';
+				Logger::get() << "\tBy: " << author << '\n';
+				Logger::get() << '\t' << description << '\n';
 				
 				loadResourceFolder(m);
 			}
@@ -179,7 +181,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No \"" << n << "\" anim file exists\n";
+			Logger::get() << "[WARNING]: No \"" << n << "\" anim file exists\n";
 		}
 
 		return nullptr;
@@ -193,7 +195,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No\"" << n << "\" batch exists\n";
+			Logger::get() << "[WARNING]: No\"" << n << "\" batch exists\n";
 		}
 
 		return nullptr;
@@ -207,7 +209,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No \"" << n << "\" texture file exists\n";
+			Logger::get() << "[WARNING]: No \"" << n << "\" texture file exists\n";
 		}
 
 		return nullptr;
@@ -221,7 +223,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No \"" << n << "\" sound buffer file exists\n";
+			Logger::get() << "[WARNING]: No \"" << n << "\" sound buffer file exists\n";
 		}
 
 		return nullptr;
@@ -235,7 +237,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No \"" << n << "\" music file exists\n";
+			Logger::get() << "[WARNING]: No \"" << n << "\" music file exists\n";
 		}
 
 		return nullptr;
@@ -249,7 +251,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No \"" << n << "\" font file exists\n";
+			Logger::get() << "[WARNING]: No \"" << n << "\" font file exists\n";
 		}
 
 		return nullptr;
@@ -263,7 +265,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[WARNING]: No \"" << n << "\" script file exists\n";
+			Logger::get() << "[WARNING]: No \"" << n << "\" script file exists\n";
 		}
 
 		return nullptr;
@@ -277,7 +279,7 @@ namespace swift
 
 		if(!animTextures[filename]->loadFromFile(file))
 		{
-			log << "[WARNING]: Unable to load " << file << " as an anim\n";
+			Logger::get() << "[WARNING]: Unable to load " << file << " as an anim\n";
 
 			delete animTextures[filename];
 
@@ -285,7 +287,7 @@ namespace swift
 			return false;
 		}
 
-		log << "Anim:\t" << filename << '\n';
+		Logger::get() << "Anim:\t" << filename << '\n';
 
 		return true;
 	}
@@ -298,7 +300,7 @@ namespace swift
 
 		if(!textures[filename]->loadFromFile(file))
 		{
-			log << "[WARNING]: Unable to load " << file << " as a texture.\n";
+			Logger::get() << "[WARNING]: Unable to load " << file << " as a texture.\n";
 
 			delete textures[filename];
 
@@ -308,7 +310,7 @@ namespace swift
 
 		textures[filename]->setSmooth(smooth);
 
-		log << "Texture:\t" << filename << '\n';
+		Logger::get() << "Texture:\t" << filename << '\n';
 
 		return true;
 	}
@@ -321,7 +323,7 @@ namespace swift
 
 		if(!soundBuffers[filename]->loadFromFile(file))
 		{
-			log << "[WARNING]: Unable to load " << file << " as a sound.\n";
+			Logger::get() << "[WARNING]: Unable to load " << file << " as a sound.\n";
 
 			// delete new'd soundbuffer
 			delete soundBuffers[filename];
@@ -330,7 +332,7 @@ namespace swift
 			return false;
 		}
 
-		log << "Sound:\t" << filename << '\n';
+		Logger::get() << "Sound:\t" << filename << '\n';
 
 		return true;
 	}
@@ -343,7 +345,7 @@ namespace swift
 
 		if(!music[filename]->openFromFile(file))
 		{
-			log << "[WARNING]: Unable to open " << file << " as a music file.\n";
+			Logger::get() << "[WARNING]: Unable to open " << file << " as a music file.\n";
 
 			// delete new'd music
 			delete music[filename];
@@ -352,7 +354,7 @@ namespace swift
 			return false;
 		}
 
-		log << "Music:\t" << filename << '\n';
+		Logger::get() << "Music:\t" << filename << '\n';
 
 		return true;
 	}
@@ -365,7 +367,7 @@ namespace swift
 
 		if(!fonts[filename]->loadFromFile(file))
 		{
-			log << "[WARNING]: Unable to load " << file << " as a font.\n";
+			Logger::get() << "[WARNING]: Unable to load " << file << " as a font.\n";
 
 			// delete new'd font
 			delete fonts[filename];
@@ -374,7 +376,7 @@ namespace swift
 			return false;
 		}
 
-		log << "Font:\t" << filename << '\n';
+		Logger::get() << "Font:\t" << filename << '\n';
 
 		return true;
 	}
@@ -418,7 +420,7 @@ namespace swift
 		}
 		else
 		{
-			log << "[INFO]: " << file << " is an unknown resource type.\n";
+			Logger::get() << "[INFO]: " << file << " is an unknown resource type.\n";
 			return false;
 		}
 

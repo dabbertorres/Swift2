@@ -1,7 +1,5 @@
 #include "Game.hpp"
 
-#include "SystemInfo/SystemInfo.hpp"
-
 namespace swift
 {
 	Game::Game(const std::string& t, unsigned tps)
@@ -9,18 +7,9 @@ namespace swift
 		fullscreen(false),
 		resolution({800, 600}),
 		title(t),
-		resourcePath(getResourcePath()),
 		ticksPerSecond(tps)
 	{
-		// get System Info
-		log	<< "OS:\t\t" << getOSName() << '\n'
-			<< "Version:\t" << getOSVersion() << '\n'
-			<< "Arch:\t\t" << getOSArch() << '\n'
-			<< "Total Mem:\t" << getTotalMem() << '\n'
-			<< "CPU:\t\t" << getCPUModel() << '\n'
-			<< "Video Vendor:\t" << getVideoVendor() << '\n'
-			<< "Video Card:\t" << getVideoCard() << '\n'
-			<< "Video Driver:\t" << getVideoDriver() << "\n\n";
+		getResourcePath();
 	}
 
 	Game::~Game()
@@ -34,12 +23,18 @@ namespace swift
 		gameLoop();
 	}
 	
+	void Game::setTitle(const std::string& t)
+	{
+		title = t;
+		window.setTitle(title);
+	}
+	
 	const gfs::Path& Game::getResourcePath()
 	{
 		if(!resourcePath)
 		{
 			resourcePath = gfs::selfPath().parent() / "../data";
-			log << "Resource Path: " << resourcePath << '\n';
+			Logger::get() << "Resource Path: " << resourcePath << '\n';
 		}
 		
 		return resourcePath;

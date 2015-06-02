@@ -1,4 +1,4 @@
-#include "GameSettings.hpp"
+#include "GameSettingsMenu.hpp"
 
 #include "GameMenu.hpp"
 
@@ -92,7 +92,7 @@ namespace tg
 				unsigned resy = 0;
 				settings.get("res.x", resx);
 				settings.get("res.y", resy);
-				window.create( {resx, resy, 32}, "Swift2", sf::Style::Fullscreen);
+				window.create( {resx, resy, 32}, "TheGame", sf::Style::Fullscreen);
 			}
 			else
 			{
@@ -100,7 +100,7 @@ namespace tg
 				unsigned resy = 600;
 				settings.get("res.x", resx);
 				settings.get("res.y", resy);
-				window.create( {resx, resy, 32}, "Swift2", sf::Style::Titlebar | sf::Style::Close);
+				window.create( {resx, resy, 32}, "TheGame", sf::Style::Titlebar | sf::Style::Close);
 			}
 		}));
 

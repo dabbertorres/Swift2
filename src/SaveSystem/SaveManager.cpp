@@ -127,7 +127,7 @@ namespace swift
 
 		if(dir == nullptr)
 		{
-			log << "Unable to delete save: " << saveDir << "\n";
+			Logger::get() << "Unable to delete save: " << saveDir << "\n";
 			return false;
 		}
 		

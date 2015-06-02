@@ -51,7 +51,9 @@ namespace gfs
 		
 		char buf[PATH_MAX];
 		
-		if(realpath(path, buf) != nullptr)
+		std::string pathStr = path;
+		
+		if(realpath(pathStr.c_str(), buf) != nullptr)
 			return {buf};
 		
 		return path;
@@ -64,7 +66,9 @@ namespace gfs
 		
 		struct stat st;
 		
-		if(!lstat(path, &st))
+		std::string pathStr = path;
+		
+		if(!lstat(pathStr.c_str(), &st))
 			return st.st_nlink;
 		
 		return 0;
@@ -78,7 +82,9 @@ namespace gfs
 		DIR* dir = nullptr;
 		struct dirent* entry = nullptr;
 		
-		dir = opendir(path);
+		std::string pathStr = path;
+		
+		dir = opendir(pathStr.c_str());
 		
 		if(!dir)
 			return {};
@@ -103,7 +109,9 @@ namespace gfs
 		if(path)
 			return false;
 		
-		if(!mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH))	// user = rwx, group = rx, others = rx. 0755
+		std::string pathStr = path;
+		
+		if(!mkdir(pathStr.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH))	// user = rwx, group = rx, others = rx. 0755
 		{
 			Path::checkPath(path, true);
 			
@@ -118,7 +126,9 @@ namespace gfs
 		if(path)
 			return false;
 		
-		return !mkdir(path, S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+		std::string pathStr = path;
+		
+		return !mkdir(pathStr.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
 	}
 	
 	bool makeFile(Path& path)
@@ -126,7 +136,9 @@ namespace gfs
 		if(path)
 			return false;
 		
-		if(creat(path, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1)	// user = rw, group = r, others = r. 0644
+		std::string pathStr = path;
+		
+		if(creat(pathStr.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1)	// user = rw, group = r, others = r. 0644
 		{
 			Path::checkPath(path, true);
 			
@@ -141,7 +153,9 @@ namespace gfs
 		if(path)
 			return false;
 		
-		return creat(path, S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1;
+		std::string pathStr = path;
+		
+		return creat(pathStr.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1;
 	}
 	
 	bool remove(Path& path)
@@ -184,8 +198,11 @@ namespace gfs
 	{
 		if(!src || dest)
 			return false;
+			
+		std::string srcStr = src;
+		std::string destStr = dest;
 		
-		if(!rename(src, dest))
+		if(!rename(srcStr.c_str(), destStr.c_str()))
 		{
 			Path::checkPath(src, true);
 			Path::checkPath(dest, true);
@@ -200,8 +217,11 @@ namespace gfs
 	{
 		if(!src || dest)
 			return false;
+			
+		std::string srcStr = src;
+		std::string destStr = dest;
 		
-		return !rename(src, dest);
+		return !rename(srcStr.c_str(), destStr.c_str());
 	}
 }
 

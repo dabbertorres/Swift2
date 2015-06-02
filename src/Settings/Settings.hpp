@@ -5,6 +5,8 @@
 
 #include "FileSystem/gfs.hpp"
 
+#include "Logger/Logger.hpp"
+
 #include <string>
 #include <unordered_map>
 

@@ -13,7 +13,7 @@ namespace tg
 	class TheGame : public swift::Game
 	{
 		public:
-			TheGame(int c, char** args);
+			TheGame(int argc, char** argv);
 			~TheGame() = default;
 
 		private:
@@ -26,6 +26,7 @@ namespace tg
 			// loading functions
 			bool loadSettings(const gfs::Path& file);
 			void loadAssets();
+			void handleArgs(int argc, char** argv);
 			
 			// init functions
 			void initState();
