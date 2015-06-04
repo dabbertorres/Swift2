@@ -21,6 +21,8 @@
 
 namespace swift
 {
+	using Dictionary = Settings;	// Settings class doubles as a Dictionary
+			
 	class AssetManager
 	{
 		template<typename T>
@@ -46,31 +48,38 @@ namespace swift
 			// make a SpriteBatch out of a texture, given a size
 			bool newSpriteBatch(const std::string& t);
 
-			AnimTexture* getAnimTexture(const std::string& n);
+			AnimTexture* getAnim(const std::string& n);
+			Dictionary* getDict(const std::string& n);
+			sf::Font* getFont(const std::string& n);
+			// map
+			sf::Music* getMusic(const std::string& n);
+			Script* getScript(const std::string& n);
+			sf::SoundBuffer* getSound(const std::string& n);
 			SpriteBatch* getBatch(const std::string& n);
 			sf::Texture* getTexture(const std::string& n);
-			sf::SoundBuffer* getSoundBuffer(const std::string& n);
-			sf::Music* getSong(const std::string& n);
-			sf::Font* getFont(const std::string& n);
-			Script* getScript(const std::string& n);
 
 		protected:
 			virtual bool loadResource(const gfs::Path& file);
 			
-			virtual bool loadAnimTexture(const gfs::Path& file);
-			virtual bool loadTexture(const gfs::Path& file);
-			virtual bool loadSound(const gfs::Path& file);
-			virtual bool loadSong(const gfs::Path& file);
+			virtual bool loadAnim(const gfs::Path& file);
+			virtual bool loadDict(const gfs::Path& file);
 			virtual bool loadFont(const gfs::Path& file);
+			// map
+			virtual bool loadMusic(const gfs::Path& file);
 			virtual bool loadScript(const gfs::Path& file);
+			virtual bool loadSound(const gfs::Path& file);
+			virtual bool loadTexture(const gfs::Path& file);
 
-			ResourceMap<AnimTexture*> animTextures;
+			ResourceMap<AnimTexture*> anims;
+			ResourceMap<Dictionary*> dicts;
+			ResourceMap<sf::Font*> fonts;
+			// maps
+			ResourceMap<sf::Music*> music;
+			ResourceMap<Script*> scripts;
+			ResourceMap<sf::SoundBuffer*> sounds;
 			ResourceMap<SpriteBatch*> batches;
 			ResourceMap<sf::Texture*> textures;
-			ResourceMap<sf::SoundBuffer*> soundBuffers;
-			ResourceMap<sf::Music*> music;
-			ResourceMap<sf::Font*> fonts;
-			ResourceMap<Script*> scripts;
+			
 			ResourceMap<Mod> mods;
 
 			bool smooth;

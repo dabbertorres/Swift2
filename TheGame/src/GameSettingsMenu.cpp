@@ -20,8 +20,8 @@
 
 namespace tg
 {
-	GameSettings::GameSettings(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm)
-	:	GameState(win, am, sp, mp, set, dic, sm),
+	GameSettingsMenu::GameSettingsMenu(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm)
+	:	GameState(win, am, sp, mp, set, sm),
 		graphicsButton(nullptr),
 		volumeSlider(nullptr),
 		musicSlider(nullptr)
@@ -31,14 +31,14 @@ namespace tg
 		setupGUI();
 	}
 	
-	void GameSettings::handleEvent(const sf::Event& event)
+	void GameSettingsMenu::handleEvent(const sf::Event& event)
 	{
 		gui.update(event);
 		keyboard(event);
 		mouse(event);
 	}
 	
-	void GameSettings::update(const sf::Time&)
+	void GameSettingsMenu::update(const sf::Time&)
 	{
 		int sound = volumeSlider->getValue() * 100;
 		settings.set("sound", sound);
@@ -53,19 +53,55 @@ namespace tg
 		musicPlayer.update();
 	}
 	
-	void GameSettings::draw()
+	void GameSettingsMenu::draw()
 	{
 		window.draw(gui);
 	}
 	
-	void GameSettings::setupGUI()
+	void GameSettingsMenu::setupGUI()
 	{
+		auto* font = assets.getFont("segoeuisl.ttf");
+		auto* buttonTexture = assets.getTexture("button.png");
+		auto* toggleTexture = assets.getTexture("toggle.png");
+		
+		std::string dictStr = "en";
+		
+		if(!settings.get("lang", dictStr))
+		{
+			swift::Logger::get() << "[WARNING]: No language set, defaulting to English (en).\n";
+		}
+		
+		swift::Dictionary* dictionary = assets.getDict(dictStr);
+
+		if(!font)
+		{
+			swift::Logger::get() << "[ERROR]: Could not find segoeuisl.ttf!\n";
+			return;
+		}
+
+		if(!buttonTexture)
+		{
+			swift::Logger::get() << "[ERROR]: Could not find button.png!\n";
+			return;
+		}
+
+		if(!toggleTexture)
+		{
+			swift::Logger::get() << "[ERROR]: Could not find toggle.png!\n";
+			return;
+		}
+		
+		if(!dictionary)
+		{
+			swift::Logger::get() << "[WARNING]: Could not find dictionary for: \"" << dictStr << "\", defaulting to English (en).\n";
+		}
+		
 		cstr::Column& settingsColumn = gui.addContainer(new cstr::Column({50, 25, 700, 550}, false));
 
 		std::string settingsStr = "Settings";
-		dictionary.get("settingsLabel", settingsStr);
+		dictionary->get("settingsLabel", settingsStr);
 		cstr::Column& titleCol = settingsColumn.addWidget(new cstr::Column({200, 50}, false));
-		titleCol.addWidget(new cstr::Label(settingsStr, *assets.getFont("segoeuisl.ttf"), 60));
+		titleCol.addWidget(new cstr::Label(settingsStr, *font, 60));
 
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 
@@ -73,15 +109,15 @@ namespace tg
 		cstr::Row& fullscreenRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& fullscreenLabelCol = fullscreenRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string fullscreen = "Fullscreen";
-		dictionary.get("fullscreenLabel", fullscreen);
-		fullscreenLabelCol.addWidget(new cstr::Label(fullscreen + ':', *assets.getFont("segoeuisl.ttf"), 50));
+		dictionary->get("fullscreenLabel", fullscreen);
+		fullscreenLabelCol.addWidget(new cstr::Label(fullscreen + ':', *font, 50));
 
 		fullscreenRow.addWidget(new cstr::Spacer({450, 50}));
 
 		cstr::Column& fullscreenToggleCol = fullscreenRow.addWidget(new cstr::Column({50, 50}, false));
 		bool fullscreenState = false;
 		settings.get("fullscreen", fullscreenState);
-		fullscreenToggleCol.addWidget(new cstr::Toggle({50, 50}, *assets.getTexture("toggle.png"), {64, 0, 64, 64}, {0, 0, 64, 64}, fullscreenState,
+		fullscreenToggleCol.addWidget(new cstr::Toggle({50, 50}, *toggleTexture, {64, 0, 64, 64}, {0, 0, 64, 64}, fullscreenState,
 		[&](bool s)
 		{
 			settings.set("fullscreen", s);
@@ -110,15 +146,15 @@ namespace tg
 		cstr::Row& vsyncRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& vsyncLabelCol = vsyncRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string vsync = "V-Sync";
-		dictionary.get("vsyncLabel", vsync);
-		vsyncLabelCol.addWidget(new cstr::Label(vsync + ':', *assets.getFont("segoeuisl.ttf"), 50));
+		dictionary->get("vsyncLabel", vsync);
+		vsyncLabelCol.addWidget(new cstr::Label(vsync + ':', *font, 50));
 
 		vsyncRow.addWidget(new cstr::Spacer({450, 50}));
 
 		cstr::Column& vsyncToggleCol = vsyncRow.addWidget(new cstr::Column( {50, 50}, false));
 		bool vsyncState = false;
 		settings.get("vsync", vsyncState);
-		vsyncToggleCol.addWidget(new cstr::Toggle({50, 50}, *assets.getTexture("toggle.png"), {64, 0, 64, 64}, {0, 0, 64, 64}, vsyncState,
+		vsyncToggleCol.addWidget(new cstr::Toggle({50, 50}, *toggleTexture, {64, 0, 64, 64}, {0, 0, 64, 64}, vsyncState,
 		[&](bool s)
 		{
 			settings.set("vsync", s);
@@ -131,13 +167,13 @@ namespace tg
 		cstr::Row& graphicsRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& graphicsRowLabelCol = graphicsRow.addWidget(new cstr::Column( {200, 50}, false));
 		std::string graphics = "Graphics";
-		dictionary.get("graphicsLabel", graphics);
-		graphicsRowLabelCol.addWidget(new cstr::Label(graphics + ':', *assets.getFont("segoeuisl.ttf"), 50));
+		dictionary->get("graphicsLabel", graphics);
+		graphicsRowLabelCol.addWidget(new cstr::Label(graphics + ':', *font, 50));
 
 		graphicsRow.addWidget(new cstr::Spacer({400, 50}));
 
 		cstr::Column& graphicsRowButtonCol = graphicsRow.addWidget(new cstr::Column({100, 50}, false));
-		graphicsButton = &graphicsRowButtonCol.addWidget(new cstr::Button({100, 50}, *assets.getTexture("button.png"), [&]()
+		graphicsButton = &graphicsRowButtonCol.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
 		{
 			unsigned graphicsLevel = 0;
 			settings.get("graphics", graphicsLevel);
@@ -147,24 +183,24 @@ namespace tg
 			switch(graphicsLevel)
 			{
 				case 0:
-					dictionary.get("graphicsLevelLow", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+					dictionary->get("graphicsLevelLow", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, *font, 25);
 					break;
 
 				case 1:
-					dictionary.get("graphicsLevelMed", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+					dictionary->get("graphicsLevelMed", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, *font, 25);
 					break;
 
 				case 2:
-					dictionary.get("graphicsLevelHigh", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+					dictionary->get("graphicsLevelHigh", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, *font, 25);
 					break;
 
 				default:
 					graphicsLevel = 0;
-					dictionary.get("graphicsLevelLow", graphicsLevelStr);
-					graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+					dictionary->get("graphicsLevelLow", graphicsLevelStr);
+					graphicsButton->setString(graphicsLevelStr, *font, 25);
 					break;
 			}
 
@@ -179,24 +215,24 @@ namespace tg
 		switch(graphicsLevel)
 		{
 			case 0:
-				dictionary.get("graphicsLevelLow", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+				dictionary->get("graphicsLevelLow", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, *font, 25);
 				break;
 
 			case 1:
-				dictionary.get("graphicsLevelMed", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+				dictionary->get("graphicsLevelMed", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, *font, 25);
 				break;
 
 			case 2:
-				dictionary.get("graphicsLevelHigh", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+				dictionary->get("graphicsLevelHigh", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, *font, 25);
 				break;
 
 			default:
 				graphicsLevel = 0;
-				dictionary.get("graphicsLevelLow", graphicsLevelStr);
-				graphicsButton->setString(graphicsLevelStr, *assets.getFont("segoeuisl.ttf"), 25);
+				dictionary->get("graphicsLevelLow", graphicsLevelStr);
+				graphicsButton->setString(graphicsLevelStr, *font, 25);
 				break;
 		}
 
@@ -206,13 +242,13 @@ namespace tg
 		cstr::Row& textEnterRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& textEnterLabelCol = textEnterRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string name = "Name";
-		dictionary.get("nameLabel", name);
-		textEnterLabelCol.addWidget(new cstr::Label(name + ':', *assets.getFont("segoeuisl.ttf"), 50));
+		dictionary->get("nameLabel", name);
+		textEnterLabelCol.addWidget(new cstr::Label(name + ':', *font, 50));
 
 		textEnterRow.addWidget(new cstr::Spacer({100, 50}));
 
 		cstr::Column& textEnterCol = textEnterRow.addWidget(new cstr::Column({400, 50}, false));
-		textEnterCol.addWidget(new cstr::TextBox({400, 50}, *assets.getFont("segoeuisl.ttf"), name));
+		textEnterCol.addWidget(new cstr::TextBox({400, 50}, *font, name));
 
 		settingsColumn.addWidget(new cstr::Spacer({700, 25}));
 
@@ -220,8 +256,8 @@ namespace tg
 		cstr::Row& volumeRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& volumeCol = volumeRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string volume = "Volume";
-		dictionary.get("volumeLabel", volume);
-		volumeCol.addWidget(new cstr::Label(volume + ':', *assets.getFont("segoeuisl.ttf"), 50));
+		dictionary->get("volumeLabel", volume);
+		volumeCol.addWidget(new cstr::Label(volume + ':', *font, 50));
 
 		volumeRow.addWidget(new cstr::Spacer({100, 50}));
 
@@ -238,8 +274,8 @@ namespace tg
 		cstr::Row& musicRow = settingsColumn.addWidget(new cstr::Row({700, 50}, false));
 		cstr::Column& musicCol = musicRow.addWidget(new cstr::Column({200, 50}, false));
 		std::string musicStr = "Music";
-		dictionary.get("musicLabel", musicStr);
-		musicCol.addWidget(new cstr::Label(musicStr + ':', *assets.getFont("segoeuisl.ttf"), 50));
+		dictionary->get("musicLabel", musicStr);
+		musicCol.addWidget(new cstr::Label(musicStr + ':', *font, 50));
 
 		musicRow.addWidget(new cstr::Spacer({100, 50}));
 
@@ -258,12 +294,11 @@ namespace tg
 		mainMenuReturnRow.addWidget(new cstr::Spacer({600, 50}));
 
 		cstr::Column& mainMenuReturnCol = mainMenuReturnRow.addWidget(new cstr::Column({100, 50}, false));
-		std::string mainMenu = "Main Menu";
-		dictionary.get("mainMenuReturn", mainMenu);
-		mainMenuReturnCol.addWidget(new cstr::Button({100, 50}, *assets.getTexture("button.png"), [&]()
+		std::string returnStr = "Return";
+		dictionary->get("returnButton", returnStr);
+		mainMenuReturnCol.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
 		{
-			shouldReturn = true;
-			states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
-		})).setString(mainMenu, *assets.getFont("segoeuisl.ttf"), 20);
+			done = true;
+		})).setString(returnStr, *font, 20);
 	}
 }

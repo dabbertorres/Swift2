@@ -1,6 +1,7 @@
 #include "GamePlay.hpp"
 
 #include "GameMenu.hpp"
+#include "GameSettingsMenu.hpp"
 
 #include "GameScript.hpp"
 
@@ -19,19 +20,17 @@ namespace tg
 	const float MAX_ZOOM = 2.f;
 	const float MIN_ZOOM = 0.5f;
 
-	GamePlay::GamePlay(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set,
-	                   swift::Settings& dic, swift::StateMachine& sm)
-	:	GameState(win, am, sp, mp, set, dic, sm),
+	GamePlay::GamePlay(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm)
+	:	GameState(win, am, sp, mp, set, sm),
 		activeState(nullptr),
 		activeWorld(nullptr),
-		playView({0, 0}, {static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)}),
-		scripts(am)
+		playView({0, 0}, {static_cast<float>(win.getSize().x), static_cast<float>(win.getSize().y)})
 	{
 		GameScript::setPlayState(*this);
 
 		setupSubStates();
 
-		loadLastWorld();
+		//loadLastWorld();
 
 		window.setKeyRepeatEnabled(false);
 
@@ -49,8 +48,6 @@ namespace tg
 			saveWorld(*w.second);
 			delete w.second;
 		}
-
-		scripts.removeAll();
 	}
 
 	void GamePlay::handleEvent(const sf::Event& event)
@@ -72,8 +69,6 @@ namespace tg
 
 		soundPlayer.update();
 		musicPlayer.update();
-
-		scripts.update();
 	}
 
 	void GamePlay::draw()
@@ -283,6 +278,15 @@ namespace tg
 	{
 		auto* font = assets.getFont("segoeuisl.ttf");
 		auto* buttonTexture = assets.getTexture("button.png");
+		
+		std::string dictStr = "en";
+		
+		if(!settings.get("lang", dictStr))
+		{
+			swift::Logger::get() << "[WARNING]: No language set, defaulting to English (en).\n";
+		}
+		
+		swift::Dictionary* dictionary = assets.getDict(dictStr);
 
 		if(!font)
 		{
@@ -295,24 +299,42 @@ namespace tg
 			swift::Logger::get() << "[ERROR]: Could not find button.png!\n";
 			return;
 		}
-
+		
+		if(!dictionary)
+		{
+			swift::Logger::get() << "[WARNING]: Could not find dictionary for: \"" << dictStr << "\", defaulting to English (en).\n";
+		}
+		
 		// setup pause menu GUI
+		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 200}, false));
+		
+		// resume button
 		std::string resume = "Resume";
-		dictionary.get("resumeButton", resume);
-		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column( {static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 125}, false));
-		pauseColumn.addWidget(new cstr::Button( {100, 50}, *buttonTexture, [&]()
+		dictionary->get("resumeButton", resume);
+		pauseColumn.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
 		{
 			activeState = &play;
 		})).setString(resume, *font, 25);
 
-		pauseColumn.addWidget(new cstr::Spacer( {100, 25}));
-
-		std::string mainMenu = "Main Menu";
-		dictionary.get("mainMenuButton", mainMenu);
-		pauseColumn.addWidget(new cstr::Button( {100, 50}, *buttonTexture, [&]()
+		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
+		
+		// settings menu button
+		std::string settingsMenu = "Settings";
+		dictionary->get("settingsButton", settingsMenu);
+		pauseColumn.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
 		{
-			shouldReturn = true;
-			states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, dictionary, states));
+			states.push(new GameSettingsMenu(window, assets, soundPlayer, musicPlayer, settings, states), false);
+		})).setString(settingsMenu, *font, 25);
+
+		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
+		
+		// main menu (exit) button
+		std::string mainMenu = "Main Menu";
+		dictionary->get("mainMenuButton", mainMenu);
+		pauseColumn.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
+		{
+			done = true;
+			states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, states));
 		})).setString(mainMenu, *font, 20);
 	}
 
@@ -339,12 +361,12 @@ namespace tg
 
 		play.setUpdateFunc([&](const sf::Time& dt)
 		{
-			activeWorld->update(dt.asSeconds());
-
+			//activeWorld->update(dt.asSeconds());
+			
 			/*if(player)
 			{
 				playView.setCenter(std::floor(player->get<swift::Physical>()->position.x), std::floor(player->get<swift::Physical>()->position.y));
-				soundPlayer.setListenerPosition( {player->get<swift::Physical>()->position.x, player->get<swift::Physical>()->position.y, 0});
+				soundPlayer.setListenerPosition({player->get<swift::Physical>()->position.x, player->get<swift::Physical>()->position.y, 0});
 
 				swift::Controllable* cont = player->get<swift::Controllable>();
 
@@ -356,14 +378,14 @@ namespace tg
 			else
 			{
 				playView.setCenter(0, 0);
-				soundPlayer.setListenerPosition( {0, 0, 0});
+				soundPlayer.setListenerPosition({0, 0, 0});
 			}*/
 		});
 
 		play.setDrawFunc([&]()
 		{
 			window.setView(playView);
-			activeWorld->draw(window);
+			//activeWorld->draw(window);
 
 			window.setView(window.getDefaultView());
 			window.draw(hud);

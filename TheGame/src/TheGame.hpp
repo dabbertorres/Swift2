@@ -43,10 +43,8 @@ namespace tg
 			// settings
 			unsigned int soundLevel;
 			unsigned int musicLevel;
-			std::string language;
 			
 			swift::Settings gameSettings;
-			swift::Settings dictionary;
 	};
 }
 

@@ -12,10 +12,8 @@ namespace tg
 {
 	TheGame::TheGame(int argc, char** argv)
 	:	Game("TheGame", 60),
-		assets(getResourcePath()),
 		soundLevel(100),
-		musicLevel(75),
-		language("en")
+		musicLevel(75)
 	{
 		// init Logger first
 		swift::Logger::setFile(getResourcePath() / "TheGame.log");
@@ -30,14 +28,13 @@ namespace tg
 								<< "Video Card:\t" << swift::getVideoCard() << '\n'
 								<< "Video Driver:\t" << swift::getVideoDriver() << "\n\n";
 		
-		// loads settings from the settings file
+		// get settings to initialize engine
 		loadSettings(getResourcePath() / "settings.ini");
 		
+		// arguments override settings
 		handleArgs(argc, argv);
 		
-		// loads a dictionary
-		dictionary.loadFile(getResourcePath() / ("dict/" + language + ".dic"));
-		
+		// get stuff so we can do stuff
 		loadAssets();
 		
 		// gotta set this if you want any text to display
@@ -45,8 +42,10 @@ namespace tg
 		
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);	// need to figure out icon stuff
 		
+		// can't do anything without state (well, in this case)
 		initState();
 		
+		// scripting if you want it
 		initScripting();
 	}
 	
@@ -62,7 +61,7 @@ namespace tg
 	
 	void TheGame::manageStates()
 	{
-		if(states.read()->switchFrom())
+		if(states.read()->isDone())
 		{
 			states.pop();
 
@@ -81,7 +80,7 @@ namespace tg
 	bool TheGame::loadSettings(const gfs::Path& file)
 	{
 		// settings file settings
-		if(!file || !gameSettings.loadFile(file))
+		if(!file || !gameSettings.loadFromFile(file))
 		{
 			swift::Logger::get() << "Could not open settings file, default settings will be used\n";
 			return false;
@@ -93,7 +92,9 @@ namespace tg
 		gameSettings.get("res.y", resolution.y);
 		gameSettings.get("sound", soundLevel);
 		gameSettings.get("music", musicLevel);
-		gameSettings.get("lang", language);
+		
+		soundPlayer.setVolume(soundLevel / 100.f);
+		musicPlayer.setVolume(musicLevel / 100.f);
 		
 		return true;
 	}
@@ -101,9 +102,9 @@ namespace tg
 	void TheGame::loadAssets()
 	{
 		assets.loadResourceFolder(getResourcePath() / "anims");
-		assets.loadResourceFolder(getResourcePath() / "dict");
+		assets.loadResourceFolder(getResourcePath() / "dicts");
 		assets.loadResourceFolder(getResourcePath() / "fonts");
-		//assets.loadResourceFolder(getResourcePath() / "maps");
+		assets.loadResourceFolder(getResourcePath() / "maps");
 		assets.loadResourceFolder(getResourcePath() / "music");
 		assets.loadResourceFolder(getResourcePath() / "scripts");
 		assets.loadResourceFolder(getResourcePath() / "sounds");
@@ -121,7 +122,7 @@ namespace tg
 	
 	void TheGame::initState()
 	{
-		states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, gameSettings, dictionary, states));
+		states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, gameSettings, states), false);
 	}
 	
 	void TheGame::initScripting()

@@ -1,16 +1,18 @@
 #ifndef GAMESCRIPT_HPP
 #define GAMESCRIPT_HPP
 
-#include "../src/Scripting/ScriptManager.hpp"
-#include "../src/Scripting/Script.hpp"
+#include "Scripting/Script.hpp"
 
-#include "../src/Logger/Logger.hpp"
+#include "Logger/Logger.hpp"
 
-#include "GamePlay.hpp"
 #include "GameAssets.hpp"
+
+#include "EntitySystem/SystemMap.hpp"
 
 namespace tg
 {
+	class GamePlay;
+	
 	class GameScript : public swift::Script
 	{
 		public:
@@ -29,7 +31,6 @@ namespace tg
 			static void setWorld(swift::World& w);
 			static void setWorld(std::nullptr_t);
 			static void setPlayState(GamePlay& p);
-			static void setScriptManager(swift::ScriptManager& sm);
 
 			// get world pointer for comparison
 			static const swift::World* getWorld();
@@ -43,14 +44,13 @@ namespace tg
 			static swift::KeyboardManager* keyboard;
 			static swift::World* world;
 			static GamePlay* play;
-			static swift::ScriptManager* scripts;
-
+			
 			/* Lua converted functions */
 			// Utility
 			static std::tuple<unsigned, unsigned> getWindowSize();
 			static float getTime();
 			static void logMsg(std::string m);
-
+			
 			// Scripting
 			static bool addScript(std::string s);
 			static bool removeScript(std::string s);

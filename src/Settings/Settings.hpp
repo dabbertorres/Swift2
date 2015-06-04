@@ -21,7 +21,7 @@ namespace swift
 			// Accepts the file name, f
 			// Returns true if file was loaded,
 			// false if not
-			bool loadFile(const gfs::Path& f);
+			bool loadFromFile(const gfs::Path& f);
 			
 			// returns true for sucessful writing
 			bool saveToFile() const;

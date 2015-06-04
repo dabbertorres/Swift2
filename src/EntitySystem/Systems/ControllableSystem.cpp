@@ -2,7 +2,7 @@
 
 #include "../Components/Movable.hpp"
 
-#include "../../Math/Math.hpp"
+#include "Math/Math.hpp"
 
 namespace swift
 {

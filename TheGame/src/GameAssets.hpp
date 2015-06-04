@@ -8,13 +8,11 @@ namespace tg
 	class GameAssets : public swift::AssetManager
 	{
 		public:
-			GameAssets(const std::string& rp);
+			GameAssets() = default;
 			~GameAssets() = default;
 
-		private:
-			virtual bool loadScript(const std::string& file);
-
-			std::string resPath;
+		protected:
+			virtual bool loadScript(const gfs::Path& file);
 	};
 }
 

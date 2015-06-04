@@ -3,7 +3,7 @@
 #include "../Components/BatchDrawable.hpp"
 #include "../Components/Physical.hpp"
 
-#include "../../ResourceManager/AssetManager.hpp"
+#include "ResourceManager/AssetManager.hpp"
 
 namespace swift
 {

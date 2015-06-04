@@ -15,7 +15,7 @@ namespace tg
 	class GameState : public swift::State
 	{
 		public:
-			GameState(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm);
+			GameState(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm);
 			virtual ~GameState() = default;
 			
 			virtual void handleEvent(const sf::Event& event) = 0;
@@ -27,8 +27,7 @@ namespace tg
 			GameAssets& assets;
 			swift::SoundPlayer& soundPlayer;
 			swift::MusicPlayer& musicPlayer;
-			swift::Settings settings;
-			swift::Settings dictionary;
+			swift::Settings& settings;
 			swift::StateMachine& states;
 	};
 }

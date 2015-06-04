@@ -14,7 +14,7 @@ namespace tg
 	class GameMenu : public GameState
 	{
 		public:
-			GameMenu(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm);
+			GameMenu(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm);
 			~GameMenu() = default;
 
 			virtual void handleEvent(const sf::Event& event);

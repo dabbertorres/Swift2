@@ -3,11 +3,11 @@
 namespace swift
 {
 	State::State()
-	:	shouldReturn(false)
+	:	done(false)
 	{}
 
-	bool State::switchFrom()
+	bool State::isDone()
 	{
-		return shouldReturn;
+		return done;
 	}
 }

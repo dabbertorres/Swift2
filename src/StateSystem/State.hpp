@@ -17,10 +17,10 @@ namespace swift
 			virtual void handleEvent(const sf::Event& event) = 0;
 			virtual void update(const sf::Time& dt) = 0;
 			virtual void draw() = 0;
-			virtual bool switchFrom();
+			virtual bool isDone();
 
 		protected:
-			bool shouldReturn;
+			bool done;
 	};
 }
 

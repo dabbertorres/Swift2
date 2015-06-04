@@ -15,7 +15,7 @@ namespace swift
 			using Updater = std::function<void(const sf::Time&)>;
 			using Drawer = std::function<void()>;
 			
-			SubState();
+			SubState() = default;
 			SubState(const EventHandler& e, const Updater& u, const Drawer& d);
 			virtual ~SubState() = default;
 

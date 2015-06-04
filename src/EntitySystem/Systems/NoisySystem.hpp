@@ -5,8 +5,8 @@
 
 #include "../Components/Noisy.hpp"
 
-#include "../../SoundSystem/SoundPlayer.hpp"
-#include "../../ResourceManager/AssetManager.hpp"
+#include "SoundSystem/SoundPlayer.hpp"
+#include "ResourceManager/AssetManager.hpp"
 
 namespace swift
 {

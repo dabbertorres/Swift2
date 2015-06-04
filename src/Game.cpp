@@ -49,37 +49,43 @@ namespace swift
 		sf::Time lastTime = gameTime.getElapsedTime();
 		sf::Time lag = sf::seconds(0);
 		
+#ifdef DEBUG
+		const float FRAMES_TO_TIME = 60.f;
+		sf::Clock framesClock;
+		unsigned int frameCounter = 0;
+#endif
+		
 		while(running)
 		{
 			sf::Time newTime = gameTime.getElapsedTime();
 			sf::Time frameTime = newTime - lastTime;
 			
-			if(frameTime > sf::seconds(0.25))
-			{
-				frameTime = sf::seconds(0.25);
-			}
-			
 			lastTime = newTime;
 			
 			lag += frameTime;
 			
-			while(lag >= dt && running)
+			while(lag >= dt)
 			{
-				update(dt);
-				manageStates();
 				handleEvents();
+				update(dt);
 				lag -= dt;
 			}
 			
-			if(running)
-			{
-				draw();
-			}
+			draw();
 			
 #ifdef DEBUG
 			// frames per second measurement
-			fps.setString(std::to_string(1.f / frameTime.asSeconds()).substr(0, 5));
+			frameCounter++;
+			
+			if(frameCounter >= FRAMES_TO_TIME)
+			{
+				fps.setString(std::to_string(FRAMES_TO_TIME / framesClock.restart().asSeconds()).substr(0, 8));
+				frameCounter = 0;
+			}
 #endif
+			
+			// make state changes last, since they affect everything else
+			manageStates();
 		}
 	}
 	
@@ -87,14 +93,9 @@ namespace swift
 	{
 		sf::Event event;
 
-		while(window.pollEvent(event) && running)
+		while(window.pollEvent(event))
 		{
 			gameHandleEvents(event);
-			
-			if(event.type == sf::Event::Closed)
-			{
-				running = false;
-			}
 		}
 	}
 

@@ -4,13 +4,9 @@
 
 namespace tg
 {
-	GameAssets::GameAssets(const std::string& rp)
-	:	resPath(rp)
-	{}
-
-	bool GameAssets::loadScript(const std::string& file)
+	bool GameAssets::loadScript(const gfs::Path& file)
 	{
-		std::string fileName = file.substr(file.find_last_of('/') + 1);
+		std::string fileName = file.filename();
 
 		scripts.emplace(fileName, new GameScript());
 
@@ -26,8 +22,6 @@ namespace tg
 		}
 
 		swift::Logger::get() << "Script:\t" << fileName << '\n';
-
-		scripts[fileName]->load(resPath + "saves/" + fileName + ".script");
 
 		return true;
 	}

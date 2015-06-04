@@ -13,10 +13,10 @@
 
 namespace tg
 {
-	class GameSettings : public GameState
+	class GameSettingsMenu : public GameState
 	{
 		public:
-			GameSettings(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm);
+			GameSettingsMenu(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm);
 
 			virtual void handleEvent(const sf::Event& event);
 			virtual void update(const sf::Time& dt);

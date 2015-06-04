@@ -1,8 +1,10 @@
 #include "GameScript.hpp"
 
-#include "../../src/Math/Math.hpp"
+#include "Math/Math.hpp"
 
-#include "../../src/ResourceManager/AssetManager.hpp"
+#include "GameAssets.hpp"
+
+#include "GamePlay.hpp"
 
 namespace tg
 {
@@ -13,7 +15,6 @@ namespace tg
 	swift::KeyboardManager* GameScript::keyboard = nullptr;
 	swift::World* GameScript::world = nullptr;
 	GamePlay* GameScript::play = nullptr;
-	swift::ScriptManager* GameScript::scripts = nullptr;
 
 	GameScript::GameScript()
 	{
@@ -137,11 +138,6 @@ namespace tg
 		play = &p;
 	}
 
-	void GameScript::setScriptManager(swift::ScriptManager& sm)
-	{
-		scripts = &sm;
-	}
-
 	const swift::World* GameScript::getWorld()
 	{
 		return world;
@@ -181,26 +177,12 @@ namespace tg
 	// Play
 	bool GameScript::addScript(std::string s)
 	{
-		if(scripts)
-		{
-			return scripts->add(s);
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	bool GameScript::removeScript(std::string s)
 	{
-		if(scripts)
-		{
-			return scripts->remove(s);
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
 
 	// World

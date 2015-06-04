@@ -5,7 +5,7 @@
 
 #include "../Components/Physical.hpp"
 
-#include "../../Collision/Collision.hpp"
+#include "Collision/Collision.hpp"
 
 #include <vector>
 

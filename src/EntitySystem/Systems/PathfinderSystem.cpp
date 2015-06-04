@@ -4,10 +4,10 @@
 #include "../Components/Physical.hpp"
 #include "../Components/Movable.hpp"
 
-#include "../../World/World.hpp"
-#include "../../Pathfinding/Path.hpp"
+#include "World/World.hpp"
+#include "Pathfinding/Path.hpp"
 
-#include "../../Math/Math.hpp"
+#include "Math/Math.hpp"
 
 namespace swift
 {

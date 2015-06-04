@@ -19,7 +19,7 @@ namespace swift
 
 			if(c.shouldPlay)
 			{
-				soundPlayer->newSound(*assets->getSoundBuffer(c.soundFile), {phys.position.x, phys.position.y, 0}, false);
+				soundPlayer->newSound(*assets->getSound(c.soundFile), {phys.position.x, phys.position.y, 0}, false);
 				c.shouldPlay = false;
 			}
 		}

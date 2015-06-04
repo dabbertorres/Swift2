@@ -12,15 +12,14 @@
 
 #include "GameWorld.hpp"
 
-#include "Scripting/ScriptManager.hpp"
-#include "Scripting/Script.hpp"
+#include "GameScript.hpp"
 
 namespace tg
 {
 	class GamePlay : public GameState
 	{
 		public:
-			GamePlay(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::Settings& dic, swift::StateMachine& sm);
+			GamePlay(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm);
 			~GamePlay();
 
 			virtual void handleEvent(const sf::Event& event);
@@ -60,10 +59,10 @@ namespace tg
 			sf::View playView;
 			float currentZoom;
 
-			std::map<std::string, GameWorld*> worlds;
+			std::unordered_map<std::string, GameWorld*> worlds;
 			
 			// scripting
-			swift::ScriptManager scripts;
+			std::unordered_map<std::string, GameScript*> scripts;
 	};
 }
 

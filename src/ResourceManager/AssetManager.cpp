@@ -49,12 +49,15 @@ namespace swift
 		}
 		
 		// get mods to load from mod file
-		gfs::Path modsIni = modsFolder / "mods.ini";
-		
-		if(modsIni)
-		{
-			Settings mods;
-		}
+		// each save should have a mods.ini which says which mods are enabled on that save
+		// those mods should be loaded when that save is loaded,
+		// and unloaded when that save is unloaded
+//		gfs::Path modsIni = modsFolder / "mods.ini";
+//		
+//		if(modsIni)
+//		{
+//			Settings mods;
+//		}
 		
 		gfs::PathContents modFolders = gfs::contents(modsFolder);
 		
@@ -68,7 +71,7 @@ namespace swift
 				std::string description;
 				
 				Settings info;
-				info.loadFile(m + "info.txt");
+				info.loadFromFile(m + "info.txt");
 				
 				bool nameError = info.get("name", name);
 				bool versionError = info.get("version", version);
@@ -97,9 +100,34 @@ namespace swift
 
 	void AssetManager::clean()
 	{
-		for(auto& a : animTextures)
+		for(auto& a : anims)
 		{
 			delete a.second;
+		}
+
+		for(auto& d : dicts)
+		{
+			delete d.second;
+		}
+
+		for(auto& f : fonts)
+		{
+			delete f.second;
+		}
+
+		for(auto& m : music)
+		{
+			delete m.second;
+		}
+
+		for(auto& s : scripts)
+		{
+			delete s.second;
+		}
+
+		for(auto& s : sounds)
+		{
+			delete s.second;
 		}
 
 		for(auto& b : batches)
@@ -112,30 +140,10 @@ namespace swift
 			delete t.second;
 		}
 
-		for(auto& s : soundBuffers)
-		{
-			delete s.second;
-		}
-
-		for(auto& m : music)
-		{
-			delete m.second;
-		}
-
-		for(auto& f : fonts)
-		{
-			delete f.second;
-		}
-
-		for(auto& s : scripts)
-		{
-			delete s.second;
-		}
-
-		animTextures.clear();
+		anims.clear();
 		batches.clear();
 		textures.clear();
-		soundBuffers.clear();
+		sounds.clear();
 		music.clear();
 		fonts.clear();
 		scripts.clear();
@@ -162,83 +170,31 @@ namespace swift
 				batches[t] = new SpriteBatch(*texture);
 				return true;
 			}
-			else
-			{
-				return false;
-			}
 		}
-		else
-		{
-			return false;
-		}
+		
+		return false;
 	}
 
-	AnimTexture* AssetManager::getAnimTexture(const std::string& n)
+	AnimTexture* AssetManager::getAnim(const std::string& n)
 	{
-		if(animTextures.find(n) != animTextures.end())
+		if(anims.find(n) != anims.end())
 		{
-			return animTextures.find(n)->second;
+			return anims.find(n)->second;
 		}
-		else
-		{
-			Logger::get() << "[WARNING]: No \"" << n << "\" anim file exists\n";
-		}
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" anim file exists\n";
 
 		return nullptr;
 	}
-
-	SpriteBatch* AssetManager::getBatch(const std::string& n)
+	
+	Dictionary* AssetManager::getDict(const std::string& n)
 	{
-		if(batches.find(n) != batches.end())
+		if(dicts.find(n) != dicts.end())
 		{
-			return batches.find(n)->second;
+			return dicts.find(n)->second;
 		}
-		else
-		{
-			Logger::get() << "[WARNING]: No\"" << n << "\" batch exists\n";
-		}
-
-		return nullptr;
-	}
-
-	sf::Texture* AssetManager::getTexture(const std::string& n)
-	{
-		if(textures.find(n) != textures.end())
-		{
-			return textures.find(n)->second;
-		}
-		else
-		{
-			Logger::get() << "[WARNING]: No \"" << n << "\" texture file exists\n";
-		}
-
-		return nullptr;
-	}
-
-	sf::SoundBuffer* AssetManager::getSoundBuffer(const std::string& n)
-	{
-		if(soundBuffers.find(n) != soundBuffers.end())
-		{
-			return soundBuffers.find(n)->second;
-		}
-		else
-		{
-			Logger::get() << "[WARNING]: No \"" << n << "\" sound buffer file exists\n";
-		}
-
-		return nullptr;
-	}
-
-	sf::Music* AssetManager::getSong(const std::string& n)
-	{
-		if(music.find(n) != music.end())
-		{
-			return music.find(n)->second;
-		}
-		else
-		{
-			Logger::get() << "[WARNING]: No \"" << n << "\" music file exists\n";
-		}
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" dic file exists\n";
 
 		return nullptr;
 	}
@@ -249,10 +205,20 @@ namespace swift
 		{
 			return fonts.find(n)->second;
 		}
-		else
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" font file exists\n";
+
+		return nullptr;
+	}
+
+	sf::Music* AssetManager::getMusic(const std::string& n)
+	{
+		if(music.find(n) != music.end())
 		{
-			Logger::get() << "[WARNING]: No \"" << n << "\" font file exists\n";
+			return music.find(n)->second;
 		}
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" music file exists\n";
 
 		return nullptr;
 	}
@@ -263,31 +229,157 @@ namespace swift
 		{
 			return scripts.find(n)->second;
 		}
-		else
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" script file exists\n";
+		
+		return nullptr;
+	}
+
+	sf::SoundBuffer* AssetManager::getSound(const std::string& n)
+	{
+		if(sounds.find(n) != sounds.end())
 		{
-			Logger::get() << "[WARNING]: No \"" << n << "\" script file exists\n";
+			return sounds.find(n)->second;
 		}
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" sound buffer file exists\n";
+		
+		return nullptr;
+	}
+
+	SpriteBatch* AssetManager::getBatch(const std::string& n)
+	{
+		if(batches.find(n) != batches.end())
+		{
+			return batches.find(n)->second;
+		}
+		
+		Logger::get() << "[WARNING]: No\"" << n << "\" batch exists\n";
 
 		return nullptr;
 	}
 
-	bool AssetManager::loadAnimTexture(const gfs::Path& file)
+	sf::Texture* AssetManager::getTexture(const std::string& n)
+	{
+		if(textures.find(n) != textures.end())
+		{
+			return textures.find(n)->second;
+		}
+		
+		Logger::get() << "[WARNING]: No \"" << n << "\" texture file exists\n";
+		
+		return nullptr;
+	}
+
+	bool AssetManager::loadAnim(const gfs::Path& file)
 	{
 		std::string filename = file.filename();
 
-		animTextures.emplace(filename, new AnimTexture());
+		anims.emplace(filename, new AnimTexture());
 
-		if(!animTextures[filename]->loadFromFile(file))
+		if(!anims[filename]->loadFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to load " << file << " as an anim\n";
 
-			delete animTextures[filename];
+			delete anims[filename];
 
-			animTextures.erase(filename);
+			anims.erase(filename);
 			return false;
 		}
 
 		Logger::get() << "Anim:\t" << filename << '\n';
+
+		return true;
+	}
+	
+	bool AssetManager::loadDict(const gfs::Path& file)
+	{
+		std::string filename = file.name();
+
+		dicts.emplace(filename, new Dictionary());
+
+		if(!dicts[filename]->loadFromFile(file))
+		{
+			Logger::get() << "[WARNING]: Unable to load " << file << " as a dictionary\n";
+
+			delete dicts[filename];
+
+			dicts.erase(filename);
+			return false;
+		}
+
+		Logger::get() << "Dictionary:\t" << filename << '\n';
+
+		return true;
+	}
+
+	bool AssetManager::loadFont(const gfs::Path& file)
+	{
+		std::string filename = file.filename();
+
+		fonts.emplace(filename, new sf::Font());
+
+		if(!fonts[filename]->loadFromFile(file))
+		{
+			Logger::get() << "[WARNING]: Unable to load " << file << " as a font.\n";
+
+			// delete new'd font
+			delete fonts[filename];
+
+			fonts.erase(filename);
+			return false;
+		}
+
+		Logger::get() << "Font:\t" << filename << '\n';
+
+		return true;
+	}
+
+	bool AssetManager::loadMusic(const gfs::Path& file)
+	{
+		std::string filename = file.filename();
+
+		music.emplace(filename, new sf::Music());
+
+		if(!music[filename]->openFromFile(file))
+		{
+			Logger::get() << "[WARNING]: Unable to open " << file << " as a music file.\n";
+
+			// delete new'd music
+			delete music[filename];
+
+			music.erase(filename);
+			return false;
+		}
+
+		Logger::get() << "Music:\t" << filename << '\n';
+
+		return true;
+	}
+
+	bool AssetManager::loadScript(const gfs::Path&)
+	{
+		return false;
+	}
+
+	bool AssetManager::loadSound(const gfs::Path& file)
+	{
+		std::string filename = file.filename();
+
+		sounds.emplace(filename, new sf::SoundBuffer());
+
+		if(!sounds[filename]->loadFromFile(file))
+		{
+			Logger::get() << "[WARNING]: Unable to load " << file << " as a sound.\n";
+
+			// delete new'd soundbuffer
+			delete sounds[filename];
+
+			sounds.erase(filename);
+			return false;
+		}
+
+		Logger::get() << "Sound:\t" << filename << '\n';
 
 		return true;
 	}
@@ -315,77 +407,6 @@ namespace swift
 		return true;
 	}
 
-	bool AssetManager::loadSound(const gfs::Path& file)
-	{
-		std::string filename = file.filename();
-
-		soundBuffers.emplace(filename, new sf::SoundBuffer());
-
-		if(!soundBuffers[filename]->loadFromFile(file))
-		{
-			Logger::get() << "[WARNING]: Unable to load " << file << " as a sound.\n";
-
-			// delete new'd soundbuffer
-			delete soundBuffers[filename];
-
-			soundBuffers.erase(filename);
-			return false;
-		}
-
-		Logger::get() << "Sound:\t" << filename << '\n';
-
-		return true;
-	}
-
-	bool AssetManager::loadSong(const gfs::Path& file)
-	{
-		std::string filename = file.filename();
-
-		music.emplace(filename, new sf::Music());
-
-		if(!music[filename]->openFromFile(file))
-		{
-			Logger::get() << "[WARNING]: Unable to open " << file << " as a music file.\n";
-
-			// delete new'd music
-			delete music[filename];
-
-			music.erase(filename);
-			return false;
-		}
-
-		Logger::get() << "Music:\t" << filename << '\n';
-
-		return true;
-	}
-
-	bool AssetManager::loadFont(const gfs::Path& file)
-	{
-		std::string filename = file.filename();
-
-		fonts.emplace(filename, new sf::Font());
-
-		if(!fonts[filename]->loadFromFile(file))
-		{
-			Logger::get() << "[WARNING]: Unable to load " << file << " as a font.\n";
-
-			// delete new'd font
-			delete fonts[filename];
-
-			fonts.erase(filename);
-			return false;
-		}
-
-		Logger::get() << "Font:\t" << filename << '\n';
-
-		return true;
-	}
-
-	bool AssetManager::loadScript(const gfs::Path&)
-	{
-		return false;
-	}
-
 	bool AssetManager::loadResource(const gfs::Path& file)
 	{
 		if(!file)
@@ -396,34 +417,36 @@ namespace swift
 		// this if chain checks what folder the file is in
 		if(file.parent().name().find("anims") != std::string::npos)
 		{
-			return loadAnimTexture(file);
+			return loadAnim(file);
 		}
-		else if(file.parent().name().find("textures") != std::string::npos)
+		else if(file.parent().name().find("dicts") != std::string::npos)
 		{
-			return loadTexture(file);
-		}
-		else if(file.parent().name().find("sounds") != std::string::npos)
-		{
-			return loadSound(file);
-		}
-		else if(file.parent().name().find("music") != std::string::npos)
-		{
-			return loadSong(file);
+			return loadDict(file);
 		}
 		else if(file.parent().name().find("fonts") != std::string::npos)
 		{
 			return loadFont(file);
 		}
+		else if(file.parent().name().find("music") != std::string::npos)
+		{
+			return loadMusic(file);
+		}
 		else if(file.parent().name().find("scripts") != std::string::npos)
 		{
 			return loadScript(file);
+		}
+		else if(file.parent().name().find("sounds") != std::string::npos)
+		{
+			return loadSound(file);
+		}
+		else if(file.parent().name().find("textures") != std::string::npos)
+		{
+			return loadTexture(file);
 		}
 		else
 		{
 			Logger::get() << "[INFO]: " << file << " is an unknown resource type.\n";
 			return false;
 		}
-
-		return true;
 	}
 }

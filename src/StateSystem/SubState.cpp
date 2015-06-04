@@ -2,12 +2,6 @@
 
 namespace swift
 {
-	SubState::SubState()
-	:	eventFunc({}),
-		updateFunc({}),
-		drawFunc({})
-	{}
-
 	SubState::SubState(const EventHandler& e, const Updater& u, const Drawer& d)
 	:	eventFunc(e),
 		updateFunc(u),
@@ -16,17 +10,38 @@ namespace swift
 
 	void SubState::handleEvents(const sf::Event& e)
 	{
-		eventFunc(e);
+		try
+		{
+			eventFunc(e);
+		}
+		catch(...)
+		{
+			
+		}
 	}
 
 	void SubState::update(const sf::Time& dt)
 	{
-		updateFunc(dt);
+		try
+		{
+			updateFunc(dt);
+		}
+		catch(...)
+		{
+			
+		}
 	}
 
 	void SubState::draw()
 	{
-		drawFunc();
+		try
+		{
+			drawFunc();
+		}
+		catch(...)
+		{
+			
+		}
 	}
 
 	void SubState::setEventFunc(const EventHandler& e)

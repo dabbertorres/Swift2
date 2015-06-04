@@ -11,7 +11,7 @@ namespace swift
 	:	changed(false)
 	{}
 
-	bool Settings::loadFile(const gfs::Path& f)
+	bool Settings::loadFromFile(const gfs::Path& f)
 	{
 		data.clear();
 		file = f;
