@@ -18,7 +18,7 @@ namespace swift
 			
 			Movable& getMovable() const;
 			
-			static Component::Type type();
+			static constexpr Component::Type type();
 			
 			virtual std::map<std::string,std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
@@ -32,6 +32,11 @@ namespace swift
 		private:
 			Movable& movable;
 	};
+	
+	constexpr Component::Type Controllable::type()
+	{
+		return Component::Type::Controllable;
+	}
 }
 
 #endif // CONTROLLABLE_HPP

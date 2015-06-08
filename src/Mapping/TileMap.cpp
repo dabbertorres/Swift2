@@ -142,7 +142,7 @@ namespace swift
 		return true;
 	}
 
-	bool TileMap::loadTexture(const sf::Texture& tex)
+	bool TileMap::setTexture(const sf::Texture& tex)
 	{
 		texture = &tex;
 

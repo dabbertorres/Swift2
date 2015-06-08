@@ -10,7 +10,7 @@ namespace gfs
 	{
 		friend bool makeDir(Path& path);
 		friend bool makeFile(Path& path);
-		friend bool remove(Path& path);
+		friend bool erase(Path& path);
 		friend bool copy(const Path& src, Path& dest);
 		friend bool move(Path& src, Path& dest);
 		
@@ -62,7 +62,7 @@ namespace gfs
 			Path parent() const;
 			std::string filename() const;
 			std::string name() const;
-			std::string extension() const;
+			std::string ext() const;
 			
 			/* casts */
 			operator std::string() const;

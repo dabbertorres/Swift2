@@ -41,11 +41,6 @@ namespace swift
 		return physical;
 	}
 	
-	Component::Type Movable::type()
-	{
-		return Component::Type::Movable;
-	}
-	
 	std::map<std::string, std::string> Movable::serialize() const
 	{
 		std::map<std::string, std::string> variables;

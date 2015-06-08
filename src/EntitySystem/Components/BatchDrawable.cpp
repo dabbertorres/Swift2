@@ -32,11 +32,6 @@ namespace swift
 		return physical;
 	}
 	
-	Component::Type BatchDrawable::type()
-	{
-		return Component::Type::BatchDrawable;
-	}
-	
 	std::map<std::string, std::string> BatchDrawable::serialize() const
 	{
 		std::map<std::string, std::string> variables;

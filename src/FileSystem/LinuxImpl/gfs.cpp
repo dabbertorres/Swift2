@@ -4,6 +4,8 @@
 
 #include "../gfs.hpp"
 
+#include <fstream>
+
 #include <dirent.h>
 #include <limits.h>
 #include <unistd.h>
@@ -106,12 +108,7 @@ namespace gfs
 	
 	bool makeDir(Path& path)
 	{
-		if(path)
-			return false;
-		
-		std::string pathStr = path;
-		
-		if(!mkdir(pathStr.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH))	// user = rwx, group = rx, others = rx. 0755
+		if(makeDir(path))
 		{
 			Path::checkPath(path, true);
 			
@@ -128,17 +125,12 @@ namespace gfs
 		
 		std::string pathStr = path;
 		
-		return !mkdir(pathStr.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH);
+		return mkdir(pathStr.c_str(), S_IRWXU | S_IRGRP | S_IXGRP | S_IROTH | S_IXOTH) == 0;	// user = rwx, group = rx, others = rx. 0755
 	}
 	
 	bool makeFile(Path& path)
 	{
-		if(path)
-			return false;
-		
-		std::string pathStr = path;
-		
-		if(creat(pathStr.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1)	// user = rw, group = r, others = r. 0644
+		if(makeFile(path))
 		{
 			Path::checkPath(path, true);
 			
@@ -155,15 +147,12 @@ namespace gfs
 		
 		std::string pathStr = path;
 		
-		return creat(pathStr.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1;
+		return creat(pathStr.c_str(), S_IRUSR | S_IWUSR | S_IRGRP | S_IROTH) != -1;	// user = rw, group = r, others = r: 0644
 	}
 	
-	bool remove(Path& path)
+	bool erase(Path& path)
 	{
-		if(!path)
-			return false;
-		
-		if(!remove(path))
+		if(erase(path))
 		{
 			Path::checkPath(path, true);
 			
@@ -173,36 +162,57 @@ namespace gfs
 		return false;
 	}
 	
-	bool remove(const Path& path)
+	bool erase(const Path& path)
 	{
 		if(!path)
 			return false;
+			
+		std::string pathStr = path;
 		
-		return !remove(path);
+		return remove(pathStr.c_str()) == 0;
 	}
 	
-//	bool copy(const Path& src, Path& dest)
-//	{
-//		if(!src || dest)
-//			return false;
-//		
-//		
-//	}
+	bool copy(const Path& src, Path& dest)
+	{
+		if(copy(src, dest))
+		{
+			Path::checkPath(dest, true);
+			
+			return true;
+		}
+		
+		return false;
+	}
 	
-//	bool copy(const Path& src, const Path& dest)
-//	{
-//		
-//	}
-
-	bool move(Path& src, Path& dest)
+	bool copy(const Path& src, const Path& dest)
 	{
 		if(!src || dest)
 			return false;
-			
-		std::string srcStr = src;
-		std::string destStr = dest;
 		
-		if(!rename(srcStr.c_str(), destStr.c_str()))
+		std::ifstream fin(src, std::ios::binary);
+		std::ofstream fout(dest, std::ios::binary);
+		
+		if(!fin || !fout)
+			return false;
+		
+		// 8K: this (pretty much) ensures the buffer will fit in L1 cache,
+		// keeping this fairly performant.
+		constexpr int BYTES_TO_READ = 8 * 1024;
+		
+		char buffer[BYTES_TO_READ];
+		
+		while(fin.read(buffer, BYTES_TO_READ))
+		{
+			auto bytesToWrite = fin.gcount();
+			fout.write(buffer, bytesToWrite);
+		}
+		
+		return true;
+	}
+
+	bool move(Path& src, Path& dest)
+	{
+		if(move(src, dest))
 		{
 			Path::checkPath(src, true);
 			Path::checkPath(dest, true);
@@ -221,7 +231,7 @@ namespace gfs
 		std::string srcStr = src;
 		std::string destStr = dest;
 		
-		return !rename(srcStr.c_str(), destStr.c_str());
+		return rename(srcStr.c_str(), destStr.c_str()) == 0;
 	}
 }
 

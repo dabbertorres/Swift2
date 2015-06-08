@@ -37,11 +37,6 @@ namespace swift
 	{
 		return movable;
 	}
-	
-	Component::Type Controllable::type()
-	{
-		return Component::Type::Controllable;
-	}
 
 	std::map<std::string,std::string> Controllable::serialize() const
 	{

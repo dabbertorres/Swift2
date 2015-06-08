@@ -2,12 +2,6 @@
 
 namespace swift
 {
-	ScriptSave::ScriptSave(Script& s)
-	:	name(s.getFile())
-	{
-		save(s);
-	}
-	
 	void ScriptSave::load(Script& s)
 	{
 		if(s.luaState["Load"])
@@ -87,8 +81,13 @@ namespace swift
 		return name;
 	}
 	
-	ScriptSave::ScriptSave(const std::string& n, const Data& d)
-	:	name(n),
-		variables(d)
+	ScriptSave::ScriptSave(Script& s)
+	:	name(s.getFile())
+	{
+		save(s);
+	}
+	
+	ScriptSave::ScriptSave(const std::string& n)
+	:	name(n)
 	{}
 }

@@ -66,17 +66,14 @@ namespace swift
 			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
 	
 	const Physical& Animated::getPhysical() const
 	{
 		return physical;
-	}
-
-	Component::Type Animated::type()
-	{
-		return Component::Type::Animated;
 	}
 
 	std::map<std::string, std::string> Animated::serialize() const

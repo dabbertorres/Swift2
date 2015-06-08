@@ -14,8 +14,8 @@ namespace swift
 		friend class SaveManager;
 		
 		public:
-			using ScriptSaves = std::vector<ScriptSave>;
-			using WorldSaves = std::vector<WorldSave>;
+			using ScriptSaves = std::vector<ScriptSave, ScriptSave::Allocator>;
+			using WorldSaves = std::vector<WorldSave, WorldSave::Allocator>;
 			
 			Save(const std::string& n);
 			~Save() = default;

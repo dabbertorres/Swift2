@@ -88,7 +88,7 @@ namespace tg
 
 		// setup world
 		bool mapResult = newWorld->tilemap.loadFile(mapFile);
-		bool textureResult = newWorld->tilemap.loadTexture(*assets.getTexture(newWorld->tilemap.getTextureFile()));
+		bool textureResult = newWorld->tilemap.setTexture(*assets.getTexture(newWorld->tilemap.getTextureFile()));
 
 		if(!mapResult)
 		{
@@ -150,74 +150,7 @@ namespace tg
 	{
 		std::string file = "../data/saves/" + world.getName() + ".world";
 
-		tinyxml2::XMLDocument loadFile;
-		loadFile.LoadFile(file.c_str());
-
-		if(loadFile.Error())
-		{
-			swift::Logger::get() << "[ERROR]: Loading world save file \"" << file << "\" failed.\n";
-			return false;
-		}
-
-		tinyxml2::XMLElement* worldRoot = loadFile.FirstChildElement("world");
-
-		if(worldRoot == nullptr)
-		{
-			swift::Logger::get() << "[ERROR]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
-			return false;
-		}
-
-		tinyxml2::XMLElement* entityElement = worldRoot->FirstChildElement("entity");
-
-		while(entityElement != nullptr)
-		{
-			//unsigned int entity = world.createEntity(0);
-
-			tinyxml2::XMLElement* component = entityElement->FirstChildElement();
-
-			while(component != nullptr)
-			{
-				std::string componentName = component->Value();
-				//entity->add(componentName);
-
-				std::map<std::string, std::string> variables;
-				tinyxml2::XMLElement* variableElement = component->FirstChildElement();
-
-				while(variableElement != nullptr)
-				{
-					// make sure the strings aren't empty...
-					if(std::string(variableElement->Value()).size() > 0 && std::string(variableElement->GetText()).size() > 0)
-					{
-						variables.emplace(variableElement->Value(), variableElement->GetText());
-					}
-
-					variableElement = variableElement->NextSiblingElement();
-				}
-
-				// get component and add to it
-				//entity->get(componentName)->unserialize(variables);
-
-				if(componentName == "Drawable")
-				{
-					/*swift::Drawable* draw = entity->get<swift::Drawable>();
-					draw->sprite.setTexture(*assets.getTexture(draw->texture));*/
-				}
-				else if(componentName == "Animated")
-				{
-					/*swift::Animated* anim = entity->get<swift::Animated>();
-					anim->animTex = assets.getAnimTexture(anim->animationFile);
-					anim->createAnimations();
-					anim->sprite.setTexture(*assets.getTexture(anim->animTex->getTextureFile()));
-					anim->currentAnim = "Idle";
-					anim->previousAnim = "Idle";
-					anim->setAnimation("Idle");*/
-				}
-
-				component = component->NextSiblingElement();
-			}
-
-			entityElement = entityElement->NextSiblingElement("entity");
-		}
+		
 
 		return true;
 	}

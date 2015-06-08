@@ -8,11 +8,6 @@ namespace swift
 	{
 	}
 	
-	Component::Type Name::type()
-	{
-		return Component::Type::Name;
-	}
-	
 	std::map<std::string, std::string> Name::serialize() const
 	{
 		std::map<std::string, std::string> variables;

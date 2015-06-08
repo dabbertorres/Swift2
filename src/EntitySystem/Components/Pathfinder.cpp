@@ -35,11 +35,6 @@ namespace swift
 		return movable;
 	}
 	
-	Component::Type Pathfinder::type()
-	{
-		return Component::Type::Pathfinder;
-	}
-	
 	std::map<std::string, std::string> Pathfinder::serialize() const
 	{
 		std::map<std::string, std::string> variables;

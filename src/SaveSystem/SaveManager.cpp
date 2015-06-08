@@ -1,236 +1,404 @@
 #include "SaveManager.hpp"
 
-#include <stdexcept>
 #include <fstream>
-#include <dirent.h>
+#include <tinyxml2.h>
 
-#ifdef __linux__
-	#include <unistd.h>
-	#include <sys/stat.h>
-#elif _WIN32
-	#include <windows.h>
-#else
-	#error "Unsupported operating system!"
-#endif
-
-#include "../Logger/Logger.hpp"
+#include "Logger/Logger.hpp"
 
 namespace swift
 {
-	constexpr char SAVE_PATH[] = "saves/";
-	std::string SaveManager::resPath = "";
+	constexpr char SAVE_PATH[] = "../saves/";
+	gfs::Path SaveManager::resPath;
 	
-	bool SaveManager::doesSaveExist(const std::string& saveDir)
-	{
-		if(resPath.empty())
-		{
-			return false;
-		}
-		
-		// make it a dir if it isn't
-		// prepend the full path
-		std::string path = fixPath(saveDir);
-		
-#ifdef __linux__
-		struct stat st;	// dummy required for stat function
-		
-		// does save dir exist?
-		if(stat(path.c_str(), &st) == 0)
-		{
-			// does 'lastWorld' file in save dir exist?
-			path += "lastWorld";
-			return stat(path.c_str(), &st) == 0;
-		}
-#elif _WIN32
-		auto ftyp = GetFileAttributes(path.c_str());
-		
-		// error out
-		if(ftyp == INVALID_FILE_ATTRIBUTES)
-		{
-			return false;
-		}
-		
-		// is it a dir?
-		if(ftyp & FILE_ATTRIBUTE_DIRECTORY)
-		{
-			// check the file
-			path += "lastWorld";
-			ftyp = GetFileAttributes(path.c_str());
-			
-			// error out
-			if(ftyp == INVALID_FILE_ATTRIBUTES)
-			{
-				return false;
-			}
-			
-			// success?
-			return ftyp & FILE_ATTRIBUTE_NORMAL;
-		}
-#endif
-
-		return false;
-	}
-	
-	Save SaveManager::newSave(const std::string& saveDir, bool force)
-	{
-		if(resPath.empty())
-		{
-			return Save("");
-		}
-		
-		if(doesSaveExist(saveDir))
-		{
-			if(force)
-			{
-				// delete old save
-				deleteSave(saveDir);
-			}
-			else
-			{
-				return Save("");
-			}
-		}
-		
-		// make it a dir if it isn't
-		std::string path = fixPath(saveDir);
-		
-#ifdef __linux__
-		if(mkdir(path.c_str(), 0700) != 0)
-#elif _WIN32
-		if(CreateDirectory(path.c_str(), NULL))
-#endif
-		{
-			// make lastWorld file in new save dir
-			std::ofstream fout;
-			
-			fout.open(path + "lastWorld");
-			
-			if(fout.good())
-			{
-				return Save(saveDir);
-			}
-			
-			return Save("");
-		}
-		
-		return Save("");
-	}
-	
-	bool SaveManager::deleteSave(const std::string& saveDir)
-	{
-		std::string path = fixPath(saveDir);
-		
-		DIR* dir = nullptr;
-		struct dirent* entry = nullptr;
-
-		dir = opendir(path.c_str());
-
-		if(dir == nullptr)
-		{
-			Logger::get() << "Unable to delete save: " << saveDir << "\n";
-			return false;
-		}
-		
-		// delete everything in the dir
-		while((entry = readdir(dir)))
-		{
-			// if the entry is a directory, but is not the current or parent directory
-			if(entry->d_type == DT_DIR && !(std::string(entry->d_name).compare(".") == 0 || std::string(entry->d_name).compare("..") == 0))
-			{
-				deleteSave(path + std::string(entry->d_name));	// recursive on child directory
-			}
-			// entry is a file
-			else if(entry->d_type == DT_REG)
-			{
-				std::string fullPath = path + entry->d_name;
-#ifdef __linux__
-				unlink(fullPath.c_str());
-#elif _WIN32
-				DeleteFile(fullPath.c_str());
-#endif
-			}
-		}
-
-		closedir(dir);
-		
-		// finally, delete the now empty dir
-#ifdef __linux__
-		rmdir(path.c_str());
-#elif _WIN32
-		RemoveDirectory(path.c_str());
-#endif
-		
-		return true;
-	}
-	
-	bool SaveManager::save(const Save& save)
-	{
-		if(resPath.empty() || !writeLastWorld(save))
-		{
-			return false;
-		}
-		
-		// save worlds
-		
-		
-		return true;
-	}
-	
-	Save SaveManager::load(const std::string& saveDir)
-	{
-		if(resPath.empty())
-		{
-			return Save("");
-		}
-		
-		Save save(saveDir);
-		
-		if(!readLastWorld(save))
-		{
-			return Save("");
-		}
-		
-		// load last world
-		// maybe load all world save files?
-		
-		
-		return save;
-	}
-	
-	void SaveManager::setResourcePath(const std::string& rp)
+	void SaveManager::setResourcePath(const gfs::Path& rp)
 	{
 		resPath = rp;
 	}
 	
-	bool SaveManager::loadWorldSave(const std::string& wf, Save& save)
+	bool SaveManager::doesSaveExist(const std::string& saveDir)
 	{
+		// is resPath set to a valid directory?
+		if(!resPath || resPath.type() != gfs::Path::Type::Directory)
+		{
+			return false;
+		}
+		
+		gfs::Path path = makePath(saveDir);
+		
+		if(path && path.type() == gfs::Path::Type::Directory)
+		{
+			gfs::Path lastWorld = path / "lastWorld";
+			
+			return lastWorld && lastWorld.type() == gfs::Path::Type::File;
+		}
+		
+		return false;
+	}
+	
+	bool SaveManager::deleteSave(const std::string& saveDir)
+	{
+		if(!resPath || resPath.type() != gfs::Path::Type::Directory || !doesSaveExist(saveDir))
+		{
+			return false;
+		}
+		
+		gfs::Path path = makePath(saveDir);
+		
+		if(path && path.type() == gfs::Path::Type::Directory)
+		{
+			gfs::PathContents contents = gfs::contents(path, true);
+			
+			for(auto& p : contents)
+			{
+				if(p.type() == gfs::Path::Type::Directory)
+				{
+					deleteSave(p);
+				}
+				else
+				{
+					gfs::erase(p);
+				}
+			}
+			
+			if(gfs::erase(path))
+			{
+				Logger::get() << "[INFO]: Deleted save: " << saveDir << '\n';
+				
+				return true;
+			}
+		}
+		
+		Logger::get() << "[WARNING]: Couldn't delete save: " << saveDir << '\n';
+		
+		return false;
+	}
+	
+	bool SaveManager::save(const Save& save, bool force)
+	{
+		if(!resPath || resPath.type() != gfs::Path::Type::Directory)
+		{
+			return false;
+		}
+		
+		if(!writeLastWorld(save))
+		{
+			return false;
+		}
+		
+		if(doesSaveExist(save.getName()) && !force)
+		{
+			Logger::get() << "[WARNING]: Save: " << save.getName() << " already exists.\n";
+			
+			return false;
+		}
+		
+		gfs::Path savePath = makePath(save.getName());
+		
+		// save worlds
+		Save::WorldSaves worlds = save.getWorldSaves();
+		
+		for(auto& w : worlds)
+		{
+			gfs::Path worldPath = makePath(savePath / w.getName() + ".ws");
+			if(!saveWorld(worldPath, w))
+			{
+				Logger::get() << "[ERROR]: Could not finish saving: " << save.getName() << " on world: " << w.getName() << '\n';
+				return false;
+			}
+		}
+		
+		// save scripts
+		Save::ScriptSaves scripts = save.getScriptSaves();
+		
+		for(auto& s : scripts)
+		{
+			gfs::Path scriptPath = makePath(savePath / s.getName() + ".ss");
+			if(!saveScript(scriptPath, s))
+			{
+				Logger::get() << "[ERROR]: Could not finish saving: " << save.getName() << " on script: " << s.getName() << '\n';
+				return false;
+			}
+		}
+		
+		Logger::get() << "[INFO]: Saved: " << save.getName() << '\n';
+		
 		return true;
 	}
 	
-	bool SaveManager::loadScriptSave(const std::string& sf, Save& save)
+	bool SaveManager::load(Save& save)
 	{
+		if(!resPath || resPath.type() != gfs::Path::Type::Directory)
+		{
+			return false;
+		}
+		
+		gfs::Path savePath = makePath(save.getName());
+		
+		if(!savePath || savePath.type() != gfs::Path::Type::Directory)
+		{
+			Logger::get() << "[ERROR]: Could not load: " << save.getName() << ". It does not exist as a directory.\n";
+			return false;
+		}
+		
+		if(!readLastWorld(save))
+		{
+			return false;
+		}
+		
+		gfs::PathContents contents = gfs::contents(savePath);
+		
+		for(auto& p : contents)
+		{
+			// world
+			if(p.ext() == "ws")
+			{
+				save.worlds.emplace_back(p.name());
+				
+				if(!loadWorld(p, save.worlds.back()))
+				{
+					Logger::get() << "[ERROR]: Could not load: " << save.getName() << " on world: " << p.name() << '\n';
+					return false;
+				}
+			}
+			// script
+			else if(p.ext() == "ss")
+			{
+				save.scripts.emplace_back(p.name());
+				
+				if(!loadScript(p, save.scripts.back()))
+				{
+					Logger::get() << "[ERROR]: Could not load: " << save.getName() << " on script: " << p.name() << '\n';
+					return false;
+				}
+			}
+		}
+		
+		Logger::get() << "[INFO]: Finished loading: " << save.getName() << '\n';
+		
 		return true;
 	}
 	
-	bool SaveManager::saveWorldSave(const std::string& wf, const Save& save)
+	bool SaveManager::loadWorld(const gfs::Path& path, WorldSave& save)
 	{
+		std::string file = path;
+		
+		tinyxml2::XMLDocument loadFile;
+		loadFile.LoadFile(file.c_str());
+
+		if(loadFile.Error())
+		{
+			Logger::get() << "[ERROR]: Loading world save file \"" << path.name() << "\" failed.\n";
+			Logger::get() << "\t: " << loadFile.GetErrorStr1() << '\n';
+			Logger::get() << "\t: " << loadFile.GetErrorStr2() << '\n';
+			return false;
+		}
+
+		auto* worldRoot = loadFile.FirstChildElement("World");
+
+		if(worldRoot == nullptr)
+		{
+			Logger::get() << "[ERROR]: World save file \"" << path.name() << "\" does not have a \"World\" root element.\n";
+			return false;
+		}
+		
+		// get the World meta-info
+		save.name = path.name();
+		save.tilemap = worldRoot->Attribute("tilemap");
+		
+		save.components.clear();
+		
+		auto* componentType = worldRoot->FirstChildElement("Component");
+		while(componentType != nullptr)
+		{
+			// get the type of Component we're dealing with
+			std::string componentStr = componentType->Attribute("type");
+			Component::Type typeVal = Component::type(componentStr.c_str());
+			
+			// create our map for this Component type
+			save.components.emplace(typeVal, WorldSave::ComponentMap{});
+			
+			auto* componentInstance = componentType->FirstChildElement("id");
+			while(componentInstance != nullptr)
+			{
+				// get the entity id of this Component instance
+				unsigned int instanceID = componentInstance->UnsignedAttribute("val");
+				
+				// create our map of variables for this entity
+				save.components[typeVal].emplace(instanceID, WorldSave::VariableMap{});
+				
+				auto* variableElement = componentInstance->FirstChildElement("variable");
+				while(variableElement != nullptr)
+				{
+					save.components[typeVal][instanceID].emplace(variableElement->Attribute("name"), variableElement->GetText());
+					
+					variableElement = variableElement->NextSiblingElement("variable");
+				}
+				
+				componentInstance = componentInstance->NextSiblingElement("id");
+			}
+			
+			componentType = componentType->NextSiblingElement("Component");
+		}
+		
 		return true;
 	}
 	
-	bool SaveManager::saveScriptSave(const std::string& sf, const Save& save)
+	bool SaveManager::loadScript(const gfs::Path& path, ScriptSave& save)
 	{
+		std::string file = path;
+		
+		tinyxml2::XMLDocument loadFile;
+		loadFile.LoadFile(file.c_str());
+
+		if(loadFile.Error())
+		{
+			Logger::get() << "[ERROR]: Loading script save file \"" << path.name() << "\" failed.\n";
+			Logger::get() << "\t: " << loadFile.GetErrorStr1() << '\n';
+			Logger::get() << "\t: " << loadFile.GetErrorStr2() << '\n';
+			return false;
+		}
+
+		auto* scriptRoot = loadFile.FirstChildElement("World");
+
+		if(scriptRoot == nullptr)
+		{
+			Logger::get() << "[ERROR]: Script save file \"" << path.name() << "\" does not have a \"Script\" root element.\n";
+			return false;
+		}
+		
+		save.variables.clear();
+		
+		auto* variable = scriptRoot->FirstChildElement("variable");
+		while(variable != nullptr)
+		{
+			std::string varTypeStr = variable->Attribute("type");
+			decltype(LUA_TNUMBER) varType = LUA_TNONE;
+			
+			if(varTypeStr == "nil")
+			{
+				varType = LUA_TNIL;
+			}
+			else if(varTypeStr == "bool")
+			{
+				varType = LUA_TBOOLEAN;
+			}
+			else if(varTypeStr == "num")
+			{
+				varType = LUA_TNUMBER;
+			}
+			else if(varTypeStr == "string")
+			{
+				varType = LUA_TSTRING;
+			}
+			
+			save.variables.emplace_back(varType, variable->GetText());
+			
+			variable = variable->NextSiblingElement("variable");
+		}
+		
+		return true;
+	}
+	
+	bool SaveManager::saveWorld(const gfs::Path& path, const WorldSave& save)
+	{
+		tinyxml2::XMLDocument saveFile;
+		
+		auto* worldRoot = saveFile.NewElement("World");
+		worldRoot->SetAttribute("tilemap", save.getTilemap().c_str());
+		
+		saveFile.InsertEndChild(worldRoot);
+		
+		for(auto& component : save.components)
+		{
+			auto* componentElement = saveFile.NewElement("Component");
+			componentElement->SetAttribute("type", Component::type(component.first));
+			
+			worldRoot->InsertEndChild(componentElement);
+			
+			for(auto& id : component.second)
+			{
+				auto* idElement = saveFile.NewElement("id");
+				idElement->SetAttribute("val", id.first);
+				
+				componentElement->InsertEndChild(idElement);
+				
+				for(auto& var : id.second)
+				{
+					auto* varElement = saveFile.NewElement("variable");
+					varElement->SetAttribute("name", var.first.c_str());
+					varElement->SetText(var.second.c_str());
+					
+					idElement->InsertEndChild(varElement);
+				}
+			}
+		}
+		
+		std::string file = path;
+		
+		if(saveFile.SaveFile(file.c_str()) != tinyxml2::XMLError::XML_SUCCESS)
+		{
+			Logger::get() << "[ERROR]: Saving world save file \"" << path.name() << "\" failed.\n";
+			Logger::get() << "\t: " << saveFile.GetErrorStr1() << '\n';
+			Logger::get() << "\t: " << saveFile.GetErrorStr2() << '\n';
+			return false;
+		}
+		
+		return true;
+	}
+	
+	bool SaveManager::saveScript(const gfs::Path& path, const ScriptSave& save)
+	{
+		tinyxml2::XMLDocument saveFile;
+		
+		auto* scriptRoot = saveFile.NewElement("Script");
+		
+		saveFile.InsertEndChild(scriptRoot);
+		
+		for(auto& var : save.variables)
+		{
+			std::string varTypeStr;
+			
+			switch(var.first)
+			{
+				case LUA_TNIL:
+					varTypeStr = "nil";
+					break;
+				case LUA_TBOOLEAN:
+					varTypeStr = "bool";
+					break;
+				case LUA_TNUMBER:
+					varTypeStr = "num";
+					break;
+				case LUA_TSTRING:
+					varTypeStr = "string";
+					break;
+				default:
+					varTypeStr = "none";
+					break;
+			}
+			
+			auto* varElement = saveFile.NewElement("variable");
+			varElement->SetAttribute("type", varTypeStr.c_str());
+			varElement->SetText(var.second.c_str());
+			
+			scriptRoot->InsertEndChild(varElement);
+		}
+		
 		return true;
 	}
 	
 	bool SaveManager::readLastWorld(Save& save)
 	{
-		std::ifstream fin;
+		gfs::Path path = makePath(save.getName());
 		
-		std::string path = fixPath(save.getName());
+		if(!path || path.type() != gfs::Path::Type::Directory)
+		{
+			return false;
+		}
 		
-		fin.open(path + "lastWorld");
+		std::ifstream fin(path / "lastWorld");
 		
-		if(fin.bad())
+		if(!fin)
 		{
 			return false;
 		}
@@ -250,29 +418,22 @@ namespace swift
 	{	
 		std::ofstream fout;
 		
-		std::string path = fixPath(save.getName());
+		gfs::Path path = makePath(save.getName());
 		
-		fout.open(path + "lastWorld");
+		fout.open(path / "lastWorld");
 		
-		if(fout.bad())
+		if(!fout)
 		{
 			return false;
 		}
 		
-		fout << "name=" << save.getLastWorld();
+		fout << "name=" << save.getLastWorld() << '\n';
 		
 		return true;
 	}
 	
-	std::string SaveManager::fixPath(const std::string& path)
+	gfs::Path SaveManager::makePath(const std::string& path)
 	{
-		if(path.back() != '/')
-		{
-			return resPath + SAVE_PATH + path + '/';
-		}
-		else
-		{
-			return resPath + SAVE_PATH + path;
-		}
+		return resPath / SAVE_PATH / path;
 	}
 }

@@ -3,6 +3,8 @@
 
 #include <string>
 
+#include "FileSystem/gfs.hpp"
+
 #include "Save.hpp"
 
 namespace swift
@@ -10,35 +12,33 @@ namespace swift
 	class SaveManager
 	{
 		public:
-			static bool doesSaveExist(const std::string& saveDir);
+			static void setResourcePath(const gfs::Path& rp);
 			
-			static Save newSave(const std::string& saveDir, bool force = false);
+			static bool doesSaveExist(const std::string& save);
+			
 			static bool deleteSave(const std::string& saveDir);
 			
-			static bool save(const Save& save);
-			static Save load(const std::string& saveDir);
+			static bool save(const Save& save, bool force = false);
+			static bool load(Save& save);
 			
-			static void setResourcePath(const std::string& rp);
-
 		private:
 			SaveManager() = default;
 			
 			// reads given file's data into the given Save
-			static bool loadWorldSave(const std::string& wf, Save& save);
-			static bool loadScriptSave(const std::string& sf, Save& save);
+			static bool loadWorld(const gfs::Path& path, WorldSave& save);
+			static bool loadScript(const gfs::Path& path, ScriptSave& save);
 			
 			// writes given Save's data into the given file
-			static bool saveWorldSave(const std::string& wf, const Save& save);
-			static bool saveScriptSave(const std::string& sf, const Save& save);
+			static bool saveWorld(const gfs::Path& path, const WorldSave& save);
+			static bool saveScript(const gfs::Path& path, const ScriptSave& save);
 			
 			static bool readLastWorld(Save& save);
 			static bool writeLastWorld(const Save& save);
 			
-			// make it a dir if it isn't
 			// prepend the full path
-			static std::string fixPath(const std::string& path);
+			static gfs::Path makePath(const std::string& path);
 			
-			static std::string resPath;
+			static gfs::Path resPath;
 	};
 }
 

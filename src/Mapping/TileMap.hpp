@@ -25,7 +25,7 @@ namespace swift
 			void update(float dt);
 
 			bool loadFile(const std::string& f);
-			bool loadTexture(const sf::Texture& tex);
+			bool setTexture(const sf::Texture& tex);
 
 			void setTileSize(const sf::Vector2u& ts);
 			void setSize(const sf::Vector2u& s);

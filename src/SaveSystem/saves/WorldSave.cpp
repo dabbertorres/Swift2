@@ -2,13 +2,6 @@
 
 namespace swift
 {
-	WorldSave::WorldSave(const World& w)
-	:	name(w.getName()),
-		tilemap(w.tilemap.getFile())
-	{
-		save(w);
-	}
-	
 	void WorldSave::load(World& w)
 	{
 		auto& systems = w.getSystems();
@@ -99,9 +92,15 @@ namespace swift
 		return tilemap;
 	}
 	
-	WorldSave::WorldSave(const std::string& n, const std::string& tm, const Data& wd)
+	WorldSave::WorldSave(const World& w)
+	:	name(w.getName()),
+		tilemap(w.tilemap.getFile())
+	{
+		save(w);
+	}
+	
+	WorldSave::WorldSave(const std::string& n)
 	:	name(n),
-		tilemap(tm),
-		components(wd)
+		tilemap("")
 	{}
 }

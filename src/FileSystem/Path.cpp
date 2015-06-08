@@ -40,7 +40,7 @@ namespace gfs
 		fixUserHome(pathStr);
 		checkPath(*this, resolveSymLink);
 	}
-
+	
 	Path::Path(const char* path, bool resolveSymLink)
 	:	pathStr(normalizePath(path)),
 		typeVal(Type::Unknown),
@@ -144,7 +144,7 @@ namespace gfs
 		return pathStr;
 	}
 	
-	std::string Path::extension() const
+	std::string Path::ext() const
 	{
 		if(pathStr.empty())
 			return "";
@@ -152,7 +152,7 @@ namespace gfs
 		std::size_t lastDirDiv = pathStr.find_last_of("/\\");
 		std::size_t extDot = pathStr.find_last_of('.');
 		
-		if(lastDirDiv > extDot)
+		if(lastDirDiv != std::string::npos && lastDirDiv > extDot)
 			return "";
 		
 		if(extDot != std::string::npos)

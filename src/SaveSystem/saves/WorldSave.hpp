@@ -3,40 +3,63 @@
 
 #include <map>
 
-#include "../../World/World.hpp"
+#include "World/World.hpp"
 
 namespace swift
 {
 	class WorldSave
 	{
 		friend class SaveManager;
+		friend class Save;
+		friend class Allocator;
 		
 		public:
 			// a map of maps of maps.
-			// outer map: map of Component types
-			// middle map: all components of one type by id
-			// inner maps: contain variables and values of Components
-			using Data = std::map<Component::Type, std::map<unsigned int, std::map<std::string, std::string>>>;
+			// outer map: map of entities
+			// middle maps: map of components
+			// inner maps: contain variables and values of Components for ids
+			using VariableMap = std::map<std::string, std::string>;
+			using ComponentMap = std::map<unsigned int, VariableMap>;
+			using Data = std::map<Component::Type, ComponentMap>;
 			
-			WorldSave(const World& w);
 			virtual ~WorldSave() = default;
 			
 			// loads data to the given World
 			virtual void load(World& w);
 			
 			// saves data from the given World
-			void save(const World& w);
+			virtual void save(const World& w);
 			
 			const std::string& getName() const;
 			const std::string& getTilemap() const;
 			
-		private:
-			WorldSave(const std::string& n, const std::string& tm, const Data& wd);
+		protected:
+			WorldSave(const World& w);
+			WorldSave(const std::string& n);
 			
+			Data components;
+		
+		private:
 			std::string name;
 			std::string tilemap;
 			
-			Data components;
+		public:
+			struct Allocator : std::allocator<WorldSave>
+			{
+				template<typename T, typename... Args>
+				void construct(T* p, Args&&... args)
+				{
+					new (static_cast<void*>(p)) T(std::forward<Args>(args)...);
+				}
+
+				template<typename T>
+				struct rebind
+				{
+					using other = WorldSave::Allocator;
+				};
+				
+				using value_type = WorldSave;
+			};
 	};
 }
 

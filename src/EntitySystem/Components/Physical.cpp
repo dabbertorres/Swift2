@@ -20,11 +20,6 @@ namespace swift
 		angle(other.angle)
 	{}
 	
-	Component::Type Physical::type()
-	{
-		return Component::Type::Physical;
-	}
-	
 	std::map<std::string, std::string> Physical::serialize() const
 	{
 		std::map<std::string, std::string> variables;

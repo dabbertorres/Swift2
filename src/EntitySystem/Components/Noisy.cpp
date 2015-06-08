@@ -30,11 +30,6 @@ namespace swift
 		return physical;
 	}
 	
-	Component::Type Noisy::type()
-	{
-		return Component::Type::Noisy;
-	}
-	
 	std::map<std::string,std::string> Noisy::serialize() const
 	{
 		std::map<std::string, std::string> variables;

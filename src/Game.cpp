@@ -132,8 +132,10 @@ namespace swift
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
 
+#ifdef DEBUG
 		fps.setFont(defaultFont);
 		fps.setColor(sf::Color::White);
 		fps.setPosition(5, 5);
+#endif
 	}
 }

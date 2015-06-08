@@ -147,12 +147,10 @@ namespace gfs
 
 	bool makeDir(Path& path)
 	{
-		if(path)
-			return false;
-
-		if(CreateDirectory(path, NULL))
+		if(makeDir(path))
 		{
 			Path::checkPath(path, true);
+			
 			return true;
 		}
 
@@ -169,16 +167,14 @@ namespace gfs
 
 	bool makeFile(Path& path)
 	{
-		if(path)
-			return false;
+		if(makeFile(path))
+		{
+			Path::checkPath(path, true);
+			
+			return true;
+		}
 
-		HANDLE file = CreateFile(path, GENERIC_READ, FILE_SHARE_READ, NULL, CREATE_NEW, FILE_ATTRIBUTE_NORMAL, NULL);
-
-		bool result = file != INVALID_HANDLE_VALUE;
-		Path::checkPath(path, true);
-		CloseHandle(file);
-
-		return result;
+		return false;
 	}
 
 	bool makeFile(const Path& path)
@@ -193,32 +189,19 @@ namespace gfs
 		return result;
 	}
 
-	bool remove(Path& path)
+	bool erase(Path& path)
 	{
-		if(!path)
-			return false;
-
-		if(path.type() == Path::Type::File)
+		if(erase(path))
 		{
-			if(DeleteFile(path))
-			{
-				Path::checkPath(path, true);
-				return true;
-			}
-		}
-		else if(path.type() == Path::Type::Directory)
-		{
-			if(RemoveDirectory(path))
-			{
-				Path::checkPath(path, true);
-				return true;
-			}
+			Path::checkPath(path, true);
+			
+			return true;
 		}
 
 		return false;
 	}
 
-	bool remove(const Path& path)
+	bool erase(const Path& path)
 	{
 		if(!path)
 			return false;
@@ -233,12 +216,9 @@ namespace gfs
 
 	bool copy(const Path& src, Path& dest)
 	{
-		if(!src || dest)
-			return false;
-
-		if(CopyFileEx(src, dest, NULL, NULL, false, COPY_FILE_COPY_SYMLINK))
+		if(copy(src, dest))
 		{
-			Path::checkPath(dest, false);
+			Path::checkPath(dest, true);
 			return true;
 		}
 
@@ -249,16 +229,16 @@ namespace gfs
 	{
 		if(!src || dest)
 			return false;
+		
+		std::string srcStr = src;
+		std::string destStr = dest;
 
-		return CopyFileEx(src, dest, NULL, NULL, false, COPY_FILE_COPY_SYMLINK) != 0;
+		return CopyFileEx(srcStr.c_str(), destStr.c_str(), NULL, NULL, false, COPY_FILE_COPY_SYMLINK) != 0;
 	}
 
 	bool move(Path& src, Path& dest)
 	{
-		if(!src || dest)
-			return false;
-
-		if(MoveFileEx(src, dest, MOVEFILE_WRITE_THROUGH))
+		if(move(src, dest))
 		{
 			Path::checkPath(src, true);
 			Path::checkPath(dest, true);
@@ -273,8 +253,11 @@ namespace gfs
 	{
 		if(!src || dest)
 			return false;
+		
+		std::string srcStr = src;
+		std::string destStr = dest;
 
-		return MoveFileEx(src, dest, MOVEFILE_WRITE_THROUGH) != 0;
+		return MoveFileEx(srcStr.c_str(), destStr.c_str(), MOVEFILE_WRITE_THROUGH) != 0;
 	}
 }
 

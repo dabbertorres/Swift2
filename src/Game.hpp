@@ -45,7 +45,9 @@ namespace swift
 			
 			sf::Font defaultFont;
 			
+#ifdef DEBUG
 			sf::Text fps;
+#endif
 			
 			sf::Clock gameTime;
 			

@@ -42,8 +42,8 @@ namespace gfs
 	
 	// returns a bool on success of deleting the file at the given Path
 	// first case modifies the given Path on success
-	bool remove(Path& path);
-	bool remove(const Path& path);
+	bool erase(Path& path);
+	bool erase(const Path& path);
 	
 	// returns a bool on success of copying the src Path to the dest Path
 	// first case modifies the dest Path on success

@@ -29,11 +29,6 @@ namespace swift
 	{
 		return physical;
 	}
-			
-	Component::Type Drawable::type()
-	{
-		return Component::Type::Drawable;
-	}
 	
 	std::map<std::string, std::string> Drawable::serialize() const
 	{

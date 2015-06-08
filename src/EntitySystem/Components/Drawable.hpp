@@ -20,7 +20,7 @@ namespace swift
 			
 			const Physical& getPhysical() const;
 			
-			static Component::Type type();
+			static constexpr Component::Type type();
 			
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
@@ -31,6 +31,11 @@ namespace swift
 		private:
 			const Physical& physical;
 	};
+			
+	constexpr Component::Type Drawable::type()
+	{
+		return Component::Type::Drawable;
+	}
 }
 
 #endif // DRAWABLE_HPP
