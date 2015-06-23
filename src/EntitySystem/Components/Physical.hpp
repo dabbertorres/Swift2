@@ -10,9 +10,7 @@ namespace swift
 	class Physical : public Component
 	{
 		public:
-			Physical(unsigned int id);
-			
-			Physical(const Physical& other);
+			Physical(unsigned int id = 0);
 
 			static constexpr Component::Type type();
 			

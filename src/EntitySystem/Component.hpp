@@ -58,7 +58,7 @@ namespace swift
 			};
 	};
 	
-	namespace priv
+	namespace
 	{
 		constexpr bool isSame(const char* x, const char* y)
 		{
@@ -72,7 +72,7 @@ namespace swift
 		
 		for(std::size_t i = 1; i < MAX; i++)
 		{
-			if(priv::isSame(str, TypeStrings[i].first))
+			if(isSame(str, TypeStrings[i].first))
 			{
 				return TypeStrings[i].second;
 			}

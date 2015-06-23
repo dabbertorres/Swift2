@@ -3,7 +3,8 @@
 
 #include "Component.hpp"
 
-#include "../Utility/AssocMap.hpp"
+#include <google/dense_hash_map>
+//#include "../Utility/AssocMap.hpp"
 
 namespace swift
 {
@@ -24,11 +25,11 @@ namespace swift
 	class System : public BaseSystem
 	{
 		public:
-			System() = default;
-			
-			System(unsigned int res)
-			:	components(res)
-			{}
+			System()
+			{
+				components.set_empty_key(-1);
+				components.set_deleted_key(-2);
+			}
 			
 			virtual ~System() = default;
 			
@@ -41,12 +42,12 @@ namespace swift
 			
 			bool has(unsigned int id) const
 			{
-				return components.find(id) != components.key_end();
+				return components.find(id) != components.end();
 			}
 
 			C& get(unsigned int id)
 			{
-				return components.at(id);
+				return components[id];
 			}
 			
 			std::vector<const Component*> getAll() const
@@ -55,7 +56,7 @@ namespace swift
 				
 				for(auto& c : components)
 				{
-					comps.push_back(&c);
+					comps.push_back(&c.second);
 				}
 				
 				return comps;
@@ -64,13 +65,12 @@ namespace swift
 			template<typename... Args>
 			C* add(unsigned int id, Args&&... args)
 			{
-				// we pass id twice, first for the key, second for the constructor of the Component
-				auto res = components.emplace(id, id, args...);
+				auto res = components.insert(std::make_pair(id, C(id, args...)));
 				
 				if(res.second)
 				{
-					addImpl(*res.first);
-					return &*res.first;
+					addImpl(res.first->second);
+					return &res.first->second;
 				}
 				
 				return nullptr;
@@ -78,7 +78,7 @@ namespace swift
 			
 			void remove(unsigned int id)
 			{
-				if(components.find(id) != components.key_end())
+				if(components.find(id) != components.end())
 				{
 					removeImpl(id);
 					components.erase(id);
@@ -98,7 +98,8 @@ namespace swift
 			}
 
 		protected:
-			util::AssocMap<unsigned int, C> components;
+			//util::AssocMap<unsigned int, C> components;
+			google::dense_hash_map<int, C> components;
 			
 		private:
 			virtual void addImpl(const C&)

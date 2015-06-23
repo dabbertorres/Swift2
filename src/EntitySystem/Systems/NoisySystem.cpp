@@ -7,22 +7,32 @@ namespace swift
 	SoundPlayer* NoisySystem::soundPlayer = nullptr;
 	AssetManager* NoisySystem::assets = nullptr;
 	
-	NoisySystem::NoisySystem(unsigned int res)
-	:	System<Noisy>(res)
+	NoisySystem::NoisySystem()
+	:	physSystem(nullptr)
 	{}
 	
 	void NoisySystem::update(float)
 	{
+		if(!physSystem)
+		{
+			return;
+		}
+		
 		for(auto& c : components)
 		{
-			const Physical& phys = c.getPhysical();
+			const Physical& phys = physSystem->get(c.second.ID());
 
-			if(c.shouldPlay)
+			if(c.second.shouldPlay)
 			{
-				soundPlayer->newSound(*assets->getSound(c.soundFile), {phys.position.x, phys.position.y, 0}, false);
-				c.shouldPlay = false;
+				soundPlayer->newSound(*assets->getSound(c.second.soundFile), {phys.position.x, phys.position.y, 0}, false);
+				c.second.shouldPlay = false;
 			}
 		}
+	}
+	
+	void NoisySystem::setPhysSystem(System<Physical>* ps)
+	{
+		physSystem = ps;
 	}
 	
 	void NoisySystem::setSoundPlayer(SoundPlayer& sp)

@@ -4,39 +4,13 @@
 
 namespace swift
 {
-	Controllable::Controllable(unsigned int id, Movable& m)
+	Controllable::Controllable(unsigned int id)
 	:	Component(id),
 		moveLeft(false),
 		moveRight(false),
 		moveUp(false),
-		moveDown(false),
-		movable(m)
+		moveDown(false)
 	{}
-	
-	Controllable::Controllable(const Controllable& other)
-	:	Component(other.ID()),
-		moveLeft(other.moveLeft),
-		moveRight(other.moveRight),
-		moveUp(other.moveUp),
-		moveDown(other.moveDown),
-		movable(other.movable)
-	{}
-	
-	Controllable& Controllable::operator=(Controllable&& other)
-	{
-		moveLeft = other.moveLeft;
-		moveRight = other.moveRight;
-		moveUp = other.moveUp;
-		moveDown = other.moveDown;
-		movable = other.movable;
-		
-		return *this;
-	}
-			
-	Movable& Controllable::getMovable() const
-	{
-		return movable;
-	}
 
 	std::map<std::string,std::string> Controllable::serialize() const
 	{
@@ -47,7 +21,7 @@ namespace swift
 		variables.emplace("moveUp", moveUp ? "true" : "false");
 		variables.emplace("moveDown", moveDown ? "true" : "false");
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void Controllable::unserialize(const std::map<std::string, std::string>& variables)

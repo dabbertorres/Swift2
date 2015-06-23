@@ -15,17 +15,11 @@ namespace swift
 	class Animated : public Component
 	{
 		public:
-			Animated(unsigned int id, const Physical& p);
-			
-			Animated(const Animated& other);
-			
-			Animated& operator=(Animated&& other);
+			Animated(unsigned int id = 0);
 
 			void setAnimation(const std::string& anim);
 			void revertAnimation();
 			bool createAnimations();
-			
-			const Physical& getPhysical() const;
 
 			static constexpr Component::Type type();
 
@@ -38,9 +32,6 @@ namespace swift
 			std::string currentAnim;
 			std::string previousAnim;
 			std::string animationFile;
-
-		private:
-			const Physical& physical;
 	};
 
 	constexpr Component::Type Animated::type()

@@ -3,11 +3,7 @@
 #include "../Components/Physical.hpp"
 
 namespace swift
-{
-	PhysicalSystem::PhysicalSystem(unsigned int res)
-	:	System<Physical>(res)
-	{}
-			
+{	
 	void PhysicalSystem::update(float /*dt*/)
 	{
 		collisions.clear();
@@ -16,13 +12,13 @@ namespace swift
 		{
 			for(auto& c2 : components)
 			{
-				if(c1.ID() != c2.ID())
+				if(c1.second.ID() != c2.second.ID())
 				{
-					collisions.emplace_back(c1, c2);
-						
-					if(!collisions.back().getResult())
+					Collision col(c1.second, c2.second);
+					
+					if(collisions.back().getResult())
 					{
-						collisions.pop_back();
+						collisions.push_back(col);
 					}
 				}
 			}

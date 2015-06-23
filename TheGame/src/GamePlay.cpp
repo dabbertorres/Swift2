@@ -45,7 +45,6 @@ namespace tg
 	{
 		for(auto & w : worlds)
 		{
-			saveWorld(*w.second);
 			delete w.second;
 		}
 	}
@@ -118,93 +117,27 @@ namespace tg
 
 			// delete old world
 			std::string oldWorld = activeWorld->getName();
-			saveWorld(*activeWorld);
+			//saveWorld(*activeWorld);
 			delete activeWorld;
 			worlds.erase(oldWorld);
 
 			// load the world's save file
-			if(!loadWorld(*newWorld))
+			/*if(!loadWorld(*newWorld))
 			{
 				swift::Logger::get() << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
-			}
+			}*/
 		}
 		else
 		{
 			// load the world's save file
-			if(!loadWorld(*newWorld))
+			/*if(!loadWorld(*newWorld))
 			{
 				swift::Logger::get() << "[WARNING]: Loading World data for world: \"" << name << "\" failed.\n";
-			}
+			}*/
 		}
 
 		activeWorld = newWorld;
 		GameScript::setWorld(*activeWorld);
-	}
-
-	void GamePlay::loadLastWorld()
-	{
-		//changeWorld(worldName, tilemapFile);
-	}
-
-	bool GamePlay::loadWorld(swift::World& world)
-	{
-		std::string file = "../data/saves/" + world.getName() + ".world";
-
-		
-
-		return true;
-	}
-
-	bool GamePlay::saveWorld(swift::World& world)
-	{
-		std::string file = "../data/saves/" + world.getName() + ".world";
-
-		tinyxml2::XMLDocument saveFile;
-		tinyxml2::XMLError result = saveFile.LoadFile(file.c_str());
-
-		if(result != tinyxml2::XML_SUCCESS && result != tinyxml2::XML_ERROR_EMPTY_DOCUMENT && result != tinyxml2::XML_ERROR_FILE_NOT_FOUND)
-		{
-			swift::Logger::get() << "[ERROR]: Saving world save file \"" << file << "\" failed.\n";
-			return false;
-		}
-
-		tinyxml2::XMLElement* root = saveFile.FirstChildElement("world");
-
-		if(root == nullptr)
-		{
-			swift::Logger::get() << "[WARNING]: World save file \"" << file << "\" does not have a \"world\" root element.\n";
-			root = saveFile.NewElement("world");
-			saveFile.InsertFirstChild(root);
-		}
-		else
-		{
-			root->DeleteChildren();
-		}
-
-		/*for(auto & e : world.getEntities())
-		{
-			tinyxml2::XMLElement* entity = saveFile.NewElement("entity");
-
-			for(auto & c : e->getComponents())
-			{
-				tinyxml2::XMLElement* component = saveFile.NewElement(c.first.c_str());
-
-				for(auto & v : c.second->serialize())
-				{
-					tinyxml2::XMLElement* variable = saveFile.NewElement(v.first.c_str());
-					variable->SetText(v.second.c_str());
-					component->InsertEndChild(variable);
-				}
-
-				entity->InsertEndChild(component);
-			}
-
-			root->InsertEndChild(entity);
-		}*/
-
-		saveFile.SaveFile(file.c_str());
-
-		return true;
 	}
 
 	void GamePlay::setupGUI()

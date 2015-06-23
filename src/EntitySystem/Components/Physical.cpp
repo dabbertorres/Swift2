@@ -11,15 +11,6 @@ namespace swift
 		angle(0)
 	{}
 	
-	Physical::Physical(const Physical& other)
-	:	Component(other.ID()),
-		position(other.position),
-		zIndex(other.zIndex),
-		size(other.size),
-		collides(other.collides),
-		angle(other.angle)
-	{}
-	
 	std::map<std::string, std::string> Physical::serialize() const
 	{
 		std::map<std::string, std::string> variables;

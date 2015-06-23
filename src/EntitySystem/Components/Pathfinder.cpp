@@ -5,35 +5,11 @@
 
 namespace swift
 {
-	Pathfinder::Pathfinder(unsigned int id, Movable& m)
+	Pathfinder::Pathfinder(unsigned int id)
 	:	Component(id),
 		destination({0, 0}),
-		needsPath(false),
-		movable(m)
+		needsPath(false)
 	{}
-	
-	Pathfinder::Pathfinder(const Pathfinder& other)
-	:	Component(other.ID()),
-		nodes(other.nodes),
-		destination(other.destination),
-		needsPath(other.needsPath),
-		movable(other.movable)
-	{}
-	
-	Pathfinder& Pathfinder::operator=(Pathfinder&& other)
-	{
-		nodes = other.nodes;
-		destination = other.destination;
-		needsPath = other.needsPath;
-		movable = other.movable;
-		
-		return *this;
-	}
-	
-	Movable& Pathfinder::getMovable() const
-	{
-		return movable;
-	}
 	
 	std::map<std::string, std::string> Pathfinder::serialize() const
 	{

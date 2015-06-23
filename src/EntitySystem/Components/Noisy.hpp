@@ -12,13 +12,7 @@ namespace swift
 	class Noisy : public Component
 	{
 		public:
-			Noisy(unsigned int id, const Physical& p);
-			
-			Noisy(const Noisy& other);
-			
-			Noisy& operator=(Noisy&& other);
-			
-			const Physical& getPhysical() const;
+			Noisy(unsigned int id = 0);
 			
 			static constexpr Component::Type type();
 			
@@ -27,9 +21,6 @@ namespace swift
 
 			std::string soundFile;
 			bool shouldPlay;
-
-		private:
-			const Physical& physical;
 	};
 	
 	constexpr Component::Type Noisy::type()

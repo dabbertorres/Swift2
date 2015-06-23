@@ -14,13 +14,7 @@ namespace swift
 	class Pathfinder : public Component
 	{
 		public:
-			Pathfinder(unsigned int id, Movable& m);
-			
-			Pathfinder(const Pathfinder& other);
-			
-			Pathfinder& operator=(Pathfinder&& other);
-			
-			Movable& getMovable() const;
+			Pathfinder(unsigned int id = 0);
 
 			static constexpr Component::Type type();
 
@@ -30,9 +24,6 @@ namespace swift
 			Path::PathNodes nodes;
 			sf::Vector2f destination;
 			bool needsPath;
-			
-		private:
-			Movable& movable;
 	};
 	
 	constexpr Component::Type Pathfinder::type()

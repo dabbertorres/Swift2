@@ -70,15 +70,15 @@ namespace swift
 			virtual bool loadSound(const gfs::Path& file);
 			virtual bool loadTexture(const gfs::Path& file);
 
-			ResourceMap<AnimTexture*> anims;
-			ResourceMap<Dictionary*> dicts;
-			ResourceMap<sf::Font*> fonts;
+			ResourceMap<std::unique_ptr<AnimTexture>> anims;
+			ResourceMap<std::unique_ptr<Dictionary>> dicts;
+			ResourceMap<std::unique_ptr<sf::Font>> fonts;
 			// maps
-			ResourceMap<sf::Music*> music;
-			ResourceMap<Script*> scripts;
-			ResourceMap<sf::SoundBuffer*> sounds;
-			ResourceMap<SpriteBatch*> batches;
-			ResourceMap<sf::Texture*> textures;
+			ResourceMap<std::unique_ptr<sf::Music>> music;
+			ResourceMap<std::unique_ptr<Script>> scripts;
+			ResourceMap<std::unique_ptr<sf::SoundBuffer>> sounds;
+			ResourceMap<std::unique_ptr<SpriteBatch>> batches;
+			ResourceMap<std::unique_ptr<sf::Texture>> textures;
 			
 			ResourceMap<Mod> mods;
 

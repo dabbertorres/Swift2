@@ -12,13 +12,7 @@ namespace swift
 	class Drawable : public Component
 	{
 		public:
-			Drawable(unsigned int id, const Physical& p);
-			
-			Drawable(const Drawable& other);
-			
-			Drawable& operator=(Drawable&& other);
-			
-			const Physical& getPhysical() const;
+			Drawable(unsigned int id = 0);
 			
 			static constexpr Component::Type type();
 			
@@ -27,9 +21,6 @@ namespace swift
 
 			sf::Sprite sprite;
 			std::string texture;
-			
-		private:
-			const Physical& physical;
 	};
 			
 	constexpr Component::Type Drawable::type()

@@ -5,8 +5,7 @@ namespace swift
 	Name::Name(unsigned int id)
 	:	Component(id),
 		name("")
-	{
-	}
+	{}
 	
 	std::map<std::string, std::string> Name::serialize() const
 	{
@@ -14,7 +13,7 @@ namespace swift
 		
 		variables.emplace("name", name);
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void Name::unserialize(const std::map<std::string, std::string>& variables)

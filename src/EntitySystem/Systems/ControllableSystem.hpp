@@ -4,16 +4,21 @@
 #include "../System.hpp"
 
 #include "../Components/Controllable.hpp"
+#include "../Components/Movable.hpp"
 
 namespace swift
 {
 	class ControllableSystem : public System<Controllable>
 	{
 		public:
-			ControllableSystem() = default;
-			ControllableSystem(unsigned int res);
+			ControllableSystem();
 			
 			virtual void update(float dt);
+			
+			void setMovableSystem(System<Movable>* ms);
+			
+		private:
+			System<Movable>* moveSystem;
 	};
 }
 

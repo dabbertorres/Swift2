@@ -6,33 +6,43 @@
 
 namespace swift
 {
-	ControllableSystem::ControllableSystem(unsigned int res)
-	:	System<Controllable>(res)
+	ControllableSystem::ControllableSystem()
+	:	moveSystem(nullptr)
 	{}
 	
 	void ControllableSystem::update(float)
 	{
+		if(!moveSystem)
+		{
+			return;
+		}
+		
 		for(auto& c : components)
 		{
 			sf::Vector2f moveDir = {0, 0};
 
 			// set the direction based on keypresses
-			if(c.moveLeft)
+			if(c.second.moveLeft)
 				moveDir += {-1, 0};
 
-			if(c.moveRight)
+			if(c.second.moveRight)
 				moveDir += {1, 0};
 
-			if(c.moveUp)
+			if(c.second.moveUp)
 				moveDir += {0, -1};
 
-			if(c.moveDown)
+			if(c.second.moveDown)
 				moveDir += {0, 1};
 				
-			Movable& mov = c.getMovable();
+			Movable& mov = moveSystem->get(c.second.ID());
 
 			// set the velocity based on the direction and the entity's move velocity
 			mov.velocity = math::unit(moveDir) * mov.moveVelocity;
 		}
+	}
+	
+	void ControllableSystem::setMovableSystem(System<Movable>* ms)
+	{
+		moveSystem = ms;
 	}
 }

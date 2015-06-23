@@ -4,33 +4,9 @@
 
 namespace swift
 {
-	BatchDrawable::BatchDrawable(unsigned int id, const Physical& p)
-	:	Component(id),
-		physical(p)
+	BatchDrawable::BatchDrawable(unsigned int id)
+	:	Component(id)
 	{}
-	
-	BatchDrawable::BatchDrawable(const BatchDrawable& other)
-	:	Component(other.ID()),
-		sprite(other.sprite),
-		texture(other.texture),
-		batch(other.batch),
-		physical(other.physical)
-	{}
-	
-	BatchDrawable& BatchDrawable::operator=(BatchDrawable&& other)
-	{
-		sprite = other.sprite;
-		texture = other.texture;
-		batch = other.batch;
-		const_cast<Physical&>(physical) = other.physical;
-		
-		return *this;
-	}
-			
-	const Physical& BatchDrawable::getPhysical() const
-	{
-		return physical;
-	}
 	
 	std::map<std::string, std::string> BatchDrawable::serialize() const
 	{

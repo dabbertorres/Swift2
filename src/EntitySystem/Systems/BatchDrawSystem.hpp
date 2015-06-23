@@ -4,6 +4,7 @@
 #include "../System.hpp"
 
 #include "../Components/BatchDrawable.hpp"
+#include "../Components/Physical.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
@@ -18,15 +19,18 @@ namespace swift
 	{
 		public:
 			BatchDrawSystem(AssetManager* am);
-			BatchDrawSystem(AssetManager* am, unsigned int res);
 			
 			virtual void update(float dt);
 			
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+			
+			void setPhysSystem(System<Physical>* ps);
 		
 		private:
 			virtual void addImpl(const BatchDrawable& c);
 			std::unordered_set<SpriteBatch*> batches;
+			
+			System<Physical>* physSystem;
 			
 			AssetManager* assets;
 	};

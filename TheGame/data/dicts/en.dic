@@ -1,0 +1,26 @@
+# Main Menu
+titleLabel = Swift2
+startButton = Start
+settingsButton = Settings
+exitButton = Exit
+
+# Settings Menu
+settingsLabel = Settings
+fullscreenLabel = Fullscreen
+vsyncLabel = V-Sync
+graphicsLabel = Graphics
+graphicsLevelLow = Low
+graphicsLevelLow = Medium
+graphicsLevelLow = High
+nameLabel = Name
+volumeLabel = Volume
+musicLabel = Music
+returnButton = Return
+
+# Play
+
+
+# Pause Menu
+resumeButton = Resume
+# settingsButton in Main Menu
+mainMenuButton = Main Menu

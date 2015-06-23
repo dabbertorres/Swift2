@@ -12,13 +12,7 @@ namespace swift
 	class BatchDrawable : public Component
 	{
 		public:
-			BatchDrawable(unsigned int id, const Physical& p);
-			
-			BatchDrawable(const BatchDrawable& other);
-			
-			BatchDrawable& operator=(BatchDrawable&& other);
-			
-			const Physical& getPhysical() const;
+			BatchDrawable(unsigned int id = 0);
 			
 			static constexpr Component::Type type();
 			
@@ -28,9 +22,6 @@ namespace swift
 			Sprite sprite;
 			std::string texture;
 			std::string batch;
-			
-		private:
-			const Physical& physical;
 	};
 	
 	constexpr Component::Type BatchDrawable::type()

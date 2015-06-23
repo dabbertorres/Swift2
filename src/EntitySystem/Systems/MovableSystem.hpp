@@ -4,16 +4,21 @@
 #include "../System.hpp"
 
 #include "../Components/Movable.hpp"
+#include "../Components/Physical.hpp"
 
 namespace swift
 {
 	class MovableSystem : public System<Movable>
 	{
 		public:
-			MovableSystem() = default;
-			MovableSystem(unsigned int res);
-			
+			MovableSystem();
+		
 			virtual void update(float dt);
+			
+			void setPhysicalSystem(System<Physical>* ps);
+			
+		private:
+			System<Physical>* physSystem;
 	};
 }
 

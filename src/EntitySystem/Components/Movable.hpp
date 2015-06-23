@@ -12,14 +12,7 @@ namespace swift
 	class Movable : public Component
 	{
 		public:
-			Movable(unsigned int id, Physical& p);
-			
-			Movable(const Movable& other);
-			
-			Movable& operator=(const Movable& other);
-			Movable& operator=(Movable&& other);
-			
-			Physical& getPhysical() const;
+			Movable(unsigned int id = 0);
 			
 			static constexpr Component::Type type();
 			
@@ -28,9 +21,6 @@ namespace swift
 			
 			float moveVelocity;
 			sf::Vector2f velocity;
-			
-		private:
-			Physical& physical;
 	};
 	
 	constexpr Component::Type Movable::type()

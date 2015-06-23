@@ -7,21 +7,26 @@
 
 namespace swift
 {
-	DrawableSystem::DrawableSystem(unsigned int res)
-	:	System<Drawable>(res)
+	DrawableSystem::DrawableSystem()
+	:	physSystem(nullptr)
 	{}
 	
 	void DrawableSystem::update(float)
 	{
+		if(!physSystem)
+		{
+			return;
+		}
+		
 		for(auto& c : components)
 		{
-			const Physical& phys = c.getPhysical();
+			const Physical& phys = physSystem->get(c.second.ID());
 			
-			c.sprite.setPosition(std::floor(phys.position.x), std::floor(phys.position.y));
+			c.second.sprite.setPosition(std::floor(phys.position.x), std::floor(phys.position.y));
 			
-			c.sprite.setOrigin(std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f));
-			c.sprite.setRotation(phys.angle);
-			c.sprite.setOrigin(0.f, 0.f);
+			c.second.sprite.setOrigin(std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f));
+			c.second.sprite.setRotation(phys.angle);
+			c.second.sprite.setOrigin(0.f, 0.f);
 		}
 	}
 
@@ -48,7 +53,12 @@ namespace swift
 		
 		for(auto& c : components)
 		{
-			target.draw(c.sprite, states);
+			target.draw(c.second.sprite, states);
 		}
+	}
+	
+	void DrawableSystem::setPhysSystem(System<Physical>* ps)
+	{
+		physSystem = ps;
 	}
 }

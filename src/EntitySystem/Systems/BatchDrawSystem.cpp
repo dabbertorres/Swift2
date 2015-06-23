@@ -8,25 +8,26 @@
 namespace swift
 {
 	BatchDrawSystem::BatchDrawSystem(AssetManager* am)
-	:	assets(am)
-	{}
-	
-	BatchDrawSystem::BatchDrawSystem(AssetManager* am, unsigned int res)
-	:	System<BatchDrawable>(res),
+	:	physSystem(nullptr),
 		assets(am)
 	{}
 	
 	void BatchDrawSystem::update(float)
 	{
+		if(!physSystem)
+		{
+			return;
+		}
+		
 		for(auto& c : components)
 		{
-			const Physical& phys = c.getPhysical();
+			const Physical& phys = physSystem->get(c.second.ID());
 			
-			c.sprite.setPosition({std::floor(phys.position.x), std::floor(phys.position.y)});
+			c.second.sprite.setPosition({std::floor(phys.position.x), std::floor(phys.position.y)});
 			
-			c.sprite.setOrigin({std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f)});
-			c.sprite.setRotation(phys.angle);
-			c.sprite.setOrigin({0.f, 0.f});
+			c.second.sprite.setOrigin({std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f)});
+			c.second.sprite.setRotation(phys.angle);
+			c.second.sprite.setOrigin({0.f, 0.f});
 		}
 	}
 	
@@ -38,11 +39,21 @@ namespace swift
 		}
 	}
 	
+	void BatchDrawSystem::setPhysSystem(System<Physical>* ps)
+	{
+		physSystem = ps;
+	}
+	
 	void BatchDrawSystem::addImpl(const BatchDrawable& c)
 	{
 		if(assets)
 		{
-			batches.insert(assets->getBatch(c.batch));
+			SpriteBatch* batch = assets->getBatch(c.batch);
+			
+			if(batch)
+			{
+				batches.insert(batch);
+			}
 		}
 	}
 }

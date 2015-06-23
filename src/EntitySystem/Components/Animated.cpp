@@ -4,38 +4,13 @@
 
 namespace swift
 {
-	Animated::Animated(unsigned int id, const Physical& p)
+	Animated::Animated(unsigned int id)
 	:	Component(id),
 		animTex(nullptr),
 	    currentAnim(""),
-	    previousAnim(""),
-		physical(p)
+	    previousAnim("")
 	{}
 	
-	Animated::Animated(const Animated& other)
-	:	Component(other.ID()),
-		sprite(other.sprite),
-		animTex(other.animTex),
-		anims(other.anims),
-		currentAnim(other.currentAnim),
-		previousAnim(other.previousAnim),
-		animationFile(other.animationFile),
-		physical(other.physical)
-	{}
-	
-	Animated& Animated::operator=(Animated&& other)
-	{
-		sprite = other.sprite;
-		animTex = other.animTex;
-		anims = other.anims;
-		currentAnim = other.currentAnim;
-		previousAnim = other.previousAnim;
-		animationFile = other.animationFile;
-		const_cast<Physical&>(physical) = other.physical;
-		
-		return *this;
-	}
-			
 	void Animated::setAnimation(const std::string& anim)
 	{
 		if(anims.find(anim) == anims.end())
@@ -69,11 +44,6 @@ namespace swift
 		{
 			return false;
 		}
-	}
-	
-	const Physical& Animated::getPhysical() const
-	{
-		return physical;
 	}
 
 	std::map<std::string, std::string> Animated::serialize() const

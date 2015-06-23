@@ -97,49 +97,9 @@ namespace swift
 
 		return true;
 	}
-
+	
 	void AssetManager::clean()
 	{
-		for(auto& a : anims)
-		{
-			delete a.second;
-		}
-
-		for(auto& d : dicts)
-		{
-			delete d.second;
-		}
-
-		for(auto& f : fonts)
-		{
-			delete f.second;
-		}
-
-		for(auto& m : music)
-		{
-			delete m.second;
-		}
-
-		for(auto& s : scripts)
-		{
-			delete s.second;
-		}
-
-		for(auto& s : sounds)
-		{
-			delete s.second;
-		}
-
-		for(auto& b : batches)
-		{
-			delete b.second;
-		}
-
-		for(auto& t : textures)
-		{
-			delete t.second;
-		}
-
 		anims.clear();
 		batches.clear();
 		textures.clear();
@@ -148,17 +108,17 @@ namespace swift
 		fonts.clear();
 		scripts.clear();
 	}
-
+	
 	void AssetManager::setSmooth(bool s)
 	{
 		smooth = s;
 
-		for(auto & t : textures)
+		for(auto& t : textures)
 		{
 			t.second->setSmooth(smooth);
 		}
 	}
-
+	
 	bool AssetManager::newSpriteBatch(const std::string& t)
 	{
 		if(batches.find(t) == batches.end())
@@ -167,7 +127,7 @@ namespace swift
 
 			if(texture)
 			{
-				batches[t] = new SpriteBatch(*texture);
+				batches[t] = std::make_unique<SpriteBatch>(*texture);
 				return true;
 			}
 		}
@@ -179,7 +139,7 @@ namespace swift
 	{
 		if(anims.find(n) != anims.end())
 		{
-			return anims.find(n)->second;
+			return anims.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" anim file exists\n";
@@ -191,7 +151,7 @@ namespace swift
 	{
 		if(dicts.find(n) != dicts.end())
 		{
-			return dicts.find(n)->second;
+			return dicts.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" dic file exists\n";
@@ -203,7 +163,7 @@ namespace swift
 	{
 		if(fonts.find(n) != fonts.end())
 		{
-			return fonts.find(n)->second;
+			return fonts.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" font file exists\n";
@@ -215,7 +175,7 @@ namespace swift
 	{
 		if(music.find(n) != music.end())
 		{
-			return music.find(n)->second;
+			return music.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" music file exists\n";
@@ -227,7 +187,7 @@ namespace swift
 	{
 		if(scripts.find(n) != scripts.end())
 		{
-			return scripts.find(n)->second;
+			return scripts.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" script file exists\n";
@@ -239,7 +199,7 @@ namespace swift
 	{
 		if(sounds.find(n) != sounds.end())
 		{
-			return sounds.find(n)->second;
+			return sounds.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" sound buffer file exists\n";
@@ -251,7 +211,7 @@ namespace swift
 	{
 		if(batches.find(n) != batches.end())
 		{
-			return batches.find(n)->second;
+			return batches.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No\"" << n << "\" batch exists\n";
@@ -263,7 +223,7 @@ namespace swift
 	{
 		if(textures.find(n) != textures.end())
 		{
-			return textures.find(n)->second;
+			return textures.find(n)->second.get();
 		}
 		
 		Logger::get() << "[WARNING]: No \"" << n << "\" texture file exists\n";
@@ -275,13 +235,11 @@ namespace swift
 	{
 		std::string filename = file.filename();
 
-		anims.emplace(filename, new AnimTexture());
+		anims.emplace(filename, std::make_unique<AnimTexture>());
 
 		if(!anims[filename]->loadFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to load " << file << " as an anim\n";
-
-			delete anims[filename];
 
 			anims.erase(filename);
 			return false;
@@ -296,13 +254,11 @@ namespace swift
 	{
 		std::string filename = file.name();
 
-		dicts.emplace(filename, new Dictionary());
+		dicts.emplace(filename, std::make_unique<Dictionary>());
 
 		if(!dicts[filename]->loadFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to load " << file << " as a dictionary\n";
-
-			delete dicts[filename];
 
 			dicts.erase(filename);
 			return false;
@@ -317,14 +273,11 @@ namespace swift
 	{
 		std::string filename = file.filename();
 
-		fonts.emplace(filename, new sf::Font());
+		fonts.emplace(filename, std::make_unique<sf::Font>());
 
 		if(!fonts[filename]->loadFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to load " << file << " as a font.\n";
-
-			// delete new'd font
-			delete fonts[filename];
 
 			fonts.erase(filename);
 			return false;
@@ -339,14 +292,11 @@ namespace swift
 	{
 		std::string filename = file.filename();
 
-		music.emplace(filename, new sf::Music());
+		music.emplace(filename, std::make_unique<sf::Music>());
 
 		if(!music[filename]->openFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to open " << file << " as a music file.\n";
-
-			// delete new'd music
-			delete music[filename];
 
 			music.erase(filename);
 			return false;
@@ -356,24 +306,21 @@ namespace swift
 
 		return true;
 	}
-
+	
 	bool AssetManager::loadScript(const gfs::Path&)
 	{
 		return false;
 	}
-
+	
 	bool AssetManager::loadSound(const gfs::Path& file)
 	{
 		std::string filename = file.filename();
 
-		sounds.emplace(filename, new sf::SoundBuffer());
+		sounds.emplace(filename, std::make_unique<sf::SoundBuffer>());
 
 		if(!sounds[filename]->loadFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to load " << file << " as a sound.\n";
-
-			// delete new'd soundbuffer
-			delete sounds[filename];
 
 			sounds.erase(filename);
 			return false;
@@ -383,18 +330,16 @@ namespace swift
 
 		return true;
 	}
-
+	
 	bool AssetManager::loadTexture(const gfs::Path& file)
 	{
 		std::string filename = file.filename();
 
-		textures.emplace(filename, new sf::Texture());
+		textures.emplace(filename, std::make_unique<sf::Texture>());
 
 		if(!textures[filename]->loadFromFile(file))
 		{
 			Logger::get() << "[WARNING]: Unable to load " << file << " as a texture.\n";
-
-			delete textures[filename];
 
 			textures.erase(filename);
 			return false;

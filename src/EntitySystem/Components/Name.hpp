@@ -10,7 +10,7 @@ namespace swift
 	class Name : public Component
 	{
 		public:
-			Name(unsigned int id);
+			Name(unsigned int id = 0);
 			
 			static constexpr Component::Type type();
 			

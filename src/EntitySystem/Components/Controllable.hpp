@@ -10,13 +10,7 @@ namespace swift
 	class Controllable : public swift::Component
 	{
 		public:
-			Controllable(unsigned int id, Movable& m);
-			
-			Controllable(const Controllable& other);
-			
-			Controllable& operator=(Controllable&& other);
-			
-			Movable& getMovable() const;
+			Controllable(unsigned int id = 0);
 			
 			static constexpr Component::Type type();
 			
@@ -28,9 +22,6 @@ namespace swift
 			bool moveRight;
 			bool moveUp;
 			bool moveDown;
-			
-		private:
-			Movable& movable;
 	};
 	
 	constexpr Component::Type Controllable::type()

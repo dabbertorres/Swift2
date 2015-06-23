@@ -1,0 +1,20 @@
+Swift2
+
+OS:		Linux
+Version:	4.0.4-2-ARCH
+Arch:		x86_64
+Total Mem:	16367076 kB
+CPU:		Intel(R) Core(TM) i5-4670K CPU @ 3.40GHz
+Video Vendor:	NVIDIA Corporation
+Video Card:	GeForce GTX 970/PCIe/SSE2
+Video Driver:	4.5.0 NVIDIA 352.09
+
+Dictionary:	en
+Font:	segoeuisl.ttf
+Texture:	button.png
+Texture:	toggle.png
+
+
+
+0 warnings
+0 errors

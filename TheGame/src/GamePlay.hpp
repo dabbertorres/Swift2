@@ -31,11 +31,6 @@ namespace tg
 			void changeWorld(const std::string& name, const std::string& mapFile);
 
 		private:
-			void loadLastWorld();
-
-			bool loadWorld(swift::World& world);
-			bool saveWorld(swift::World& world);
-
 			void setupGUI();
 			void setupSubStates();
 			void setupKeyBindings();

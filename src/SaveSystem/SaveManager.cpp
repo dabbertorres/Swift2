@@ -384,6 +384,16 @@ namespace swift
 			scriptRoot->InsertEndChild(varElement);
 		}
 		
+		std::string file = path;
+		
+		if(saveFile.SaveFile(file.c_str()) != tinyxml2::XMLError::XML_SUCCESS)
+		{
+			Logger::get() << "[ERROR]: Saving world save file \"" << path.name() << "\" failed.\n";
+			Logger::get() << "\t: " << saveFile.GetErrorStr1() << '\n';
+			Logger::get() << "\t: " << saveFile.GetErrorStr2() << '\n';
+			return false;
+		}
+		
 		return true;
 	}
 	
