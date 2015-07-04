@@ -21,20 +21,20 @@ namespace tg
 		public:
 			GamePlay(sf::RenderWindow& win, GameAssets& am, swift::SoundPlayer& sp, swift::MusicPlayer& mp, swift::Settings& set, swift::StateMachine& sm);
 			~GamePlay();
-
+			
 			virtual void handleEvent(const sf::Event& event);
 			virtual void update(const sf::Time& dt);
 			virtual void draw();
-
+			
 			unsigned int getPlayer() const;
-
+			
 			void changeWorld(const std::string& name, const std::string& mapFile);
-
+			
 		private:
 			void setupGUI();
 			void setupSubStates();
 			void setupKeyBindings();
-
+			
 			// SubState system
 			swift::SubState* activeState;
 			swift::SubState play;
@@ -50,10 +50,10 @@ namespace tg
 			
 			// world
 			GameWorld* activeWorld;
-
+			
 			sf::View playView;
 			float currentZoom;
-
+			
 			std::unordered_map<std::string, GameWorld*> worlds;
 			
 			// scripting

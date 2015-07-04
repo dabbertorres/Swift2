@@ -4,7 +4,6 @@
 #include "Component.hpp"
 
 #include <google/dense_hash_map>
-//#include "../Utility/AssocMap.hpp"
 
 namespace swift
 {
@@ -20,85 +19,36 @@ namespace swift
 			virtual void clear() = 0;
 			virtual Component::Type typeEnum() const = 0;
 	};
-
-	template<typename C, typename std::enable_if<std::is_base_of<Component, C>::value>::type* = nullptr>
+	
+	template<typename C, typename = typename std::enable_if<std::is_base_of<Component, C>::value>::type*>
 	class System : public BaseSystem
 	{
 		public:
-			System()
-			{
-				components.set_empty_key(-1);
-				components.set_deleted_key(-2);
-			}
+			System();
 			
 			virtual ~System() = default;
 			
 			virtual void update(float dt) = 0;
 			
-			unsigned int size() const
-			{
-				return components.size();
-			}
+			unsigned int size() const;
 			
-			bool has(unsigned int id) const
-			{
-				return components.find(id) != components.end();
-			}
+			bool has(unsigned int id) const;
 
-			C& get(unsigned int id)
-			{
-				return components[id];
-			}
+			C& get(unsigned int id);
 			
-			std::vector<const Component*> getAll() const
-			{
-				std::vector<const Component*> comps;
-				
-				for(auto& c : components)
-				{
-					comps.push_back(&c.second);
-				}
-				
-				return comps;
-			}
+			std::vector<const Component*> getAll() const;
 			
-			template<typename... Args>
-			C* add(unsigned int id, Args&&... args)
-			{
-				auto res = components.insert(std::make_pair(id, C(id, args...)));
-				
-				if(res.second)
-				{
-					addImpl(res.first->second);
-					return &res.first->second;
-				}
-				
-				return nullptr;
-			}
+			C* add(unsigned int id);
 			
-			void remove(unsigned int id)
-			{
-				if(components.find(id) != components.end())
-				{
-					removeImpl(id);
-					components.erase(id);
-				}
-			}
+			void remove(unsigned int id);
 			
-			void clear()
-			{
-				components.clear();
-			}
+			void clear();
+			
+			Component::Type typeEnum() const;
 			
 			using type = C;
-			
-			Component::Type typeEnum() const
-			{
-				return C::type();
-			}
 
 		protected:
-			//util::AssocMap<unsigned int, C> components;
 			google::dense_hash_map<int, C> components;
 			
 		private:
@@ -108,6 +58,80 @@ namespace swift
 			virtual void removeImpl(unsigned int)
 			{}
 	};
+	
+	template<typename C, typename E>
+	System<C, E>::System()
+	{
+		components.set_empty_key(-1);
+		components.set_deleted_key(-2);
+	}
+	
+	template<typename C, typename E>
+	unsigned int System<C, E>::size() const
+	{
+		return components.size();
+	}
+	
+	template<typename C, typename E>
+	bool System<C, E>::has(unsigned int id) const
+	{
+		return components.find(id) != components.end();
+	}
+	
+	template<typename C, typename E>
+	C& System<C, E>::get(unsigned int id)
+	{
+		return components[id];
+	}
+	
+	template<typename C, typename E>
+	std::vector<const Component*> System<C, E>::getAll() const
+	{
+		std::vector<const Component*> comps;
+		
+		for(auto& c : components)
+		{
+			comps.push_back(&c.second);
+		}
+		
+		return comps;
+	}
+	
+	template<typename C, typename E>
+	C* System<C, E>::add(unsigned int id)
+	{
+		auto res = components.insert(std::make_pair(id, C(id)));
+		
+		if(res.second)
+		{
+			addImpl(res.first->second);
+			return &res.first->second;
+		}
+		
+		return nullptr;
+	}
+	
+	template<typename C, typename E>
+	void System<C, E>::remove(unsigned int id)
+	{
+		if(components.find(id) != components.end())
+		{
+			removeImpl(id);
+			components.erase(id);
+		}
+	}
+	
+	template<typename C, typename E>
+	void System<C, E>::clear()
+	{
+		components.clear();
+	}
+	
+	template<typename C, typename E>
+	Component::Type System<C, E>::typeEnum() const
+	{
+		return C::type();
+	}
 }
 
 #endif // SYSTEM_HPP

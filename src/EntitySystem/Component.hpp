@@ -21,8 +21,9 @@ namespace swift
 				Noisy = 7,
 				Pathfinder = 8,
 				Physical = 9,
+				Scriptable = 10,
 				
-				MAX = 10,
+				MAX = 11,
 			};
 			
 			Component(unsigned int i);

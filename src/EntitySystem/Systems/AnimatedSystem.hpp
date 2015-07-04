@@ -1,5 +1,5 @@
-#ifndef ANIMATEDSYSTEM_HPP
-#define ANIMATEDSYSTEM_HPP
+#ifndef SWIFT_ANIMATED_SYSTEM_HPP
+#define SWIFT_ANIMATED_SYSTEM_HPP
 
 #include "../System.hpp"
 

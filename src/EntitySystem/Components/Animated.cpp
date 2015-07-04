@@ -14,7 +14,9 @@ namespace swift
 	void Animated::setAnimation(const std::string& anim)
 	{
 		if(anims.find(anim) == anims.end())
+		{
 			return;
+		}
 		
 		anims[currentAnim].stop();
 		anims[anim].play();

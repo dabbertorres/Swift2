@@ -129,6 +129,9 @@ namespace swift
 			window.create({resolution.x, resolution.y}, title, sf::Style::Titlebar | sf::Style::Close);
 		}
 		
+		//icon.loadFromFile("/home/alec/Code/Swift2/TheGame/data/textures/abetterpillSmall.png");
+		
+		//window.setIcon(128, 128, icon.getPixelsPtr());
 		window.setVerticalSyncEnabled(verticalSync);
 		window.setKeyRepeatEnabled(false);
 

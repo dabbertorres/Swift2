@@ -87,6 +87,8 @@ namespace swift
 			gfs::Path resourcePath;
 
 			float ticksPerSecond;	// calls to update(const sf::Time& dt) per second
+			
+			sf::Image icon;
 	};
 }
 

@@ -56,9 +56,6 @@ namespace swift
 
 			void update();
 
-			bool load(const std::string& lfile);
-			bool save(const std::string& sfile);
-
 			bool toDelete();
 
 			void reset();
