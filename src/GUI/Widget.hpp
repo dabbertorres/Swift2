@@ -19,22 +19,21 @@ namespace cstr
 			};
 
 			Widget()
-				:	mouseOn(false),
-					rect(0, 0, 0, 0),
-					alignment(Alignment::Center)
-			{
-			}
+			:	mouseOn(false),
+				rect(0, 0, 0, 0),
+				alignment(Alignment::Center)
+			{}
 			
-			Widget(sf::IntRect r)
-				:	mouseOn(false),
-					rect(r),
-					alignment(Alignment::Center)
-			{
-			}
+			Widget(const sf::IntRect& r)
+			:	mouseOn(false),
+				rect(r),
+				alignment(Alignment::Center)
+			{}
 			
-			virtual ~Widget() {}
+			virtual ~Widget()
+			{}
 
-			virtual void update(sf::Event& event) = 0;
+			virtual void update(const sf::Event& event) = 0;
 
 			virtual sf::FloatRect getGlobalBounds() const
 			{
@@ -56,13 +55,13 @@ namespace cstr
 				return alignment;
 			}
 			
-			virtual void setPosition(sf::Vector2i pos)
+			virtual void setPosition(const sf::Vector2i& pos)
 			{
 				rect.left = pos.x;
 				rect.top = pos.y;
 			}
 			
-			virtual void setSize(sf::Vector2u size)
+			virtual void setSize(const sf::Vector2u& size)
 			{
 				rect.width = size.x;
 				rect.height = size.y;

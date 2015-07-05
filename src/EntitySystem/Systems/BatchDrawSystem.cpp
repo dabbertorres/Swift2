@@ -3,41 +3,60 @@
 #include "../Components/BatchDrawable.hpp"
 #include "../Components/Physical.hpp"
 
-#include "../../ResourceManager/AssetManager.hpp"
-
-#include <unordered_set>
+#include "ResourceManager/AssetManager.hpp"
+#include "ResourceManager/ResourceNotFound.hpp"
 
 namespace swift
 {
-	void BatchDrawSystem::update(const std::vector<Entity>& entities, float)
+	BatchDrawSystem::BatchDrawSystem(AssetManager* am)
+	:	physSystem(nullptr),
+		assets(am)
+	{}
+	
+	void BatchDrawSystem::update(float)
 	{
-		for(auto& e : entities)
+		if(!physSystem)
 		{
-			if(e.has<BatchDrawable>() && e.has<Physical>())
-			{
-				Physical* phys = e.get<Physical>();
-				BatchDrawable* draw = e.get<BatchDrawable>();
-				
-				draw->sprite.setPosition({std::floor(phys->position.x), std::floor(phys->position.y)});
-				
-				draw->sprite.setOrigin({std::floor(phys->size.x / 2.f), std::floor(phys->size.y / 2.f)});
-				draw->sprite.setRotation(phys->angle);
-				draw->sprite.setOrigin({0.f, 0.f});
-			}
+			return;
+		}
+		
+		for(auto& c : components)
+		{
+			const Physical& phys = physSystem->get(c.second.ID());
+			
+			c.second.sprite.setPosition({std::floor(phys.position.x), std::floor(phys.position.y)});
+			
+			c.second.sprite.setOrigin({std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f)});
+			c.second.sprite.setRotation(phys.angle);
+			c.second.sprite.setOrigin({0.f, 0.f});
 		}
 	}
-
-	void BatchDrawSystem::draw(const std::vector<Entity>& entities, float, sf::RenderTarget& target, sf::RenderStates states, AssetManager& assets) const
+	
+	void BatchDrawSystem::draw(sf::RenderTarget& target, sf::RenderStates states) const
 	{
-		std::unordered_set<std::string> batches;
-		
-		for(auto& e : entities)
-		{
-			if(e.has<BatchDrawable>())
-				batches.insert(e.get<BatchDrawable>()->batch);
-		}
-		
 		for(auto& b : batches)
-			target.draw(*assets.getBatch(b), states);
+		{
+			target.draw(*b, states);
+		}
+	}
+	
+	void BatchDrawSystem::setPhysSystem(System<Physical>* ps)
+	{
+		physSystem = ps;
+	}
+	
+	void BatchDrawSystem::addImpl(const BatchDrawable& c)
+	{
+		if(assets)
+		{
+			try
+			{
+				batches.insert(&assets->getBatch(c.batch));
+			}
+			catch(const ResourceNotFound& rnf)
+			{
+				Logger::get() << rnf.what() << '\n';
+			}
+		}
 	}
 }

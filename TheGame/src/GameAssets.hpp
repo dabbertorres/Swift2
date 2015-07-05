@@ -1,18 +1,18 @@
 #ifndef GAMEASSETS_HPP
 #define GAMEASSETS_HPP
 
-#include "../src/ResourceManager/AssetManager.hpp"
+#include "ResourceManager/AssetManager.hpp"
 
 namespace tg
 {
 	class GameAssets : public swift::AssetManager
 	{
 		public:
-			GameAssets();
-			~GameAssets();
+			GameAssets() = default;
+			~GameAssets() = default;
 
 		protected:
-			virtual bool loadScript(const std::string& file);
+			virtual bool loadScript(const gfs::Path& file);
 	};
 }
 

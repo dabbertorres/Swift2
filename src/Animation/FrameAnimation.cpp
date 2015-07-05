@@ -7,33 +7,51 @@ namespace swift
 	    totalTime(0),
 	    currentTime(0),
 	    looping(false),
-	    done(false)
+	    done(false),
+		playing(false)
 	{}
 
 	const sf::IntRect& FrameAnimation::update(float dt)
 	{
-		currentTime += dt;
-
-		if(currentTime >= (totalTime / frames.size()) * (frameNum + 1) && (currentTime < totalTime || looping))
+		if(playing)
 		{
-			if(frames.size() > 0 && !done)
+			currentTime += dt;
+
+			if(currentTime >= (totalTime / frames.size()) * (frameNum + 1) && (currentTime < totalTime || looping))
 			{
-				if(frameNum < frames.size() - 1)
+				if(frames.size() > 0 && !done)
 				{
-					frameNum++;
-				}
-				else
-				{
-					frameNum = 0;
-					currentTime = 0;
+					if(frameNum < frames.size() - 1)
+					{
+						frameNum++;
+					}
+					else
+					{
+						frameNum = 0;
+						currentTime = 0;
+					}
 				}
 			}
+
+			if(!looping && currentTime >= totalTime)
+				done = true;
+
+			return frames[frameNum];
 		}
+		else
+			return std::move(sf::IntRect{0, 0, 0, 0});
+	}
 
-		if(!looping && currentTime >= totalTime)
-			done = true;
+	void FrameAnimation::play()
+	{
+		playing = true;
+	}
 
-		return frames[frameNum];
+	void FrameAnimation::stop()
+	{
+		playing = false;
+		currentTime = 0;
+		frameNum = 0;
 	}
 
 	void FrameAnimation::setFrameNum(unsigned fn)
@@ -62,5 +80,10 @@ namespace swift
 	void FrameAnimation::setLooping(bool l)
 	{
 		looping = l;
+	}
+
+	bool FrameAnimation::isPlaying() const
+	{
+		return playing;
 	}
 }

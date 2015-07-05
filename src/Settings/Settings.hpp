@@ -1,12 +1,14 @@
 #ifndef SETTINGS_HPP
 #define SETTINGS_HPP
 
-#include "../MessageSystem/Observable.hpp"
+#include "MessageSystem/Observable.hpp"
+
+#include "FileSystem/gfs.hpp"
+
+#include "Logger/Logger.hpp"
 
 #include <string>
-#include <sstream>
-#include <fstream>
-#include <vector>
+#include <unordered_map>
 
 namespace swift
 {
@@ -14,45 +16,39 @@ namespace swift
 	{
 		public:
 			Settings();
-			~Settings();
+			~Settings() = default;
 
 			// Accepts the file name, f
 			// Returns true if file was loaded,
 			// false if not
-			bool loadFile(const std::string& f);
-
+			bool loadFromFile(const gfs::Path& f);
+			
+			// returns true for sucessful writing
 			bool saveToFile() const;
-
+			
+			// returns true if the data has been changed
 			bool isChanged() const;
 
 			// Accepts the setting name, setting
 			// and value, the variable to store the value of setting in
 			// Returns true if setting was found,
 			// false if not
-			bool get(const std::string& setting, std::string& value) const;
-			bool get(const std::string& setting, bool& value) const;
-			bool get(const std::string& setting, char& value) const;
-			bool get(const std::string& setting, int& value) const;
-			bool get(const std::string& setting, unsigned& value) const;
-			bool get(const std::string& setting, float& value) const;
+			template<typename T>
+			bool get(const std::string& setting, T& value) const;
 
 			// Accepts the setting name, setting
 			// and value, the variable to set the value of setting to
-			bool set(const std::string& setting, std::string& value);
-			bool set(const std::string& setting, bool& value);
-			bool set(const std::string& setting, char& value);
-			bool set(const std::string& setting, int& value);
-			bool set(const std::string& setting, unsigned& value);
-			bool set(const std::string& setting, float& value);
+			// if the setting does not exist already, it is created
+			template<typename T>
+			void set(const std::string& setting, const T& value);
 
 		private:
-			int findIndex(const std::string& setting) const;
 			bool read();
 			bool write() const;
 
 			bool changed;
-			std::string file;
-			std::vector< std::pair<std::string, std::string> > data;
+			gfs::Path file;
+			std::unordered_map<std::string, std::string> data;
 	};
 }
 

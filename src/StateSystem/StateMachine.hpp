@@ -1,7 +1,7 @@
 #ifndef STATEMACHINE_HPP
 #define STATEMACHINE_HPP
 
-#include <queue>
+#include <stack>
 
 namespace swift
 {
@@ -10,15 +10,17 @@ namespace swift
 	class StateMachine
 	{
 		public:
+			StateMachine();
 			~StateMachine();
 			
-			void push(State* state);
+			void push(State* state, bool pend = true);
 			void pop();
 			State* read();
 			bool empty();
 
 		private:
-			std::queue<State*> states;
+			State* pending;
+			std::stack<State*> states;
 	};
 }
 

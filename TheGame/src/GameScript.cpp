@@ -1,43 +1,45 @@
 #include "GameScript.hpp"
 
-#include "../../src/Math/Math.hpp"
+#include "Math/Math.hpp"
 
-#include "../../src/ResourceManager/AssetManager.hpp"
+#include "GameAssets.hpp"
+
+#include "GamePlay.hpp"
 
 namespace tg
 {
 	sf::RenderWindow* GameScript::window = nullptr;
-	swift::AssetManager* GameScript::assets = nullptr;
+	GameAssets* GameScript::assets = nullptr;
 	sf::Clock* GameScript::clock = nullptr;
 	swift::Settings* GameScript::settings = nullptr;
 	swift::KeyboardManager* GameScript::keyboard = nullptr;
 	swift::World* GameScript::world = nullptr;
 	GamePlay* GameScript::play = nullptr;
-	swift::ScriptManager* GameScript::scripts = nullptr;
-	
+
 	GameScript::GameScript()
 	{
 		addVariables();
 		addClasses();
 		addFunctions();
 	}
-	
+
 	void GameScript::addVariables()
 	{
-		
+
 	}
-	
+
 	void GameScript::addClasses()
 	{
-		
+		luaState["World"].setClass<GameWorld>(	"createEntity", static_cast<bool (GameWorld::*)(unsigned int)>(&GameWorld::createEntity), 
+												"destroyEntity", static_cast<bool (GameWorld::*)(unsigned int)>(&GameWorld::destroyEntity), 
+												"getPlayer", static_cast<unsigned int (GameWorld::*)() const>(&GameWorld::getPlayer));
 	}
-	
+
 	void GameScript::addFunctions()
 	{
 		// utility functions
 		luaState["getWindowSize"] = &getWindowSize;
 		luaState["getTime"] = &getTime;
-		luaState["doKeypress"] = &doKeypress;
 		luaState["log"] = &logMsg;
 
 		// play
@@ -48,12 +50,11 @@ namespace tg
 		luaState["newEntity"] = &newEntity;
 		luaState["removeEntity"] = &removeEntity;
 		luaState["getEntities"] = &getEntities;
-		luaState["getEntity"] = &getEntity;
 		luaState["getPlayer"] = &getPlayer;
 		luaState["isAround"] = &isAround;
 		luaState["getCurrentWorld"] = &getCurrentWorld;
 		luaState["setCurrentWorld"] = &setCurrentWorld;
-		
+
 		// tilemap
 		luaState["getTileSize"] = &getTileSize;
 
@@ -102,7 +103,7 @@ namespace tg
 		window = &win;
 	}
 
-	void GameScript::setAssetManager(swift::AssetManager& am)
+	void GameScript::setAssetManager(GameAssets& am)
 	{
 		assets = &am;
 	}
@@ -136,11 +137,6 @@ namespace tg
 	{
 		play = &p;
 	}
-	
-	void GameScript::setScriptManager(swift::ScriptManager& sm)
-	{
-		scripts = &sm;
-	}
 
 	const swift::World* GameScript::getWorld()
 	{
@@ -152,88 +148,88 @@ namespace tg
 	std::tuple<unsigned, unsigned> GameScript::getWindowSize()
 	{
 		if(window)
+		{
 			return std::make_tuple(window->getSize().x, window->getSize().y);
+		}
 		else
+		{
 			return std::make_tuple(0u, 0u);
+		}
 	}
 
 	float GameScript::getTime()
 	{
 		if(clock)
+		{
 			return clock->getElapsedTime().asSeconds();
+		}
 		else
+		{
 			return 0.f;
-	}
-
-	void GameScript::doKeypress(std::string k)
-	{
-		if(keyboard)
-			keyboard->call(k);
+		}
 	}
 
 	void GameScript::logMsg(std::string m)
 	{
-		swift::log << m << '\n';
+		swift::Logger::get() << m << '\n';
 	}
 
 	// Play
 	bool GameScript::addScript(std::string s)
 	{
-		if(scripts)
-			return scripts->add(s);
-		else
-			return false;
+		return false;
 	}
 
 	bool GameScript::removeScript(std::string s)
 	{
-		if(scripts)
-			return scripts->remove(s);
-		else
-			return false;
+		return false;
 	}
 
 	// World
-	swift::Entity* GameScript::newEntity()
+	bool GameScript::newEntity(unsigned int e)
 	{
 		if(world)
-			return world->addEntity();
+		{
+			return world->createEntity(e);
+		}
 		else
-			return nullptr;
+		{
+			return false;
+		}
 	}
 
 	bool GameScript::removeEntity(int e)
 	{
 		if(world)
-			return world->removeEntity(e);
+		{
+			return world->destroyEntity(e);
+		}
 		else
+		{
 			return false;
+		}
 	}
 
-	std::vector<swift::Entity*> GameScript::getEntities()
+	std::vector<unsigned int> GameScript::getEntities()
 	{
 		if(world)
 		{
 			return world->getEntities();
 		}
 		else
-			return std::vector<swift::Entity*> {};
+			return std::vector<unsigned int> {};
 	}
 
-	swift::Entity* GameScript::getEntity(int e)
-	{
-		if(world)
-			return world->getEntity(e);
-		else
-			return nullptr;
-	}
-
-	swift::Entity* GameScript::getPlayer()
+	unsigned int GameScript::getPlayer()
 	{
 		if(play)
+		{
 			return play->getPlayer();
+		}
 		else
-			return nullptr;
+		{
+			return 0;
+		}
 	}
 
 	bool GameScript::isAround(swift::Physical* p, float x, float y, float r)
@@ -241,7 +237,9 @@ namespace tg
 		if(p)
 			return swift::math::distance(p->position, {x, y}) <= r;
 		else
+		{
 			return false;
+		}
 	}
 
 	std::string GameScript::getCurrentWorld()
@@ -252,9 +250,11 @@ namespace tg
 			return name;
 		}
 		else
+		{
 			return "nil";
+		}
 	}
-	
+
 	bool GameScript::setCurrentWorld(std::string s, std::string mf)
 	{
 		if(play)
@@ -263,9 +263,11 @@ namespace tg
 			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
-	
+
 	// tilemap
 	std::tuple<int, int> GameScript::getTileSize()
 	{
@@ -275,105 +277,143 @@ namespace tg
 			return std::make_tuple(ts.x, ts.y);
 		}
 		else
+		{
 			return std::make_tuple(0, 0);
+		}
 	}
 
 	// Entity System
-	bool GameScript::add(swift::Entity* e, std::string c)
+	bool GameScript::add(unsigned int id, std::string c)
 	{
-		if(e)
-			return e->add(c);
+		if(id)
+		{
+			return true;
+		}
 		else
+		{
 			return false;
+		}
 	}
 
-	bool GameScript::remove(swift::Entity* e, std::string c)
+	bool GameScript::remove(unsigned int id, std::string c)
 	{
-		if(e)
-			return e->remove(c);
+		if(id)
+		{
+			return true;
+		}
 		else
+		{
 			return false;
+		}
 	}
 
-	bool GameScript::has(swift::Entity* e, std::string c)
+	bool GameScript::has(unsigned int id, std::string c)
 	{
-		if(e)
-			return e->has(c);
+		if(id)
+		{
+			return true;
+		}
 		else
+		{
 			return false;
+		}
 	}
 
 	// Drawable
-	swift::Drawable* GameScript::getDrawable(swift::Entity* e)
+	swift::Drawable* GameScript::getDrawable(unsigned int id)
 	{
-		if(e && e->has<swift::Drawable>())
-			return e->get<swift::Drawable>();
-		else
+		if(id)
+		{
 			return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	bool GameScript::setTexture(swift::Drawable* d, std::string t)
 	{
 		if(d)
 		{
-			d->sprite.setTexture(*assets->getTexture(t));
+			d->sprite.setTexture(assets->getTexture(t));
 			d->texture = t;
 			return true;
 		}
 		else
+		{
 			return false;
+		}
 	}
 
 	void GameScript::setTextureRect(swift::Drawable* d, int x, int y, int w, int h)
 	{
 		if(d)
-			d->sprite.setTextureRect( {x, y, w, h});
+			d->sprite.setTextureRect({x, y, w, h});
 	}
 
 	std::tuple<float, float> GameScript::getSpriteSize(swift::Drawable* d)
 	{
 		if(d)
+		{
 			return std::make_tuple(d->sprite.getGlobalBounds().width, d->sprite.getGlobalBounds().height);
+		}
 		else
+		{
 			return std::make_tuple(0.f, 0.f);
+		}
 	}
 
 	void GameScript::setScale(swift::Drawable* d, float x, float y)
 	{
 		if(d)
-			d->sprite.setScale( {x, y});
+			d->sprite.setScale({x, y});
 	}
 
 	// Movable
-	swift::Movable* GameScript::getMovable(swift::Entity* e)
+	swift::Movable* GameScript::getMovable(unsigned int id)
 	{
-		if(e && e->has<swift::Movable>())
-			return e->get<swift::Movable>();
-		else
+		if(id)
+		{
 			return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	void GameScript::setMoveVelocity(swift::Movable* m, float v)
 	{
 		if(m)
+		{
 			m->moveVelocity = v;
+		}
 	}
 
 	std::tuple<float, float> GameScript::getVelocity(swift::Movable* m)
 	{
 		if(m)
+		{
 			return std::make_tuple(m->velocity.x, m->velocity.y);
+		}
 		else
+		{
 			return std::make_tuple(0.f, 0.f);
+		}
 	}
 
 	// Physical
-	swift::Physical* GameScript::getPhysical(swift::Entity* e)
+	swift::Physical* GameScript::getPhysical(unsigned int id)
 	{
-		if(e && e->has<swift::Physical>())
-			return e->get<swift::Physical>();
-		else
+		if(id)
+		{
 			return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	void GameScript::setPosition(swift::Physical* p, float x, float y)
@@ -385,9 +425,13 @@ namespace tg
 	std::tuple<float, float> GameScript::getPosition(swift::Physical* p)
 	{
 		if(p)
+		{
 			return std::make_tuple(p->position.x, p->position.y);
+		}
 		else
+		{
 			return std::make_tuple(0.f, 0.f);
+		}
 	}
 
 	void GameScript::setSize(swift::Physical* p, unsigned x, unsigned y)
@@ -399,55 +443,79 @@ namespace tg
 	std::tuple<unsigned, unsigned> GameScript::getSize(swift::Physical* p)
 	{
 		if(p)
+		{
 			return std::make_tuple(p->size.x, p->size.y);
+		}
 		else
+		{
 			return std::make_tuple(0u, 0u);
+		}
 	}
 
 	// Name
-	swift::Name* GameScript::getName(swift::Entity* e)
+	swift::Name* GameScript::getName(unsigned int id)
 	{
-		if(e && e->has<swift::Name>())
-			return e->get<swift::Name>();
-		else
+		if(id)
+		{
 			return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	void GameScript::setName(swift::Name* n, std::string name)
 	{
 		if(n)
+		{
 			n->name = name;
+		}
 	}
 
 	std::string GameScript::getNameVal(swift::Name* n)
 	{
 		if(n)
+		{
 			return n->name;
+		}
 		else
+		{
 			return "null";
+		}
 	}
 
 	// Noisy
-	swift::Noisy* GameScript::getNoisy(swift::Entity* e)
+	swift::Noisy* GameScript::getNoisy(unsigned int id)
 	{
-		if(e && e->has<swift::Noisy>())
-			return e->get<swift::Noisy>();
-		else
+		if(id)
+		{
 			return nullptr;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 
 	void GameScript::setSound(swift::Noisy* n, std::string s)
 	{
 		if(n)
+		{
 			n->soundFile = s;
+		}
 	}
 
 	std::string GameScript::getSound(swift::Noisy* n)
 	{
 		if(n)
+		{
 			return n->soundFile;
+		}
 		else
+		{
 			return "null";
+		}
 	}
 
 	// Settings

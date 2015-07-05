@@ -1,108 +1,87 @@
 #include "World.hpp"
 
-#include <cmath>
-#include "../Math/Math.hpp"
+#include "Math/Math.hpp"
+#include "Math/Random.hpp"
 
 namespace swift
 {
-	World::World(const std::string& n)
+	World::World(const std::string& n, unsigned int res)
 	:	name(n)
 	{
-		entities.reserve(128);
+		entities.reserve(res);
 	}
 	
-	Entity* World::addEntity()
+	World::~World()
 	{
-		unsigned oldSize = entities.size();
-		
-		entities.emplace_back(entities.size() - 1);
-		
-		return entities.size() > oldSize ? &entities[entities.size() - 1] : nullptr;
+		for(auto& s : systems)
+		{
+			delete s;
+		}
 	}
 	
-	bool World::removeEntity(int e)
+	bool World::createEntity(unsigned int id)
 	{
-		// if e is positive, check if is greater than last entity
-		// if e is negative, check if it refers to entity less than 0
-		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
+		if(entities.size() == entities.capacity())
+		{
 			return false;
+		}
 		
-		entities.erase((e >= 0 ? entities.begin() : entities.end()) + e);
+		if(std::find(entities.begin(), entities.end(), id) != entities.end())
+		{
+			return false;
+		}
+		
+		entities.emplace_back(id);
 		
 		return true;
 	}
 	
-	Entity* World::getEntity(int e)
+	bool World::destroyEntity(unsigned int id)
 	{
-		// if e is positive, check if is greater than last entity
-		// if e is negative, check if it refers to entity less than 0
-		if(e > static_cast<int>(entities.size()) || static_cast<int>(entities.size()) + e < 0)
-			return nullptr;
-			
-		return &entities[(e >= 0 ? 0 : entities.size()) + e];
-	}
-	
-	Entity* World::getPlayer()
-	{
-		for(auto& e : entities)
+		auto erase = std::find(entities.begin(), entities.end(), id);
+		
+		if(erase == entities.end())
 		{
-			if(e.has<Controllable>())
-				return &e;
+			return false;
 		}
 		
-		return nullptr;
-	}
-	
-	std::vector<Entity*> World::getEntities()
-	{
-		std::vector<Entity*> entityPtrs;
-		
-		for(auto& e : entities)
+		for(auto& s : systems)
 		{
-			entityPtrs.push_back(&e);
+			s->remove(id);
 		}
 		
-		return entityPtrs;
+		entities.erase(erase);
+		
+		return true;
 	}
 	
-	std::vector<Entity*> World::getEntitiesAround(const sf::Vector2f& pos, float radius)
+	unsigned int World::getPlayer() const
 	{
-		std::vector<Entity*> around;
+		return player;
+	}
+	
+	const std::vector<unsigned int>& World::getEntities() const
+	{
+		return entities;
+	}
+	
+	std::vector<unsigned int> World::getEntitiesAround(const sf::Vector2f& pos, float radius) const
+	{
+		std::vector<unsigned int> around;
 		
 		// if pos is outside of the world, or the radius is 0 or less, just return an empty vector
 		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
 			return around;
 		
-		for(auto& e : entities)
+		/*for(auto& id : entities)
 		{
-			if(e.has<Physical>())
+			if(physicalSystem.has(id))
 			{
-				Physical* p = e.get<Physical>();
-				if(math::distance(p->position, pos) <= radius)
-					around.push_back(&e);
+				Physical& p = physicalSystem.get(id);
+				if(math::distance(p.position, pos) <= radius)
+					around.push_back(id);
 			}
-		}
-		
-		return around;
-	}
-	
-	std::vector<unsigned> World::getEntitiesAroundIDs(const sf::Vector2f& pos, float radius)
-	{
-		std::vector<unsigned> around;
-		
-		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
-			return around;
-		
-		for(unsigned i = 0; i < entities.size(); i++)
-		{
-			if(entities[i].has<Physical>())
-			{
-				Physical* p = entities[i].get<Physical>();
-				
-				if(math::distance(p->position, pos) <= radius)
-					around.push_back(i);
-			}
-		}
+		}*/
 		
 		return around;
 	}
@@ -110,5 +89,15 @@ namespace swift
 	const std::string& World::getName() const
 	{
 		return name;
+	}
+	
+	const SystemMap& World::getSystems() const
+	{
+		return systems;
+	}
+	
+	SystemMap& World::getSystems()
+	{
+		return systems;
 	}
 }

@@ -9,82 +9,106 @@ namespace swift
 	class Component
 	{
 		public:
+			enum class Type : std::size_t
+			{
+				None = 0,
+				Animated = 1,
+				BatchDrawable = 2,
+				Controllable = 3,
+				Drawable = 4,
+				Movable = 5,
+				Name = 6,
+				Noisy = 7,
+				Pathfinder = 8,
+				Physical = 9,
+				Scriptable = 10,
+				
+				MAX = 11,
+			};
+			
+			Component(unsigned int i);
 			virtual ~Component() = default;
 			
-			static std::string getType();
+			unsigned int ID() const;
 			
+			// must be implemented
+			static constexpr Type type();
+			
+			static constexpr Type type(const char* str);
+			static constexpr const char* type(Component::Type en);
+
 			virtual std::map<std::string, std::string> serialize() const = 0;
 			virtual void unserialize(const std::map<std::string, std::string>& variables) = 0;
-		
-		protected:
-			template<typename T>
-			static void initMember(const std::string& name, const std::map<std::string, std::string>& variables, T& var, T def);
+			
+		private:
+			unsigned int id;
+			Type typeVal;
+			
+			static constexpr std::pair<const char*, Type> TypeStrings[] = 
+			{
+				{"None", Type::None},
+				{"Animated", Type::Animated},
+				{"BatchDrawable", Type::BatchDrawable},
+				{"Controllable", Type::Controllable},
+				{"Drawable", Type::Drawable},
+				{"Movable", Type::Movable},
+				{"Name", Type::Name},
+				{"Noisy", Type::Noisy},
+				{"Pathfinder", Type::Pathfinder},
+				{"Physical", Type::Physical},
+			};
 	};
 	
-	template<>
-	inline void Component::initMember<int>(const std::string& name, const std::map<std::string, std::string>& variables, int& var, int def)
+	namespace
 	{
-		if(variables.find(name) != variables.end())
+		constexpr bool isSame(const char* x, const char* y)
 		{
-			var = std::stoi(variables.at(name));
-		}
-		else
-		{
-			var = def;
+			return !*x && !*y ? true : (*x == *y && isSame(x + 1, y + 1));
 		}
 	}
 	
-	template<>
-	inline void Component::initMember<unsigned int>(const std::string& name, const std::map<std::string, std::string>& variables, unsigned int& var, unsigned int def)
+	constexpr Component::Type Component::type(const char* str)
 	{
-		if(variables.find(name) != variables.end())
+		constexpr std::size_t MAX = static_cast<std::size_t>(Type::MAX);
+		
+		for(std::size_t i = 1; i < MAX; i++)
 		{
-			var = std::stoi(variables.at(name));
+			if(isSame(str, TypeStrings[i].first))
+			{
+				return TypeStrings[i].second;
+			}
 		}
-		else
-		{
-			var = def;
-		}
+		
+		return Type::None;
 	}
 	
-	template<>
-	inline void Component::initMember<float>(const std::string& name, const std::map<std::string, std::string>& variables, float& var, float def)
+	constexpr const char* Component::type(Component::Type en)
 	{
-		if(variables.find(name) != variables.end())
+		constexpr std::size_t MAX = static_cast<std::size_t>(Type::MAX);
+		
+		std::size_t i = static_cast<std::size_t>(en);
+		
+		if(i < MAX)
 		{
-			var = std::stof(variables.at(name));
+			return TypeStrings[i].first;
 		}
-		else
-		{
-			var = def;
-		}
+		
+		return "None";
 	}
-	
+}
+
+// implementation of std::hash for Component::Type enum class.
+// Allowing it to be used in unordered_maps and such.
+namespace std
+{
 	template<>
-	inline void Component::initMember<bool>(const std::string& name, const std::map<std::string, std::string>& variables, bool& var, bool def)
+	struct hash<swift::Component::Type>
 	{
-		if(variables.find(name) != variables.end())
+		std::size_t operator()(const swift::Component::Type& t) const
 		{
-			var = variables.at(name) == "true";
+			return std::hash<std::underlying_type<swift::Component::Type>::type>()(static_cast<std::underlying_type<swift::Component::Type>::type>(t));
 		}
-		else
-		{
-			var = def;
-		}
-	}
-	
-	template<>
-	inline void Component::initMember<std::string>(const std::string& name, const std::map<std::string, std::string>& variables, std::string& var, std::string def)
-	{
-		if(variables.find(name) != variables.end())
-		{
-			var = variables.at(name);
-		}
-		else
-		{
-			var = def;
-		}
-	}
+	};
 }
 
 #endif // COMPONENT_HPP

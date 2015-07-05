@@ -1,11 +1,12 @@
 #include "BatchDrawable.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
-	std::string BatchDrawable::getType()
-	{
-		return "BatchDrawable";
-	}
+	BatchDrawable::BatchDrawable(unsigned int id)
+	:	Component(id)
+	{}
 	
 	std::map<std::string, std::string> BatchDrawable::serialize() const
 	{
@@ -16,16 +17,13 @@ namespace swift
 		variables.emplace("scaleY", std::to_string(sprite.getScale().y));
 		variables.emplace("batch", batch);
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void BatchDrawable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("texture", variables, texture, std::string("./data/textures/ship.png"));
-		sf::Vector2f scale;
-		initMember("scaleX", variables, scale.x, 0.f);
-		initMember("scaleY", variables, scale.y, 0.f);
-		sprite.setScale(scale);
-		initMember("batch", variables, batch, std::string(""));
+		texture = variables.at("texture");
+		sprite.setScale({std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY"))});
+		batch = variables.at("batch");
 	}
 }

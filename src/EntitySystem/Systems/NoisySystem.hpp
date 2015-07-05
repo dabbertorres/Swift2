@@ -1,24 +1,33 @@
 #ifndef NOISYSYSTEM_HPP
 #define NOISYSYSTEM_HPP
 
-#include "../System.hpp" // Base class: swift::System
+#include "../System.hpp"
 
-#include "../Entity.hpp"
+#include "../Components/Noisy.hpp"
+#include "../Components/Physical.hpp"
 
-#include "../../SoundSystem/SoundPlayer.hpp"
-#include "../../ResourceManager/AssetManager.hpp"
+#include "SoundSystem/SoundPlayer.hpp"
+#include "ResourceManager/AssetManager.hpp"
 
 namespace swift
 {
-	class NoisySystem : public System
+	class NoisySystem : public System<Noisy>
 	{
 		public:
-			NoisySystem(SoundPlayer& sp, AssetManager& am);
-			virtual void update(const std::vector<Entity>& entities, float dt);
+			NoisySystem();
+			
+			virtual void update(float dt);
+			
+			void setPhysSystem(System<Physical>* ps);
+			
+			static void setSoundPlayer(SoundPlayer& sp);
+			static void setAssetManager(AssetManager& am);
 
 		private:
-			SoundPlayer& soundPlayer;
-			AssetManager& assets;
+			static SoundPlayer* soundPlayer;
+			static AssetManager* assets;
+			
+			System<Physical>* physSystem;
 	};
 }
 

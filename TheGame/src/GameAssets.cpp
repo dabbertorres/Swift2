@@ -4,35 +4,22 @@
 
 namespace tg
 {
-	GameAssets::GameAssets()
+	bool GameAssets::loadScript(const gfs::Path& file)
 	{
-	}
+		std::string fileName = file.filename();
 
-	GameAssets::~GameAssets()
-	{
-	}
-	
-	bool GameAssets::loadScript(const std::string& file)
-	{
-		scripts.emplace(file, new GameScript());
+		scripts.emplace(fileName, std::make_unique<GameScript>());
 
-		if(!scripts[file]->loadFromFile(file))
+		if(!scripts[fileName]->loadFromFile(file))
 		{
-			swift::log << "Unable to load " << file << " as a script.\n";
+			swift::Logger::get() << "Unable to load " << file << " as a script.\n";
 
-			// delete new'd script
-			auto it = scripts.end();
-			it--;
-			delete it->second;
-
-			scripts.erase(file);
+			scripts.erase(fileName);
 			return false;
 		}
 
-		swift::log << "Script:\t" << file << '\n';
+		swift::Logger::get() << "Script:\t" << fileName << '\n';
 
-		scripts[file]->load("./data/saves/" + file.substr(file.find_last_of('/') + 1) + ".script");
-		
 		return true;
 	}
 }

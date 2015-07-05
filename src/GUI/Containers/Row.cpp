@@ -2,21 +2,15 @@
 
 namespace cstr
 {
-	Row::Row(sf::IntRect r, bool s)
-		:	Container(r, s)
-	{
-	}
+	Row::Row(const sf::IntRect& r, bool s)
+	:	Container(r, s)
+	{}
 	
-	Row::Row(sf::Vector2i size, bool s)
-		:	Container(size, s)
-	{
-	}
+	Row::Row(const sf::Vector2i& size, bool s)
+	:	Container(size, s)
+	{}
 
-	Row::~Row()
-	{
-	}
-
-	void Row::update(sf::Event& event)
+	void Row::update(const sf::Event& event)
 	{
 		if(isScrollable())
 		{
@@ -36,7 +30,7 @@ namespace cstr
 		updateWidgets(event);
 	}
 	
-	void Row::setPosition(sf::Vector2i pos)
+	void Row::setPosition(const sf::Vector2i& pos)
 	{
 		for(auto& w : getWidgets())
 			w->setPosition({pos.x + (static_cast<int>(w->getGlobalBounds().left) - rect.left), pos.y + (static_cast<int>(w->getGlobalBounds().top) - rect.top)});

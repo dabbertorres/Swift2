@@ -13,21 +13,19 @@ namespace cstr
 	class Container : public Widget
 	{
 		public:
-			Container(sf::IntRect r, bool s)
-				:	Widget(r),
-					border(0),
-				    isVisible(true),
-				    scrollable(s)
-			{
-			}
+			Container(const sf::IntRect& r, bool s)
+			:	Widget(r),
+				border(0),
+				isVisible(true),
+				scrollable(s)
+			{}
 			
-			Container(sf::Vector2i size, bool s)
-				:	Widget({0, 0, size.x, size.y}),
-					border(0),
-					isVisible(true),
-					scrollable(s)
-			{
-			}
+			Container(const sf::Vector2i& size, bool s)
+			:	Widget({0, 0, size.x, size.y}),
+				border(0),
+				isVisible(true),
+				scrollable(s)
+			{}
 
 			virtual ~Container()
 			{
@@ -77,10 +75,10 @@ namespace cstr
 				return scrollable;
 			}
 			
-			virtual void update(sf::Event& event) = 0;
+			virtual void update(const sf::Event& event) = 0;
 		
 		protected:
-			void updateWidgets(sf::Event& event)
+			void updateWidgets(const sf::Event& event)
 			{
 				if(isVisible)
 				{

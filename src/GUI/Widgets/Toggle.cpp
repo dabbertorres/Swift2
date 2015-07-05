@@ -4,21 +4,17 @@ namespace cstr
 {
 	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
 	
-	Toggle::Toggle(sf::Vector2u size, const sf::Texture& tex, const sf::IntRect& on, const sf::IntRect& off, bool s, std::function<void(bool s)> c)
-		:	baseColor({128, 128, 128}),
-			onRect(on),
-			offRect(off),
-			callback(c),
-			state(s)
+	Toggle::Toggle(const sf::Vector2u& size, const sf::Texture& tex, const sf::IntRect& on, const sf::IntRect& off, bool s, std::function<void(bool s)> c)
+	:	baseColor({128, 128, 128}),
+		onRect(on),
+		offRect(off),
+		callback(c),
+		state(s)
 	{
 		sprite.setTexture(tex);
 		sprite.setTextureRect(state ? onRect : offRect);
 		sprite.setColor(baseColor);
 		sprite.scale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
-	}
-
-	Toggle::~Toggle()
-	{
 	}
 	
 	bool Toggle::getState() const
@@ -26,7 +22,7 @@ namespace cstr
 		return state;
 	}
 
-	void Toggle::update(sf::Event& event)
+	void Toggle::update(const sf::Event& event)
 	{
 		switch(event.type)
 		{
@@ -65,12 +61,12 @@ namespace cstr
 		return sprite.getGlobalBounds();
 	}
 	
-	void Toggle::setPosition(sf::Vector2i pos)
+	void Toggle::setPosition(const sf::Vector2i& pos)
 	{
 		sprite.setPosition(static_cast<sf::Vector2f>(pos));
 	}
 	
-	void Toggle::setSize(sf::Vector2u size)
+	void Toggle::setSize(const sf::Vector2u& size)
 	{
 		sprite.scale({size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height});
 	}

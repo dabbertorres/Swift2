@@ -1,0 +1,16 @@
+# hidden files
+.*
+
+# Debug and Release folders
+Debug/
+Release/
+
+# IDE generated files
+*.mk
+*.batch_build
+*.json
+
+# compiled code
+*.a
+*.o
+*.o.d

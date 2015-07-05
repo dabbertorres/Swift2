@@ -10,22 +10,22 @@ namespace cstr
 	class Slider : public Widget
 	{
 		public:
-			Slider(sf::Vector2u size);
-			~Slider();
+			Slider(const sf::Vector2u& size);
+			~Slider() = default;
 
-			virtual void update(sf::Event& event);
+			virtual void update(const sf::Event& event);
 
 			virtual sf::FloatRect getGlobalBounds() const;
 
-			virtual void setPosition(sf::Vector2i pos);
+			virtual void setPosition(const sf::Vector2i& pos);
 
-			virtual void setSize(sf::Vector2u size);
+			virtual void setSize(const sf::Vector2u& size);
 
 			void setValue(float v);
 			float getValue() const;
 
-			void setSliderColor(sf::Color c);
-			void setTrackColor(sf::Color c);
+			void setSliderColor(const sf::Color& c);
+			void setTrackColor(const sf::Color& c);
 
 		private:
 			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;

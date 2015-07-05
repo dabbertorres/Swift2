@@ -7,12 +7,14 @@
 
 namespace swift
 {
+	class Physical;
+	
 	class Movable : public Component
 	{
 		public:
-			Movable();
+			Movable(unsigned int id = 0);
 			
-			static std::string getType();
+			static constexpr Component::Type type();
 			
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
@@ -20,6 +22,11 @@ namespace swift
 			float moveVelocity;
 			sf::Vector2f velocity;
 	};
+	
+	constexpr Component::Type Movable::type()
+	{
+		return Component::Type::Movable;
+	}
 }
 
 #endif // MOVABLE_HPP

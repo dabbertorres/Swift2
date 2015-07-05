@@ -1,0 +1,24 @@
+Swift2
+
+OS:		Linux
+Version:	4.0.5-1-ARCH
+Arch:		x86_64
+Total Mem:	16367068 kB
+CPU:		Intel(R) Core(TM) i5-4670K CPU @ 3.40GHz
+Video Vendor:	NVIDIA Corporation
+Video Card:	GeForce GTX 970/PCIe/SSE2
+Video Driver:	4.5.0 NVIDIA 352.21
+
+Dictionary:	en
+Font:	segoeuisl.ttf
+[INFO]: /home/alec/Code/Swift2/TheGame/data/maps/dungeon.tmx is an unknown resource type.
+Texture:	roguelikeChar_transparent.png
+Texture:	button.png
+Texture:	abetterpillSmall.png
+Texture:	toggle.png
+Texture:	roguelikeDungeon_transparent.png
+
+
+
+0 warnings
+0 errors

@@ -5,22 +5,29 @@
 
 namespace swift
 {
+	class Movable;
+	
 	class Controllable : public swift::Component
 	{
 		public:
-			Controllable();
+			Controllable(unsigned int id = 0);
 			
-			static std::string getType();
+			static constexpr Component::Type type();
 			
 			virtual std::map<std::string,std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
 			
-			// booleans of all things a player entity should do when a key is pressed
+			// bools of things a player entity should do when a key is pressed
 			bool moveLeft;
 			bool moveRight;
 			bool moveUp;
 			bool moveDown;
 	};
+	
+	constexpr Component::Type Controllable::type()
+	{
+		return Component::Type::Controllable;
+	}
 }
 
 #endif // CONTROLLABLE_HPP

@@ -1,21 +1,15 @@
 #include "Physical.hpp"
-#include <iostream>
-#include "../Entity.hpp"
 
 namespace swift
 {
-	Physical::Physical()
-	:	position({0, 0}),
+	Physical::Physical(unsigned int id)
+	:	Component(id),
+		position({0, 0}),
 		zIndex(1),
 		size({0, 0}),
 		collides(false),
 		angle(0)
 	{}
-	
-	std::string Physical::getType()
-	{
-		return "Physical";
-	}
 	
 	std::map<std::string, std::string> Physical::serialize() const
 	{
@@ -34,12 +28,10 @@ namespace swift
 	
 	void Physical::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("positionX", variables, position.x, 0.f);
-		initMember("positionY", variables, position.y, 0.f);
-		initMember("zIndex", variables, zIndex, 0u);
-		initMember("sizeX", variables, size.x, 0u);
-		initMember("sizeY", variables, size.y, 0u);
-		initMember("collides", variables, collides, false);
-		initMember("angle", variables, angle, 0.f);
+		position = {std::stof(variables.at("positionX")), std::stof(variables.at("positionY"))};
+		zIndex = std::stoi(variables.at("zIndex"));
+		size = {static_cast<unsigned int>(std::stoul(variables.at("sizeX"))), static_cast<unsigned int>(std::stoul(variables.at("sizeY")))};
+		collides = variables.at("collides") == "true";
+		angle = std::stof(variables.at("angle"));
 	}
 }

@@ -1,30 +1,31 @@
 #include "Settings.hpp"
 
-#include "../Logger/Logger.hpp"
+#include <sstream>
+#include <fstream>
+
+#include "Logger/Logger.hpp"
 
 namespace swift
 {
 	Settings::Settings()
-	{
-		changed = false;
-	}
+	:	changed(false)
+	{}
 
-	Settings::~Settings()
-	{
-		saveToFile();
-	}
-
-	bool Settings::loadFile(const std::string& f)
+	bool Settings::loadFromFile(const gfs::Path& f)
 	{
 		data.clear();
 		file = f;
+		
 		return read();
 	}
 
 	bool Settings::saveToFile() const
 	{
 		if(changed)
+		{
 			return write();
+		}
+		
 		return true;
 	}
 
@@ -32,261 +33,223 @@ namespace swift
 	{
 		return changed;
 	}
-
+	
+	template<>
 	bool Settings::get(const std::string& setting, std::string& value) const
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			value = data[i].second;
+			value = data.at(setting);
 			return true;
 		}
+		
 		return false;
 	}
 
+	template<>
 	bool Settings::get(const std::string& setting, bool& value) const
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			std::string temp = data[i].second;
-
-			if(temp == "true" || temp == "1" || temp == "TRUE")
-				value = true;
-			else
-				value = false;
-
+			std::string val = data.at(setting);
+			value = (val == "true" || val == "1");
 			return true;
 		}
+		
 		return false;
 	}
 
-	bool Settings::get(const std::string& setting, char& value) const
-	{
-		int i = findIndex(setting);
-		if(i > -1)
-		{
-			value = data[i].second[0];
-			return true;
-		}
-		return false;
-	}
-
+	template<>
 	bool Settings::get(const std::string& setting, int& value) const
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			value = std::stoi(data[i].second);
+			value = std::stoi(data.at(setting));
 			return true;
 		}
+		
 		return false;
 	}
 
-	bool Settings::get(const std::string& setting, unsigned& value) const
+	template<>
+	bool Settings::get(const std::string& setting, unsigned int& value) const
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			value = std::stoi(data[i].second);
+			value = std::stoi(data.at(setting));
 			return true;
 		}
+		
 		return false;
 	}
 
+	template<>
 	bool Settings::get(const std::string& setting, float& value) const
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			value = std::stof(data[i].second);
-			return true;
-		}
-		return false;
-	}
-
-	bool Settings::set(const std::string& setting, std::string& value)
-	{
-		int i = findIndex(setting);
-		if(i > -1)
-		{
-			data[i].second = value;
-			changed = true;
-			
-			sendMessage(setting, value);
+			value = std::stof(data.at(setting));
 			return true;
 		}
 		
 		return false;
 	}
 
-	bool Settings::set(const std::string& setting, bool& value)
+	template<>
+	void Settings::set(const std::string& setting, const std::string& value)
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			data[i].second = value ? "true" : "false";
-			changed = true;
-			
-			sendMessage(setting, value ? "true" : "false");
-			return true;
+			data[setting] = value;
+		}
+		else
+		{
+			data.emplace(setting, value);
 		}
 		
-		return false;
+		changed = true;
 	}
 
-	bool Settings::set(const std::string& setting, char& value)
+	template<>
+	void Settings::set(const std::string& setting, const bool& value)
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			data[i].second = value;
-			changed = true;
-			
-			sendMessage(setting, std::to_string(value));
-			return true;
+			data[setting] = value ? "true" : "false";
+		}
+		else
+		{
+			data.emplace(setting, value ? "true" : "false");
 		}
 		
-		return false;
+		changed = true;
 	}
 
-	bool Settings::set(const std::string& setting, int& value)
+	template<>
+	void Settings::set(const std::string& setting, const int& value)
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			data[i].second = std::to_string(value);
-			changed = true;
-			
-			sendMessage(setting, std::to_string(value));
-			return true;
+			data[setting] = std::to_string(value);
+		}
+		else
+		{
+			data.emplace(setting, std::to_string(value));
 		}
 		
-		return false;
-	}
-	
-	bool Settings::set(const std::string& setting, unsigned& value)
-	{
-		int i = findIndex(setting);
-		if(i > -1)
-		{
-			data[i].second = std::to_string(value);
-			changed = true;
-			
-			sendMessage(setting, std::to_string(value));
-			return true;
-		}
-		
-		return false;
+		changed = true;
 	}
 
-	bool Settings::set(const std::string& setting, float& value)
+	template<>
+	void Settings::set(const std::string& setting, const unsigned int& value)
 	{
-		int i = findIndex(setting);
-		if(i > -1)
+		if(data.find(setting) != data.end())
 		{
-			data[i].second = std::to_string(value);
-			changed = true;
-			
-			sendMessage(setting, std::to_string(value));
-			return true;
+			data[setting] = std::to_string(value);
+		}
+		else
+		{
+			data.emplace(setting, std::to_string(value));
 		}
 		
-		return false;
+		changed = true;
 	}
 
-	int Settings::findIndex(const std::string& setting) const
+	template<>
+	void Settings::set(const std::string& setting, const float& value)
 	{
-		for(size_t i = 0; i < data.size(); i++)
+		if(data.find(setting) != data.end())
 		{
-			if(data[i].first[0] == '#')
-				continue;
-			else if(data[i].first == setting)
-			{
-				return i;
-			}
+			data[setting] = std::to_string(value);
 		}
-		return -1;
+		else
+		{
+			data.emplace(setting, std::to_string(value));
+		}
+		
+		changed = true;
 	}
 
 	bool Settings::read()
 	{
-		std::ifstream in(file);
+		std::ifstream fin(file);
 
-		if(!in.is_open())
-			return false;
-
-		std::string line, setting, value;
-
-		while(in.good())
+		if(!fin)
 		{
-			std::getline(in, line);
-			
-			// lines starting with '#' are a comment
-			if(line.size() > 0 && line[0] != '#')
-			{
-				size_t j = 0;
-				size_t length = line.size();
-
-				while(line[j] != ' ')
-					j++;
-					
-				// start of 'setting' to (one before) first space is the 'setting' value
-				setting = line.substr(0, j);
-
-				while(line[j] == ' ' || line[j] == '=')
-					j++;
-					
-				// start of 'value' is after the equal sign and any extra spaces
-				int a = j;
-				
-				while(j < length && (line[j] != ' ' || line[j] != '\n' || line[j] != '#'))
-					j++;
-					
-				// end of value is the last alphanumerisymbolic* char (except for '#')
-				int b = j;
-				
-				value = line.substr(a, b);
-			}
-			else
-			{
-				// save comments
-				setting = line;
-				value = "";
-			}
-
-			data.push_back(make_pair(setting, value));
+			Logger::get() << "[ERROR]: Unable to open settings file: \"" << file << "\" for reading.\n";
+			return false;
 		}
-
-		in.close();
-
-		changed = false;
-
+		
+		std::string line = "";
+		std::string setting = "";
+		std::string value = "";
+		
+		while(std::getline(fin, line))
+		{
+			// skip empty lines and comments (lines starting with '#')
+			if(!line.empty() && line[0] != '#')
+			{
+				std::stringstream ss(line);
+				
+				std::string dump;
+				
+				ss >> setting >> dump;
+				
+				std::string temp = "";
+				std::getline(ss, temp);	// get rest of line
+				
+				// add characters until we reach a newline or a comment
+				std::size_t i = 0;
+				while(i < temp.size() && temp[i] != '\n' && temp[i] != '#')
+				{
+					value += temp[i];
+					++i;
+				}
+				
+				// strip leading and trailing spaces
+				while(value.front() == ' ')
+					value.erase(value.begin());
+				
+				while(value.back() == ' ')
+					value.erase(value.end() - 1);
+			}
+			else	// save comments and empty lines for writing later
+			{
+				setting = line;
+			}
+			
+			data.emplace(setting, value);
+			
+			// empty the strings
+			setting.clear();
+			value.clear();
+		}
+		
 		return true;
 	}
-
+	
 	bool Settings::write() const
 	{
-		std::ofstream out(file);
-
-		if(!out.is_open())
+		std::ofstream fout(file);
+		
+		if(!fout)
 		{
-			log << "Error: Unable to open settings file: \"" << file << "\" for writing.\n";
+			Logger::get() << "[ERROR]: Unable to open settings file: \"" << file << "\" for writing.\n";
 			return false;
 		}
-
-		for(size_t i = 0; i < data.size(); ++i)
+		
+		for(auto& sv : data)
 		{
-			if(data[i].first[0] == '#' || data[i].first[0] == 0)
-				out << data[i].first << std::endl;
+			if(sv.first.empty() || sv.first[0] == '#')
+			{
+				fout << sv.first << '\n';
+			}
 			else
-				out << data[i].first << " = " << data[i].second << std::endl;
+			{
+				fout << sv.first << " = " << sv.second << '\n';
+			}
 		}
-
-		out.close();
-
+		
 		return true;
 	}
-
-	// alphanumerisymbolic = something that is a letter, number, or symbol
 }

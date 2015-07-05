@@ -1,6 +1,8 @@
 #include "Collision.hpp"
 
-#include "../EntitySystem/Entity.hpp"
+#include "../EntitySystem/Systems/MovableSystem.hpp"
+
+#include "../EntitySystem/Components/Physical.hpp"
 
 #include "../World/World.hpp"
 
@@ -10,23 +12,27 @@
 
 namespace swift
 {
-	Collision::Collision(const Entity& f, const Entity& s)
-	:	one(f),
-		two(s),
+	const MovableSystem* Collision::movables = nullptr;
+	
+	Collision::Collision(Physical& o, Physical& t)
+	:	one(o),
+		two(t),
+		idOne(o.ID()),
+		idTwo(t.ID()),
 		position({-1.f, -1.f}),
 		result(false)
 	{
 		result = handle();
 	}
 
-	const Entity& Collision::getFirstEntity() const
+	unsigned int Collision::getFirstID() const
 	{
-		return one;
+		return idOne;
 	}
 	
-	const Entity& Collision::getSecondEntity() const
+	unsigned int Collision::getSecondID() const
 	{
-		return two;
+		return idTwo;
 	}
 
 	const sf::Vector2f& Collision::getPosition() const
@@ -41,19 +47,16 @@ namespace swift
 
 	bool Collision::handle()
 	{
-		Physical* physOne = one.get<Physical>();
-		Physical* physTwo = two.get<Physical>();
-		
 		// make sure we're actually dealing with collidable entities
-		if(!(physOne->collides && physTwo->collides))
+		if(!(one.collides && two.collides))
 			return false;
 		
 		// make sure the entites are in the same plane
-		if(physOne->zIndex != physTwo->zIndex)
+		if(one.zIndex != two.zIndex)
 			return false;
 		
 		// make sure at least one of the entities is able to move
-		if(!(one.has<Movable>() || two.has<Movable>()))
+		if(!(movables->has(idOne) || movables->has(idTwo)))
 			return false;
 		
 		return separatingAxisTheorem();
@@ -61,16 +64,13 @@ namespace swift
 	
 	bool Collision::circularCollision()
 	{
-		Physical* physOne = one.get<Physical>();
-		Physical* physTwo = two.get<Physical>();
-		
 		// get the center points of the entities
-		sf::Vector2f centerPosOne = physOne->position + static_cast<sf::Vector2f>(physOne->size) / 2.f;
-		sf::Vector2f centerPosTwo = physTwo->position + static_cast<sf::Vector2f>(physTwo->size) / 2.f;
+		sf::Vector2f centerPosOne = one.position + static_cast<sf::Vector2f>(one.size) / 2.f;
+		sf::Vector2f centerPosTwo = two.position + static_cast<sf::Vector2f>(two.size) / 2.f;
 		
 		// radius of the circle is half of the diagonal of the rectangle
-		float radiusOne = std::sqrt(physOne->size.x * physOne->size.x + physOne->size.y * physOne->size.y) / 2.f;
-		float radiusTwo = std::sqrt(physTwo->size.x * physTwo->size.x + physTwo->size.y * physTwo->size.y) / 2.f;
+		float radiusOne = std::sqrt(one.size.x * one.size.x + one.size.y * one.size.y) / 2.f;
+		float radiusTwo = std::sqrt(two.size.x * two.size.x + two.size.y * two.size.y) / 2.f;
 		
 		float distanceSqd = math::distanceSquared(centerPosOne, centerPosTwo);
 		
@@ -89,35 +89,32 @@ namespace swift
 		sf::Vector2f newCenterPosTwo = scaledDiffVector(centerPosTwo, position, halfDepth);
 		
 		// translate from center to top-left
-		physOne->position = newCenterPosOne - static_cast<sf::Vector2f>(physOne->size) / 2.f;
-		physTwo->position = newCenterPosTwo - static_cast<sf::Vector2f>(physTwo->size) / 2.f;
+		one.position = newCenterPosOne - static_cast<sf::Vector2f>(one.size) / 2.f;
+		two.position = newCenterPosTwo - static_cast<sf::Vector2f>(two.size) / 2.f;
 		
 		return true;
 	}
 	
 	bool Collision::separatingAxisTheorem()
 	{
-		Physical* physOne = one.get<Physical>();
-		Physical* physTwo = two.get<Physical>();
-			
 		// get length of diagonals
-		float oneDiagLength = std::sqrt(physOne->size.x * physOne->size.x + physOne->size.y * physOne->size.y);
-		float oneDiagAngle = std::atan2(physOne->size.y, physOne->size.x) * 180.f / math::PI;
-		float twoDiagLength = std::sqrt(physTwo->size.x * physTwo->size.x + physTwo->size.y * physTwo->size.y);
-		float twoDiagAngle = std::atan2(physTwo->size.y, physTwo->size.x) * 180.f / math::PI;
+		float oneDiagLength = std::sqrt(one.size.x * one.size.x + one.size.y * one.size.y);
+		float oneDiagAngle = std::atan2(one.size.y, one.size.x) * 180.f / math::PI;
+		float twoDiagLength = std::sqrt(two.size.x * two.size.x + two.size.y * two.size.y);
+		float twoDiagAngle = std::atan2(two.size.y, two.size.x) * 180.f / math::PI;
 		
 		// points of the rects clockwise
 		sf::Vector2f oneVerts[4];
-		oneVerts[0] = physOne->position;
-		oneVerts[1] = physOne->position + sf::Vector2f(physOne->size.x * std::cos(physOne->angle * math::PI / 180.f), physOne->size.x * std::sin(physOne->angle * math::PI / 180.f));
-		oneVerts[2] = physOne->position + sf::Vector2f(oneDiagLength * std::cos((physOne->angle + oneDiagAngle) * math::PI / 180.f), oneDiagLength * std::sin((physOne->angle + oneDiagAngle) * math::PI / 180.f));
-		oneVerts[3] = physOne->position + sf::Vector2f(physOne->size.y * std::cos((physOne->angle + 90.f) * math::PI / 180.f), physOne->size.y * std::sin((physOne->angle + 90.f) * math::PI / 180.f));
+		oneVerts[0] = one.position;
+		oneVerts[1] = one.position + sf::Vector2f(one.size.x * std::cos(one.angle * math::PI / 180.f), one.size.x * std::sin(one.angle * math::PI / 180.f));
+		oneVerts[2] = one.position + sf::Vector2f(oneDiagLength * std::cos((one.angle + oneDiagAngle) * math::PI / 180.f), oneDiagLength * std::sin((one.angle + oneDiagAngle) * math::PI / 180.f));
+		oneVerts[3] = one.position + sf::Vector2f(one.size.y * std::cos((one.angle + 90.f) * math::PI / 180.f), one.size.y * std::sin((one.angle + 90.f) * math::PI / 180.f));
 		
 		sf::Vector2f twoVerts[4];
-		twoVerts[0] = physTwo->position;
-		twoVerts[1] = physTwo->position + sf::Vector2f(physTwo->size.x * std::cos(physTwo->angle * math::PI / 180.f), physTwo->size.x * std::sin(physTwo->angle * math::PI / 180.f));
-		twoVerts[2] = physTwo->position + sf::Vector2f(twoDiagLength * std::cos((physTwo->angle + twoDiagAngle) * math::PI / 180.f), twoDiagLength * std::sin((physTwo->angle + twoDiagAngle) * math::PI / 180.f));
-		twoVerts[3] = physTwo->position + sf::Vector2f(physTwo->size.y * std::cos((physTwo->angle + 90.f) * math::PI / 180.f), physTwo->size.y * std::sin((physTwo->angle + 90.f) * math::PI / 180.f));
+		twoVerts[0] = two.position;
+		twoVerts[1] = two.position + sf::Vector2f(two.size.x * std::cos(two.angle * math::PI / 180.f), two.size.x * std::sin(two.angle * math::PI / 180.f));
+		twoVerts[2] = two.position + sf::Vector2f(twoDiagLength * std::cos((two.angle + twoDiagAngle) * math::PI / 180.f), twoDiagLength * std::sin((two.angle + twoDiagAngle) * math::PI / 180.f));
+		twoVerts[3] = two.position + sf::Vector2f(two.size.y * std::cos((two.angle + 90.f) * math::PI / 180.f), two.size.y * std::sin((two.angle + 90.f) * math::PI / 180.f));
 		
 		// axes to test from rect 1
 		sf::Vector2f oneAxes[4];
@@ -170,17 +167,17 @@ namespace swift
 		
 		// well, since we're here, they collided. now to handle the collision...
 		// if both are movable, move both
-		if(one.has<Movable>() && two.has<Movable>())
+		if(movables->has(idOne) && movables->has(idTwo))
 		{
-			one.get<Physical>()->position -= smallestAxis * (overlap / 2.f);
-			two.get<Physical>()->position += smallestAxis * (overlap / 2.f);
+			one.position -= smallestAxis * (overlap / 2.f);
+			two.position += smallestAxis * (overlap / 2.f);
 		}
 		// only one is a movable
 		else
 		{
-			Physical* movable = one.has<Movable>() ? one.get<Physical>() : two.get<Physical>();
+			Physical& movable = movables->has(idOne) ? one : two;
 			
-			movable->position -= (smallestAxis * overlap);
+			movable.position -= (smallestAxis * overlap);
 		}
 		
 		return true;

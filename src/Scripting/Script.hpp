@@ -5,7 +5,7 @@
  * Lua is expected to be compiled with float as lua_number!!!
  */
 
-#include "LuaCpp/LuaCpp.hpp"
+#include "LNA/LNA.hpp"
 
 #include <string>
 
@@ -14,9 +14,6 @@
 #include "../Settings/Settings.hpp"
 
 #include "../KeyBindings/KeyboardManager.hpp"
-
-/* EntitySystem */
-#include "../EntitySystem/Entity.hpp"
 
 /*
  * Each Script object expects two functions to exist in the
@@ -44,36 +41,42 @@ namespace swift
 	class AssetManager;
 	class World;
 	class Play;
-	
+
 	class Script
 	{
+		friend class ScriptSave;
+		
 		public:
 			Script();
-			virtual ~Script();
-			
-			bool loadFromFile(const std::string& file);
+			virtual ~Script() = default;
+
+			bool loadFromFile(const std::string& lfile);
 
 			void start();
 
 			void update();
-			
-			bool load(const std::string& lfile);
-			bool save(const std::string& sfile);
 
 			bool toDelete();
-			
+
 			void reset();
+			
+			const std::string& getFile() const;
+
+			static void setResourcePath(const std::string& rp);
 
 		protected:
 			virtual void addVariables() = 0;
 			virtual void addClasses() = 0;
 			virtual void addFunctions() = 0;
-		
-			lpp::State luaState;
-			
+
+			lna::State luaState;
+
 		private:
 			std::string file;
 			bool deleteMe;
+
+			static std::string resPath;
+			static std::string getResourcePath();
 	};
 }
 

@@ -4,11 +4,11 @@ namespace cstr
 {
 	const int BORDER_SIZE = 2;
 
-	TextBox::TextBox(sf::Vector2u size, sf::Font& f, const std::string& d)
-		:	currentStr(d),
-		    cursorPosition(currentStr.size()),
-		    selected(false),
-		    border(static_cast<sf::Vector2f>(size))
+	TextBox::TextBox(const sf::Vector2u& size, sf::Font& f, const std::string& d)
+	:	currentStr(d),
+		cursorPosition(currentStr.size()),
+		selected(false),
+		border(static_cast<sf::Vector2f>(size))
 
 	{
 		border.setOutlineColor( {128, 128, 128});
@@ -23,11 +23,7 @@ namespace cstr
 		text.setString(currentStr + '|');
 	}
 
-	TextBox::~TextBox()
-	{
-	}
-
-	void TextBox::update(sf::Event& event)
+	void TextBox::update(const sf::Event& event)
 	{
 		switch(event.type)
 		{
@@ -108,13 +104,13 @@ namespace cstr
 		return border.getGlobalBounds();
 	}
 
-	void TextBox::setPosition(sf::Vector2i pos)
+	void TextBox::setPosition(const sf::Vector2i& pos)
 	{
 		border.setPosition(static_cast<sf::Vector2f>(pos));
 		text.setPosition(pos.x + BORDER_SIZE, pos.y + BORDER_SIZE);
 	}
 
-	void TextBox::setSize(sf::Vector2u size)
+	void TextBox::setSize(const sf::Vector2u& size)
 	{
 		border.setSize(static_cast<sf::Vector2f>(size));
 		text.setCharacterSize(size.y - 2 * BORDER_SIZE);

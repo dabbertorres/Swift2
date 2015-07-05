@@ -24,7 +24,7 @@ namespace swift
 					bindings.at(k).call();
 			}
 
-			bool operator()(sf::Event& e)
+			bool operator()(const sf::Event& e)
 			{
 				if(e.type == sf::Event::KeyPressed)
 				{
@@ -82,7 +82,7 @@ namespace swift
 						return key;
 					}
 
-					bool operator()(sf::Event& e)
+					bool operator()(const sf::Event& e)
 					{
 						return ((e.type == sf::Event::KeyPressed && onPress) || (e.type == sf::Event::KeyReleased && !onPress)) && e.key.code == key;
 					}

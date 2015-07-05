@@ -1,11 +1,12 @@
 #include "Noisy.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
-	std::string Noisy::getType()
-	{
-		return "Noisy";
-	}
+	Noisy::Noisy(unsigned int id)
+	:	Component(id)
+	{}
 	
 	std::map<std::string,std::string> Noisy::serialize() const
 	{
@@ -13,11 +14,11 @@ namespace swift
 		
 		variables.emplace("sound", soundFile);
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void Noisy::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("sound", variables, soundFile, std::string("./data/sounds/nothing.wav"));
+		soundFile = variables.at("sound");
 	}
 }

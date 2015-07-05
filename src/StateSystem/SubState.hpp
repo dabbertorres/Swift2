@@ -11,22 +11,26 @@ namespace swift
 	class SubState
 	{
 		public:
-			SubState();
-			SubState(const std::function<void(sf::Event&)> e, const std::function<void(sf::Time)> u, const std::function<void(float e)> d);
-			virtual ~SubState();
+			using EventHandler = std::function<void(const sf::Event&)>;
+			using Updater = std::function<void(const sf::Time&)>;
+			using Drawer = std::function<void()>;
 			
-			void handleEvents(sf::Event& e);
-			void update(sf::Time dt);
-			void draw(float e);
-			
-			void setEventFunc(const std::function<void(sf::Event&)> e);
-			void setUpdateFunc(const std::function<void(sf::Time)> u);
-			void setDrawFunc(const std::function<void(float e)> d);
-			
+			SubState() = default;
+			SubState(const EventHandler& e, const Updater& u, const Drawer& d);
+			virtual ~SubState() = default;
+
+			void handleEvents(const sf::Event& e);
+			void update(const sf::Time& dt);
+			void draw();
+
+			void setEventFunc(const EventHandler& e);
+			void setUpdateFunc(const Updater& u);
+			void setDrawFunc(const Drawer& d);
+
 		private:
-			std::function<void(sf::Event& e)> eventFunc;
-			std::function<void(sf::Time dt)> updateFunc;
-			std::function<void(float e)> drawFunc;
+			EventHandler eventFunc;
+			Updater updateFunc;
+			Drawer drawFunc;
 	};
 }
 

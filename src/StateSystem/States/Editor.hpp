@@ -12,7 +12,7 @@
 
 namespace swift
 {
-	class Editor : public State
+	/*class Editor : public State
 	{
 		public:
 			Editor(sf::RenderWindow& win, AssetManager& am, SoundPlayer& sp, MusicPlayer& mp, Settings& set, Settings& dic);
@@ -64,7 +64,7 @@ namespace swift
 			int tileSelected;
 			
 			bool done;
-	};
+	};*/
 }
 
 #endif // EDITOR_HPP

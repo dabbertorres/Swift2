@@ -1,50 +1,71 @@
 #include "PathfinderSystem.hpp"
 
 #include "../Components/Pathfinder.hpp"
-#include "../../World/World.hpp"
-#include "../../Pathfinding/Path.hpp"
+#include "../Components/Physical.hpp"
+#include "../Components/Movable.hpp"
 
-#include "../../Math/Math.hpp"
+#include "World/World.hpp"
+#include "Pathfinding/Path.hpp"
+
+#include "Math/Math.hpp"
 
 namespace swift
 {
 	World* PathfinderSystem::world = nullptr;
-
-	void PathfinderSystem::update(const std::vector<Entity>& entities, float)
+	
+	PathfinderSystem::PathfinderSystem()
+	:	physSystem(nullptr),
+		moveSystem(nullptr)
+	{}
+	
+	void PathfinderSystem::update(float)
 	{
-		for(auto& e : entities)
+		if(!world || !physSystem || !moveSystem)
 		{
-			if(e.has<Pathfinder>() && e.has<Physical>() && e.has<Movable>())
-			{
-				Pathfinder* pf = e.get<Pathfinder>();
-				Physical* phys = e.get<Physical>();
-				Movable* mov = e.get<Movable>();
+			return;
+		}
+		
+		for(auto& c : components)
+		{
+			Movable& mov = moveSystem->get(c.second.ID());
+			const Physical& phys = physSystem->get(c.second.ID());
+			
+			sf::Vector2u tileSize = world->tilemap.getTileSize();
 				
-				if(world)
+			if(c.second.needsPath)
+			{
+				Path::NodesMap nodes;
+				
+				// build path map
+				for(int i = 0; world->tilemap.getTile(i, 0) != nullptr; i++)
 				{
-					if(pf->needsPath)
+					for(int j = 0; world->tilemap.getTile(i, j) != nullptr; j++)
 					{
-
-						Path path(phys->position, pf->destination, phys->zIndex, world->tilemap);
-
-						pf->nodes = path.getNodes();
-
-						if(!pf->nodes.empty())
-							pf->needsPath = false;
+						nodes[i][j] = world->tilemap.getTile(i, j)->isPassable();
 					}
+				}
+				
+				sf::Vector2u nodeStart = {static_cast<unsigned int>(phys.position.x / tileSize.x), static_cast<unsigned int>(phys.position.y / tileSize.y)};
+				sf::Vector2u nodeEnd = {static_cast<unsigned int>(c.second.destination.x / tileSize.x), static_cast<unsigned int>(c.second.destination.y / tileSize.y)};
+				Path path(nodeStart, nodeEnd, nodes);
 
-					if(!pf->nodes.empty())
-					{
-						if(math::distanceSquared(pf->nodes.front().getPosition(), phys->position) <= world->tilemap.getTileSize().x * world->tilemap.getTileSize().x / 16.f)
-						{
-							pf->nodes.pop_front();
-							
-							if(pf->nodes.empty())	// destination reached!
-								mov->velocity = {0, 0};
-							else					// change direction to next node
-								mov->velocity = math::unit(pf->nodes.front().getPosition() - phys->position) * mov->moveVelocity;
-						}
-					}
+				c.second.nodes = path.getNodes();
+
+				if(!c.second.nodes.empty())
+					c.second.needsPath = false;
+			}
+
+			if(!c.second.nodes.empty())
+			{
+				sf::Vector2f worldPos = {static_cast<float>(c.second.nodes.front().getPosition().x) * tileSize.x, static_cast<float>(c.second.nodes.front().getPosition().y) * tileSize.y};
+				if(math::distanceSquared(worldPos, phys.position) <= world->tilemap.getTileSize().x * world->tilemap.getTileSize().x / 16.f)
+				{
+					c.second.nodes.pop_front();
+					
+					if(c.second.nodes.empty())	// destination reached!
+						mov.velocity = {0, 0};
+					else					// change direction to next node
+						mov.velocity = math::unit(worldPos - phys.position) * mov.moveVelocity;
 				}
 			}
 		}

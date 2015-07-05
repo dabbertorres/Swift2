@@ -8,10 +8,10 @@ namespace cstr
 	class Spacer : public Widget
 	{
 		public:
-			Spacer(sf::Vector2i size);
-			~Spacer();
+			Spacer(const sf::Vector2i& size);
+			~Spacer() = default;
 
-			virtual void update(sf::Event& event);
+			virtual void update(const sf::Event& event);
 			
 			virtual sf::FloatRect getGlobalBounds() const;
 

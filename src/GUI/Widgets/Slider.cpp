@@ -2,21 +2,17 @@
 
 namespace cstr
 {
-	Slider::Slider(sf::Vector2u size)
-		:	Widget({0, 0, static_cast<int>(size.x), static_cast<int>(size.y)}),
-			mouseDown(false)
+	Slider::Slider(const sf::Vector2u& size)
+	:	Widget({0, 0, static_cast<int>(size.x), static_cast<int>(size.y)}),
+		mouseDown(false)
 	{
 		slider.setFillColor({128, 128, 128});
 		track.setFillColor({128, 128, 128});
 		track.setSize({static_cast<float>(size.x), static_cast<float>(size.y) / 3});
 		slider.setSize({static_cast<float>(size.x / 10), static_cast<float>(size.y)});
 	}
-
-	Slider::~Slider()
-	{
-	}
 	
-	void Slider::update(sf::Event& event)
+	void Slider::update(const sf::Event& event)
 	{
 		switch(event.type)
 		{
@@ -52,13 +48,13 @@ namespace cstr
 		return {track.getGlobalBounds().left, slider.getGlobalBounds().top, track.getGlobalBounds().width, slider.getGlobalBounds().height};
 	}
 	
-	void Slider::setPosition(sf::Vector2i pos)
+	void Slider::setPosition(const sf::Vector2i& pos)
 	{
 		slider.setPosition(pos.x + slider.getPosition().x - track.getPosition().x, pos.y);
 		track.setPosition(pos.x, pos.y + slider.getSize().y / 3);
 	}
 	
-	void Slider::setSize(sf::Vector2u size)
+	void Slider::setSize(const sf::Vector2u& size)
 	{
 		track.setSize({static_cast<float>(size.x), static_cast<float>(size.y) / 3});
 		slider.setSize({static_cast<float>(size.x / 20), static_cast<float>(size.y)});
@@ -78,12 +74,12 @@ namespace cstr
 		return value;
 	}
 	
-	void Slider::setSliderColor(sf::Color c)
+	void Slider::setSliderColor(const sf::Color& c)
 	{
 		slider.setFillColor(c);
 	}
 	
-	void Slider::setTrackColor(sf::Color c)
+	void Slider::setTrackColor(const sf::Color& c)
 	{
 		track.setFillColor(c);
 	}

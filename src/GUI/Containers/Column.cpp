@@ -2,21 +2,15 @@
 
 namespace cstr
 {
-	Column::Column(sf::IntRect r, bool s)
-		:	Container(r, s)
-	{
-	}
+	Column::Column(const sf::IntRect& r, bool s)
+	:	Container(r, s)
+	{}
 	
-	Column::Column(sf::Vector2i size, bool s)
-		:	Container(size, s)
-	{
-	}
-
-	Column::~Column()
-	{
-	}
+	Column::Column(const sf::Vector2i& size, bool s)
+	:	Container(size, s)
+	{}
 	
-	void Column::update(sf::Event& event)
+	void Column::update(const sf::Event& event)
 	{
 		if(isScrollable())
 		{
@@ -36,7 +30,7 @@ namespace cstr
 		updateWidgets(event);
 	}
 	
-	void Column::setPosition(sf::Vector2i pos)
+	void Column::setPosition(const sf::Vector2i& pos)
 	{
 		for(auto& w : getWidgets())
 			w->setPosition({pos.x + (static_cast<int>(w->getGlobalBounds().left) - rect.left), pos.y + (static_cast<int>(w->getGlobalBounds().top) - rect.top)});

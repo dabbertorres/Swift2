@@ -1,52 +1,68 @@
 #include "Animated.hpp"
 
+#include "Physical.hpp"
+
 namespace swift
 {
-	Animated::Animated()
-	:	animTex(nullptr),
-		currentAnim(""),
-		previousAnim("")
+	Animated::Animated(unsigned int id)
+	:	Component(id),
+		animTex(nullptr),
+	    currentAnim(""),
+	    previousAnim("")
 	{}
 	
 	void Animated::setAnimation(const std::string& anim)
 	{
 		if(anims.find(anim) == anims.end())
+		{
 			return;
+		}
 		
+		anims[currentAnim].stop();
+		anims[anim].play();
+		
+		std::string temp = anim;
 		previousAnim = currentAnim;
-		currentAnim = anim;
+		currentAnim = temp;
 	}
-	
+
 	void Animated::revertAnimation()
 	{
-		std::string temp = currentAnim;
-		currentAnim = previousAnim;
-		previousAnim = temp;
+		setAnimation(previousAnim);
 	}
-	
-	std::string Animated::getType()
+
+	bool Animated::createAnimations()
 	{
-		return "Animated";
+		if(animTex)
+		{
+			for(auto& a : animTex->getAnimNames())
+			{
+				anims[a] = animTex->getAnimFrames(a);
+			}
+			
+			return true;
+		}
+		else
+		{
+			return false;
+		}
 	}
-	
+
 	std::map<std::string, std::string> Animated::serialize() const
 	{
 		std::map<std::string, std::string> variables;
-		
+
 		variables.emplace("scaleX", std::to_string(sprite.getScale().x));
 		variables.emplace("scaleY", std::to_string(sprite.getScale().y));
 		variables.emplace("animation", animationFile);
-		
-		return std::move(variables);
+
+		return variables;
 	}
-	
+
 	void Animated::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		sf::Vector2f scale;
-		initMember("scaleX", variables, scale.x, 0.f);
-		initMember("scaleY", variables, scale.y, 0.f);
-		sprite.setScale(scale);
+		sprite.setScale(std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY")));
 		
-		initMember("animation", variables, animationFile, std::string("./data/anims/man.anim"));
+		animationFile = variables.at("animation");
 	}
 }

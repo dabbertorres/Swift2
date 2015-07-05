@@ -2,19 +2,13 @@
 //#include <SFML/Graphics/RectangleShape.hpp>
 namespace cstr
 {
-	Spacer::Spacer(sf::Vector2i size)
+	Spacer::Spacer(const sf::Vector2i& size)
 	{
 		this->setSize(static_cast<sf::Vector2u>(size));
 	}
-
-	Spacer::~Spacer()
-	{
-	}
 	
-	void Spacer::update(sf::Event& /*event*/)
-	{
-		// do nothing
-	}
+	void Spacer::update(const sf::Event&)
+	{}
 	
 	sf::FloatRect Spacer::getGlobalBounds() const
 	{

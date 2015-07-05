@@ -3,19 +3,27 @@
 
 #include "../System.hpp"
 
-#include "../Entity.hpp"
+#include "../Components/Drawable.hpp"
+#include "../Components/Physical.hpp"
 
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
 namespace swift
 {
-	class DrawableSystem : public System
+	class DrawableSystem : public System<Drawable>
 	{
 		public:
-			virtual void update(const std::vector<Entity>& entities, float dt);
-			
-			virtual void draw(const std::vector<Entity>& entities, float e, sf::RenderTarget& target, sf::RenderStates states) const;
+			DrawableSystem();
+
+			virtual void update(float dt);
+
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states) const;
+
+			void setPhysSystem(System<Physical>* ps);
+
+		private:
+			System<Physical>* physSystem;
 	};
 }
 

@@ -10,9 +10,9 @@ namespace swift
 	class Physical : public Component
 	{
 		public:
-			Physical();
+			Physical(unsigned int id = 0);
 
-			static std::string getType();
+			static constexpr Component::Type type();
 			
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
@@ -23,6 +23,11 @@ namespace swift
 			bool collides;
 			float angle;	// degrees
 	};
+	
+	constexpr Component::Type Physical::type()
+	{
+		return Component::Type::Physical;
+	}
 }
 
 #endif // PHYSICAL_HPP

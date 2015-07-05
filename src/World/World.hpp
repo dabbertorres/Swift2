@@ -4,37 +4,48 @@
 #include <string>
 #include <vector>
 
-#include "../EntitySystem/Entity.hpp"
+#include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/RenderTarget.hpp>
+#include <SFML/Graphics/RenderStates.hpp>
 
-#include "../Mapping/TileMap.hpp"
+#include "Utility/AssocMap.hpp"
+
+#include "Mapping/TileMap.hpp"
+
+#include "EntitySystem/System.hpp"
+#include "EntitySystem/SystemMap.hpp"
+#include "EntitySystem/Component.hpp"
 
 namespace swift
 {
 	class World
 	{
 		public:
-			World(const std::string& n);
-			virtual ~World() = default;
+			World(const std::string& n, unsigned int res);
+			virtual ~World();
 
 			virtual void update(float dt) = 0;
-			virtual void draw(sf::RenderTarget& target, float e, sf::RenderStates states = sf::RenderStates::Default) = 0;
 
-			Entity* addEntity();
-			bool removeEntity(int e);
+			bool createEntity(unsigned int id);
+			bool destroyEntity(unsigned int id);
 
-			Entity* getEntity(int e);
-			Entity* getPlayer();
-			std::vector<Entity*> getEntities();
-
-			std::vector<Entity*> getEntitiesAround(const sf::Vector2f& pos, float radius);
-			std::vector<unsigned> getEntitiesAroundIDs(const sf::Vector2f& pos, float radius);
-
+			unsigned int getPlayer() const;
+			const std::vector<unsigned int>& getEntities() const;
+			std::vector<unsigned int> getEntitiesAround(const sf::Vector2f& pos, float radius) const;
 			const std::string& getName() const;
+			
+			const SystemMap& getSystems() const;
+			SystemMap& getSystems();
+			
+			virtual void draw(sf::RenderTarget& target, sf::RenderStates states = sf::RenderStates::Default) = 0;
 
 			TileMap tilemap;
 
 		protected:
-			std::vector<Entity> entities;
+			std::vector<unsigned int> entities;
+			SystemMap systems;
+			
+			unsigned int player;
 
 		private:
 			std::string name;

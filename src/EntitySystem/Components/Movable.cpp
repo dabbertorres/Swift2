@@ -1,19 +1,14 @@
 #include "Movable.hpp"
 
-#include "../Entity.hpp"
+#include "Physical.hpp"
 
 namespace swift
 {
-	Movable::Movable()
-		:	moveVelocity(0),
-			velocity(0, 0)
-	{
-	}
-	
-	std::string Movable::getType()
-	{
-		return "Movable";
-	}
+	Movable::Movable(unsigned int id)
+	:	Component(id),
+		moveVelocity(0),
+		velocity(0, 0)
+	{}
 	
 	std::map<std::string, std::string> Movable::serialize() const
 	{
@@ -23,13 +18,12 @@ namespace swift
 		variables.emplace("velocityX", std::to_string(velocity.x));
 		variables.emplace("velocityY", std::to_string(velocity.y));
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void Movable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("moveVelocity", variables, moveVelocity, 0.f);
-		initMember("velocityX", variables, velocity.x, 0.f);
-		initMember("velocityY", variables, velocity.y, 0.f);
+		moveVelocity = std::stof(variables.at("moveVelocity"));
+		velocity = {std::stof(variables.at("velocityX")), std::stof(variables.at("velocityY"))};
 	}
 }

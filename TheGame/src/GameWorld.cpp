@@ -2,28 +2,34 @@
 
 namespace tg
 {
-	GameWorld::GameWorld(const std::string& n, swift::AssetManager& am)
-	:	World(n),
+	GameWorld::GameWorld(const std::string& n, GameAssets* am)
+	:	World(n, 512),
 		assets(am)
 	{
+		systems.add(swift::Component::Type::Animated, new swift::AnimatedSystem());
+		systems.add(swift::Component::Type::BatchDrawable, new swift::BatchDrawSystem(assets));
+		systems.add(swift::Component::Type::Controllable, new swift::ControllableSystem());
+		systems.add(swift::Component::Type::Drawable, new swift::DrawableSystem());
+		systems.add(swift::Component::Type::Movable, new swift::MovableSystem());
+		systems.add(swift::Component::Type::Noisy, new swift::NoisySystem());
+		systems.add(swift::Component::Type::Pathfinder, new swift::PathfinderSystem());
+		systems.add(swift::Component::Type::Physical, new swift::PhysicalSystem());
 	}
 	
 	void GameWorld::update(float dt)
 	{
-		controlSystem.update(entities, dt);
-		moveSystem.update(entities, dt);
-		pathSystem.update(entities, dt);
-		physicalSystem.update(entities, dt);
-		
-		animSystem.update(entities, dt);
-		drawSystem.update(entities, dt);
-		batchSystem.update(entities, dt);
+		for(auto& s : systems)
+		{
+			s->update(dt);
+		}
 	}
 	
-	void GameWorld::draw(sf::RenderTarget& target, float e, sf::RenderStates states)
+	void GameWorld::draw(sf::RenderTarget& target, sf::RenderStates states)
 	{
-		animSystem.draw(entities, e, target, states);
-		drawSystem.draw(entities, e, target, states);
-		batchSystem.draw(entities, e, target, states, assets);
+		target.draw(tilemap, states);
+		
+		static_cast<swift::BatchDrawSystem*>(systems.get<swift::BatchDrawable>())->draw(target, states);
+		static_cast<swift::DrawableSystem*>(systems.get<swift::Drawable>())->draw(target, states);
+		static_cast<swift::AnimatedSystem*>(systems.get<swift::Animated>())->draw(target, states);
 	}
 }

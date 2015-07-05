@@ -1,22 +1,31 @@
 #include "MovableSystem.hpp"
 
-#include "../Components/Movable.hpp"
 #include "../Components/Physical.hpp"
 
 namespace swift
 {
-	void MovableSystem::update(const std::vector<Entity>& entities, float dt)
+	MovableSystem::MovableSystem()
+	:	physSystem(nullptr)
+	{}
+	
+	void MovableSystem::update(float dt)
 	{
-		for(auto& e : entities)
+		if(!physSystem)
 		{
-			if(e.has<Movable>() && e.has<Physical>())
-			{
-				Physical* phys = e.get<Physical>();
-				Movable* mov = e.get<Movable>();
-				
-				phys->position.x += mov->velocity.x * dt;
-				phys->position.y += mov->velocity.y * dt;
-			}
+			return;
 		}
+		
+		for(auto& c : components)
+		{
+			Physical& phys = physSystem->get(c.second.ID());
+			
+			phys.position.x += c.second.velocity.x * dt;
+			phys.position.y += c.second.velocity.y * dt;
+		}
+	}
+	
+	void MovableSystem::setPhysicalSystem(System<Physical>* ps)
+	{
+		physSystem = ps;
 	}
 }

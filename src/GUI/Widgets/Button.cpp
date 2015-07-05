@@ -5,22 +5,18 @@ namespace cstr
 	const sf::Color COLOR_CHANGE = {40, 40, 40, 0};
 	const int BORDER_SIZE = 2;
 	
-	Button::Button(sf::Vector2u size, const sf::Texture& tex, const std::function<void()>& f)
-		:	baseColor({128, 128, 128}),
-			string(""),
-			callback(f),
-			textSize(0)
+	Button::Button(const sf::Vector2u& size, const sf::Texture& tex, const std::function<void()>& f)
+	:	baseColor({128, 128, 128}),
+		string(""),
+		callback(f),
+		textSize(0)
 	{
 		sprite.setTexture(tex);
 		sprite.setColor(baseColor);
 		sprite.setScale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
 	}
 
-	Button::~Button()
-	{
-	}
-
-	void Button::update(sf::Event& event)
+	void Button::update(const sf::Event& event)
 	{
 		switch(event.type)
 		{
@@ -96,13 +92,13 @@ namespace cstr
 		return string;
 	}
 	
-	void Button::setPosition(sf::Vector2i pos)
+	void Button::setPosition(const sf::Vector2i& pos)
 	{
 		sprite.setPosition(static_cast<sf::Vector2f>(pos));
 		text.setPosition({sprite.getGlobalBounds().left + sprite.getGlobalBounds().width / 2, sprite.getGlobalBounds().top + sprite.getGlobalBounds().height / 2});
 	}
 	
-	void Button::setSize(sf::Vector2u size)
+	void Button::setSize(const sf::Vector2u& size)
 	{
 		sprite.scale(size.x / sprite.getGlobalBounds().width, size.y / sprite.getGlobalBounds().height);
 		

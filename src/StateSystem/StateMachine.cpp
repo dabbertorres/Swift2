@@ -4,29 +4,46 @@
 
 namespace swift
 {
+	StateMachine::StateMachine()
+	:	pending(nullptr)
+	{}
+	
 	StateMachine::~StateMachine()
 	{
 		while(!states.empty())
 		{
-			delete states.front();
+			delete states.top();
 			states.pop();
 		}
 	}
 
-	void StateMachine::push(State* state)
+	void StateMachine::push(State* state, bool pend)
 	{
-		states.push(state);
+		if(pend)
+		{
+			pending = state;
+		}
+		else
+		{
+			states.push(state);
+		}
 	}
 	
 	void StateMachine::pop()
 	{
-		delete states.front();
+		delete states.top();
 		states.pop();
+		
+		if(pending)
+		{
+			states.push(pending);
+			pending = nullptr;
+		}
 	}
 	
 	State* StateMachine::read()
 	{
-		return states.front();
+		return states.top();
 	}
 	
 	bool StateMachine::empty()

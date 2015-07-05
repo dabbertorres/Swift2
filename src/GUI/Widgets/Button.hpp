@@ -16,10 +16,10 @@ namespace cstr
 	class Button : public Widget
 	{
 		public:
-			Button(sf::Vector2u size, const sf::Texture& tex, const std::function<void()>& f);
-			~Button();
+			Button(const sf::Vector2u& size, const sf::Texture& tex, const std::function<void()>& f);
+			~Button() = default;
 			
-			virtual void update(sf::Event& event);
+			virtual void update(const sf::Event& event);
 			
 			void call();
 
@@ -30,9 +30,9 @@ namespace cstr
 			
 			const std::string& getString() const;
 			
-			virtual void setPosition(sf::Vector2i pos);
+			virtual void setPosition(const sf::Vector2i& pos);
 			
-			virtual void setSize(sf::Vector2u size);
+			virtual void setSize(const sf::Vector2u& size);
 			
 			virtual void setTextureRect(const sf::IntRect& rect, const sf::Vector2f& size);
 

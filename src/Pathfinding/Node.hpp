@@ -8,12 +8,12 @@ namespace swift
 	class Node
 	{
 		public:
-			Node(const sf::Vector2f& pos);
+			Node(const sf::Vector2u& pos);
 			
-			const sf::Vector2f& getPosition() const;
+			const sf::Vector2u& getPosition() const;
 
 		private:
-			sf::Vector2f position;
+			sf::Vector2u position;
 
 	};
 }

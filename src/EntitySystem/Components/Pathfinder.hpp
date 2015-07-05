@@ -8,12 +8,15 @@
 
 namespace swift
 {
+	class Physical;
+	class Movable;
+	
 	class Pathfinder : public Component
 	{
 		public:
-			Pathfinder();
+			Pathfinder(unsigned int id = 0);
 
-			static std::string getType();
+			static constexpr Component::Type type();
 
 			virtual std::map<std::string, std::string> serialize() const;
 			virtual void unserialize(const std::map<std::string, std::string>& variables);
@@ -22,6 +25,11 @@ namespace swift
 			sf::Vector2f destination;
 			bool needsPath;
 	};
+	
+	constexpr Component::Type Pathfinder::type()
+	{
+		return Component::Type::Pathfinder;
+	}
 }
 
 #endif // PATHFINDER_HPP

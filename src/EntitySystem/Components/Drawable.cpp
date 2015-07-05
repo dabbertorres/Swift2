@@ -1,13 +1,12 @@
 #include "Drawable.hpp"
 
-#include "../Entity.hpp"
+#include "Physical.hpp"
 
 namespace swift
 {
-	std::string Drawable::getType()
-	{
-		return "Drawable";
-	}
+	Drawable::Drawable(unsigned int id)
+	:	Component(id)
+	{}
 	
 	std::map<std::string, std::string> Drawable::serialize() const
 	{
@@ -17,15 +16,13 @@ namespace swift
 		variables.emplace("scaleX", std::to_string(sprite.getScale().x));
 		variables.emplace("scaleY", std::to_string(sprite.getScale().y));
 		
-		return std::move(variables);
+		return variables;
 	}
 	
 	void Drawable::unserialize(const std::map<std::string, std::string>& variables)
 	{
-		initMember("texture", variables, texture, std::string("./data/textures/ship.png"));
-		sf::Vector2f scale;
-		initMember("scaleX", variables, scale.x, 0.f);
-		initMember("scaleY", variables, scale.y, 0.f);
-		sprite.setScale(scale);
+		texture = variables.at("texture");
+		
+		sprite.setScale(std::stof(variables.at("scaleX")), std::stof(variables.at("scaleY")));
 	}
 }

@@ -3,23 +3,17 @@
 namespace cstr
 {
 	Label::Label(const std::string& str, const sf::Font& f, unsigned ts)
-		:	string(str),
-			textSize(ts)
+	:	string(str),
+		textSize(ts)
 	{
 		text.setFont(f);
 		text.setString(string);
 		textSize == 0 ? text.setCharacterSize(100) : text.setCharacterSize(textSize);
 		text.setOrigin({text.getLocalBounds().left, text.getLocalBounds().top});
 	}
-
-	Label::~Label()
-	{
-	}
 	
-	void Label::update(sf::Event& /*event*/)
-	{
-		// do nothing
-	}
+	void Label::update(const sf::Event&)
+	{}
 
 	sf::FloatRect Label::getGlobalBounds() const
 	{
@@ -40,7 +34,6 @@ namespace cstr
 		{
 			textSize = 0;
 		}
-		
 	}
 	
 	const std::string& Label::getString() const
@@ -48,12 +41,12 @@ namespace cstr
 		return string;
 	}
 	
-	void Label::setPosition(sf::Vector2i pos)
+	void Label::setPosition(const sf::Vector2i& pos)
 	{
 		text.setPosition(static_cast<sf::Vector2f>(pos));
 	}
 	
-	void Label::setSize(sf::Vector2u size)
+	void Label::setSize(const sf::Vector2u& size)
 	{
 		text.setCharacterSize(size.y);
 		if(textSize == 0 && text.getLocalBounds().width > size.x)
