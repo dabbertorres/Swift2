@@ -8,13 +8,13 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
-#include "../Utility/AssocMap.hpp"
+#include "Utility/AssocMap.hpp"
 
-#include "../Mapping/TileMap.hpp"
+#include "Mapping/TileMap.hpp"
 
-#include "../EntitySystem/System.hpp"
-#include "../EntitySystem/SystemMap.hpp"
-#include "../EntitySystem/Component.hpp"
+#include "EntitySystem/System.hpp"
+#include "EntitySystem/SystemMap.hpp"
+#include "EntitySystem/Component.hpp"
 
 namespace swift
 {

@@ -1,14 +1,15 @@
 #ifndef TG_GAME_STATE
 #define TG_GAME_STATE
 
-#include "../../src/StateSystem/State.hpp"
+#include "StateSystem/State.hpp"
 
 #include <SFML/Graphics/RenderWindow.hpp>
+
 #include "GameAssets.hpp"
-#include "../../src/SoundSystem/SoundPlayer.hpp"
-#include "../../src/SoundSystem/MusicPlayer.hpp"
-#include "../../src/Settings/Settings.hpp"
-#include "../../src/StateSystem/StateMachine.hpp"
+#include "SoundSystem/SoundPlayer.hpp"
+#include "SoundSystem/MusicPlayer.hpp"
+#include "Settings/Settings.hpp"
+#include "StateSystem/StateMachine.hpp"
 
 namespace tg
 {

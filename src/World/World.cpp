@@ -1,12 +1,7 @@
 #include "World.hpp"
 
-#include <cmath>
-
-#include <chrono>
-#include <random>
-
-#include "../Math/Math.hpp"
-#include "../Math/Random.hpp"
+#include "Math/Math.hpp"
+#include "Math/Random.hpp"
 
 namespace swift
 {

@@ -1,7 +1,7 @@
 #ifndef GAMEASSETS_HPP
 #define GAMEASSETS_HPP
 
-#include "../src/ResourceManager/AssetManager.hpp"
+#include "ResourceManager/AssetManager.hpp"
 
 namespace tg
 {

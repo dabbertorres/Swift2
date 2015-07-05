@@ -43,7 +43,7 @@ namespace tg
 
 	GamePlay::~GamePlay()
 	{
-		for(auto & w : worlds)
+		for(auto& w : worlds)
 		{
 			delete w.second;
 		}
