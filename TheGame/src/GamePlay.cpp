@@ -7,13 +7,13 @@
 
 #include "Logger/Logger.hpp"
 
+#include "ResourceManager/ResourceNotFound.hpp"
+
 #include "GUI/Containers/Column.hpp"
 #include "GUI/Containers/Row.hpp"
 #include "GUI/Widgets/Label.hpp"
 #include "GUI/Widgets/Button.hpp"
 #include "GUI/Widgets/Spacer.hpp"
-
-#include <tinyxml2.h>
 
 namespace tg
 {
@@ -87,7 +87,7 @@ namespace tg
 
 		// setup world
 		bool mapResult = newWorld->tilemap.loadFile(mapFile);
-		bool textureResult = newWorld->tilemap.setTexture(*assets.getTexture(newWorld->tilemap.getTextureFile()));
+		bool textureResult = newWorld->tilemap.setTexture(assets.getTexture(newWorld->tilemap.getTextureFile()));
 
 		if(!mapResult)
 		{
@@ -142,66 +142,56 @@ namespace tg
 
 	void GamePlay::setupGUI()
 	{
-		auto* font = assets.getFont("segoeuisl.ttf");
-		auto* buttonTexture = assets.getTexture("button.png");
-		
-		std::string dictStr = "en";
-		
-		if(!settings.get("lang", dictStr))
+		try
 		{
-			swift::Logger::get() << "[WARNING]: No language set, defaulting to English (en).\n";
-		}
-		
-		swift::Dictionary* dictionary = assets.getDict(dictStr);
+			sf::Font& font = assets.getFont("segoeuisl.ttf");
+			sf::Texture& buttonTexture = assets.getTexture("button.png");
+			
+			std::string dictStr = "en";
+			
+			if(!settings.get("lang", dictStr))
+			{
+				swift::Logger::get() << "[WARNING]: No language set, defaulting to English (en).\n";
+			}
+			
+			swift::Dictionary& dictionary = assets.getDict(dictStr);
+			
+			// setup pause menu GUI
+			cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 200}, false));
+			
+			// resume button
+			std::string resume = "Resume";
+			dictionary.get("resumeButton", resume);
+			pauseColumn.addWidget(new cstr::Button({100, 50}, buttonTexture, [&]()
+			{
+				activeState = &play;
+			})).setString(resume, font, 25);
 
-		if(!font)
-		{
-			swift::Logger::get() << "[ERROR]: Could not find segoeuisl.ttf!\n";
-			return;
-		}
+			pauseColumn.addWidget(new cstr::Spacer({100, 25}));
+			
+			// settings menu button
+			std::string settingsMenu = "Settings";
+			dictionary.get("settingsButton", settingsMenu);
+			pauseColumn.addWidget(new cstr::Button({100, 50}, buttonTexture, [&]()
+			{
+				states.push(new GameSettingsMenu(window, assets, soundPlayer, musicPlayer, settings, states), false);
+			})).setString(settingsMenu, font, 25);
 
-		if(!buttonTexture)
-		{
-			swift::Logger::get() << "[ERROR]: Could not find button.png!\n";
-			return;
+			pauseColumn.addWidget(new cstr::Spacer({100, 25}));
+			
+			// main menu (exit) button
+			std::string mainMenu = "Main Menu";
+			dictionary.get("mainMenuButton", mainMenu);
+			pauseColumn.addWidget(new cstr::Button({100, 50}, buttonTexture, [&]()
+			{
+				done = true;
+				states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, states));
+			})).setString(mainMenu, font, 20);
 		}
-		
-		if(!dictionary)
+		catch(const swift::ResourceNotFound& rnf)
 		{
-			swift::Logger::get() << "[WARNING]: Could not find dictionary for: \"" << dictStr << "\", defaulting to English (en).\n";
+			swift::Logger::get() << rnf.what() << '\n';
 		}
-		
-		// setup pause menu GUI
-		cstr::Column& pauseColumn = pauseMenu.addContainer(new cstr::Column({static_cast<int>(window.getSize().x) / 2 - 50, static_cast<int>(window.getSize().y / 2) - 50, 100, 200}, false));
-		
-		// resume button
-		std::string resume = "Resume";
-		dictionary->get("resumeButton", resume);
-		pauseColumn.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
-		{
-			activeState = &play;
-		})).setString(resume, *font, 25);
-
-		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
-		
-		// settings menu button
-		std::string settingsMenu = "Settings";
-		dictionary->get("settingsButton", settingsMenu);
-		pauseColumn.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
-		{
-			states.push(new GameSettingsMenu(window, assets, soundPlayer, musicPlayer, settings, states), false);
-		})).setString(settingsMenu, *font, 25);
-
-		pauseColumn.addWidget(new cstr::Spacer({100, 25}));
-		
-		// main menu (exit) button
-		std::string mainMenu = "Main Menu";
-		dictionary->get("mainMenuButton", mainMenu);
-		pauseColumn.addWidget(new cstr::Button({100, 50}, *buttonTexture, [&]()
-		{
-			done = true;
-			states.push(new GameMenu(window, assets, soundPlayer, musicPlayer, settings, states));
-		})).setString(mainMenu, *font, 20);
 	}
 
 	void GamePlay::setupSubStates()

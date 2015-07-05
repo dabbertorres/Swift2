@@ -336,7 +336,7 @@ namespace tg
 	{
 		if(d)
 		{
-			d->sprite.setTexture(*assets->getTexture(t));
+			d->sprite.setTexture(assets->getTexture(t));
 			d->texture = t;
 			return true;
 		}
@@ -349,7 +349,7 @@ namespace tg
 	void GameScript::setTextureRect(swift::Drawable* d, int x, int y, int w, int h)
 	{
 		if(d)
-			d->sprite.setTextureRect( {x, y, w, h});
+			d->sprite.setTextureRect({x, y, w, h});
 	}
 
 	std::tuple<float, float> GameScript::getSpriteSize(swift::Drawable* d)
@@ -367,7 +367,7 @@ namespace tg
 	void GameScript::setScale(swift::Drawable* d, float x, float y)
 	{
 		if(d)
-			d->sprite.setScale( {x, y});
+			d->sprite.setScale({x, y});
 	}
 
 	// Movable

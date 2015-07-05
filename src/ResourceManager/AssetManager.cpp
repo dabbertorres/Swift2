@@ -2,6 +2,8 @@
 
 #include <SFML/System/Err.hpp>
 
+#include "ResourceNotFound.hpp"
+
 namespace swift
 {
 	AssetManager::AssetManager()
@@ -123,112 +125,91 @@ namespace swift
 	{
 		if(batches.find(t) == batches.end())
 		{
-			sf::Texture* texture = getTexture(t);
-
-			if(texture)
-			{
-				batches[t] = std::make_unique<SpriteBatch>(*texture);
-				return true;
-			}
+			batches[t] = std::make_unique<SpriteBatch>(getTexture(t));
+			return true;
 		}
 		
 		return false;
 	}
 
-	AnimTexture* AssetManager::getAnim(const std::string& n)
+	AnimTexture& AssetManager::getAnim(const std::string& n)
 	{
 		if(anims.find(n) != anims.end())
 		{
-			return anims.find(n)->second.get();
+			return *anims.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" anim file exists\n";
 
-		return nullptr;
+		throw ResourceNotFound("Could not find anim: " + n);
 	}
 	
-	Dictionary* AssetManager::getDict(const std::string& n)
+	Dictionary& AssetManager::getDict(const std::string& n)
 	{
 		if(dicts.find(n) != dicts.end())
 		{
-			return dicts.find(n)->second.get();
+			return *dicts.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" dic file exists\n";
 
-		return nullptr;
+		throw ResourceNotFound("Could not find dictionary: " + n);
 	}
 
-	sf::Font* AssetManager::getFont(const std::string& n)
+	sf::Font& AssetManager::getFont(const std::string& n)
 	{
 		if(fonts.find(n) != fonts.end())
 		{
-			return fonts.find(n)->second.get();
+			return *fonts.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" font file exists\n";
 
-		return nullptr;
+		throw ResourceNotFound("Could not find font: " + n);
 	}
 
-	sf::Music* AssetManager::getMusic(const std::string& n)
+	sf::Music& AssetManager::getMusic(const std::string& n)
 	{
 		if(music.find(n) != music.end())
 		{
-			return music.find(n)->second.get();
+			return *music.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" music file exists\n";
 
-		return nullptr;
+		throw ResourceNotFound("Could not find music: " + n);
 	}
 
-	Script* AssetManager::getScript(const std::string& n)
+	Script& AssetManager::getScript(const std::string& n)
 	{
 		if(scripts.find(n) != scripts.end())
 		{
-			return scripts.find(n)->second.get();
+			return *scripts.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" script file exists\n";
-		
-		return nullptr;
+
+		throw ResourceNotFound("Could not find script: " + n);
 	}
 
-	sf::SoundBuffer* AssetManager::getSound(const std::string& n)
+	sf::SoundBuffer& AssetManager::getSound(const std::string& n)
 	{
 		if(sounds.find(n) != sounds.end())
 		{
-			return sounds.find(n)->second.get();
+			return *sounds.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" sound buffer file exists\n";
-		
-		return nullptr;
+
+		throw ResourceNotFound("Could not find sound: " + n);
 	}
 
-	SpriteBatch* AssetManager::getBatch(const std::string& n)
+	SpriteBatch& AssetManager::getBatch(const std::string& n)
 	{
 		if(batches.find(n) != batches.end())
 		{
-			return batches.find(n)->second.get();
+			return *batches.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No\"" << n << "\" batch exists\n";
 
-		return nullptr;
+		throw ResourceNotFound("Could not find batch: " + n);
 	}
 
-	sf::Texture* AssetManager::getTexture(const std::string& n)
+	sf::Texture& AssetManager::getTexture(const std::string& n)
 	{
 		if(textures.find(n) != textures.end())
 		{
-			return textures.find(n)->second.get();
+			return *textures.find(n)->second.get();
 		}
-		
-		Logger::get() << "[WARNING]: No \"" << n << "\" texture file exists\n";
-		
-		return nullptr;
+
+		throw ResourceNotFound("Could not find texture: " + n);
 	}
 
 	bool AssetManager::loadAnim(const gfs::Path& file)

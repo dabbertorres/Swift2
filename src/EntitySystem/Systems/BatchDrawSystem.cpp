@@ -4,6 +4,7 @@
 #include "../Components/Physical.hpp"
 
 #include "ResourceManager/AssetManager.hpp"
+#include "ResourceManager/ResourceNotFound.hpp"
 
 namespace swift
 {
@@ -48,11 +49,13 @@ namespace swift
 	{
 		if(assets)
 		{
-			SpriteBatch* batch = assets->getBatch(c.batch);
-			
-			if(batch)
+			try
 			{
-				batches.insert(batch);
+				batches.insert(&assets->getBatch(c.batch));
+			}
+			catch(const ResourceNotFound& rnf)
+			{
+				Logger::get() << rnf.what() << '\n';
 			}
 		}
 	}

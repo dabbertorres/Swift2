@@ -38,7 +38,7 @@ namespace tg
 		loadAssets();
 		
 		// gotta set this if you want any text to display
-		defaultFont = *assets.getFont("segoeuisl.ttf");
+		defaultFont = assets.getFont("segoeuisl.ttf");
 		
 		//window.setIcon(SwiftEngineIcon.width, SwiftEngineIcon.height, SwiftEngineIcon.pixel_data);	// need to figure out icon stuff
 		

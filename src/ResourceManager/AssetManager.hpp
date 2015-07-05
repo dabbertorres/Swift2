@@ -48,15 +48,15 @@ namespace swift
 			// make a SpriteBatch out of a texture, given a size
 			bool newSpriteBatch(const std::string& t);
 
-			AnimTexture* getAnim(const std::string& n);
-			Dictionary* getDict(const std::string& n);
-			sf::Font* getFont(const std::string& n);
+			AnimTexture& getAnim(const std::string& n);
+			Dictionary& getDict(const std::string& n);
+			sf::Font& getFont(const std::string& n);
 			// map
-			sf::Music* getMusic(const std::string& n);
-			Script* getScript(const std::string& n);
-			sf::SoundBuffer* getSound(const std::string& n);
-			SpriteBatch* getBatch(const std::string& n);
-			sf::Texture* getTexture(const std::string& n);
+			sf::Music& getMusic(const std::string& n);
+			Script& getScript(const std::string& n);
+			sf::SoundBuffer& getSound(const std::string& n);
+			SpriteBatch& getBatch(const std::string& n);
+			sf::Texture& getTexture(const std::string& n);
 
 		protected:
 			virtual bool loadResource(const gfs::Path& file);
