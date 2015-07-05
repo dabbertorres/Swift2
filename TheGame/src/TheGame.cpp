@@ -6,6 +6,8 @@
 
 #include "SystemInfo/SystemInfo.hpp"
 
+#include "SaveSystem/SaveManager.hpp"
+
 #include "Logger/Logger.hpp"
 
 namespace tg
@@ -47,6 +49,9 @@ namespace tg
 		
 		// scripting if you want it
 		initScripting();
+		
+		// set saves directory for saving/loading
+		swift::SaveManager::setResourcePath(getResourcePath());
 	}
 	
 	void TheGame::gameHandleEvents(const sf::Event& event)
@@ -85,7 +90,7 @@ namespace tg
 			swift::Logger::get() << "Could not open settings file, default settings will be used\n";
 			return false;
 		}
-
+		
 		gameSettings.get("fullscreen", fullscreen);
 		gameSettings.get("vsync", verticalSync);
 		gameSettings.get("res.x", resolution.x);

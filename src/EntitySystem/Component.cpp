@@ -10,4 +10,6 @@ namespace swift
 	{
 		return id;
 	}
+	
+	constexpr std::pair<const char*, Component::Type> Component::TypeStrings[];
 }

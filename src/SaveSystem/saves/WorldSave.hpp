@@ -2,6 +2,7 @@
 #define SWIFT_WORLD_SAVE_HPP
 
 #include <map>
+#include <vector>
 
 #include "World/World.hpp"
 
@@ -22,6 +23,8 @@ namespace swift
 			using ComponentMap = std::map<unsigned int, VariableMap>;
 			using Data = std::map<Component::Type, ComponentMap>;
 			
+			using ScriptsList = std::vector<std::string>;
+			
 			virtual ~WorldSave() = default;
 			
 			// loads data to the given World
@@ -38,6 +41,7 @@ namespace swift
 			WorldSave(const std::string& n);
 			
 			Data components;
+			ScriptsList scripts;
 		
 		private:
 			std::string name;

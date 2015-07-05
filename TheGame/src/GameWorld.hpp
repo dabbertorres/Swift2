@@ -29,17 +29,6 @@ namespace tg
 			
 		private:
 			GameAssets* assets;
-			
-			// list of systems declared on the stack
-			swift::AnimatedSystem animatedSys;
-			swift::BatchDrawSystem batchDrawSys;
-			swift::ControllableSystem controlSys;
-			swift::DrawableSystem drawSys;
-			swift::MovableSystem moveSys;
-			swift::NameSystem nameSys;
-			swift::NoisySystem noisySys;
-			swift::PathfinderSystem pathSys;
-			swift::PhysicalSystem physicalSys;
 	};
 }
 

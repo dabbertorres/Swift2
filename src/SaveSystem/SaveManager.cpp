@@ -205,6 +205,17 @@ namespace swift
 		save.name = path.name();
 		save.tilemap = worldRoot->Attribute("tilemap");
 		
+		save.scripts.clear();
+		
+		auto* script = worldRoot->FirstChildElement("Script");
+		while(script != nullptr)
+		{
+			std::string scriptName = script->Attribute("name");
+			save.scripts.push_back(scriptName);
+			
+			script = script->NextSiblingElement("Script");
+		}
+		
 		save.components.clear();
 		
 		auto* componentType = worldRoot->FirstChildElement("Component");
@@ -307,6 +318,14 @@ namespace swift
 		worldRoot->SetAttribute("tilemap", save.getTilemap().c_str());
 		
 		saveFile.InsertEndChild(worldRoot);
+		
+		for(auto& script : save.scripts)
+		{
+			auto* scriptElement = saveFile.NewElement("Script");
+			scriptElement->SetAttribute("name", script.c_str());
+			
+			worldRoot->InsertEndChild(scriptElement);
+		}
 		
 		for(auto& component : save.components)
 		{

@@ -4,17 +4,16 @@ namespace tg
 {
 	GameWorld::GameWorld(const std::string& n, GameAssets* am)
 	:	World(n, 512),
-		assets(am),
-		batchDrawSys(assets)
+		assets(am)
 	{
-		systems.add(swift::Component::Type::Animated, &animatedSys);
-		systems.add(swift::Component::Type::BatchDrawable, &batchDrawSys);
-		systems.add(swift::Component::Type::Controllable, &controlSys);
-		systems.add(swift::Component::Type::Drawable, &drawSys);
-		systems.add(swift::Component::Type::Movable, &moveSys);
-		systems.add(swift::Component::Type::Noisy, &noisySys);
-		systems.add(swift::Component::Type::Pathfinder, &pathSys);
-		systems.add(swift::Component::Type::Physical, &physicalSys);
+		systems.add(swift::Component::Type::Animated, new swift::AnimatedSystem());
+		systems.add(swift::Component::Type::BatchDrawable, new swift::BatchDrawSystem(assets));
+		systems.add(swift::Component::Type::Controllable, new swift::ControllableSystem());
+		systems.add(swift::Component::Type::Drawable, new swift::DrawableSystem());
+		systems.add(swift::Component::Type::Movable, new swift::MovableSystem());
+		systems.add(swift::Component::Type::Noisy, new swift::NoisySystem());
+		systems.add(swift::Component::Type::Pathfinder, new swift::PathfinderSystem());
+		systems.add(swift::Component::Type::Physical, new swift::PhysicalSystem());
 	}
 	
 	void GameWorld::update(float dt)
