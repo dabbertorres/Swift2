@@ -65,27 +65,6 @@ namespace swift
 		return entities;
 	}
 	
-	std::vector<unsigned int> World::getEntitiesAround(const sf::Vector2f& pos, float radius) const
-	{
-		std::vector<unsigned int> around;
-		
-		// if pos is outside of the world, or the radius is 0 or less, just return an empty vector
-		if(!(0 <= pos.x && 0 <= pos.y) || radius <= 0)
-			return around;
-		
-		/*for(auto& id : entities)
-		{
-			if(physicalSystem.has(id))
-			{
-				Physical& p = physicalSystem.get(id);
-				if(math::distance(p.position, pos) <= radius)
-					around.push_back(id);
-			}
-		}*/
-		
-		return around;
-	}
-	
 	const std::string& World::getName() const
 	{
 		return name;

@@ -31,7 +31,7 @@ namespace swift
 
 			unsigned int getPlayer() const;
 			const std::vector<unsigned int>& getEntities() const;
-			std::vector<unsigned int> getEntitiesAround(const sf::Vector2f& pos, float radius) const;
+			
 			const std::string& getName() const;
 			
 			const SystemMap& getSystems() const;

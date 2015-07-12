@@ -9,7 +9,9 @@ namespace swift
 		lastWorld("")
 	{
 		if(name.back() != '/')
+		{
 			name += '/';
+		}
 		
 		if(name.find("..") != std::string::npos || name.find("~") != std::string::npos || name[0] == '/')
 		{

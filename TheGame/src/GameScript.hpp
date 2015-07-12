@@ -59,10 +59,6 @@ namespace tg
 			static std::tuple<unsigned, unsigned> getWindowSize();
 			static float getTime();
 			static void logMsg(std::string m);
-			
-			// Scripting
-			static bool addScript(std::string s);
-			static bool removeScript(std::string s);
 
 			// World
 			static bool newEntity(unsigned int e);
@@ -92,7 +88,7 @@ namespace tg
 			static swift::Movable* getMovable(unsigned int id);
 			static void setMoveVelocity(swift::Movable* m, float v);
 			static std::tuple<float, float> getVelocity(swift::Movable* m);
-
+			
 			// Physical
 			static swift::Physical* getPhysical(unsigned int id);
 			static void setPosition(swift::Physical* p, float x, float y);

@@ -34,17 +34,13 @@ namespace tg
 												"destroyEntity", static_cast<bool (GameWorld::*)(unsigned int)>(&GameWorld::destroyEntity), 
 												"getPlayer", static_cast<unsigned int (GameWorld::*)() const>(&GameWorld::getPlayer));
 	}
-
+	
 	void GameScript::addFunctions()
 	{
 		// utility functions
 		luaState["getWindowSize"] = &getWindowSize;
 		luaState["getTime"] = &getTime;
 		luaState["log"] = &logMsg;
-
-		// play
-		luaState["addScript"] = &addScript;
-		luaState["removeScript"] = &removeScript;
 
 		// world
 		luaState["newEntity"] = &newEntity;
@@ -172,17 +168,6 @@ namespace tg
 	void GameScript::logMsg(std::string m)
 	{
 		swift::Logger::get() << m << '\n';
-	}
-
-	// Play
-	bool GameScript::addScript(std::string s)
-	{
-		return false;
-	}
-
-	bool GameScript::removeScript(std::string s)
-	{
-		return false;
 	}
 
 	// World
