@@ -74,21 +74,21 @@ namespace tg
 	{
 		activeState->draw();
 	}
-
+	
 	unsigned int GamePlay::getPlayer() const
 	{
 		return activeWorld->getPlayer();
 	}
-
+	
 	void GamePlay::changeWorld(const std::string& name, const std::string& mapFile)
 	{
 		worlds.emplace(name, new GameWorld(name, &assets));
 		GameWorld* newWorld = worlds[name];
-
+		
 		// setup world
 		bool mapResult = newWorld->tilemap.loadFile(mapFile);
 		bool textureResult = newWorld->tilemap.setTexture(assets.getTexture(newWorld->tilemap.getTextureFile()));
-
+		
 		if(!mapResult)
 		{
 			swift::Logger::get() << "[ERROR]: Loading tilemap \"" << mapFile << "\" failed.\n";
@@ -98,14 +98,14 @@ namespace tg
 		{
 			swift::Logger::get() << "[ERROR]: Setting texture for \"" << mapFile << "\" failed.\n";
 		}
-
+		
 		if(!mapResult || !textureResult)
 		{
 			delete worlds[name];
 			worlds.erase(name);	// undo what we did and exit since loading the world failed
 			return;
 		}
-
+		
 		// get the player
 		if(activeWorld)
 		{
@@ -114,13 +114,13 @@ namespace tg
 			newWorld->createEntity(oldPlayer);
 			
 			// create and copy components from oldPlayer to new Player
-
+			
 			// delete old world
 			std::string oldWorld = activeWorld->getName();
 			//saveWorld(*activeWorld);
 			delete activeWorld;
 			worlds.erase(oldWorld);
-
+			
 			// load the world's save file
 			/*if(!loadWorld(*newWorld))
 			{
@@ -139,7 +139,7 @@ namespace tg
 		activeWorld = newWorld;
 		GameScript::setWorld(*activeWorld);
 	}
-
+	
 	void GamePlay::setupGUI()
 	{
 		try

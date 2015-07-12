@@ -11,7 +11,7 @@ namespace swift
 		if(name.back() != '/')
 			name += '/';
 		
-		if(name.find("..") != std::string::npos || name.find("~") != std::string::npos)
+		if(name.find("..") != std::string::npos || name.find("~") != std::string::npos || name[0] == '/')
 		{
 			throw std::invalid_argument("Not allowed to access files outside of save directory!");
 		}
