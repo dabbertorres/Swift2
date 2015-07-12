@@ -34,10 +34,10 @@ namespace swift
 			if(c.second.moveDown)
 				moveDir += {0, 1};
 				
-			Movable& mov = moveSystem->get(c.second.ID());
+			Movable* mov = moveSystem->get(c.second.ID());
 
 			// set the velocity based on the direction and the entity's move velocity
-			mov.velocity = math::unit(moveDir) * mov.moveVelocity;
+			mov->velocity = math::unit(moveDir) * mov->moveVelocity;
 		}
 	}
 	

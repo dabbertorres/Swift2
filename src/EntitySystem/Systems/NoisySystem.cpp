@@ -20,11 +20,11 @@ namespace swift
 		
 		for(auto& c : components)
 		{
-			const Physical& phys = physSystem->get(c.second.ID());
+			const Physical* phys = physSystem->get(c.second.ID());
 
 			if(c.second.shouldPlay)
 			{
-				soundPlayer->newSound(assets->getSound(c.second.soundFile), {phys.position.x, phys.position.y, 0}, false);
+				soundPlayer->newSound(assets->getSound(c.second.soundFile), {phys->position.x, phys->position.y, 0}, false);
 				c.second.shouldPlay = false;
 			}
 		}

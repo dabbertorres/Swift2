@@ -17,10 +17,10 @@ namespace swift
 		
 		for(auto& c : components)
 		{
-			Physical& phys = physSystem->get(c.second.ID());
+			Physical* phys = physSystem->get(c.second.ID());
 			
-			phys.position.x += c.second.velocity.x * dt;
-			phys.position.y += c.second.velocity.y * dt;
+			phys->position.x += c.second.velocity.x * dt;
+			phys->position.y += c.second.velocity.y * dt;
 		}
 	}
 	

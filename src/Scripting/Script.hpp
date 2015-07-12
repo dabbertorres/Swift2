@@ -48,6 +48,8 @@ namespace swift
 		
 		public:
 			Script();
+			Script(const Script& other);
+			
 			virtual ~Script() = default;
 
 			bool loadFromFile(const std::string& lfile);
@@ -56,7 +58,7 @@ namespace swift
 
 			void update();
 
-			bool toDelete();
+			bool isDone() const;
 
 			void reset();
 			
@@ -65,19 +67,27 @@ namespace swift
 			static void setResourcePath(const std::string& rp);
 
 		protected:
-			virtual void addVariables() = 0;
-			virtual void addClasses() = 0;
-			virtual void addFunctions() = 0;
+			virtual void addVariables()
+			{}
+			
+			virtual void addClasses()
+			
+			{}
+			
+			virtual void addFunctions()
+			{}
 
 			lna::State luaState;
 
 		private:
 			std::string file;
-			bool deleteMe;
+			bool done;
 
 			static std::string resPath;
 			static std::string getResourcePath();
 	};
+	
+	using ScriptHandle = std::unique_ptr<Script>;
 }
 
 #endif // SCRIPT_HPP

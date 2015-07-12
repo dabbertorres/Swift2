@@ -60,7 +60,7 @@ namespace lna
 			void reload();
 			
 			void clean();
-
+			
 		private:
 			lua_State* state;
 			

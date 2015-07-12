@@ -15,7 +15,35 @@ namespace swift
 
 	Script::Script()
 	:	file(""),
-		deleteMe(false)
+		done(false)
+	{
+		// We don't want to give the scripts access to os commands or file writing abilities
+		// so we open all libraries but "io", "os", "package", and "debug"
+		luaState.openLib("base", luaopen_base);
+		luaState.openLib("coroutine", luaopen_coroutine);
+		luaState.openLib("string", luaopen_string);
+		luaState.openLib("table", luaopen_table);
+		luaState.openLib("math", luaopen_math);
+		luaState.openLib("bit32", luaopen_bit32);
+		
+		luaState["getResourcePath"] = &getResourcePath;
+		
+		// components table
+		luaState["Components"]["Animated"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Animated);
+		luaState["Components"]["BatchDrawable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::BatchDrawable);
+		luaState["Components"]["Controllable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Controllable);
+		luaState["Components"]["Drawable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Drawable);
+		luaState["Components"]["Movable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Movable);
+		luaState["Components"]["Name"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Name);
+		luaState["Components"]["Noisy"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Noisy);
+		luaState["Components"]["Pathfinder"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Pathfinder);
+		luaState["Components"]["Physical"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Animated);
+		luaState["Components"]["Scriptable"] = static_cast<std::underlying_type<Component::Type>::type>(Component::Type::Animated);
+	}
+	
+	Script::Script(const Script& other)
+	:	file(other.getFile()),
+		done(other.isDone())
 	{
 		// We don't want to give the scripts access to os commands or file writing abilities
 		// so we open all libraries but "io", "os", "package", and "debug"
@@ -81,7 +109,7 @@ namespace swift
 			return;
 		}
 
-		deleteMe = luaState["Done"];
+		done = luaState["Done"];
 	}
 
 	void Script::update()
@@ -98,12 +126,12 @@ namespace swift
 			return;
 		}
 
-		deleteMe = luaState["Done"];
+		done = luaState["Done"];
 	}
 
-	bool Script::toDelete()
+	bool Script::isDone() const
 	{
-		return deleteMe;
+		return done;
 	}
 
 	void Script::reset()

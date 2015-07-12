@@ -39,9 +39,9 @@ namespace swift
 				}
 			}
 			
-			void add(Component::Type t, BaseSystem* sys)
+			void add(BaseSystem* sys)
 			{
-				systems[t] = sys;
+				systems[sys->typeEnum()] = sys;
 			}
 			
 			// forward iterator requests to the AssocMap

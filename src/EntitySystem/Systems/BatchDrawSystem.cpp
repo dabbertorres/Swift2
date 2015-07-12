@@ -22,12 +22,12 @@ namespace swift
 		
 		for(auto& c : components)
 		{
-			const Physical& phys = physSystem->get(c.second.ID());
+			const Physical* phys = physSystem->get(c.second.ID());
 			
-			c.second.sprite.setPosition({std::floor(phys.position.x), std::floor(phys.position.y)});
+			c.second.sprite.setPosition({std::floor(phys->position.x), std::floor(phys->position.y)});
 			
-			c.second.sprite.setOrigin({std::floor(phys.size.x / 2.f), std::floor(phys.size.y / 2.f)});
-			c.second.sprite.setRotation(phys.angle);
+			c.second.sprite.setOrigin({std::floor(phys->size.x / 2.f), std::floor(phys->size.y / 2.f)});
+			c.second.sprite.setRotation(phys->angle);
 			c.second.sprite.setOrigin({0.f, 0.f});
 		}
 	}

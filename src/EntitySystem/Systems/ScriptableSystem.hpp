@@ -10,13 +10,11 @@ namespace swift
 	class ScriptableSystem : public System<Scriptable>
 	{
 		public:
-			ScriptableSystem();
-			
 			virtual void update(float dt);
 			
 		private:
 			virtual void addImpl(const Scriptable& s);
-			virtual void removeImpl(unsigned int id);
+			virtual void removeImpl(const Scriptable&);
 	};
 }
 

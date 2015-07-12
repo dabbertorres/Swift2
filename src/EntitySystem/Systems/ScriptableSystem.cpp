@@ -2,24 +2,23 @@
 
 namespace swift
 {
-	ScriptableSystem::ScriptableSystem()
-	{
-	}
-
-	void ScriptableSystem::update(float dt)
+	void ScriptableSystem::update(float)
 	{
 		for(auto& c : components)
 		{
-			
+			if(c.second.script)
+			{
+				c.second.script->update();
+			}
 		}
 	}
 	
 	void ScriptableSystem::addImpl(const Scriptable& s)
 	{
-		
+		s.script->start();
 	}
 	
-	void ScriptableSystem::removeImpl(unsigned int id)
+	void ScriptableSystem::removeImpl(const Scriptable&)
 	{
 		
 	}

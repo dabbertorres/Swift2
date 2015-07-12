@@ -134,9 +134,10 @@ namespace swift
 
 	AnimTexture& AssetManager::getAnim(const std::string& n)
 	{
-		if(anims.find(n) != anims.end())
+		auto anim = anims.find(n);
+		if(anim != anims.end())
 		{
-			return *anims.find(n)->second.get();
+			return *anim->second.get();
 		}
 
 		throw ResourceNotFound("Could not find anim: " + n);
@@ -144,9 +145,10 @@ namespace swift
 	
 	Dictionary& AssetManager::getDict(const std::string& n)
 	{
-		if(dicts.find(n) != dicts.end())
+		auto dict = dicts.find(n);
+		if(dict != dicts.end())
 		{
-			return *dicts.find(n)->second.get();
+			return *dict->second.get();
 		}
 
 		throw ResourceNotFound("Could not find dictionary: " + n);
@@ -154,9 +156,10 @@ namespace swift
 
 	sf::Font& AssetManager::getFont(const std::string& n)
 	{
-		if(fonts.find(n) != fonts.end())
+		auto font = fonts.find(n);
+		if(font != fonts.end())
 		{
-			return *fonts.find(n)->second.get();
+			return *font->second.get();
 		}
 
 		throw ResourceNotFound("Could not find font: " + n);
@@ -164,29 +167,35 @@ namespace swift
 
 	sf::Music& AssetManager::getMusic(const std::string& n)
 	{
-		if(music.find(n) != music.end())
+		auto m = music.find(n);
+		if(m != music.end())
 		{
-			return *music.find(n)->second.get();
+			return *m->second.get();
 		}
 
 		throw ResourceNotFound("Could not find music: " + n);
 	}
-
-	Script& AssetManager::getScript(const std::string& n)
+	
+	ScriptHandle AssetManager::getScript(const std::string& n)
 	{
-		if(scripts.find(n) != scripts.end())
+		auto s = scripts.find(n);
+		if(s != scripts.end())
 		{
-			return *scripts.find(n)->second.get();
+			auto script = std::make_unique<Script>();
+			script->loadFromFile(s->second);
+			
+			return script;
 		}
-
+		
 		throw ResourceNotFound("Could not find script: " + n);
 	}
-
+	
 	sf::SoundBuffer& AssetManager::getSound(const std::string& n)
 	{
-		if(sounds.find(n) != sounds.end())
+		auto s = sounds.find(n);
+		if(s != sounds.end())
 		{
-			return *sounds.find(n)->second.get();
+			return *s->second.get();
 		}
 
 		throw ResourceNotFound("Could not find sound: " + n);
@@ -194,9 +203,10 @@ namespace swift
 
 	SpriteBatch& AssetManager::getBatch(const std::string& n)
 	{
-		if(batches.find(n) != batches.end())
+		auto batch = batches.find(n);
+		if(batch != batches.end())
 		{
-			return *batches.find(n)->second.get();
+			return *batch->second.get();
 		}
 
 		throw ResourceNotFound("Could not find batch: " + n);
@@ -204,9 +214,10 @@ namespace swift
 
 	sf::Texture& AssetManager::getTexture(const std::string& n)
 	{
-		if(textures.find(n) != textures.end())
+		auto tex = textures.find(n);
+		if(tex != textures.end())
 		{
-			return *textures.find(n)->second.get();
+			return *tex->second.get();
 		}
 
 		throw ResourceNotFound("Could not find texture: " + n);
@@ -288,9 +299,15 @@ namespace swift
 		return true;
 	}
 	
-	bool AssetManager::loadScript(const gfs::Path&)
+	bool AssetManager::loadScript(const gfs::Path& file)
 	{
-		return false;
+		std::string filename = file.filename();
+		
+		scripts.emplace(filename, file);
+		
+		swift::Logger::get() << "Script:\t" << filename << '\n';
+		
+		return true;
 	}
 	
 	bool AssetManager::loadSound(const gfs::Path& file)

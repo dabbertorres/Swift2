@@ -11,10 +11,13 @@ namespace swift
 	{
 		public:
 			Scriptable(unsigned int id = 0);
+			Scriptable(const Scriptable& other);
+			
+			Scriptable& operator=(const Scriptable& other);
 
 			static constexpr Component::Type type();
 			
-			Script* script;
+			ScriptHandle script;
 			
 		public:
 			virtual std::map<std::string, std::string> serialize() const;

@@ -10,6 +10,7 @@
 #include <SFML/Graphics/Font.hpp>
 #include <SFML/Audio/SoundBuffer.hpp>
 #include <SFML/Audio/Music.hpp>
+
 #include "BatchDrawing/SpriteBatch.hpp"
 #include "Animation/AnimTexture.hpp"
 #include "Scripting/Script.hpp"
@@ -22,7 +23,7 @@
 namespace swift
 {
 	using Dictionary = Settings;	// Settings class doubles as a Dictionary
-			
+	
 	class AssetManager
 	{
 		template<typename T>
@@ -53,7 +54,7 @@ namespace swift
 			sf::Font& getFont(const std::string& n);
 			// map
 			sf::Music& getMusic(const std::string& n);
-			Script& getScript(const std::string& n);
+			virtual ScriptHandle getScript(const std::string& n);
 			sf::SoundBuffer& getSound(const std::string& n);
 			SpriteBatch& getBatch(const std::string& n);
 			sf::Texture& getTexture(const std::string& n);
@@ -75,7 +76,7 @@ namespace swift
 			ResourceMap<std::unique_ptr<sf::Font>> fonts;
 			// maps
 			ResourceMap<std::unique_ptr<sf::Music>> music;
-			ResourceMap<std::unique_ptr<Script>> scripts;
+			ResourceMap<std::string> scripts;
 			ResourceMap<std::unique_ptr<sf::SoundBuffer>> sounds;
 			ResourceMap<std::unique_ptr<SpriteBatch>> batches;
 			ResourceMap<std::unique_ptr<sf::Texture>> textures;

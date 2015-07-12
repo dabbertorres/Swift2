@@ -6,14 +6,14 @@ namespace tg
 	:	World(n, 512),
 		assets(am)
 	{
-		systems.add(swift::Component::Type::Animated, new swift::AnimatedSystem());
-		systems.add(swift::Component::Type::BatchDrawable, new swift::BatchDrawSystem(assets));
-		systems.add(swift::Component::Type::Controllable, new swift::ControllableSystem());
-		systems.add(swift::Component::Type::Drawable, new swift::DrawableSystem());
-		systems.add(swift::Component::Type::Movable, new swift::MovableSystem());
-		systems.add(swift::Component::Type::Noisy, new swift::NoisySystem());
-		systems.add(swift::Component::Type::Pathfinder, new swift::PathfinderSystem());
-		systems.add(swift::Component::Type::Physical, new swift::PhysicalSystem());
+		systems.add(new swift::AnimatedSystem());
+		systems.add(new swift::BatchDrawSystem(assets));
+		systems.add(new swift::ControllableSystem());
+		systems.add(new swift::DrawableSystem());
+		systems.add(new swift::MovableSystem());
+		systems.add(new swift::NoisySystem());
+		systems.add(new swift::PathfinderSystem());
+		systems.add(new swift::PhysicalSystem());
 	}
 	
 	void GameWorld::update(float dt)

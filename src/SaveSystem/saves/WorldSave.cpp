@@ -9,6 +9,7 @@
 #include "EntitySystem/Systems/NoisySystem.hpp"
 #include "EntitySystem/Systems/PathfinderSystem.hpp"
 #include "EntitySystem/Systems/PhysicalSystem.hpp"
+#include "EntitySystem/Systems/ScriptableSystem.hpp"
 
 namespace swift
 {
@@ -68,6 +69,12 @@ namespace swift
 		for(auto& c : components[Component::Type::Pathfinder])
 		{
 			pfSys->add(c.first)->unserialize(c.second);
+		}
+		
+		System<Scriptable>* scriptSys = systems.get<Scriptable>();
+		for(auto& c : components[Component::Type::Scriptable])
+		{
+			scriptSys->add(c.first)->unserialize(c.second);
 		}
 	}
 	

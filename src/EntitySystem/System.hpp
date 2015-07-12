@@ -11,12 +11,20 @@ namespace swift
 	{
 		public:
 			virtual ~BaseSystem() = default;
+			
 			virtual void update(float dt) = 0;
+			
 			virtual unsigned int size() const = 0;
 			virtual bool has(unsigned int id) const = 0;
+			
+			virtual Component* get(unsigned int id) = 0;
 			virtual std::vector<const Component*> getAll() const = 0;
+			
+			virtual Component* add(unsigned int id) = 0;
+			
 			virtual void remove(unsigned int id) = 0;
 			virtual void clear() = 0;
+			
 			virtual Component::Type typeEnum() const = 0;
 	};
 	
@@ -30,21 +38,19 @@ namespace swift
 			
 			virtual void update(float dt) = 0;
 			
-			unsigned int size() const;
+			virtual unsigned int size() const;
 			
-			bool has(unsigned int id) const;
+			virtual bool has(unsigned int id) const;
 
-			C& get(unsigned int id);
-			
+			C* get(unsigned int id);
 			std::vector<const Component*> getAll() const;
 			
 			C* add(unsigned int id);
 			
-			void remove(unsigned int id);
+			virtual void remove(unsigned int id);
+			virtual void clear();
 			
-			void clear();
-			
-			Component::Type typeEnum() const;
+			virtual Component::Type typeEnum() const;
 			
 			using type = C;
 
@@ -55,7 +61,7 @@ namespace swift
 			virtual void addImpl(const C&)
 			{}
 			
-			virtual void removeImpl(unsigned int)
+			virtual void removeImpl(const C&)
 			{}
 	};
 	
@@ -79,9 +85,18 @@ namespace swift
 	}
 	
 	template<typename C, typename E>
-	C& System<C, E>::get(unsigned int id)
+	C* System<C, E>::get(unsigned int id)
 	{
-		return components[id];
+		auto c = components.find(id);
+		
+		if(c != components.end())
+		{
+			return &c->second;
+		}
+		else
+		{
+			return nullptr;
+		}
 	}
 	
 	template<typename C, typename E>
@@ -114,9 +129,10 @@ namespace swift
 	template<typename C, typename E>
 	void System<C, E>::remove(unsigned int id)
 	{
-		if(components.find(id) != components.end())
+		auto c = components.find(id);
+		if(c != components.end())
 		{
-			removeImpl(id);
+			removeImpl(c->second);
 			components.erase(id);
 		}
 	}
