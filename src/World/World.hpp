@@ -8,7 +8,7 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 #include <SFML/Graphics/RenderStates.hpp>
 
-#include "Utility/AssocMap.hpp"
+#include "Scripting/Script.hpp"
 
 #include "Mapping/TileMap.hpp"
 
@@ -46,6 +46,8 @@ namespace swift
 			SystemMap systems;
 			
 			unsigned int player;
+			
+			std::vector<Script*> scripts;
 
 		private:
 			std::string name;

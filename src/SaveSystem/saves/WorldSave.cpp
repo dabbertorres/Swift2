@@ -1,5 +1,15 @@
 #include "WorldSave.hpp"
 
+#include "EntitySystem/Systems/AnimatedSystem.hpp"
+#include "EntitySystem/Systems/BatchDrawSystem.hpp"
+#include "EntitySystem/Systems/ControllableSystem.hpp"
+#include "EntitySystem/Systems/DrawableSystem.hpp"
+#include "EntitySystem/Systems/MovableSystem.hpp"
+#include "EntitySystem/Systems/NameSystem.hpp"
+#include "EntitySystem/Systems/NoisySystem.hpp"
+#include "EntitySystem/Systems/PathfinderSystem.hpp"
+#include "EntitySystem/Systems/PhysicalSystem.hpp"
+
 namespace swift
 {
 	void WorldSave::load(World& w)
@@ -69,12 +79,12 @@ namespace swift
 		components.clear();
 		
 		auto& systems = w.getSystems();
-		for(auto* s : systems)
+		for(auto& s : systems)
 		{
-			auto comps = s->getAll();
-			for(auto* c : comps)
+			auto comps = s.second->getAll();
+			for(auto& c : comps)
 			{
-				components[s->typeEnum()][c->ID()] = c->serialize();
+				components[s.second->typeEnum()][c->ID()] = c->serialize();
 			}
 		}
 	}

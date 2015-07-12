@@ -20,7 +20,7 @@ namespace tg
 	{
 		for(auto& s : systems)
 		{
-			s->update(dt);
+			s.second->update(dt);
 		}
 	}
 	

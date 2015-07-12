@@ -15,7 +15,7 @@ namespace swift
 	{
 		for(auto& s : systems)
 		{
-			delete s;
+			delete s.second;
 		}
 	}
 	
@@ -47,7 +47,7 @@ namespace swift
 		
 		for(auto& s : systems)
 		{
-			s->remove(id);
+			s.second->remove(id);
 		}
 		
 		entities.erase(erase);

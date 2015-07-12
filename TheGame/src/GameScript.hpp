@@ -7,7 +7,16 @@
 
 #include "GameAssets.hpp"
 
-#include "EntitySystem/SystemMap.hpp"
+#include "EntitySystem/Components/Animated.hpp"
+#include "EntitySystem/Components/BatchDrawable.hpp"
+#include "EntitySystem/Components/Controllable.hpp"
+#include "EntitySystem/Components/Drawable.hpp"
+#include "EntitySystem/Components/Movable.hpp"
+#include "EntitySystem/Components/Name.hpp"
+#include "EntitySystem/Components/Noisy.hpp"
+#include "EntitySystem/Components/Pathfinder.hpp"
+#include "EntitySystem/Components/Physical.hpp"
+#include "EntitySystem/Components/Scriptable.hpp"
 
 namespace tg
 {
