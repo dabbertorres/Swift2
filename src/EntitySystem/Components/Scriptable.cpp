@@ -20,16 +20,17 @@ namespace swift
 		
 		return *this;
 	}
-
+	
 	std::map<std::string, std::string> Scriptable::serialize() const
 	{
 		std::map<std::string, std::string> variables;
 		
 		variables.emplace("file", script->getFile());
+		variables.emplace("saveFile", std::to_string(ID()) + script->getFile());
 		
 		return variables;
 	}
-
+	
 	void Scriptable::unserialize(const std::map<std::string, std::string>& variables)
 	{
 		script = std::make_unique<Script>();

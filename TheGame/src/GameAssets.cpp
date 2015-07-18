@@ -19,15 +19,4 @@ namespace tg
 		
 		throw swift::ResourceNotFound("Could not find script: " + n);
 	}
-			
-	bool GameAssets::loadScript(const gfs::Path& file)
-	{
-		std::string fileName = file.filename();
-		
-		scripts.emplace(fileName, file);
-		
-		swift::Logger::get() << "Script:\t" << fileName << '\n';
-		
-		return true;
-	}
 }

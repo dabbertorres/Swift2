@@ -22,10 +22,10 @@ namespace tg
 		addClasses();
 		addFunctions();
 	}
-
+	
 	void GameScript::addVariables()
 	{
-
+		
 	}
 
 	void GameScript::addClasses()

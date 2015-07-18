@@ -5,6 +5,7 @@ namespace swift
 	Game::Game(const std::string& t, unsigned tps)
 	:	running(false),
 		fullscreen(false),
+		verticalSync(false),
 		resolution({800, 600}),
 		title(t),
 		ticksPerSecond(tps)

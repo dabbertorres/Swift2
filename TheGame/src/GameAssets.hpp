@@ -14,9 +14,6 @@ namespace tg
 			~GameAssets() = default;
 			
 			virtual swift::ScriptHandle getScript(const std::string& n);
-
-		protected:
-			virtual bool loadScript(const gfs::Path& file);
 	};
 }
 
