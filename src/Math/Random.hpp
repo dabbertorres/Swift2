@@ -23,12 +23,12 @@ namespace swift
 					return std::uniform_real_distribution<T>(low, high)(generator);
 				}
 				
-				static Random& get();
-				
 			private:
-				Random() {};
+				friend Random& get();
 				
-				static Random* rand;
+				Random() = default;
+				
+				static Random rand;
 				static std::mt19937 generator;
 		};
 		
@@ -36,4 +36,4 @@ namespace swift
 	}
 }
 
-#endif // SWIFT_RANDOM_HPP
+#endif
