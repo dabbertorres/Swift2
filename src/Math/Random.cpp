@@ -1,22 +1,17 @@
 #include "Random.hpp"
 
-namespace swift
+namespace math
 {
-	namespace math
+	namespace swift
 	{
-		Random* Random::rand = nullptr;
+		Random Random::rand;
 		std::mt19937 Random::generator(std::chrono::system_clock::now().time_since_epoch().count());
 		
-		Random& Random::get()
+		Random& get()
 		{
-			if(!rand)
-			{
-				rand = new Random();
-			}
-			
-			return *rand;
+			return Random::rand;
 		}
 		
-		Random& rand = Random::get();
+		Random& rand = get();
 	}
 }
